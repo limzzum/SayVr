@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.flashcards.domain;
 
+import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.global.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +22,7 @@ public class Wordcard extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wordcard_id")
     private Long id;
-    
+
     private WordcardStatus status;
 
     @ManyToOne
