@@ -1,8 +1,11 @@
 package com.npc.say_vr.domain.game.domain;
 
+import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.global.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,5 +22,10 @@ public class Game extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id")
     private Long id;
+
+    private int totalRound;
+
+    @Enumerated(value = EnumType.STRING)
+    private GameStatus status;
 
 }
