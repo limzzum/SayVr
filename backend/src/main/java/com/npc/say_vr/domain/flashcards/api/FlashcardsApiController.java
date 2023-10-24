@@ -1,4 +1,4 @@
-package com.npc.say_vr.domain.english_book.user.api;
+package com.npc.say_vr.domain.flashcards.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/english_book")
-public class EnglishBookApiController {
+@RequestMapping("/api/flashcards")
+public class FlashcardsApiController {
 
 }

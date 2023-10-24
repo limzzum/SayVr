@@ -1,4 +1,4 @@
-package com.npc.say_vr.domain.english_book.user.domain;
+package com.npc.say_vr.domain.flashcards.domain;
 
 import com.npc.say_vr.global.entity.BaseEntity;
 import javax.persistence.Column;
@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EnglishBook extends BaseEntity {
+public class Flashcards extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "english_book")
+    @Column(name = "flashcards")
     private Long id;
 
 }
