@@ -1,4 +1,4 @@
-package com.npc.say_vr.domain.english_book.user.service;
+package com.npc.say_vr.domain.flashcards.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EnglishBookServiceImpl implements EnglishBookService {
+public class FlashcardsServiceImpl implements FlashcardsService {
 
 
 }
