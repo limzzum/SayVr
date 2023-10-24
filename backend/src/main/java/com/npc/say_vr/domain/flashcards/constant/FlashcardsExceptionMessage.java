@@ -1,11 +1,11 @@
-package com.npc.say_vr.domain.english_book.user.constant;
+package com.npc.say_vr.domain.flashcards.constant;
 
-public enum EnglishBookExceptionMessage {
+public enum FlashcardsExceptionMessage {
     ENGLISH_BOOK_NOT_FOUND("존재하지 않는 단어장입니다");
 
     private final String message;
 
-    EnglishBookExceptionMessage(String message) {
+    FlashcardsExceptionMessage(String message) {
         this.message = message;
     }
 

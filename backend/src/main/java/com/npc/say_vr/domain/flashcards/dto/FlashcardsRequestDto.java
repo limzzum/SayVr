@@ -1,17 +1,17 @@
-package com.npc.say_vr.domain.english_book.user.dto;
+package com.npc.say_vr.domain.flashcards.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-public class EnglishBookRequestDto {
+public class FlashcardsRequestDto {
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CreateEnglishBookRequestDto {
+    public static class CreateFlashcardsRequestDto {
         private Long userId;
 
     }
