@@ -4,6 +4,8 @@ import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.user.domain.User;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
@@ -19,9 +21,8 @@ public class PersonalFlashcards extends Flashcards {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    //user 쪽은 ???
-    // @OneToMany(mappedBy = "user")
-    // List<PersonalFlashcards> flashcards = new ArrayList<PersonalFlashcards>();
+
+    @Enumerated(value = EnumType.STRING)
     private FlashcardStatus status;
     private String tag;
     private Integer forkCount;

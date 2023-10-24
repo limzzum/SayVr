@@ -4,6 +4,8 @@ import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.global.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +24,8 @@ public class Wordcard extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "wordcard_id")
     private Long id;
-
+    
+    @Enumerated(value = EnumType.STRING)
     private WordcardStatus status;
 
     @ManyToOne
