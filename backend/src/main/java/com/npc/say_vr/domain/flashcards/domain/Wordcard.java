@@ -34,7 +34,7 @@ public class Wordcard extends BaseEntity {
     private Word word;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flashcards_id")
-    private Flashcards flashcards;
+    @JoinColumn(name = "flashcard_deck_id")
+    private FlashcardDeck flashcardDeck;
 
 }

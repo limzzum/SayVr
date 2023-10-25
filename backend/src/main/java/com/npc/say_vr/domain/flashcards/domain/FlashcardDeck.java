@@ -16,18 +16,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Flashcards extends BaseEntity {
+public class FlashcardDeck extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "flashcards_id")
+    @Column(name = "flashcard_deck_id")
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "flashcards")
+    @OneToMany(mappedBy = "flashcardDeck")
     private List<Wordcard> wordcards;
 
-    @OneToOne(mappedBy = "flashcards")
-    private PersonalFlashcards personalFlashcards;
+    @OneToOne(mappedBy = "flashcardDeck")
+    private PersonalDeck personalDeck;
 
 }
