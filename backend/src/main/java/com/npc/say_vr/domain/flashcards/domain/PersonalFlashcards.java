@@ -2,7 +2,11 @@ package com.npc.say_vr.domain.flashcards.domain;
 
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.user.domain.User;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,7 +41,12 @@ public class PersonalFlashcards {
 
     @Enumerated(value = EnumType.STRING)
     private FlashcardStatus status;
-    private String tag;
+
+    @ElementCollection
+    @CollectionTable(name = "personal_flashcards_tags", joinColumns = @JoinColumn(name = "personal_flashcards_id"))
+    @Column(name = "tag")
+    private List<String> tags = new ArrayList<>();
+
     private Integer forkCount;
 
 }
