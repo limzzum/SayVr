@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,8 @@ public class StudyChecklist extends Checklist{
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "goal_id")
   private Goal goal;
+
+  @NotNull
+  private int current_count;
 
 }

@@ -23,18 +23,16 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // 상속관계로 처리 되어보자.....
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="checklist_type")
-public abstract class Checklist extends BaseEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Checklist extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "checklist_id")
   private Long id;
 
-  @NotNull
-  private int current_count;
+  @Enumerated(EnumType.STRING)
+  private CheckListStatus checkListStatus;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")

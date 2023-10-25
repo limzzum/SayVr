@@ -1,10 +1,9 @@
 package com.npc.say_vr.domain.study.domain;
 
 import com.npc.say_vr.domain.study.constant.StudyRole;
-import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.user.domain.User;
+import com.npc.say_vr.global.constant.Status;
 import com.npc.say_vr.global.entity.BaseEntity;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +29,7 @@ public class StudyMember extends BaseEntity {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private StudyStatus studyStatus;
+  private Status status;
 
   @Enumerated(EnumType.STRING)
   private StudyRole studyRole;

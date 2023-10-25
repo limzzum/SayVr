@@ -51,7 +51,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Checklist> checklists;
 
-    //OAuth용
+    //TODO
 //    private String provider;
 //    private String providerId;
 

@@ -1,7 +1,7 @@
 package com.npc.say_vr.domain.study.domain;
 
 import com.npc.say_vr.domain.study.constant.GoalOption;
-import com.npc.say_vr.domain.study.constant.StudyStatus;
+import com.npc.say_vr.global.constant.Status;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
 import javax.persistence.Column;
@@ -39,7 +39,7 @@ public abstract class Goal extends BaseEntity {
   private int count;
 
   @Enumerated(EnumType.STRING)
-  private StudyStatus studyStatus;
+  private Status status;
 
   @Enumerated(EnumType.STRING)
   private GoalOption goalOption;

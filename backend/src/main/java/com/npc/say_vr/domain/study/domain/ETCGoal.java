@@ -13,10 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorValue("NONE")
+@DiscriminatorValue("ETC")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NoneGoal extends Goal{
+public class ETCGoal extends Goal{
 
   @NotNull
   @Size(max = 30)

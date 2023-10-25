@@ -1,9 +1,8 @@
 package com.npc.say_vr.domain.study.domain;
 
-import com.npc.say_vr.domain.study.constant.StudyStatus;
+import com.npc.say_vr.global.constant.Status;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -46,7 +45,7 @@ public class Study extends BaseEntity {
     private String rule;
 
     @Enumerated(EnumType.STRING)
-    private StudyStatus studyStatus;
+    private Status status;
 
     @OneToMany(mappedBy = "study")
     private List<StudyMember> studyMembers;
