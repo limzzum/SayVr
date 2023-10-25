@@ -1,0 +1,23 @@
+.studypage-container {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+    width: 70vw;
+    height: 90vh;
+}
+.studypage-inner-container{
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+    width: 60vw;
+    height: 30vh;
+}
+.btn {
+    width: 5rem;
+}
