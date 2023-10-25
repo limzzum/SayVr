@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Checklist extends BaseEntity {
+public class ChecklistItem  extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "checklist_id")
+  @Column(name = "checklistItem_id")
   private Long id;
 
   @Enumerated(EnumType.STRING)

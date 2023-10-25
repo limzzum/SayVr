@@ -1,6 +1,6 @@
 package com.npc.say_vr.domain.user.domain;
 
-import com.npc.say_vr.domain.study.domain.Checklist;
+import com.npc.say_vr.domain.study.domain.ChecklistItem;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.global.entity.BaseEntity;
@@ -49,7 +49,7 @@ public class User extends BaseEntity {
     private List<StudyMember> studyMembers;
 
     @OneToMany(mappedBy = "user")
-    private List<Checklist> checklists;
+    private List<ChecklistItem> checklistItemList;
 
     //TODO
 //    private String provider;

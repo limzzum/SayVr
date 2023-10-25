@@ -1,10 +1,7 @@
 package com.npc.say_vr.domain.study.domain;
 
-import com.npc.say_vr.domain.study.constant.GoalOption;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,7 +14,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("STUDY")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StudyChecklist extends Checklist{
+public class StudyChecklistItem extends ChecklistItem{
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "goal_id")

@@ -1,7 +1,6 @@
 package com.npc.say_vr.domain.study.domain;
 
-import com.npc.say_vr.domain.study.constant.GoalOption;
-import com.npc.say_vr.global.constant.Status;
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
 import javax.persistence.Column;
@@ -18,7 +17,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="goal_type")
 public abstract class Goal extends BaseEntity {
 
   @Id
@@ -36,19 +35,20 @@ public abstract class Goal extends BaseEntity {
   private Long id;
 
   @NotNull
+  @Min(1)
   private int count;
 
   @Enumerated(EnumType.STRING)
-  private Status status;
-
-  @Enumerated(EnumType.STRING)
-  private GoalOption goalOption;
+  private OptionType optionType;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "weeklySprint_id")
   private WeeklySprint weeklySprint;
 
   @OneToMany(mappedBy = "goal")
-  private List<StudyChecklist> studyChecklists;
+  private List<StudyChecklistItem> checklistItemList;
+
+  @Size(max = 30)
+  private String description;
 
 }

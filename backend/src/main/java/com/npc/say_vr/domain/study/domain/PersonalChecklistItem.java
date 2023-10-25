@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("PERSONAL")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PersonalChecklist extends Checklist {
+public class PersonalChecklistItem extends ChecklistItem {
 
   @NotNull
   @Size(max = 30)
-  private String context;
+  private String description ;
 }
