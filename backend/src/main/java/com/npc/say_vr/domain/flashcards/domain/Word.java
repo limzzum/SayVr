@@ -1,14 +1,11 @@
 package com.npc.say_vr.domain.flashcards.domain;
 
 import com.npc.say_vr.global.entity.BaseEntity;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,18 +13,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Flashcards extends BaseEntity {
+public class Word extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "flashcards_id")
+    @Column(name = "word_id")
     private Long id;
-    private String name;
+    private String english;
+    private String korean;
 
-    @OneToMany(mappedBy = "flashcards")
-    private List<Wordcard> wordcards;
-
-    @OneToOne(mappedBy = "flashcards")
-    private PersonalFlashcards personalFlashcards;
-
+    private String voice;
 }
