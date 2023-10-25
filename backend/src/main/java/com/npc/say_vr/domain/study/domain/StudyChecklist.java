@@ -1,23 +1,25 @@
 package com.npc.say_vr.domain.study.domain;
 
 import com.npc.say_vr.domain.study.constant.GoalOption;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorValue("OPTIONAL")
+@DiscriminatorValue("STUDY")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OptionalGoal extends Goal {
+public class StudyChecklist extends Checklist{
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "goal_id")
+  private Goal goal;
 
 }

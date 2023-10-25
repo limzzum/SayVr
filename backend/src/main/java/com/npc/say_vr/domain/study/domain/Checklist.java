@@ -1,9 +1,8 @@
 package com.npc.say_vr.domain.study.domain;
 
-import com.npc.say_vr.domain.study.constant.GoalOption;
-import com.npc.say_vr.domain.study.constant.StudyStatus;
+import com.npc.say_vr.domain.study.constant.CheckListStatus;
+import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.global.entity.BaseEntity;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -17,7 +16,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,30 +23,25 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 상속관계로 처리 되어보자.....
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="goal_type")
-public abstract class Goal extends BaseEntity {
+@DiscriminatorColumn(name="checklist_type")
+public abstract class Checklist extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "goal_id")
+  @Column(name = "checklist_id")
   private Long id;
 
   @NotNull
-  private int count;
+  private int current_count;
 
-  @Enumerated(EnumType.STRING)
-  private StudyStatus studyStatus;
-
-  @Enumerated(EnumType.STRING)
-  private GoalOption goalOption;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "weeklySprint_id")
   private WeeklySprint weeklySprint;
-
-  @OneToMany(mappedBy = "goal")
-  private List<StudyChecklist> studyChecklists;
 
 }

@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.user.domain;
 
+import com.npc.say_vr.domain.study.domain.Checklist;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.global.entity.BaseEntity;
@@ -44,8 +45,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<StudyMember> studyMembers;
+
+    @OneToMany(mappedBy = "user")
+    private List<Checklist> checklists;
 
     //OAuth용
 //    private String provider;

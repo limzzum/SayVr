@@ -48,10 +48,10 @@ public class Study extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StudyStatus studyStatus;
 
-    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "study")
     private List<StudyMember> studyMembers;
 
-    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "study")
     private List<WeeklySprint> weeklySprints;
 
 
