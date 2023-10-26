@@ -27,7 +27,8 @@ public class Talk extends BaseEntity {
     @JoinColumn(name = "conversation_id")
     private Conversation conversation;
 
-    private String sentences;
+    private String npcSentence;
+    private String userSentence;
 
     @Range(min = 0, max = 100)
     private Integer grammar;
