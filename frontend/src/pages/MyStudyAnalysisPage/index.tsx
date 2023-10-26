@@ -73,10 +73,10 @@ function MyStudyAnalysisPage() {
             <div className="col-8 col-sm-12 grade-container" style={{ marginBottom: "30px" }}>
               <h3>내 현재 등급</h3>
               <div className="row justify-content-center align-items-center">
-                <img src={AverageScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
-                <img src={ContextScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
-                <img src={GrammarScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
-                <img src={ProunciationScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
+                <img src={AverageScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }} />
+                <img src={ContextScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }} />
+                <img src={GrammarScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }} />
+                <img src={ProunciationScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }} />
               </div>
             </div>
             <div className="col-4 col-sm-12 custom-chart-container" style={{ marginBottom: "20px" }}>
