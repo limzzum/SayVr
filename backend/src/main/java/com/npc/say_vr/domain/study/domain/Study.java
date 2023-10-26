@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.study.domain;
 
+import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.global.constant.Status;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Study extends BaseEntity {
     private String rule;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private StudyStatus studyStatus;
 
     @OneToMany(mappedBy = "study" )
     private List<StudyMember> studyMembers;
