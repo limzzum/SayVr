@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/flashcards")
 public class FlashcardsApiController {
 
-    @PostMapping("/deck/fork/{deckId}")
-    public ResponseEntity<?> createForkedDeck(@AuthenticationPrincipal Long userId,
-        @PathVariable Long deckId) {
+    @PostMapping("/deck")
+    public ResponseEntity<?> createDeck(@AuthenticationPrincipal Long userId) {
         ResponseDto responseDto;
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PostMapping("/deck")
-    public ResponseEntity<?> createDeck(@AuthenticationPrincipal Long userId) {
+    @PostMapping("/deck/fork/{deckId}")
+    public ResponseEntity<?> createForkedDeck(@AuthenticationPrincipal Long userId,
+        @PathVariable Long deckId) {
         ResponseDto responseDto;
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
