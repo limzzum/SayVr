@@ -50,7 +50,7 @@ public class SecurityConfig {
 //            .antMatchers("/api/user/refreshtoken").permitAll()
 //            .antMatchers("/profile").permitAll()
 //            .antMatchers("/health").permitAll()
-//            .antMatchers("/api/game/wait").permitAll()
+//            .antMatchers("/api/whoami").permitAll()
 //            .anyRequest().authenticated()
             .and()
             .exceptionHandling()
