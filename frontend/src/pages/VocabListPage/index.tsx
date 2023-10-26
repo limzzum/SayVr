@@ -1,4 +1,4 @@
-import MyStudyCard from "../../components/MyStudyCard";
+import MyWordCard from "../../components/MyWordCard";
 import PlusBtn from "../../assets/Etc/PlusBtn.png";
 import "./style.css";
 import { Button } from "react-bootstrap";
@@ -10,7 +10,7 @@ function VocabListPage() {
   };
   return (
     <div className="container">
-      <div className="row card-row justify-content-center align-items-center custom-chart-container">
+      <div className="vocab-list-container row card-row justify-content-center align-items-center ">
         <div className="row justify-content-center align-items-center">
           <div className="col-2">
             <h1>내 단어장</h1>
@@ -21,14 +21,14 @@ function VocabListPage() {
             </Button>
           </div>
         </div>
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
+          <MyWordCard />
+          <MyWordCard />
+          <MyWordCard />
+          <MyWordCard />
+          <MyWordCard />
+          <MyWordCard />
+          <MyWordCard />
+          <MyWordCard />
       </div>
       <div className="row card-row justify-content-center align-items-center custom-chart-container">
         <div className="row justify-content-center align-items-center">
@@ -46,14 +46,14 @@ function VocabListPage() {
             </div>
           </div>
           <div className="row">
-            <MyStudyCard />
-            <MyStudyCard />
-            <MyStudyCard />
-            <MyStudyCard />
-            <MyStudyCard />
-            <MyStudyCard />
-            <MyStudyCard />
-            <MyStudyCard />
+            <MyWordCard />
+            <MyWordCard />
+            <MyWordCard />
+            <MyWordCard />
+            <MyWordCard />
+            <MyWordCard />
+            <MyWordCard />
+            <MyWordCard />
           </div>
         </div>
       </div>

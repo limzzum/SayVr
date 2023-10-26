@@ -21,12 +21,12 @@ function StudyPage() {
         <h3>이곳은 규칙입니다</h3>
         <hr></hr>
       </div>
-      <div className="row ustify-content-center align-items-center">
-        <div className="col-2">
-          <h2>스터디 목표</h2>
+      <div className="row justify-content-center align-items-center">
+        <div className="col-2 justify-content-center align-items-center">
+          <p style={{fontSize: "1.5em"}}>스터디 목표</p>
         </div>
         <div className="col">
-          <img className="btn" src={PlusBtn} />
+          <img className="btn" style={{width: "4em"}} src={PlusBtn} />
         </div>
       </div>
       <div className="row ustify-content-center align-items-center">
@@ -34,10 +34,10 @@ function StudyPage() {
       </div>
       <div className="row ustify-content-center align-items-center">
         <div className="col-2">
-          <h2>스터디 단어장</h2>
+          <p style={{fontSize: "1.5em"}}>스터디 단어장</p>
         </div>
         <div className="col">
-          <img className="btn" src={PlusBtn} />
+          <img className="btn" style={{width: "4em"}} src={PlusBtn} />
         </div>
       </div>
       <div className="row card-row justify-content-center align-items-center">
@@ -49,8 +49,6 @@ function StudyPage() {
         <MyWordCard/>
         <MyWordCard/>
         <MyWordCard/>
-        
-        
       </div>
     </div>
   );
