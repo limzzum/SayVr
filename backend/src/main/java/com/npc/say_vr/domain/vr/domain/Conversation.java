@@ -37,10 +37,10 @@ public class Conversation extends BaseEntity {
     private String situation;
 
     @Range(min = 0, max = 100)
-    private Integer average_grammar;
+    private Integer averageGrammar;
     @Range(min = 0, max = 100)
-    private Integer average_context;
+    private Integer averageContext;
     @Range(min = 0, max = 100)
-    private Integer average_pronunciation;
+    private Integer averagePronunciation;
 
 }
