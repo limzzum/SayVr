@@ -42,15 +42,16 @@ public class SecurityConfig {
             .csrf().disable()
             .cors().and()
             .authorizeRequests()
-            .antMatchers("/api/user/oauth/kakao/**").permitAll()
-            .requestMatchers(request -> {
-                String code = request.getParameter("code");
-                return code != null;
-            }).permitAll()
-            .antMatchers("/api/user/refreshtoken").permitAll()
-            .antMatchers("/profile").permitAll()
-            .antMatchers("/health").permitAll()
-            .anyRequest().authenticated()
+            .anyRequest().permitAll()
+//            .requestMatchers(request -> {
+//                String code = request.getParameter("code");
+//                return code != null;
+//            }).permitAll()
+//            .antMatchers("/api/user/refreshtoken").permitAll()
+//            .antMatchers("/profile").permitAll()
+//            .antMatchers("/health").permitAll()
+//            .antMatchers("/api/whoami").permitAll()
+//            .anyRequest().authenticated()
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(webAuthenticationEntryPoint)
