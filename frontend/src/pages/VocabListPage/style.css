@@ -1,0 +1,12 @@
+.custom-chart-container {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.btn {
+    width: 5rem;
+}
