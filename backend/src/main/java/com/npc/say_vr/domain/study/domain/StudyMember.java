@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +42,14 @@ public class StudyMember extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "study_id")
   private Study study;
+
+  @Builder
+  public StudyMember(Status status, StudyRole studyRole, User user,Study study) {
+    this.status = status;
+    this.studyRole = studyRole;
+    this.user = user;
+    this.study = study;
+  }
 
 
 }
