@@ -18,20 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/flashcards")
 public class FlashcardsApiController {
-    // 단어장 생성, 단어장 조회(검색) -1 내단어장 -2 공개단어장 -3 태그 내 -4 태그 공개
-    // 단어장 상세 조회
-    // 단어장 설정 수정
-    // 단어장 삭제
-    // 단어장에 단어 추가
-    // 단어장 단어 수정 -> 학습상태 수정? put patch
-
-    // 단어장 단어 삭제
-
-    @PostMapping("/deck")
-    public ResponseEntity<?> createDeck(@AuthenticationPrincipal Long userId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
 
     @PostMapping("/deck/fork/{deckId}")
     public ResponseEntity<?> createForkedDeck(@AuthenticationPrincipal Long userId,
@@ -40,7 +26,13 @@ public class FlashcardsApiController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @PostMapping("/deck")
+    public ResponseEntity<?> createDeck(@AuthenticationPrincipal Long userId) {
+        ResponseDto responseDto;
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
+    //TODO: 단어장 생성, 단어장 조회(검색) -1 내단어장 -2 공개단어장 -3 태그 내 -4 태그 공개
     //TODO: search, 검색 기반으로 전달받는 정보가 private/ public , search keyword?,
     @GetMapping("/search")
     public ResponseEntity<?> readDecksBySearch(@AuthenticationPrincipal Long userId) {
@@ -51,12 +43,6 @@ public class FlashcardsApiController {
     @GetMapping("/deck/{deckId}")
     public ResponseEntity<?> readOneDeck(@AuthenticationPrincipal Long userId,
         @PathVariable Long deckId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-    @GetMapping("/today")
-    public ResponseEntity<?> readTodaySentence() {
         ResponseDto responseDto;
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -89,40 +75,5 @@ public class FlashcardsApiController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    //TODO : 단어장 단어 추가
-    @PostMapping("/card/{deckId}")
-    public ResponseEntity<?> createCard(@AuthenticationPrincipal Long userId,
-        @PathVariable Long deckId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-    //TODO: 퀴즈에 쓰기 쉽게 답을 제외한 선택지 세개씩 뽑아서 주는 것
-    @PutMapping("/card/{wordcardId}")
-    public ResponseEntity<?> updateWordcard(@AuthenticationPrincipal Long userId,
-        @PathVariable Long wordcardId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-    @PatchMapping("/progress/{wordcardId}")
-    public ResponseEntity<?> updateCardProgress(@AuthenticationPrincipal Long userId,
-        @PathVariable Long wordcardId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/card/{wordcardId}")
-    public ResponseEntity<?> deleteCard(@AuthenticationPrincipal Long userId,
-        @PathVariable Long wordcardId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
-
-    @GetMapping("/tts/{wordcardId}")
-    public ResponseEntity<?> readWordVoice(@PathVariable Long wordcardId) {
-        ResponseDto responseDto;
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
 
 }
