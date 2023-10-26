@@ -62,24 +62,26 @@ function MyStudyAnalysisPage() {
   }, []); // Empty dependency array to run the effect only once
 
   return (
-    <div className="container">
+    <div className="study-analysis-container">
       <div className="row">
-        <div className="col-sm-5 custom-chart-container" style={{ marginRight: "30px" }}>
+        <div className="col-sm-5 cal-container" style={{ marginRight: "30px" }}>
           <h3>학습 달력📆</h3>
           <Calendar onChange={handleChange as CalendarProps["onChange"]} value={value} className="calendar" />
         </div>
         <div className="col-sm-6">
           <div className="row">
-            <div className="col-8 col-sm-12 custom-chart-container" style={{ marginBottom: "30px" }}>
+            <div className="col-8 col-sm-12 grade-container" style={{ marginBottom: "30px" }}>
               <h3>내 현재 등급</h3>
-              <img src={AverageScore} alt="badgeimg" className="scorebadge" />
-              <img src={ContextScore} alt="badgeimg" className="scorebadge" />
-              <img src={GrammarScore} alt="badgeimg" className="scorebadge" />
-              <img src={ProunciationScore} alt="badgeimg" className="scorebadge" />
+              <div className="row justify-content-center align-items-center">
+                <img src={AverageScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
+                <img src={ContextScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
+                <img src={GrammarScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
+                <img src={ProunciationScore} alt="badgeimg" className="scorebadge col" style={{ maxWidth: "120px" }}/>
+              </div>
             </div>
             <div className="col-4 col-sm-12 custom-chart-container" style={{ marginBottom: "20px" }}>
-            <h3>학습별 평균 등급 변동치</h3>
-            <ApexCharts options={chartOptions as any} series={chartOptions.series} type="line" height={250} />
+              <h3>학습별 평균 등급 변동치</h3>
+              <ApexCharts options={chartOptions as any} series={chartOptions.series} type="line" height={250} />
             </div>
           </div>
         </div>
