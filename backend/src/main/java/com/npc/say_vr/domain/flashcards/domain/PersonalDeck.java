@@ -1,6 +1,7 @@
 package com.npc.say_vr.domain.flashcards.domain;
 
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
+import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
 import com.npc.say_vr.domain.user.domain.User;
 import java.util.List;
 import javax.persistence.Column;
@@ -39,6 +40,9 @@ public class PersonalDeck {
 
     @Enumerated(value = EnumType.STRING)
     private FlashcardStatus status;
+
+    @Enumerated(value = EnumType.STRING)
+    private SavingProgressStatus savingProgressStatus;
 
     @OneToMany(mappedBy = "personalDeck")
     private List<DeckTag> tags;
