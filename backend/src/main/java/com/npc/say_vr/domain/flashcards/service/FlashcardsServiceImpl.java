@@ -44,14 +44,15 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Override
     public DeckDetailResponseDto createForkedDeck(Long userId, Long personalDeckId) {
         PersonalDeck deckToFork = personalDeckRepository.findById(personalDeckId).orElseThrow();
-
-//        FlashcardDeck forked = FlashcardDeck.builder().wordcards(deckToFork.getWordcards()).build();
-//        forked = flashcardsRepository.save(forked);
+        FlashcardDeck forkedWords = FlashcardDeck.builder()
+            .wordcards(deckToFork.getFlashcardDeck().getWordcards()).build();
+        forkedWords = flashcardsRepository.save(forkedWords);
         User user = userRepository.findById(userId).orElseThrow();
-//        PersonalDeck personalDeck = ForkRequestDto.forkDeck(user,forked );
-//        personalDeck = personalDeckRepository.save(personalDeck);
+        //TODO: 복사할 내용 뜯어오기
+        PersonalDeck personalDeck = PersonalDeck.builder().build();
+        personalDeck = personalDeckRepository.save(personalDeck);
 
-        return DeckDetailResponseDto.builder().personalDeck();
+        return DeckDetailResponseDto.builder().personalDeck(personalDeck).build();
     }
 
     @Override
