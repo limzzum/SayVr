@@ -1,15 +1,22 @@
+import { useState } from "react";
 import MyWordCard from "../../components/MyWordCard";
 import PlusBtn from "../../assets/Etc/PlusBtn.png";
-import "./style.css";
 import { Button } from "react-bootstrap";
+import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal";
+import "./style.css";
 
 function VocabListPage() {
+  const [showModal, setShowModal] = useState(false);
+
   const handlePlusButtonClick = () => {
-    alert("추가하기 버튼이 클릭 되었습니다.");
-    console.log("Plus 버튼이 클릭되었습니다!");
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
   return (
-    <div className="container">
+    <div className="container mt-5">
       <div className="vocab-list-container row card-row justify-content-center align-items-center ">
         <div className="row justify-content-center align-items-center">
           <div className="col-2">
@@ -21,14 +28,14 @@ function VocabListPage() {
             </Button>
           </div>
         </div>
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
+        <MyWordCard />
       </div>
       <div className="row card-row justify-content-center align-items-center custom-chart-container">
         <div className="row justify-content-center align-items-center">
@@ -57,8 +64,10 @@ function VocabListPage() {
           </div>
         </div>
       </div>
+      <div className="create-new-list-modal">
+        <CreateNewListModal showModal={showModal} handleClose={handleCloseModal} />
+      </div>
     </div>
   );
 }
-
 export default VocabListPage;
