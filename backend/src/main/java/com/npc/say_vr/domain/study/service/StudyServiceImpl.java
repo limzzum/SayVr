@@ -6,8 +6,9 @@ import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
+import com.npc.say_vr.domain.study.repository.JpaStudyMemberRepository;
+import com.npc.say_vr.domain.study.repository.JpaStudyRepository;
 import com.npc.say_vr.domain.study.repository.StudyMemberRepository;
-import com.npc.say_vr.domain.study.repository.StudyRepository;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.constant.Status;
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class StudyServiceImpl implements StudyService {
 
- private final StudyRepository studyRepository;
+ private final JpaStudyRepository studyRepository;
  private final StudyMemberRepository studyMemberRepository;
  private final UserRepository userRepository;
   @Transactional
@@ -52,9 +53,12 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public StudyDetailResponseDto readStudy(Long userId, Long studyId) {
 
-        //TODO : 예외처리
-        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId).orElseThrow();
-      log.info("studyMember에 조회 완료 : "+ studyMember.getId());
+        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+      if (studyMember == null) {
+//        Todo : 예외처리
+//        throw new StudyMemberNotFoundException("해당 스터디 멤버를 찾을 수 없습니다.");
+      }
+        log.info("studyMember에 조회 완료 : "+ studyMember.getId());
         StudyInfoDto studyInfoDto = createStudyInfoDto(studyMember.getStudy());
 
         return StudyDetailResponseDto.builder()
