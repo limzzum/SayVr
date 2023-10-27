@@ -36,7 +36,7 @@ public class StudyApiController {
   }
 
   // TODO : user 가져오기, 예외 처리
-  @GetMapping("/detail/{studyId}")
+  @GetMapping("/{studyId}")
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
     Long userId = 1L;
     ResponseDto responseDto = ResponseDto.builder()
