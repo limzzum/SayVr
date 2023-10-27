@@ -27,12 +27,19 @@ public class FlashcardDeck extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "flashcard_deck_id")
     private Long id;
-    private String name;
 
     @OneToMany(mappedBy = "flashcardDeck")
     private List<Wordcard> wordcards = new ArrayList<>();
 
     @OneToOne(mappedBy = "flashcardDeck")
     private PersonalDeck personalDeck;
+
+//    @Builder
+//    public FlashcardDeck() {
+//    }
+
+    public void updatePersonalDeck(PersonalDeck personalDeck) {
+        this.personalDeck = personalDeck;
+    }
 
 }
