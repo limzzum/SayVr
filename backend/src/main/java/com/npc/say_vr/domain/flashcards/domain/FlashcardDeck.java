@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.flashcards.domain;
 
+import com.npc.say_vr.domain.study.domain.StudyDeck;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
 import javax.persistence.Column;
@@ -29,5 +30,8 @@ public class FlashcardDeck extends BaseEntity {
 
     @OneToOne(mappedBy = "flashcardDeck")
     private PersonalDeck personalDeck;
+
+    @OneToOne(mappedBy = "flashcardDeck")
+    private StudyDeck studyDeck;
 
 }

@@ -1,8 +1,10 @@
 package com.npc.say_vr.domain.study.domain;
 
+import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.global.constant.Status;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,10 +16,14 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+@AllArgsConstructor
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,15 +51,12 @@ public class Study extends BaseEntity {
     private String rule;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private StudyStatus studyStatus;
 
-    @OneToMany(mappedBy = "study")
+    @OneToMany(mappedBy = "study" )
     private List<StudyMember> studyMembers;
 
     @OneToMany(mappedBy = "study")
     private List<WeeklySprint> weeklySprints;
-
-
-
 
 }
