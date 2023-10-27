@@ -34,10 +34,6 @@ public class FlashcardDeck extends BaseEntity {
     @OneToOne(mappedBy = "flashcardDeck")
     private PersonalDeck personalDeck;
 
-//    @Builder
-//    public FlashcardDeck() {
-//    }
-
     public void updatePersonalDeck(PersonalDeck personalDeck) {
         this.personalDeck = personalDeck;
     }
