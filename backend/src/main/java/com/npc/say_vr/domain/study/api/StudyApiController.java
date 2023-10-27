@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.study.api;
 
+import com.npc.say_vr.domain.study.constant.StudyResponseMessage;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.service.StudyService;
 import com.npc.say_vr.global.dto.ResponseDto;
@@ -27,9 +28,9 @@ public class StudyApiController {
   public ResponseEntity<?> createStudy(@RequestBody CreateStudyRequestDto createStudyRequestDto) {
     Long userId = 1L;
     ResponseDto responseDto = ResponseDto.builder()
-            .message("스터디 생성 완료")
+            .message(StudyResponseMessage.STUDY_CREATE_SUCCESS.getMessage())
             .data(studyService.createStudy(userId,createStudyRequestDto))
-            .httpStatus(HttpStatus.CREATED)
+            .httpStatus(StudyResponseMessage.STUDY_CREATE_SUCCESS.getHttpStatus())
             .build();
 
     return ResponseEntity.ok(responseDto);
@@ -40,9 +41,9 @@ public class StudyApiController {
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
     Long userId = 1L;
     ResponseDto responseDto = ResponseDto.builder()
-            .message("스터디 상세보기 완료")
+            .message(StudyResponseMessage.STUDY_READ_SUCCESS.getMessage())
             .data(studyService.readStudy(userId, studyId))
-            .httpStatus(HttpStatus.OK)
+            .httpStatus(StudyResponseMessage.STUDY_READ_SUCCESS.getHttpStatus())
             .build();
     return ResponseEntity.ok(responseDto);
   }
