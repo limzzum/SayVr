@@ -17,7 +17,7 @@ public class StudyInfoDto {
     private String rule;
     private StudyStatus studyStatus;
 
-//    @QueryProjection
+    @QueryProjection
     @Builder
     public StudyInfoDto(Long studyId, String name, int maxPeople, int currentPeople, String description, String rule,
                           StudyStatus studyStatus) {

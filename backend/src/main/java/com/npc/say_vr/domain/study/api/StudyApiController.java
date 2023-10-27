@@ -48,16 +48,26 @@ public class StudyApiController {
     return ResponseEntity.ok(responseDto);
   }
 
-  // TODO : 내 스터디 리스트 가져오기
-//  @GetMapping("/list/")
-//  public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
-//    Long userId = 1L;
+  // TODO : 전체 스터디 리스트 조회 API ( 페이지네이션 사용할 것 )
+//  @GetMapping("/list")
+//  public ResponseEntity<?> readStudyList() {
 //    ResponseDto responseDto = ResponseDto.builder()
 //            .message("스터디 상세보기 완료")
 //            .data(studyService.readStudy(userId, studyId))
 //            .build();
 //    return ResponseEntity.ok(responseDto);
 //  }
+
+  @GetMapping("/mine")
+  public ResponseEntity<?> readStudyMineList() {
+    Long userId = 1L;
+    ResponseDto responseDto = ResponseDto.builder()
+//        .message(STUDY_READ_SUCCESS.getMessage())
+//        .data(studyService.readStudy(userId, studyId))
+//        .httpStatus(STUDY_READ_SUCCESS.getHttpStatus())
+        .build();
+    return ResponseEntity.ok(responseDto);
+  }
 
 
 }

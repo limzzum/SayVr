@@ -6,6 +6,7 @@ import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
+import com.npc.say_vr.domain.study.dto.responseDto.StudyMineListResponseDto;
 import com.npc.say_vr.domain.study.repository.JpaStudyMemberRepository;
 import com.npc.say_vr.domain.study.repository.JpaStudyRepository;
 import com.npc.say_vr.domain.study.repository.StudyMemberRepository;
@@ -52,8 +53,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Override
     public StudyDetailResponseDto readStudy(Long userId, Long studyId) {
-
-        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+    StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
       if (studyMember == null) {
 //        Todo : 예외처리
 //        throw new StudyMemberNotFoundException("해당 스터디 멤버를 찾을 수 없습니다.");
@@ -68,7 +68,13 @@ public class StudyServiceImpl implements StudyService {
                 .build();
     }
 
-    public StudyInfoDto createStudyInfoDto(Study study) {
+  @Override
+  public StudyMineListResponseDto readStudyMineList(Long userId) {
+
+    return null;
+  }
+
+  public StudyInfoDto createStudyInfoDto(Study study) {
       return StudyInfoDto.builder()
               .studyId(study.getId())
               .name(study.getName())
