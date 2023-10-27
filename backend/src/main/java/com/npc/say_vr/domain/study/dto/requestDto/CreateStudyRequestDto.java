@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.study.dto.requestDto;
 
+import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.Study;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class CreateStudyRequestDto {
                 .currentPeople(1)
                 .description(description)
                 .rule(rule)
+                .studyStatus(StudyStatus.NOTFULL)
                 .build();
     }
 }
