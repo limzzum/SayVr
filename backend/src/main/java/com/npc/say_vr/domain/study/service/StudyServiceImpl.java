@@ -54,6 +54,7 @@ public class StudyServiceImpl implements StudyService {
 
         //TODO : 예외처리
         StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId).orElseThrow();
+      log.info("studyMember에 조회 완료 : "+ studyMember.getId());
         StudyInfoDto studyInfoDto = createStudyInfoDto(studyMember.getStudy());
 
         return StudyDetailResponseDto.builder()
