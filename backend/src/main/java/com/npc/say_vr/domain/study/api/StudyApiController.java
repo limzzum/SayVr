@@ -1,11 +1,11 @@
 package com.npc.say_vr.domain.study.api;
 
-import com.npc.say_vr.domain.study.constant.StudyResponseMessage;
+import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.STUDY_CREATE_SUCCESS;
+import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.STUDY_READ_SUCCESS;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.service.StudyService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +28,9 @@ public class StudyApiController {
   public ResponseEntity<?> createStudy(@RequestBody CreateStudyRequestDto createStudyRequestDto) {
     Long userId = 1L;
     ResponseDto responseDto = ResponseDto.builder()
-            .message(StudyResponseMessage.STUDY_CREATE_SUCCESS.getMessage())
+            .message(STUDY_CREATE_SUCCESS.getMessage())
             .data(studyService.createStudy(userId,createStudyRequestDto))
-            .httpStatus(StudyResponseMessage.STUDY_CREATE_SUCCESS.getHttpStatus())
+            .httpStatus(STUDY_CREATE_SUCCESS.getHttpStatus())
             .build();
 
     return ResponseEntity.ok(responseDto);
@@ -41,9 +41,9 @@ public class StudyApiController {
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
     Long userId = 1L;
     ResponseDto responseDto = ResponseDto.builder()
-            .message(StudyResponseMessage.STUDY_READ_SUCCESS.getMessage())
+            .message(STUDY_READ_SUCCESS.getMessage())
             .data(studyService.readStudy(userId, studyId))
-            .httpStatus(StudyResponseMessage.STUDY_READ_SUCCESS.getHttpStatus())
+            .httpStatus(STUDY_READ_SUCCESS.getHttpStatus())
             .build();
     return ResponseEntity.ok(responseDto);
   }
