@@ -36,7 +36,7 @@ public class StudyDeck {
   @JoinColumn(name = "study_id")
   private Study study;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "flashcards_id")
   private FlashcardDeck flashcardDeck;
 
