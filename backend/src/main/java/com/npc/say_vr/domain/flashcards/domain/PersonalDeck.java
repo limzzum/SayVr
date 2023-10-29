@@ -63,9 +63,26 @@ public class PersonalDeck {
         this.wordCount = count;
     }
 
-    public void updateForkCount(int count) {
-        this.forkCount = count;
+    public void updateForkCount() {
+        this.forkCount += 1;
     }
+
+    public void updateSavingProgress(SavingProgressStatus status) {
+        this.savingProgressStatus = status;
+    }
+
+    public void updateStatus(FlashcardStatus status) {
+        this.status = status;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateTags(List<DeckTag> tags) {
+        this.tags = tags;
+    }
+
 
     public void updateFlashcardDeck(FlashcardDeck deck) {
         this.flashcardDeck = deck;

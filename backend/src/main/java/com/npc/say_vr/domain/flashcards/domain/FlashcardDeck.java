@@ -42,4 +42,7 @@ public class FlashcardDeck extends BaseEntity {
         this.personalDeck = personalDeck;
     }
 
+    public void updateWords(List<Wordcard> words) {
+        this.wordcards = words;
+    }
 }
