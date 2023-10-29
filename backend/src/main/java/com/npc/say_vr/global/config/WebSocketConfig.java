@@ -1,22 +1,31 @@
 package com.npc.say_vr.global.config;
 
-import com.npc.say_vr.domain.game.api.SocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
-
-    private final SocketHandler socketHandler;
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setPathMatcher(new AntPathMatcher("."));
+        registry.setApplicationDestinationPrefixes("/pub");
 
-        registry.addHandler(socketHandler, "k9a501.p.ssafy.io/socket").setAllowedOrigins("*");
+        registry.enableStompBrokerRelay("/queue", "/topic");
     }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")
+            .setAllowedOrigins("*").withSockJS();
+    }
+
 }
+
