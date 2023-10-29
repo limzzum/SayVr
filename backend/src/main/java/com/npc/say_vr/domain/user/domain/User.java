@@ -48,9 +48,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<StudyMember> studyMembers;
 
-    @OneToMany(mappedBy = "user")
-    private List<ChecklistItem> checklistItemList;
-
     //TODO
 //    private String provider;
 //    private String providerId;
