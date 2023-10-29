@@ -12,12 +12,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Conversation extends BaseEntity {
 
@@ -31,7 +35,7 @@ public class Conversation extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "conversation")
-    private List<Talk> talkList;
+    private List<Message> messageList;
 
     private String review;
     private String situation;

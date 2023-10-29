@@ -1,19 +1,20 @@
 package com.npc.say_vr.domain.vr.service;
 
-import com.npc.say_vr.domain.vr.domain.Conversation;
-import com.npc.say_vr.domain.vr.domain.Talk;
-import java.util.List;
-import java.util.Optional;
+import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
+import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResponseDto;
+import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationListResponseDto;
+import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ProficiencyInfoResponseDto;
 
 public interface ConversationService {
 
-    Conversation createConversation(Long userId);
+    ProficiencyInfoResponseDto readProficiency(Long userId);
 
-    List<Conversation> readMyConversationList(Long userId);
+    ConversationInfoResponseDto createConversation(Long userId,
+        CreateConversationRequestDto createConversationRequestDto);
 
-    Optional<Conversation> readConversation(Long conversationId);
+    ConversationListResponseDto readMyConversationList(Long userId);
 
-    Talk create(Long userId);
+    ConversationInfoResponseDto readConversation(Long userId, Long conversationId);
 
 
 }
