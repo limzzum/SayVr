@@ -2,8 +2,11 @@ package com.npc.say_vr.domain.flashcards.dto;
 
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
+import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
 import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
+import com.npc.say_vr.domain.flashcards.domain.Word;
+import com.npc.say_vr.domain.flashcards.domain.Wordcard;
 import com.npc.say_vr.domain.user.domain.User;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -106,5 +109,32 @@ public class FlashcardsRequestDto {
 
         private SavingProgressStatus savingProgressStatus;
 
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CreateWordcardRequestDto {
+
+        private String kor;
+        private String eng;
+
+
+        public Wordcard createWordcard(FlashcardDeck flashcardDeck, Word word) {
+            return Wordcard.builder()
+                .flashcardDeck(flashcardDeck)
+                .status(WordcardStatus.UNCHECKED)
+                .word(word)
+                .build();
+        }
+
+
+        public Word createWord() {
+            return Word.builder()
+                .english(eng)
+                .korean(kor)
+                .build();
+        }
     }
 }
