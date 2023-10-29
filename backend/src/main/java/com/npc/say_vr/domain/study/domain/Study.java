@@ -67,4 +67,11 @@ public class Study extends BaseEntity {
         this.studyStatus = studyStatus;
     }
 
+    public void updateStudy(String name, int maxPeople, String description, String rule) {
+        this.name = name;
+        this.maxPeople = maxPeople;
+        this.description = description;
+        this.rule = rule;
+    }
+
 }

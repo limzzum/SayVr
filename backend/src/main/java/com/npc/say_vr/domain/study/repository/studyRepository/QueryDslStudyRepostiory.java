@@ -4,6 +4,8 @@ import static com.npc.say_vr.domain.study.domain.QStudy.study;
 import static com.npc.say_vr.domain.study.domain.QStudyMember.studyMember;
 
 import com.npc.say_vr.domain.study.constant.StudyStatus;
+import com.npc.say_vr.domain.study.domain.Study;
+import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
 import com.npc.say_vr.global.constant.Status;
 import com.querydsl.core.types.Projections;
@@ -33,5 +35,12 @@ public class QueryDslStudyRepostiory {
                         study.studyStatus.ne(StudyStatus.DELETE),
                         studyMember.status.eq(Status.ACTIVE))
                 .fetch();
+    }
+
+    public Study findById(Long studyId) {
+        return queryFactory.selectFrom(study)
+                .leftJoin(study.studyMembers, studyMember).fetchJoin()
+                .where(study.id.eq(studyId), studyMember.status.eq(Status.ACTIVE))
+                .fetchOne();
     }
 }

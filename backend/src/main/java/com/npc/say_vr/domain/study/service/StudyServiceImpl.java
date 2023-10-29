@@ -5,6 +5,7 @@ import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
+import com.npc.say_vr.domain.study.dto.requestDto.UpdateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyMineListResponseDto;
@@ -157,6 +158,41 @@ public class StudyServiceImpl implements StudyService {
             studyMember.getStudy().updateStudyStatus(StudyStatus.NOTFULL);
             log.info("study 상태 notfull 변경");
         }
+    }
+
+    @Transactional
+    @Override
+    public StudyDetailResponseDto updateStudy(Long userId, Long studyId, UpdateStudyRequestDto updateStudyRequestDto) {
+      StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+      if(studyMember.getStudyRole().equals(StudyRole.MEMBER)) {
+          // TODO :예외 처리
+          log.info("방장이 아니라 수정 불가");
+          return null;
+      }
+
+      if(updateStudyRequestDto.getMaxPeople() < studyMember.getStudy().getCurrentPeople()) {
+          // TODO : 예외처리
+          log.info("현재 인원보다 설정한 인원이 작아서 수정 불가");
+          return null;
+      }
+
+      studyMember.getStudy().updateStudy(updateStudyRequestDto.getName(), updateStudyRequestDto.getMaxPeople(),
+              updateStudyRequestDto.getDescription(), updateStudyRequestDto.getRule());
+
+      if(studyMember.getStudy().getMaxPeople() == studyMember.getStudy().getCurrentPeople()) {
+          studyMember.getStudy().updateStudyStatus(StudyStatus.FULL);
+      } else if(studyMember.getStudy().getMaxPeople() > studyMember.getStudy().getCurrentPeople()) {
+          studyMember.getStudy().updateStudyStatus(StudyStatus.NOTFULL);
+      }
+
+      log.info("study 수정 완료");
+      StudyInfoDto studyInfoDto = createStudyInfoDto(studyMember.getStudy());
+
+      return StudyDetailResponseDto.builder()
+                .studyInfoDto(studyInfoDto)
+                .memberId(studyMember.getId())
+                .studyRole(studyMember.getStudyRole())
+                .build();
     }
 
     public StudyInfoDto createStudyInfoDto(Study study) {

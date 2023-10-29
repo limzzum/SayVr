@@ -8,6 +8,7 @@ import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.global.constant.Status;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -34,4 +35,6 @@ public class QueryDslStudyMemberRepository {
             .orderBy(studyMember.createdAt.asc())
             .fetchFirst();
   }
+
+
 }

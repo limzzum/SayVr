@@ -11,4 +11,6 @@ public interface StudyRepository {
     List<StudyInfoDto> findByUserId(Long userId);
 
     Optional<Study> findById(Long studyId);
+
+    Study findStudyAndStudyMembersById(Long studyId);
 }
