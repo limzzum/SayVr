@@ -13,6 +13,7 @@ public enum FlashcardsResponseMessage {
     SUCCESS_READ_TODAY_SENTENCE(HttpStatus.OK, "오늘의 문장 조회 성공"),
     SUCCESS_READ_DECK_DETAIL(HttpStatus.OK, "단어장 조회 성공"),
     SUCCESS_READ_DECK_SEARCH(HttpStatus.OK, "단어장 검색 성공"),
+    SUCCESS_READ_WORD(HttpStatus.OK, "단어 조회 성공"),
     SUCCESS_UPDATE_DECK_SAVING(HttpStatus.OK, "단어장 복습모드 변경 성공"),
     SUCCESS_UPDATE_DECK_RESET(HttpStatus.OK, "단어장 복습모드 초기화 성공"),
     SUCCESS_UPDATE_DECK(HttpStatus.OK, "단어장 수정 성공"),

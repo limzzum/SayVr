@@ -1,9 +1,16 @@
 package com.npc.say_vr.domain.flashcards.api;
 
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_DECK;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_FORK;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_DELETE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_DECK_DETAIL;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK_RESET;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK_SAVING;
 
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateFlashcardsRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckSettingsUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.service.FlashcardsService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +38,20 @@ public class FlashcardsApiController {
     CreateFlashcardsRequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_CREATE_DECK.getMessage())
+            .httpStatus(SUCCESS_CREATE_DECK.getHttpStatus())
             .data(flashcardsService.createPersonalDeck(userId, requestDto))
             .build();
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/deck/fork/{deckId}")
+    @PostMapping("/deck/fork/{personalDeckId}")
     public ResponseEntity<?> createForkedDeck(@AuthenticationPrincipal Long userId,
-        @PathVariable Long deckId) {
-        ResponseDto responseDto = ResponseDto.builder().build();
+        @PathVariable Long personalDeckId) {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_CREATE_DECK.getMessage())
+            .httpStatus(SUCCESS_CREATE_FORK.getHttpStatus())
+            .data(flashcardsService.createForkedDeck(userId, personalDeckId))
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
@@ -56,6 +68,7 @@ public class FlashcardsApiController {
         @PathVariable Long deckId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_READ_DECK_DETAIL.getMessage())
+            .httpStatus(SUCCESS_READ_DECK_DETAIL.getHttpStatus())
             .data(flashcardsService.readDeckDetail(userId, deckId))
             .build();
         return ResponseEntity.ok(responseDto);
@@ -63,29 +76,45 @@ public class FlashcardsApiController {
 
     @PatchMapping("/saving/{deckId}")
     public ResponseEntity<?> updateDeckSavingStatus(@AuthenticationPrincipal Long userId,
-        @PathVariable Long deckId) {
-        ResponseDto responseDto = ResponseDto.builder().build();
+        @PathVariable Long deckId, @RequestBody DeckUpdateRequestDto requestDto) {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_UPDATE_DECK_SAVING.getMessage())
+            .httpStatus(SUCCESS_UPDATE_DECK_SAVING.getHttpStatus())
+            .data(flashcardsService.updateSavingProgressOption(userId, deckId, requestDto))
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
     @PatchMapping("/reset-progress/{deckId}")
     public ResponseEntity<?> updateDeckSavingProgress(@AuthenticationPrincipal Long userId,
-        @PathVariable Long deckId) {
-        ResponseDto responseDto = ResponseDto.builder().build();
+        @PathVariable Long deckId, @RequestBody DeckUpdateRequestDto requestDto) {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_UPDATE_DECK_RESET.getMessage())
+            .httpStatus(SUCCESS_UPDATE_DECK_RESET.getHttpStatus())
+            .data(flashcardsService.updateResetProgress(userId, deckId, requestDto))
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/deck/{deckId}")
     public ResponseEntity<?> updateDeck(@AuthenticationPrincipal Long userId,
-        @PathVariable Long deckId) {
-        ResponseDto responseDto = ResponseDto.builder().build();
+        @PathVariable Long deckId, @RequestBody DeckSettingsUpdateRequestDto requestDto) {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_UPDATE_DECK.getMessage())
+            .httpStatus(SUCCESS_UPDATE_DECK.getHttpStatus())
+            .data(flashcardsService.updateDeck(userId, deckId, requestDto))
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/deck/{deckId}")
     public ResponseEntity<?> deleteDeck(@AuthenticationPrincipal Long userId,
         @PathVariable Long deckId) {
-        ResponseDto responseDto = ResponseDto.builder().build();
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_DELETE_DECK.getMessage())
+            .httpStatus(SUCCESS_DELETE_DECK.getHttpStatus())
+            .data(flashcardsService.deleteDeck(userId, deckId))
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 

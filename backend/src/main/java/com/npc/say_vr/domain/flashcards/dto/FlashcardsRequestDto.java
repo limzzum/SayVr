@@ -1,6 +1,7 @@
 package com.npc.say_vr.domain.flashcards.dto;
 
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
+import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
 import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
 import com.npc.say_vr.domain.user.domain.User;
@@ -68,4 +69,42 @@ public class FlashcardsRequestDto {
         }
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeckUpdateRequestDto {
+
+        private String savingProgressStatus;
+
+        public SavingProgressStatus toEnum() {
+            return SavingProgressStatus.valueOf(savingProgressStatus);
+        }
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeckSettingsUpdateRequestDto {
+
+        private String name;
+        private String flashcardStatus;
+
+        public FlashcardStatus toEnum() {
+            return FlashcardStatus.valueOf(flashcardStatus);
+        }
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WordUpdateRequestDto {
+
+        private SavingProgressStatus savingProgressStatus;
+
+    }
 }

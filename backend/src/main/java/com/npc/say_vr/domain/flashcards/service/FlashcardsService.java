@@ -1,8 +1,10 @@
 package com.npc.say_vr.domain.flashcards.service;
 
-import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateFlashcardsRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckSettingsUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.SearchRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckDetailResponseDto;
 import com.npc.say_vr.global.dto.ResponseDto;
 
@@ -17,13 +19,15 @@ public interface FlashcardsService {
 
     DeckDetailResponseDto readDeckDetail(Long userId, Long deckId);
 
-    ResponseDto updateSavingProgressOption(Long userId, Long deckId,
-        FlashcardsRequestDto requestDto);
+    DeckDetailResponseDto updateSavingProgressOption(Long userId, Long deckId,
+        DeckUpdateRequestDto requestDto);
 
-    DeckDetailResponseDto updateResetProgress(Long userId, Long deckId);
+    DeckDetailResponseDto updateResetProgress(Long userId, Long deckId,
+        DeckUpdateRequestDto requestDto);
 
-    DeckDetailResponseDto updateDeck(Long userId, Long deckId, FlashcardsRequestDto requestDto);
+    DeckDetailResponseDto updateDeck(Long userId, Long deckId,
+        DeckSettingsUpdateRequestDto requestDto);
 
-    ResponseDto deleteDeck(Long userId, Long deckId);
+    FlashcardsResponseDto deleteDeck(Long userId, Long deckId);
 
 }
