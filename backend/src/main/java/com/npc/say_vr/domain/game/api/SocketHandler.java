@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -14,29 +13,23 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Slf4j
 public class SocketHandler extends TextWebSocketHandler {
 
-    private static List<WebSocketSession> list = new ArrayList<>();
+    private static List<WebSocketSession> sessions = new ArrayList<>();
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message)
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        Long userId = Long.valueOf(session.getPrincipal().getName());
+        System.out.println("userId : "+userId);
+        log.info("연결됨");
+        sessions.add(session);
+        System.out.println(session.toString());
+
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
         throws Exception {
-        String payload = message.getPayload();
-        log.info("payload : " + payload);
 
-        for (WebSocketSession sess : list) {
-            sess.sendMessage(message);
-        }
     }
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        list.add(session);
-        log.info(session + " 클라이언트 접속");
-    }
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        log.info(session + " 클라이언트 접속 해제");
-        list.remove(session);
-    }
 }
 
