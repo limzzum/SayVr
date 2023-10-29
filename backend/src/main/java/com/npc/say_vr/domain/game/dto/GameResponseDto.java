@@ -16,4 +16,15 @@ public class GameResponseDto {
         }
     }
 
+    @Getter
+    public static class GameWaitingResponseDto {
+
+        private Long gameId;
+
+        @Builder
+        public GameWaitingResponseDto(Long gameId) {
+            this.gameId = gameId;
+        }
+    }
+
 }
