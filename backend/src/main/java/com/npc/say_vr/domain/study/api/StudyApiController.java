@@ -2,12 +2,17 @@ package com.npc.say_vr.domain.study.api;
 
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.STUDY_CREATE_SUCCESS;
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.STUDY_READ_SUCCESS;
+import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.MINESTUDYS_READ_SUCCESS;
+import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.STUDY_JOIN_SUCCESS;
+import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.STUDYMEMBER_DELETE_SUCCESS;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
+import com.npc.say_vr.domain.study.dto.requestDto.JoinStudyRequestDto;
 import com.npc.say_vr.domain.study.service.StudyService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +44,7 @@ public class StudyApiController {
   // TODO : user 가져오기, 예외 처리
   @GetMapping("/{studyId}")
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
-    Long userId = 1L;
+    Long userId = 2L;
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_READ_SUCCESS.getMessage())
             .data(studyService.readStudy(userId, studyId))
@@ -60,14 +65,37 @@ public class StudyApiController {
 
   @GetMapping("/mine")
   public ResponseEntity<?> readStudyMineList() {
-    Long userId = 1L;
+    Long userId = 2L;
     ResponseDto responseDto = ResponseDto.builder()
-//        .message(STUDY_READ_SUCCESS.getMessage())
-//        .data(studyService.readStudy(userId, studyId))
-//        .httpStatus(STUDY_READ_SUCCESS.getHttpStatus())
+        .message(MINESTUDYS_READ_SUCCESS.getMessage())
+        .data(studyService.readStudyMineList(userId))
+        .httpStatus(MINESTUDYS_READ_SUCCESS.getHttpStatus())
         .build();
     return ResponseEntity.ok(responseDto);
   }
 
+  @PostMapping("/join")
+  public ResponseEntity<?> joinStudy(@RequestBody JoinStudyRequestDto joinStudyRequestDto) {
+    Long userId = 2L;
+    ResponseDto responseDto = ResponseDto.builder()
+            .message(STUDY_JOIN_SUCCESS.getMessage())
+            .data(studyService.joinStudy(userId, joinStudyRequestDto.getStudyId()))
+            .httpStatus(STUDY_JOIN_SUCCESS.getHttpStatus())
+            .build();
+
+    return ResponseEntity.ok(responseDto);
+  }
+
+  @DeleteMapping("/quit/{studyId}")
+  public ResponseEntity<?> deleteStudyMember(@PathVariable Long studyId) {
+    Long userId = 2L;
+    studyService.deleteStudyMember(userId,studyId);
+    ResponseDto responseDto = ResponseDto.builder()
+            .message(STUDYMEMBER_DELETE_SUCCESS.getMessage())
+            .httpStatus(STUDYMEMBER_DELETE_SUCCESS.getHttpStatus())
+            .build();
+
+    return ResponseEntity.ok(responseDto);
+  }
 
 }

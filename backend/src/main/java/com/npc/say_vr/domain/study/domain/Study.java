@@ -59,4 +59,12 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study")
     private List<WeeklySprint> weeklySprints;
 
+    public void updateCuurentPeople(int currentPeople) {
+        this.currentPeople = currentPeople;
+    }
+
+    public void updateStudyStatus(StudyStatus studyStatus) {
+        this.studyStatus = studyStatus;
+    }
+
 }

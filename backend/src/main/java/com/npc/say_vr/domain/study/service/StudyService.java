@@ -10,5 +10,9 @@ public interface StudyService {
 
   StudyMineListResponseDto readStudyMineList(Long userId);
 
+  StudyDetailResponseDto joinStudy(Long userId, Long studyId);
+
+  void deleteStudyMember(Long userId, Long studyId);
+
 
 }

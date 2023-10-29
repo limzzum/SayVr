@@ -1,7 +1,6 @@
-package com.npc.say_vr.domain.study.repository;
+package com.npc.say_vr.domain.study.repository.studyMemberRepository;
 
 import com.npc.say_vr.domain.study.domain.StudyMember;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +19,11 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepository{
   @Override
   public StudyMember save(StudyMember studyMember) {
     return jpaStudyMemberRepository.save(studyMember);
+  }
+
+  @Override
+  public StudyMember findEarliestJoinedMember(Long studyId) {
+    return queryDslStudyMemberRepository.findEarliestJoinedMember(studyId);
   }
 
 

@@ -51,5 +51,14 @@ public class StudyMember extends BaseEntity {
     this.study = study;
   }
 
+  public void updateStatus(Status status) {
+    this.status = status;
+  }
+
+  public void updateStudyRole(StudyRole studyRole) {
+    this.studyRole = studyRole;
+  }
+
+
 
 }

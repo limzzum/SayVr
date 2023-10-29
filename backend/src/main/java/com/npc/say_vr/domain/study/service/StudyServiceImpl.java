@@ -1,18 +1,19 @@
 package com.npc.say_vr.domain.study.service;
 
 import com.npc.say_vr.domain.study.constant.StudyRole;
+import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyMineListResponseDto;
-import com.npc.say_vr.domain.study.repository.JpaStudyMemberRepository;
-import com.npc.say_vr.domain.study.repository.JpaStudyRepository;
-import com.npc.say_vr.domain.study.repository.StudyMemberRepository;
+import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
+import com.npc.say_vr.domain.study.repository.studyRepository.StudyRepository;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.constant.Status;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class StudyServiceImpl implements StudyService {
 
- private final JpaStudyRepository studyRepository;
+ private final StudyRepository studyRepository;
  private final StudyMemberRepository studyMemberRepository;
  private final UserRepository userRepository;
   @Transactional
@@ -56,6 +57,7 @@ public class StudyServiceImpl implements StudyService {
     StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
       if (studyMember == null) {
 //        Todo : 예외처리
+          return null;
 //        throw new StudyMemberNotFoundException("해당 스터디 멤버를 찾을 수 없습니다.");
       }
         log.info("studyMember에 조회 완료 : "+ studyMember.getId());
@@ -70,11 +72,94 @@ public class StudyServiceImpl implements StudyService {
 
   @Override
   public StudyMineListResponseDto readStudyMineList(Long userId) {
+      List<StudyInfoDto> studyInfoDtoList = studyRepository.findByUserId(userId);
 
-    return null;
+      if(studyInfoDtoList.isEmpty() || studyInfoDtoList == null) {
+          // TODO : 예외처리
+          log.info("내 스터디 리스트 없음");
+      }
+      log.info("내 스터디 조회 완료");
+      StudyMineListResponseDto studyMineListResponseDto = StudyMineListResponseDto.builder()
+              .studyInfoDtoList(studyInfoDtoList)
+              .build();
+
+    return studyMineListResponseDto;
   }
 
-  public StudyInfoDto createStudyInfoDto(Study study) {
+    @Transactional
+    @Override
+    public StudyDetailResponseDto joinStudy(Long userId, Long studyId) {
+        // TODO : user,study 예외처리
+        User user = userRepository.findById(userId).orElseThrow();
+        Study study = studyRepository.findById(studyId).orElseThrow();
+
+        StudyMember existingMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+
+
+        if(existingMember != null && existingMember.getStatus().equals(Status.ACTIVE)) {
+            // TODO : 존재하는 멤버 예외처리
+            return null;
+        }
+
+        if(study.getStudyStatus().equals(StudyStatus.FULL)) {
+            // TDOO : 예외처리
+            return null;
+        }
+
+        StudyMember studyMember;
+
+        if(existingMember != null && existingMember.getStatus().equals(Status.DELETE)) {
+            studyMember = existingMember;
+            studyMember.updateStatus(Status.ACTIVE);
+            log.info("사용자를 studyMember status 상태 active로 업뎃: "+ studyMember.getId());
+        } else {
+            studyMember = StudyMember.builder()
+                    .status(Status.ACTIVE)
+                    .studyRole(StudyRole.MEMBER)
+                    .user(user)
+                    .study(study)
+                    .build();
+            studyMemberRepository.save(studyMember);
+            log.info("사용자를 studyMember에 추가 : "+ studyMember.getId());
+        }
+        study.updateCuurentPeople(study.getCurrentPeople()+1);
+        if(study.getCurrentPeople() == study.getMaxPeople()) {
+            study.updateStudyStatus(StudyStatus.FULL);
+        }
+        StudyInfoDto studyInfoDto = createStudyInfoDto(study);
+
+        return StudyDetailResponseDto.builder()
+                .studyInfoDto(studyInfoDto)
+                .memberId(studyMember.getId())
+                .studyRole(studyMember.getStudyRole())
+                .build();
+  }
+
+    @Transactional
+    @Override
+    public void deleteStudyMember(Long userId, Long studyId) {
+        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+        log.info("studymember 조회 : "+ studyMember.getId());
+        studyMember.updateStatus(Status.DELETE);
+        if(studyMember.getStudyRole().equals(StudyRole.LEADER)) {
+            if(studyMember.getStudy().getCurrentPeople() == 1) {
+                studyMember.getStudy().updateStudyStatus(StudyStatus.DELETE);
+                log.info("study 상태 delete 변경");
+            }else {
+                StudyMember nextLeaderMember = studyMemberRepository.findEarliestJoinedMember(studyId);
+                nextLeaderMember.updateStudyRole(StudyRole.LEADER);
+                log.info("study leader 변경");
+            }
+        }
+        studyMember.getStudy().updateCuurentPeople(studyMember.getStudy().getCurrentPeople()-1);
+
+        if(studyMember.getStudy().getStudyStatus().equals(StudyStatus.FULL)) {
+            studyMember.getStudy().updateStudyStatus(StudyStatus.NOTFULL);
+            log.info("study 상태 notfull 변경");
+        }
+    }
+
+    public StudyInfoDto createStudyInfoDto(Study study) {
       return StudyInfoDto.builder()
               .studyId(study.getId())
               .name(study.getName())
