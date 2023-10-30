@@ -2,7 +2,6 @@ package com.npc.say_vr.domain.flashcards.domain;
 
 import com.npc.say_vr.domain.study.domain.StudyDeck;
 import com.npc.say_vr.global.entity.BaseEntity;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +29,8 @@ public class FlashcardDeck extends BaseEntity {
     private Long id;
 
     @OneToMany(mappedBy = "flashcardDeck")
-    private List<Wordcard> wordcards = new ArrayList<>();
+    private List<Wordcard> wordcards;
+//    = new ArrayList<>();
 
     @OneToOne(mappedBy = "flashcardDeck")
     private PersonalDeck personalDeck;

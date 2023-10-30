@@ -62,14 +62,17 @@ public class FlashcardsRequestDto {
     @AllArgsConstructor
     public static class ForkRequestDto {
 
-        public PersonalDeck forkDeck(User user, FlashcardDeck deck) {
-            return PersonalDeck.builder()
-//                .user(user)
-//                .name()
-//                .flashcardDeck(flashcardDeck)
-//                .status(FlashcardStatus.valueOf(privacyStatus))
-                .build();
-        }
+        private Long userId;
+        private Long personalDeckId;
+
+//        public PersonalDeck forkDeck(User user, FlashcardDeck deck) {
+//            return PersonalDeck.builder()
+////                .user(user)
+////                .name()
+////                .flashcardDeck(flashcardDeck)
+////                .status(FlashcardStatus.valueOf(privacyStatus))
+//                .build();
+//        }
     }
 
     @Data

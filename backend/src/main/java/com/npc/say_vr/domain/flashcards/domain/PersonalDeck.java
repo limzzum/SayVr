@@ -3,7 +3,6 @@ package com.npc.say_vr.domain.flashcards.domain;
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
 import com.npc.say_vr.domain.user.domain.User;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,7 +52,8 @@ public class PersonalDeck {
     private SavingProgressStatus savingProgressStatus;
 
     @OneToMany(mappedBy = "personalDeck")
-    private List<DeckTag> tags = new ArrayList<>();
+    private List<DeckTag> tags;
+//    = new ArrayList<>();
 
     private Integer forkCount;
 
