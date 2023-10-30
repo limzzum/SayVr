@@ -47,6 +47,10 @@ public class GameServiceImpl implements GameService {
             PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
+            String quizAnswer = createQuizAnswer();
+            String quizQuestion = getQuizQuestion(quizAnswer);
+            gameStatusDto.setQuestion(quizQuestion);
+            gameStatusDto.setAnswer(quizAnswer);
             redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto, 30 * 1000 * 60);
             return waitingGameDto.getGameId();
         }
@@ -60,5 +64,25 @@ public class GameServiceImpl implements GameService {
         GameStatusDto gameStatusDto = GameStatusDto.builder().gameId(gameId).playerA(playerDto).build();
         redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto, 30 * 1000 * 60);
         return gameId;
+    }
+
+    @Override
+    public boolean checkQuizAnswer(Long gameId, String answer) {
+        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        return gameStatusDto.getAnswer().equals(answer);
+    }
+
+    @Override
+    public String createQuizAnswer() {
+        //TODO : 단어 db에서 정답 가져오기
+        String answer = "answer";
+        return answer;
+    }
+
+    @Override
+    public String getQuizQuestion(String answer) {
+        // TODO : 파파고 api 이용해 한글로 번역 => 질문만들기
+        String question = "질문";
+        return question;
     }
 }
