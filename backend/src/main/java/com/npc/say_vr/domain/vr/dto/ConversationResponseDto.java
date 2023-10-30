@@ -5,6 +5,7 @@ import com.npc.say_vr.domain.vr.domain.Message;
 import com.npc.say_vr.domain.vr.domain.Score;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -70,11 +71,12 @@ public class ConversationResponseDto {
     public static class ConversationInfoResponseDto {
 
         private LocalDateTime createdDate;
-        private Conversation conversation;
+        private ConversationDto conversation;
 //        private List<Message> messages;
 
         @Builder
-        public ConversationInfoResponseDto(Conversation conversation, LocalDateTime createdDate) {
+        public ConversationInfoResponseDto(ConversationDto conversation,
+            LocalDateTime createdDate) {
             this.conversation = conversation;
             this.createdDate = createdDate;
         }
@@ -124,15 +126,20 @@ public class ConversationResponseDto {
         private Integer conversationGrammar;
         private Integer conversationContext;
         private Integer conversationPronunciation;
+        private LocalDateTime createdAt;
 
-        public ConversationDto(Conversation conversation, List<MessageDto> messageDtoList) {
+        @Builder
+        public ConversationDto(Conversation conversation, List<Message> messageList) {
             this.id = conversation.getId();
+            this.createdAt = conversation.getCreatedAt();
             this.conversationContext = conversation.getConversationContext();
             this.conversationPronunciation = conversation.getConversationPronunciation();
             this.conversationGrammar = conversation.getConversationGrammar();
             this.situation = conversation.getSituation();
             this.review = conversation.getReview();
-            this.messageList = messageDtoList;
+            this.messageList = messageList.stream()
+                .map(MessageDto::new)
+                .collect(Collectors.toList());
 
         }
 

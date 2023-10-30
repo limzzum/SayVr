@@ -7,7 +7,6 @@ import com.npc.say_vr.domain.vr.domain.Score;
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDto;
-import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationListResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ProficiencyInfoResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ScoreDto;
@@ -79,7 +78,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Transactional
     @Override
-    public ConversationInfoResponseDto createConversation(Long userId,
+    public ConversationDto createConversation(Long userId,
         CreateConversationRequestDto createConversationRequestDto) {
         User user = userRepository.findById(userId).orElseThrow();
         //TODO: how to rate the proficiency? and when to add them to the entity
@@ -96,8 +95,7 @@ public class ConversationServiceImpl implements ConversationService {
 
         calculateAndSaveAverageScoresForUser(userId);
 
-        return ConversationInfoResponseDto.builder()
-            .createdDate(conversation.getCreatedAt())
+        return ConversationDto.builder()
             .conversation(conversation)
             .build();
         //TODO: check if the returned dto contains ID
@@ -109,20 +107,19 @@ public class ConversationServiceImpl implements ConversationService {
         List<Conversation> conversationList = conversationRepository.findByUser_Id(userId);
         //conversation.getMessageList to List<MessageDto>
         List<ConversationDto> conversationDtoList = conversationList.stream()
-            .map(ConversationResponseDto.ConversationDto::new)
-            .collect(Collectors.toList());
+            .map(conversation -> new ConversationDto(conversation, conversation.getMessageList()))
+            .toList();
         return ConversationListResponseDto.builder()
-            .conversationList()
+            .conversationList(conversationDtoList)
             .build();
     }
     //유저 확인을 또 해줄 필요가 있을까??Long userId,
 
     @Override
-    public ConversationInfoResponseDto readConversation(Long userId, Long conversationId) {
+    public ConversationDto readConversation(Long userId, Long conversationId) {
         Conversation conversation = conversationRepository.findById(conversationId).orElseThrow();
-        return ConversationInfoResponseDto.builder()
+        return ConversationDto.builder()
             .conversation(conversation)
-            .createdDate(conversation.getCreatedAt())
             .build();
     }
 
