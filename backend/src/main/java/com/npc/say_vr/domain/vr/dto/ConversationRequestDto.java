@@ -15,7 +15,7 @@ public class ConversationRequestDto {
     @AllArgsConstructor
     public static class CreateConversationRequestDto {
 
-        private Long userId;
+        //        private Long userId;
         private List<Message> messages;
 
 

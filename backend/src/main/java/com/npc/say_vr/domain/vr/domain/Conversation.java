@@ -37,14 +37,17 @@ public class Conversation extends BaseEntity {
     @OneToMany(mappedBy = "conversation")
     private List<Message> messageList;
 
+//    @OneToOne(fetch = FetchType.LAZY, mappedBy = "conversation")
+//    private Score score;
+
     private String review;
     private String situation;
 
     @Range(min = 0, max = 100)
-    private Integer averageGrammar;
+    private Integer conversationGrammar;
     @Range(min = 0, max = 100)
-    private Integer averageContext;
+    private Integer conversationContext;
     @Range(min = 0, max = 100)
-    private Integer averagePronunciation;
+    private Integer conversationPronunciation;
 
 }

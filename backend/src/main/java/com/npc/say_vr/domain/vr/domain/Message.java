@@ -28,7 +28,7 @@ public class Message extends BaseEntity {
     private Conversation conversation;
 
     //TODO: confirm
-    private String role;// system or user
+    private String role;// system or user or assistant
     private String content; // 대사
 
     @Range(min = 0, max = 100)
