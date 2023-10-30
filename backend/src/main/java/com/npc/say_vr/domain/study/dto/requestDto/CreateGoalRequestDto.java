@@ -1,17 +1,11 @@
 package com.npc.say_vr.domain.study.dto.requestDto;
 
-import java.time.LocalDate;
-import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.npc.say_vr.domain.study.constant.OptionType;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@Builder
-@AllArgsConstructor
+@Getter
 public class CreateGoalRequestDto {
-    private LocalDate startDate;
-    private List<GoalRequestDto> goalDtoList;
+        private OptionType optionType;
+        private int count;
+        private String description;
 }

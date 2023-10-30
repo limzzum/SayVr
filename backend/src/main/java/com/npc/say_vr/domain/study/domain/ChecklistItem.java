@@ -61,4 +61,14 @@ public class ChecklistItem  extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "weeklySprint_id")
   private WeeklySprint weeklySprint;
+
+  public void updateChecklistItemAndDone(CheckListStatus checkListStatus,String description) {
+    this.checkListStatus = checkListStatus;
+    this.description = description;
+  }
+
+  public void updateChecklistItemAndOptional(CheckListStatus checkListStatus) {
+    this.checkListStatus = checkListStatus;
+  }
+
 }

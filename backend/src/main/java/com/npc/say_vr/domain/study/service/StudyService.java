@@ -18,4 +18,5 @@ public interface StudyService {
   StudyDetailResponseDto updateStudy(Long userId, Long studyId, UpdateStudyRequestDto updateStudyRequestDto);
 
 
+
 }

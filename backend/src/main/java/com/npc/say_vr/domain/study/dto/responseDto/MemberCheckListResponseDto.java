@@ -1,6 +1,7 @@
 package com.npc.say_vr.domain.study.dto.responseDto;
 
 import com.npc.say_vr.domain.study.dto.common.CheckListItemDto;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberCheckListResponseDto {
     private Long studyMemberId;
-    List<CheckListItemDto> checkListItemDtoList;
+    // TODO : 배열 초기화
+    List<CheckListItemDto> checkListItemDtoList = new ArrayList<>();
 }

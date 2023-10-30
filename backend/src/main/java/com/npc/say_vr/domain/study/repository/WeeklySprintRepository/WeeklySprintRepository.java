@@ -1,8 +1,13 @@
 package com.npc.say_vr.domain.study.repository.WeeklySprintRepository;
 
-import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-public interface WeeklySprintRepository extends JpaRepository<WeeklySprint, Long> {
+public interface WeeklySprintRepository {
+
+  WeeklySprint save(WeeklySprint weeklySprint);
+  Optional<WeeklySprint> findById(Long weeklySprintId);
+
+
+
 }

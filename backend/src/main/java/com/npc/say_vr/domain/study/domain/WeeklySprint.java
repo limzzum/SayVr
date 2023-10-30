@@ -42,6 +42,6 @@ public class WeeklySprint extends BaseEntity {
   private List<ChecklistItem> checklistItemList;
 
   @OneToMany(mappedBy = "weeklySprint")
-  private List<Goal> Goal;
+  private List<Goal> GoalList;
 
 }

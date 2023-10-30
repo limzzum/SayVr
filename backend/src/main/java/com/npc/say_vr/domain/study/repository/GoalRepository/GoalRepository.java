@@ -1,7 +1,14 @@
 package com.npc.say_vr.domain.study.repository.GoalRepository;
 
 import com.npc.say_vr.domain.study.domain.Goal;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.npc.say_vr.domain.study.dto.responseDto.GoalResponseDto;
+import java.util.List;
 
-public interface GoalRepository extends JpaRepository<Goal, Long> {
+public interface GoalRepository {
+  Goal save(Goal goal);
+
+  Goal findGoalAndCheckListItem(Long goadId);
+
+  List<GoalResponseDto> findGoalAndWeeklySprintId(Long weeklySprintId);
+
 }

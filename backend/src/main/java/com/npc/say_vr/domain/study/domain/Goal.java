@@ -55,4 +55,13 @@ public class Goal extends BaseEntity {
   @Size(max = 30)
   private String description;
 
+  public void updateGoal(int count) {
+    this.count = count;
+  }
+
+  public void updateETCGoal(int count, String description) {
+    this.count = count;
+    this.description = description;
+  }
+
 }

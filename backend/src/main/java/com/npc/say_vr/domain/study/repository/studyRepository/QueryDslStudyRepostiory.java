@@ -5,7 +5,7 @@ import static com.npc.say_vr.domain.study.domain.QStudyMember.studyMember;
 
 import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.Study;
-import com.npc.say_vr.domain.study.domain.StudyMember;
+import com.npc.say_vr.domain.study.dto.responseDto.QStudyInfoDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
 import com.npc.say_vr.global.constant.Status;
 import com.querydsl.core.types.Projections;
@@ -22,7 +22,7 @@ public class QueryDslStudyRepostiory {
 
     public List<StudyInfoDto> findByUserId(Long userId) {
         return queryFactory
-                .select(Projections.constructor(StudyInfoDto.class,
+                .select(new QStudyInfoDto(
                         studyMember.study.id,
                         studyMember.study.name,
                         studyMember.study.maxPeople,

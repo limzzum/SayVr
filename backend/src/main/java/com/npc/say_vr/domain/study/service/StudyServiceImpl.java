@@ -195,7 +195,8 @@ public class StudyServiceImpl implements StudyService {
                 .build();
     }
 
-    public StudyInfoDto createStudyInfoDto(Study study) {
+
+  public StudyInfoDto createStudyInfoDto(Study study) {
       return StudyInfoDto.builder()
               .studyId(study.getId())
               .name(study.getName())

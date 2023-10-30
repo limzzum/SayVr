@@ -13,7 +13,8 @@ public enum StudyResponseMessage {
     STUDY_JOIN_SUCCESS(HttpStatus.CREATED,"스터디 가입 완료"),
     STUDYMEMBER_DELETE_SUCCESS(HttpStatus.ACCEPTED,"스터디 탈퇴 완료"),
     STUDY_UPDATE_SUCCESS(HttpStatus.ACCEPTED,"스터디 수정 완료"),
-    GOAL_CREATE_SUCCESS(HttpStatus.CREATED,"목표 스프린트 생성 완료");
+    GOAL_CREATE_SUCCESS(HttpStatus.CREATED,"목표 스프린트 생성 완료"),
+    GOAL_UPDATE_SUCCESS(HttpStatus.ACCEPTED,"목표 수정 완료");
 
     private final HttpStatus httpStatus;
     private final String message;

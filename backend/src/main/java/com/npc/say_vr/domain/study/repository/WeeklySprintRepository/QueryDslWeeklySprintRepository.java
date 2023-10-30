@@ -1,0 +1,42 @@
+package com.npc.say_vr.domain.study.repository.WeeklySprintRepository;
+
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+@RequiredArgsConstructor
+@Repository
+public class QueryDslWeeklySprintRepository {
+
+  private final JPAQueryFactory queryFactory;
+
+  // TODO : weeklysprint에서 한번에 가져오기 개선할 것
+//  public GoalDetailResponseDto findGoalAndCheckListItem(Long weeklySprintId) {
+//    return queryFactory
+//        .select(Projections.constructor(GoalDetailResponseDto.class,
+//                weeklySprint.id,
+//                weeklySprint.targetDate,
+//                Projections.list(Projections.constructor(GoalResponseDto.class,
+//                    goal.id,
+//                    goal.optionType,
+//                    goal.count,
+//                    goal.description)),
+//                Projections.list(Projections.constructor(MemberCheckListResponseDto.class,
+//                    studyMember.id,
+//                    Projections.list(Projections.constructor(CheckListItemDto.class,
+//                        checklistItem.id,
+//                        checklistItem.checkListStatus,
+//                        checklistItem.optionCheckItem,
+//                        checklistItem.description,
+//                        Expressions.constant(checklistItem.goal),
+//                        checklistItem.current_count))))))
+//        .from(weeklySprint)
+//        .leftJoin(weeklySprint.GoalList, goal)
+//        .leftJoin(weeklySprint.checklistItemList, checklistItem)
+//        .where(weeklySprint.id.eq(weeklySprintId))
+//        .fetchOne();
+//  }
+
+
+}
