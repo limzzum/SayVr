@@ -14,5 +14,7 @@ public class GameStatusDto {
     private int curRound;
     private PlayerDto playerA;
     private PlayerDto playerB;
+    private String question;
+    private String answer;
 
 }
