@@ -13,9 +13,9 @@ import com.npc.say_vr.domain.game.repository.GameRepository;
 import com.npc.say_vr.domain.game.repository.RankingRepository;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
-import com.npc.say_vr.domain.user.service.UserService;
 import com.npc.say_vr.global.util.RedisUtil;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -174,6 +174,17 @@ public class GameServiceImpl implements GameService {
 
         return GameResultDto.builder().isDraw(false).winnerId(winnerId).loserId(loserId)
             .winnerPoint(WINNER_POINT).build();
+    }
+
+    @Override
+    public Long findGameIdByUserId(Long userId) {
+        List<GameStatusDto> gameStatusValues = redisUtil.getGameStatusValues();
+        for (GameStatusDto gameStatusDto : gameStatusValues){
+            if(gameStatusDto.getPlayerA().getUserId() == userId || gameStatusDto.getPlayerB().getUserId() == userId){
+                return gameStatusDto.getGameId();
+            }
+        }
+        return null;
     }
 
     @Override

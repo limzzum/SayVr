@@ -15,6 +15,7 @@ public interface GameService {
     boolean isEndGame(Long gameId);
     GameResultDto getGameResult(Long gameId);
     GameResultDto playerOutGame(PlayerOutRequestDto playerOutRequestDto);
+    Long findGameIdByUserId(Long userId);
 
 
 }
