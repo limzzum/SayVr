@@ -22,6 +22,17 @@ public class GameRequestDto {
     @AllArgsConstructor
     public static class GameSocketRequestDto {
         private SocketType socketType;
+        private String message;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SubmitAnswerRequestDto {
+        private Long gameId;
+        private Long userId;
         private String text;
     }
+
 }
