@@ -43,7 +43,7 @@ public class GameSocketController {
 
         if(socketType.equals(SocketType.GAME_INFO)){
             if(redisUtil.hasKeyGameStatusList(gameId)){
-                GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(gameId);
+                GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
                 gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
                     .gameStatusDto(gameStatusDto).build();
                 rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
@@ -70,7 +70,7 @@ public class GameSocketController {
                     return;
                 }
                 gameService.updateQuiz(Long.valueOf(gameId));
-                gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(gameId);
+                gameStatusDto = redisUtil.getGameStatusList(gameId);
             }
 
             GameQuizResultDto gameQuizResultDto = GameQuizResultDto.builder().userId(userId).isAnswer(isAnswer)
