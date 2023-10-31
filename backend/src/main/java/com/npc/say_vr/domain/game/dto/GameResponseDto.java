@@ -45,6 +45,9 @@ public class GameResponseDto {
         private boolean isDraw;
         private Long winnerId;
         private Long loserId;
+        private int winnerPoint;
+        private int loserPoint;
+        private int drawPoint;
     }
 
     @Getter
