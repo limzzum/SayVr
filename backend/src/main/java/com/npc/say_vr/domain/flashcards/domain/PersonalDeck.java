@@ -43,6 +43,7 @@ public class PersonalDeck {
     @OneToMany(mappedBy = "personalDeck")
     private List<DeckTag> tags;
 
-    private Integer forkCount;
+
+    private int forkCount = 0;
 
 }
