@@ -1,7 +1,12 @@
 package com.npc.say_vr.domain.game.api;
 
+import static com.npc.say_vr.domain.game.constant.GameResponseMessage.IS_ANSWER;
+import static com.npc.say_vr.domain.game.constant.GameResponseMessage.IS_BAD_ANSWER;
+
 import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.GameSocketRequestDto;
+import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
+import com.npc.say_vr.domain.game.dto.GameResponseDto.GameQuizResultDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameSocketResponseDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
 import com.npc.say_vr.domain.game.service.GameService;
@@ -42,16 +47,45 @@ public class GameSocketController {
             return;
         }
 
-        String text = gameSocketRequestDto.getText();
-        if(gameService.checkQuizAnswer(Long.valueOf(gameId), text)){
-            /*TODO : 정답 체크 후 게임 상태 업데이트.
-            * 정답이면 다음문제 생성 & 상태 업데이트 후 리턴
-            * 마지막 라운드인 경우 결과 출력
-            * */
+        if(socketType.equals(SocketType.QUIZ)){
+            String text = gameSocketRequestDto.getMessage();
+            boolean isAnswer = false;
+            GameStatusDto gameStatusDto = null;
+            String message = IS_BAD_ANSWER.getMessage();
+            GameSocketResponseDto gameSocketResponseDto;
+
+            SubmitAnswerRequestDto submitAnswerRequestDto = SubmitAnswerRequestDto.builder()
+                .gameId(Long.valueOf(gameId)).userId(userId).text(text).build();
+            if(gameService.checkQuizAnswer(submitAnswerRequestDto)){
+                isAnswer = true;
+                message = IS_ANSWER.getMessage();
+                if(gameService.isEndGame(Long.valueOf(gameId))){
+                    gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+                        .data(gameService.getGameResult(Long.valueOf(gameId)))
+                        .build();
+                    rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+                    return;
+                }
+                gameService.updateQuiz(Long.valueOf(gameId));
+                gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(gameId);
+            }
+
+            GameQuizResultDto gameQuizResultDto = GameQuizResultDto.builder().userId(userId).isAnswer(isAnswer)
+                .build();
+            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
+                .gameStatusDto(gameStatusDto)
+                .data(gameQuizResultDto)
+                .message(message)
+                .build();
+            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+
         }
 
+
+
+
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
-            .text(gameSocketRequestDto.getText()).build();
+            .message(gameSocketRequestDto.getMessage()).build();
         rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
     }
 
