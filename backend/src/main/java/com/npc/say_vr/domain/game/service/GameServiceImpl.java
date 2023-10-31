@@ -47,11 +47,7 @@ public class GameServiceImpl implements GameService {
             PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
-            String quizAnswer = createQuizAnswer();
-            String quizQuestion = getQuizQuestion(quizAnswer);
-            gameStatusDto.setQuestion(quizQuestion);
-            gameStatusDto.setAnswer(quizAnswer);
-            redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto, 30 * 1000 * 60);
+            updateQuiz(gameId);
             return waitingGameDto.getGameId();
         }
 
@@ -77,6 +73,17 @@ public class GameServiceImpl implements GameService {
         //TODO : 단어 db에서 정답 가져오기
         String answer = "answer";
         return answer;
+    }
+
+    @Override
+    public void updateQuiz(Long gameId) {
+        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        String quizAnswer = createQuizAnswer();
+        String quizQuestion = getQuizQuestion(quizAnswer);
+        gameStatusDto.setQuestion(quizQuestion);
+        gameStatusDto.setAnswer(quizAnswer);
+        redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto, 30 * 1000 * 60);
+
     }
 
     @Override

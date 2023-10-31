@@ -6,6 +6,6 @@ public interface GameService {
     boolean checkQuizAnswer(Long gameId, String answer);
     String getQuizQuestion(String answer);
     String createQuizAnswer();
-
+    void updateQuiz(Long gameId);
 
 }
