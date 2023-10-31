@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.game.dto;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,6 @@ public class GameStatusDto {
     private PlayerDto playerB;
     private String question;
     private String answer;
+    private LocalDateTime quizEndTime;
 
 }
