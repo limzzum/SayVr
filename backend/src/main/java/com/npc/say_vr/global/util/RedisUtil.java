@@ -53,9 +53,9 @@ public class RedisUtil {
         return Boolean.TRUE.equals(redisGameStatusTemplate.hasKey(key));
     }
 
-    public void setGameStatusList(String key, Object o , int milli) {
+    public void setGameStatusList(String key, Object o) {
         redisBlackListTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass()));
-        redisTemplate.opsForValue().set(key, o, milli, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(key, o, 30 * 1000 * 60, TimeUnit.MILLISECONDS);
     }
 
     public Object getGameStatusList(String key) {
