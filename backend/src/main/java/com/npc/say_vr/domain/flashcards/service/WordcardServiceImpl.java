@@ -94,7 +94,7 @@ public class WordcardServiceImpl implements WordcardService {
         Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
 
         if (wordcard != null) {
-            wordcardRepository.delete(wordcard);
+            wordcard.updateStatus(WordcardStatus.DELETED);
             return new MessageOnlyResponseDto("단어가 단어장에서 삭제되었습니다.");
         }
         return new MessageOnlyResponseDto("없는 단어입니다");
