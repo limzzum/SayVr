@@ -3,6 +3,7 @@ package com.npc.say_vr.domain.game.service;
 import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.domain.Game;
 import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
@@ -12,6 +13,7 @@ import com.npc.say_vr.domain.game.repository.GameRepository;
 import com.npc.say_vr.domain.game.repository.RankingRepository;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
+import com.npc.say_vr.domain.user.service.UserService;
 import com.npc.say_vr.global.util.RedisUtil;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class GameServiceImpl implements GameService {
 
     private final int FINAL_ROUND = 5;
+    private final int WINNER_POINT = 200;
+    private final int LOSER_POINT = 50;
+    private final int DRAW_POINT = 100;
+
 
     private final RedisUtil redisUtil;
     private final RankingRepository rankingRepository;
@@ -130,14 +136,44 @@ public class GameServiceImpl implements GameService {
         PlayerDto playerB = gameStatusDto.getPlayerB();
 
 
+        Long winnerId = playerB.getUserId();
+        Long loserId = playerA.getUserId();
+        boolean isDraw = false;
+
         if(playerA.getWinCnt()> playerB.getWinCnt()){
-            return GameResultDto.builder().winnerId(playerA.getUserId()).loserId(playerB.getUserId()).isDraw(false).build();
+            winnerId = playerA.getUserId();
+            loserId = playerB.getUserId();
         }
         if(playerA.getWinCnt() == playerB.getWinCnt()){
-            return GameResultDto.builder().isDraw(true).build();
+            isDraw = true;
         }
-        return GameResultDto.builder().winnerId(playerB.getUserId()).loserId(playerA.getUserId()).isDraw(false).build();
+        // TODO : 랭킹 점수 업데이트
+        return GameResultDto.builder().winnerId(winnerId).loserId(loserId).isDraw(isDraw)
+            .winnerPoint(WINNER_POINT).loserPoint(LOSER_POINT).drawPoint(DRAW_POINT).build();
 
+    }
+
+    @Override
+    public GameResultDto playerOutGame(PlayerOutRequestDto playerOutRequestDto) {
+        //TODO : 레디스 게임 상태 관리 삭제 & 랭킹 점수 업데이트
+        String gameId = String.valueOf(playerOutRequestDto.getGameId());
+        Long outUserId = playerOutRequestDto.getOutUserId();
+        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(gameId);
+
+
+
+        Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
+        Long playerB_userId = gameStatusDto.getPlayerB().getUserId();
+        Long winnerId = playerA_userId;
+        Long loserId = playerB_userId;
+
+        if(outUserId == playerA_userId){
+            winnerId = playerB_userId;
+            loserId = playerA_userId;
+        }
+
+        return GameResultDto.builder().isDraw(false).winnerId(winnerId).loserId(loserId)
+            .winnerPoint(WINNER_POINT).build();
     }
 
     @Override
