@@ -3,6 +3,7 @@ package com.npc.say_vr.domain.game.service;
 import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.domain.Game;
 import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
 import com.npc.say_vr.domain.game.dto.PlayerDto;
@@ -64,14 +65,31 @@ public class GameServiceImpl implements GameService {
         PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
             .profile(user.getProfile()).build();
         GameStatusDto gameStatusDto = GameStatusDto.builder().gameId(gameId).playerA(playerDto).build();
-        redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto, 30 * 1000 * 60);
+        redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
         return gameId;
     }
 
     @Override
-    public boolean checkQuizAnswer(Long gameId, String answer) {
+    public boolean checkQuizAnswer(SubmitAnswerRequestDto submitQuizAnswer) {
+        Long gameId = submitQuizAnswer.getGameId();
+        String submitText = submitQuizAnswer.getText();
         GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
-        return gameStatusDto.getAnswer().equals(answer);
+
+        Long userId = submitQuizAnswer.getUserId();
+        if(gameStatusDto.getAnswer().equals(submitText)){
+            PlayerDto playerA = gameStatusDto.getPlayerA();
+            if(playerA.getUserId() == userId){
+                playerA.addWinCnt();
+                gameStatusDto.setPlayerA(playerA);
+                redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
+                return true;
+            }
+        }
+        PlayerDto playerB = gameStatusDto.getPlayerB();
+        playerB.addWinCnt();
+        gameStatusDto.setPlayerB(playerB);
+        redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
+        return false;
     }
 
     @Override
@@ -89,7 +107,7 @@ public class GameServiceImpl implements GameService {
         gameStatusDto.setQuestion(quizQuestion);
         gameStatusDto.setAnswer(quizAnswer);
         gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(30));
-        redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto, 30 * 1000 * 60);
+        redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
         return quizQuestion;
     }
 
