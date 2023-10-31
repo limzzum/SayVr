@@ -159,7 +159,9 @@ public class GameServiceImpl implements GameService {
         String gameId = String.valueOf(playerOutRequestDto.getGameId());
         Long outUserId = playerOutRequestDto.getOutUserId();
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
-
+        if(gameStatusDto == null){
+            throw new IllegalArgumentException("todo");
+        }
 
 
         Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
