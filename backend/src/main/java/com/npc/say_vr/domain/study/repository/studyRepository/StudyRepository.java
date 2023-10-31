@@ -12,5 +12,4 @@ public interface StudyRepository {
 
     Optional<Study> findById(Long studyId);
 
-    Study findStudyAndStudyMembersById(Long studyId);
 }

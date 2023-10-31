@@ -1,6 +1,9 @@
 package com.npc.say_vr.domain.study.repository.WeeklySprintRepository;
 
 
+import static com.npc.say_vr.domain.study.domain.QStudy.study;
+import static com.npc.say_vr.domain.study.domain.QWeeklySprint.weeklySprint;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -37,6 +40,28 @@ public class QueryDslWeeklySprintRepository {
 //        .where(weeklySprint.id.eq(weeklySprintId))
 //        .fetchOne();
 //  }
+
+  public Long findPreviousSprintId(Long studyId, Long weeklySprintId) {
+    return queryFactory
+        .select(weeklySprint.id)
+        .from(weeklySprint)
+        .where(weeklySprint.study.id.eq(studyId),
+            weeklySprint.id.lt(weeklySprintId))
+        .orderBy(weeklySprint.id.desc())
+        .limit(1)
+        .fetchOne();
+  }
+
+  public Long findNextSprintId(Long studyId, Long weeklySprintId) {
+    return queryFactory
+        .select(weeklySprint.id)
+        .from(weeklySprint)
+        .where(weeklySprint.study.id.eq(studyId),
+            weeklySprint.id.gt(weeklySprintId))
+        .orderBy(weeklySprint.id.asc())
+        .limit(1)
+        .fetchOne();
+  }
 
 
 }

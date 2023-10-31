@@ -8,6 +8,9 @@ public interface WeeklySprintRepository {
   WeeklySprint save(WeeklySprint weeklySprint);
   Optional<WeeklySprint> findById(Long weeklySprintId);
 
+  Long findPreviousSprintId(Long studyId,Long weeklySprintId);
+
+  Long findNextSprintId(Long studyId,Long weeklySprintId);
 
 
 }

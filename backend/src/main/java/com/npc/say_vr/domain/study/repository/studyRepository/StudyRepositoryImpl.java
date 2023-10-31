@@ -29,9 +29,4 @@ public class StudyRepositoryImpl implements StudyRepository{
         return jpaStudyRepository.findById(studyId);
     }
 
-    @Override
-    public Study findStudyAndStudyMembersById(Long studyId) {
-        return queryDslStudyRepostiory.findById(studyId);
-    }
-
 }

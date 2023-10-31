@@ -20,4 +20,14 @@ public class WeeklySprintRepositoryImpl implements WeeklySprintRepository{
   public Optional<WeeklySprint> findById(Long weeklySprintId){
     return jpaWeeklySprintRepository.findById(weeklySprintId);
   }
+
+  @Override
+  public Long findPreviousSprintId(Long studyId, Long weeklySprintId) {
+    return queryDslWeeklySprintRepository.findPreviousSprintId(studyId,weeklySprintId);
+  }
+
+  @Override
+  public Long findNextSprintId(Long studyId, Long weeklySprintId) {
+    return queryDslWeeklySprintRepository.findNextSprintId(studyId,weeklySprintId);
+  }
 }

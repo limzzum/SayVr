@@ -15,6 +15,7 @@ import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.GoalDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.GoalResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.MemberCheckListResponseDto;
+import com.npc.say_vr.domain.study.dto.responseDto.WeeklySprintDetailResponse;
 import com.npc.say_vr.domain.study.repository.CheckListItemRepository.CheckListItemRepository;
 import com.npc.say_vr.domain.study.repository.GoalRepository.GoalRepository;
 import com.npc.say_vr.domain.study.repository.WeeklySprintRepository.WeeklySprintRepository;
@@ -42,7 +43,7 @@ public class GoalServiceImpl implements GoalService{
     private final StudyMemberRepository studyMemberRepository;
     @Transactional
     @Override
-    public GoalDetailResponseDto createGoal(Long studyId, CreateGoalsRequestDto createGoalsRequestDto) {
+    public WeeklySprintDetailResponse createGoal(Long studyId, CreateGoalsRequestDto createGoalsRequestDto) {
         // TODO : 성능개선하기 => 시퀀스 전략 : BATCH INSERT OR JDBCTEMPLATE 전략 => 시간 측정!
         // TODO : checklist 저장하고 가져올 때 성능개선..????
         LocalDate startDate = createGoalsRequestDto.getStartDate();
@@ -112,17 +113,28 @@ public class GoalServiceImpl implements GoalService{
             memberCheckListResponseDtoList.add(memberCheckListResponseDto);
         }
 
-        return GoalDetailResponseDto.builder()
-                .weeklySprintId(weeklySprint.getId())
-                .targetDate(weeklySprint.getTargetDate())
-                .goalDtoList(goalResponseDtoList)
-                .memberCheckListResponseDtoList(memberCheckListResponseDtoList)
-                .build();
+        GoalDetailResponseDto goalDetailResponseDto = GoalDetailResponseDto.builder()
+            .weeklySprintId(weeklySprint.getId())
+            .targetDate(weeklySprint.getTargetDate())
+            .goalDtoList(goalResponseDtoList)
+            .memberCheckListResponseDtoList(memberCheckListResponseDtoList)
+            .build();
+
+        Long preWeeklySprintId = findPreviousSprintId(studyId, weeklySprint.getId());
+        Long nextWeeklySprintId = findNextSprintId(studyId, weeklySprint.getId());
+
+
+        return WeeklySprintDetailResponse.builder()
+            .preWeeklySprintId(preWeeklySprintId)
+            .nextWeeklySprintId(nextWeeklySprintId)
+            .goalDetailResponseDto(goalDetailResponseDto)
+            .build();
 
     }
 
+    @Transactional
     @Override
-    public GoalDetailResponseDto updateGoal(Long studyId,Long weeklySprintId, Long goalId, UpdateGoalRequestDto updateGoalRequestDto) {
+    public WeeklySprintDetailResponse updateGoal(Long studyId,Long weeklySprintId, Long goalId, UpdateGoalRequestDto updateGoalRequestDto) {
         updateGoalAndCheckList(goalId, updateGoalRequestDto);
         return readGoalAndCheckListItem(studyId,weeklySprintId);
     }
@@ -133,7 +145,7 @@ public class GoalServiceImpl implements GoalService{
         Goal goal = goalRepository.findGoalAndCheckListItem(goalId);
         // TODO : 코드 리팩토링
         if(goal.getOptionType().equals(OptionType.ETC)) {
-            goal.updateETCGoal(goal.getCount(), updateGoalRequestDto.getDescription());
+            goal.updateETCGoal(updateGoalRequestDto.getCount(), updateGoalRequestDto.getDescription());
             List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
             for(ChecklistItem checklistItem : checklistItemList) {
                 CheckListStatus itemStatus;
@@ -161,7 +173,7 @@ public class GoalServiceImpl implements GoalService{
 
     // TODO :1:n 관계로는 리스트를 같이 가져오기보단 관계 안묶인거 먼저 조회해놓고 지연 로딩으로 따로 가져와서 batch size 최적화 해보기
     @Override
-    public GoalDetailResponseDto readGoalAndCheckListItem(Long studyId,Long weeklySprintId) {
+    public WeeklySprintDetailResponse readGoalAndCheckListItem(Long studyId,Long weeklySprintId) {
         // TODO : 예외처리
         WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow();
         List<GoalResponseDto> goalResponseDtoList = goalRepository.findGoalAndWeeklySprintId(weeklySprintId);
@@ -184,13 +196,34 @@ public class GoalServiceImpl implements GoalService{
             memberCheckListResponseDtos.add(memberCheckListResponseDto);
         }
 
-
-        return GoalDetailResponseDto.builder()
+        GoalDetailResponseDto goalDetailResponseDto = GoalDetailResponseDto.builder()
             .weeklySprintId(weeklySprintId)
             .targetDate(weeklySprint.getTargetDate())
             .goalDtoList(goalResponseDtoList)
             .memberCheckListResponseDtoList(memberCheckListResponseDtos)
             .build();
+
+        Long preWeeklySprintId = findPreviousSprintId(studyId, weeklySprint.getId());
+        log.info("preWeeklySprintId 조회 : " );
+        Long nextWeeklySprintId = findNextSprintId(studyId, weeklySprint.getId());
+        log.info("nextWeeklySprintId 조회 : " );
+
+
+        return WeeklySprintDetailResponse.builder()
+            .preWeeklySprintId(preWeeklySprintId)
+            .nextWeeklySprintId(nextWeeklySprintId)
+            .goalDetailResponseDto(goalDetailResponseDto)
+            .build();
+    }
+
+    @Override
+    public Long findPreviousSprintId(Long studyId, Long weeklySprintId) {
+        return weeklySprintRepository.findPreviousSprintId(studyId, weeklySprintId);
+    }
+
+    @Override
+    public Long findNextSprintId(Long studyId, Long weeklySprintId) {
+        return weeklySprintRepository.findNextSprintId(studyId, weeklySprintId);
     }
 
 
