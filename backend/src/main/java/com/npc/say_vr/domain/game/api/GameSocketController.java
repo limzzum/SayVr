@@ -2,9 +2,11 @@ package com.npc.say_vr.domain.game.api;
 
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.IS_ANSWER;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.IS_BAD_ANSWER;
+import static com.npc.say_vr.domain.game.constant.GameResponseMessage.PLAYER_OUT_MESSAGE;
 
 import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.GameSocketRequestDto;
+import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameQuizResultDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameSocketResponseDto;
@@ -37,10 +39,12 @@ public class GameSocketController {
     public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId, @AuthenticationPrincipal Long userId){
         log.info("game 웹소켓 메시지 pull");
         SocketType socketType = gameSocketRequestDto.getSocketType();
+        GameSocketResponseDto gameSocketResponseDto;
+
         if(socketType.equals(SocketType.GAME_INFO)){
             if(redisUtil.hasKeyGameStatusList(gameId)){
                 GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(gameId);
-                GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
+                gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
                     .gameStatusDto(gameStatusDto).build();
                 rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
             }
@@ -52,7 +56,6 @@ public class GameSocketController {
             boolean isAnswer = false;
             GameStatusDto gameStatusDto = null;
             String message = IS_BAD_ANSWER.getMessage();
-            GameSocketResponseDto gameSocketResponseDto;
 
             SubmitAnswerRequestDto submitAnswerRequestDto = SubmitAnswerRequestDto.builder()
                 .gameId(Long.valueOf(gameId)).userId(userId).text(text).build();
@@ -78,13 +81,22 @@ public class GameSocketController {
                 .message(message)
                 .build();
             rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
-
+            return;
         }
 
 
+        if(socketType.equals(SocketType.PLAYER_OUT)){
+            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+                .message(PLAYER_OUT_MESSAGE.getMessage())
+                .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(Long.valueOf(gameId))
+                        .outUserId(userId).build()))
+                .build();
+            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+            return;
+        }
 
 
-        GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
+        gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
             .message(gameSocketRequestDto.getMessage()).build();
         rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
     }
