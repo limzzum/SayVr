@@ -36,6 +36,12 @@ public class RabbitMqListener {
         key = "alarm.*"
     ))
     public void bronze(Message message, Channel channel) throws IOException {
+        //TODO: 알람만 받도록 해야함
+        if(!message.getMessageProperties().getReceivedRoutingKey().equals("alarm.*")){
+            System.out.println("알람 아님");
+            System.out.println(message.toString());
+            return;
+        }
         byte[] body = message.getBody();
         String gameId = new String(body);
         log.info("{}번 게임방 퀴즈 제한시간 종료 메시지큐 리스너 호출됨 ", gameId);
@@ -68,9 +74,12 @@ public class RabbitMqListener {
         Long userId = Long.valueOf(event.getUser().getName());
         Long gameId = gameService.findGameIdByUserId(userId);
 
+        if(gameId == null){
+            throw new IllegalArgumentException("todo");
+        }
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
             .message(PLAYER_OUT_MESSAGE.getMessage())
-            .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(Long.valueOf(gameId))
+            .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
                 .outUserId(userId).build()))
             .build();
         rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
