@@ -1,0 +1,20 @@
+.TEDPage-container {
+    background-color: #eef5fa;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+    height: 75vh;
+  }
+  .youtube-profile-container {
+    display: grid;
+    place-items: center; /* 가로 및 세로 방향 가운데 정렬 */
+  }
+  
+  .youtube-profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+  }
+  
