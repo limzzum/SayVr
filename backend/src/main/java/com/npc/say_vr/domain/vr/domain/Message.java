@@ -38,13 +38,13 @@ public class Message extends BaseEntity {
     private String content; // 대사
     @ColumnDefault("0")
     @Range(min = 0, max = 100)
-    private Integer grammar;
+    private int grammar;
     @ColumnDefault("0")
     @Range(min = 0, max = 100)
-    private Integer context;
+    private int context;
     @ColumnDefault("0")
     @Range(min = 0, max = 100)
-    private Integer pronunciation;
+    private int pronunciation;
 
     public void updateConversation(Conversation conversation) {
         this.conversation = conversation;

@@ -39,16 +39,16 @@ public class Score extends BaseEntity {
 //    private Conversation conversation;
 
     @Range(min = 0, max = 100)
-    private Integer grammarTotal = 0;
+    private int grammarTotal = 0;
 
     @Range(min = 0, max = 100)
-    private Integer contextTotal = 0;
+    private int contextTotal = 0;
 
     @Range(min = 0, max = 100)
-    private Integer pronunciationTotal = 0;
+    private int pronunciationTotal = 0;
 
     @Range(min = 0, max = 100)
     @ColumnDefault("0")
-    private Integer averageTotal = 0;
+    private int averageTotal = 0;
 
 }

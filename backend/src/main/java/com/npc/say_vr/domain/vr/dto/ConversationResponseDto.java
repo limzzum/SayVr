@@ -14,17 +14,17 @@ public class ConversationResponseDto {
     @Getter
     public static class ScoreDto {
 
-        private Integer grammarTotal;
-        private Integer contextTotal;
-        private Integer pronunciationTotal;
-        private Integer averageTotal;
+        private int grammarTotal;
+        private int contextTotal;
+        private int pronunciationTotal;
+        private int averageTotal;
         private LocalDateTime createdAt;
 
         public ScoreDto(
-            Integer grammarTotal,
-            Integer contextTotal,
-            Integer pronunciationTotal,
-            Integer averageTotal,
+            int grammarTotal,
+            int contextTotal,
+            int pronunciationTotal,
+            int averageTotal,
             LocalDateTime createdAt) {
             this.grammarTotal = grammarTotal;
             this.contextTotal = contextTotal;
@@ -98,9 +98,9 @@ public class ConversationResponseDto {
         private Long conversationId;
         private String role;
         private String content;
-        private Integer grammar;
-        private Integer context;
-        private Integer pronunciation;
+        private int grammar;
+        private int context;
+        private int pronunciation;
 
         public MessageDto(Message message) {
             this.id = message.getId();
@@ -120,9 +120,9 @@ public class ConversationResponseDto {
         private List<MessageDto> messageList;
         private String review;
         private String situation;
-        private Integer conversationGrammar;
-        private Integer conversationContext;
-        private Integer conversationPronunciation;
+        private int conversationGrammar;
+        private int conversationContext;
+        private int conversationPronunciation;
         private LocalDateTime createdAt;
 
         public ConversationDto(Conversation conversation, List<Message> messageList) {

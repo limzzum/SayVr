@@ -45,11 +45,11 @@ public class Conversation extends BaseEntity {
     private String situation;
 
     @Range(min = 0, max = 100)
-    private Integer conversationGrammar;
+    private int conversationGrammar;
     @Range(min = 0, max = 100)
-    private Integer conversationContext;
+    private int conversationContext;
     @Range(min = 0, max = 100)
-    private Integer conversationPronunciation;
+    private int conversationPronunciation;
 
     public void updateMessageList(List<Message> messageList) {
         this.messageList = messageList;

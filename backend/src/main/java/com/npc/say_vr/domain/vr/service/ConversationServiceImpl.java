@@ -63,10 +63,10 @@ public class ConversationServiceImpl implements ConversationService {
         User user = userRepository.findById(userId).orElseThrow();
         List<Conversation> userConversations = conversationRepository.findByUser_Id(userId);
 
-        Integer totalGrammar = 0;
-        Integer totalContext = 0;
-        Integer totalPronunciation = 0;
-        Integer all = 0;
+        int totalGrammar = 0;
+        int totalContext = 0;
+        int totalPronunciation = 0;
+        int all = 0;
         for (Conversation conversation : userConversations) {
             totalGrammar += conversation.getConversationGrammar();
             totalContext += conversation.getConversationContext();
