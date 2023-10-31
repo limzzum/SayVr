@@ -15,6 +15,7 @@ public interface GoalService {
 
     void createGoalAndSave(Long studyId, Long weeklySprintId,CreateGoalRequestDto createGoalRequestDto);
 
+    WeeklySprintDetailResponse readWeeklySprint(Long userId, Long studyId, Long weeklySprintId);
 
     WeeklySprintDetailResponse updateGoal(Long userId,Long studyId,Long weeklySprintId,Long goalId, UpdateGoalRequestDto updateGoalRequestDto);
 

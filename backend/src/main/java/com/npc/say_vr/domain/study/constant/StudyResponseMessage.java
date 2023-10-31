@@ -14,6 +14,7 @@ public enum StudyResponseMessage {
     STUDYMEMBER_DELETE_SUCCESS(HttpStatus.ACCEPTED,"스터디 탈퇴 완료"),
     STUDY_UPDATE_SUCCESS(HttpStatus.ACCEPTED,"스터디 수정 완료"),
     WEEKLY_CREATE_SUCCESS(HttpStatus.CREATED,"목표 스트린트 생성 완료"),
+    WEEKLY_READ_SUCCESS(HttpStatus.OK,"목표 스트린트 조회 완료"),
     GOAL_CREATE_SUCCESS(HttpStatus.CREATED,"목표 생성 완료"),
     GOAL_UPDATE_SUCCESS(HttpStatus.ACCEPTED,"목표 수정 완료"),
     GOAL_DELETE_SUCCESS(HttpStatus.OK,"목표 삭제 완료");

@@ -4,7 +4,7 @@ import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.GOAL_CRE
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.GOAL_UPDATE_SUCCESS;
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.GOAL_DELETE_SUCCESS;
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.WEEKLY_CREATE_SUCCESS;
-
+import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.WEEKLY_READ_SUCCESS;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateWeeklySprintRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +38,17 @@ public class GoalApiController {
                 .data(goalService.createWeeklySprint(userId,studyId, createWeeklySprintRequestDto))
                 .httpStatus(WEEKLY_CREATE_SUCCESS.getHttpStatus())
                 .build();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/{studyId}/{weeklySprintId}")
+    public ResponseEntity<?> readWeeklySprint(@PathVariable Long studyId, @PathVariable Long weeklySprintId) {
+        Long userId = 2L;
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(WEEKLY_READ_SUCCESS.getMessage())
+            .data(goalService.readWeeklySprint(userId,studyId,weeklySprintId))
+            .httpStatus(WEEKLY_READ_SUCCESS.getHttpStatus())
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 

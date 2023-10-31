@@ -189,6 +189,13 @@ public class GoalServiceImpl implements GoalService{
         }
     }
 
+    @Override
+    public WeeklySprintDetailResponse readWeeklySprint(Long userId, Long studyId, Long weeklySprintId) {
+        // TODO : 예외처리
+        WeeklySprintDetailResponse weeklySprintDetailResponse = readGoalAndCheckListItem(userId,studyId,weeklySprintId);
+        return weeklySprintDetailResponse;
+    }
+
     @Transactional
     @Override
     public WeeklySprintDetailResponse updateGoal(Long userId,Long studyId,Long weeklySprintId, Long goalId, UpdateGoalRequestDto updateGoalRequestDto) {
