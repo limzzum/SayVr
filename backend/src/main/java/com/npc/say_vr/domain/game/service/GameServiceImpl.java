@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GameServiceImpl implements GameService {
 
+    private final int FINAL_ROUND = 5;
+
     private final RedisUtil redisUtil;
     private final RankingRepository rankingRepository;
     private final GameRepository gameRepository;
@@ -92,6 +94,12 @@ public class GameServiceImpl implements GameService {
     public boolean isTimeLimitExceeded(Long gameId) {
         GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
         return gameStatusDto.getQuizEndTime().isBefore(LocalDateTime.now());
+    }
+
+    @Override
+    public boolean isEndGame(Long gameId) {
+        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        return gameStatusDto.getCurRound() == FINAL_ROUND;
     }
 
     @Override
