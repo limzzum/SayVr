@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,7 +27,7 @@ import org.hibernate.validator.constraints.Range;
 public class Conversation extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "conversation_id")
     private Long id;
 
@@ -49,5 +50,10 @@ public class Conversation extends BaseEntity {
     private Integer conversationContext;
     @Range(min = 0, max = 100)
     private Integer conversationPronunciation;
+
+    public void updateMessageList(List<Message> messageList) {
+        this.messageList = messageList;
+    }
+
 
 }
