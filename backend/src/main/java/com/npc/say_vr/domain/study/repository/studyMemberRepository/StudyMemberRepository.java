@@ -16,4 +16,7 @@ public interface StudyMemberRepository {
 
   List<StudyMember> findByStudyIdAndStatus(Long studyId,Status status);
 
+  StudyMember myfindAndNickNameByStudyId(Long userId, Long studyId);
+  List<StudyMember> findAndNickNameByStudyId(Long userId,Long studyId);
+
 }

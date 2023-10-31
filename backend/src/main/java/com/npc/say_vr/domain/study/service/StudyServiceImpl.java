@@ -50,12 +50,13 @@ public class StudyServiceImpl implements StudyService {
             .studyInfoDto(studyInfoDto)
             .memberId(studyMember.getId())
             .studyRole(studyMember.getStudyRole())
+            .nickName(leader.getNickname())
             .build();
   }
 
     @Override
     public StudyDetailResponseDto readStudy(Long userId, Long studyId) {
-    StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+    StudyMember studyMember = studyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
       if (studyMember == null) {
 //        Todo : 예외처리
           return null;
@@ -68,6 +69,7 @@ public class StudyServiceImpl implements StudyService {
                 .studyInfoDto(studyInfoDto)
                 .memberId(studyMember.getId())
                 .studyRole(studyMember.getStudyRole())
+                .nickName(studyMember.getUser().getNickname())
                 .build();
     }
 
@@ -133,6 +135,7 @@ public class StudyServiceImpl implements StudyService {
                 .studyInfoDto(studyInfoDto)
                 .memberId(studyMember.getId())
                 .studyRole(studyMember.getStudyRole())
+                .nickName(user.getNickname())
                 .build();
   }
 
@@ -163,7 +166,7 @@ public class StudyServiceImpl implements StudyService {
     @Transactional
     @Override
     public StudyDetailResponseDto updateStudy(Long userId, Long studyId, UpdateStudyRequestDto updateStudyRequestDto) {
-      StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+      StudyMember studyMember = studyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
       if(studyMember.getStudyRole().equals(StudyRole.MEMBER)) {
           // TODO :예외 처리
           log.info("방장이 아니라 수정 불가");
@@ -192,6 +195,7 @@ public class StudyServiceImpl implements StudyService {
                 .studyInfoDto(studyInfoDto)
                 .memberId(studyMember.getId())
                 .studyRole(studyMember.getStudyRole())
+                .nickName(studyMember.getUser().getNickname())
                 .build();
     }
 

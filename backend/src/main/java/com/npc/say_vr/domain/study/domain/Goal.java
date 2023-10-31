@@ -64,4 +64,8 @@ public class Goal extends BaseEntity {
     this.description = description;
   }
 
+  public void updateStatus(OptionType optionType) {
+    this.optionType = optionType;
+  }
+
 }

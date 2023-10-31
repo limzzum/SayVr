@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.study.repository.GoalRepository;
 
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.domain.study.domain.Goal;
 import com.npc.say_vr.domain.study.dto.responseDto.GoalResponseDto;
 import java.util.List;
@@ -26,6 +27,11 @@ public class GoalRepositoryImpl implements GoalRepository{
   @Override
   public List<GoalResponseDto> findGoalAndWeeklySprintId(Long weeklySprintId) {
     return queryDslGoalRepository.findGoalAndWeeklySprintId(weeklySprintId);
+  }
+
+  @Override
+  public Boolean existGoal(Long weeklySprintId, OptionType optionType) {
+    return queryDslGoalRepository.existGoal(weeklySprintId,optionType);
   }
 
 

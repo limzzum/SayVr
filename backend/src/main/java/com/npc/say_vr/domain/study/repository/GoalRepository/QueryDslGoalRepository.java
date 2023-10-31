@@ -23,7 +23,7 @@ public class QueryDslGoalRepository {
   public Goal findGoalAndCheckListItem(Long goalId) {
     return jpaQueryFactory.selectFrom(goal)
         .leftJoin(goal.checklistItemList,checklistItem).fetchJoin()
-        .where(goal.id.eq(goalId))
+        .where(goal.id.eq(goalId),goal.optionType.ne(OptionType.DELETE))
         .fetchOne();
   }
 
@@ -37,6 +37,15 @@ public class QueryDslGoalRepository {
         .from(goal)
         .where(goal.weeklySprint.id.eq(weeklySprintId), goal.optionType.ne(OptionType.DELETE))
         .fetch();
+  }
+
+  public Boolean existGoal(Long weeklySprintId,OptionType optionType) {
+    Integer fetchOne = jpaQueryFactory
+        .selectOne()
+        .from(goal)
+        .where(goal.optionType.eq(optionType),goal.weeklySprint.id.eq(weeklySprintId),goal.optionType.ne(OptionType.DELETE))
+        .fetchFirst();
+    return fetchOne != null;
   }
 
 }

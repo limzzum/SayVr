@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class CreateGoalsRequestDto {
+public class CreateWeeklySprintRequestDto {
     private LocalDate startDate;
     private List<CreateGoalRequestDto> goalDtoList;
 }

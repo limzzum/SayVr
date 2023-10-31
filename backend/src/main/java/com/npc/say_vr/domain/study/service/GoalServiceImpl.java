@@ -9,8 +9,8 @@ import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
 import com.npc.say_vr.domain.study.dto.common.CheckListItemDto;
-import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalsRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalRequestDto;
+import com.npc.say_vr.domain.study.dto.requestDto.CreateWeeklySprintRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.GoalDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.GoalResponseDto;
@@ -43,14 +43,15 @@ public class GoalServiceImpl implements GoalService{
     private final StudyMemberRepository studyMemberRepository;
     @Transactional
     @Override
-    public WeeklySprintDetailResponse createGoal(Long studyId, CreateGoalsRequestDto createGoalsRequestDto) {
+    public WeeklySprintDetailResponse createWeeklySprint(Long userId,Long studyId, CreateWeeklySprintRequestDto createWeeklySprintRequestDto) {
         // TODO : 성능개선하기 => 시퀀스 전략 : BATCH INSERT OR JDBCTEMPLATE 전략 => 시간 측정!
         // TODO : checklist 저장하고 가져올 때 성능개선..????
-        LocalDate startDate = createGoalsRequestDto.getStartDate();
-        List<CreateGoalRequestDto> goalDtoList = createGoalsRequestDto.getGoalDtoList();
+        LocalDate startDate = createWeeklySprintRequestDto.getStartDate();
+        List<CreateGoalRequestDto> goalDtoList = createWeeklySprintRequestDto.getGoalDtoList();
 
         // TODO : 예외처리
         // TODO : QUERYDSL로 STUDY에서 한번에 가져오기 ( + studymember active만 가져오기도 처리 )
+        // TODO : QUERYDSL로 STUDY + STUDYMEMBER + USER의 닉네임한번에 가져오기
         Study study = studyRepository.findById(studyId).orElseThrow();
         List<StudyMember> studyMembers = study.getStudyMembers();
 
@@ -95,6 +96,7 @@ public class GoalServiceImpl implements GoalService{
             MemberCheckListResponseDto memberCheckListResponseDto = MemberCheckListResponseDto
                     .builder()
                     .studyMemberId(studyMember.getId())
+                    .nickName(studyMember.getUser().getNickname())
                     .checkListItemDtoList(checkListItemDtoList)
                     .build();
             for(Goal goal : goalEntityList) {
@@ -134,9 +136,64 @@ public class GoalServiceImpl implements GoalService{
 
     @Transactional
     @Override
-    public WeeklySprintDetailResponse updateGoal(Long studyId,Long weeklySprintId, Long goalId, UpdateGoalRequestDto updateGoalRequestDto) {
+    public WeeklySprintDetailResponse createGoal(Long userId,Long studyId, Long weeklySprintId,CreateGoalRequestDto createGoalRequestDto) {
+
+        if(goalRepository.existGoal(weeklySprintId,createGoalRequestDto.getOptionType())) {
+            // TODO : 만약 이미 있는 옵션 타입이라면 예외 처리
+            log.info("이미 있는 옵션 타입입니다.");
+            return null;
+        }
+        createGoalAndSave(studyId,weeklySprintId,createGoalRequestDto);
+        return readGoalAndCheckListItem(userId,studyId,weeklySprintId);
+    }
+
+    // TODO : 위에 스프린트만들면서 GOAL만드는 부분이랑 중복된 코드 => 리팩토링
+    @Transactional
+    @Override
+    public void createGoalAndSave(Long studyId, Long weeklySprintId,
+        CreateGoalRequestDto createGoalRequestDto){
+        // TODO : 예외처리
+        WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow();
+        Goal goal;
+        if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
+            goal = Goal.builder()
+                .count(createGoalRequestDto.getCount())
+                .optionType(createGoalRequestDto.getOptionType())
+                .weeklySprint(weeklySprint)
+                .description(createGoalRequestDto.getDescription())
+                .build();
+            goalRepository.save(goal);
+        }else {
+            goal = Goal.builder()
+                .count(createGoalRequestDto.getCount())
+                .optionType(createGoalRequestDto.getOptionType())
+                .weeklySprint(weeklySprint)
+                .description(createGoalRequestDto.getOptionType().getMessage())
+                .build();
+            goalRepository.save(goal);
+        }
+
+        List<StudyMember> studyMemberEntityList = studyMemberRepository.findByStudyIdAndStatus(studyId,Status.ACTIVE);
+
+        for(StudyMember studyMember : studyMemberEntityList){
+            ChecklistItem checklistItem = ChecklistItem.builder()
+                .checkListStatus(CheckListStatus.ONGOING)
+                .optionCheckItem(OptionCheckItem.STUDYGOAL)
+                .description(goal.getDescription())
+                .current_count(0)
+                .goal(goal)
+                .studyMember(studyMember)
+                .weeklySprint(weeklySprint)
+                .build();
+            checkListItemRepository.save(checklistItem);
+        }
+    }
+
+    @Transactional
+    @Override
+    public WeeklySprintDetailResponse updateGoal(Long userId,Long studyId,Long weeklySprintId, Long goalId, UpdateGoalRequestDto updateGoalRequestDto) {
         updateGoalAndCheckList(goalId, updateGoalRequestDto);
-        return readGoalAndCheckListItem(studyId,weeklySprintId);
+        return readGoalAndCheckListItem(userId,studyId,weeklySprintId);
     }
     @Transactional
     @Override
@@ -171,9 +228,10 @@ public class GoalServiceImpl implements GoalService{
         }
     }
 
-    // TODO :1:n 관계로는 리스트를 같이 가져오기보단 관계 안묶인거 먼저 조회해놓고 지연 로딩으로 따로 가져와서 batch size 최적화 해보기
+    // TODO : 1:n 관계로는 리스트를 같이 가져오기보단 관계 안묶인거 먼저 조회해놓고 지연 로딩으로 따로 가져와서 batch size 최적화 해보기
+    // TODO : nickname, studymemberid
     @Override
-    public WeeklySprintDetailResponse readGoalAndCheckListItem(Long studyId,Long weeklySprintId) {
+    public WeeklySprintDetailResponse readGoalAndCheckListItem(Long userId,Long studyId,Long weeklySprintId) {
         // TODO : 예외처리
         WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow();
         List<GoalResponseDto> goalResponseDtoList = goalRepository.findGoalAndWeeklySprintId(weeklySprintId);
@@ -182,15 +240,23 @@ public class GoalServiceImpl implements GoalService{
 
         List<MemberCheckListResponseDto> memberCheckListResponseDtos = new ArrayList<>();
 
-        // TODO : 나중에 memberCheckListResponse dto에 studyMember 이것만
-        List<StudyMember> studyMemberEntityList = studyMemberRepository.findByStudyIdAndStatus(studyId,
-            Status.ACTIVE);
+        List<StudyMember> studyMemberEntityList = new ArrayList<>();
+
+        StudyMember myStudyMember = studyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
+
+        studyMemberEntityList.add(myStudyMember);
+
+        // TODO : 나중에 memberCheckListResponse dto에 studyMember 이것만 + nickname만 가져오기
+        List<StudyMember> studyMemberListNeMy = studyMemberRepository.findAndNickNameByStudyId(userId, studyId);
+
+        studyMemberEntityList.addAll(studyMemberListNeMy);
 
         for(StudyMember studymemberEntity : studyMemberEntityList){
             List<CheckListItemDto> checkListItemDtoList = checkListItemRepository.findByWeeklySprintIdAndStudyId(weeklySprintId,studymemberEntity.getId());
               MemberCheckListResponseDto memberCheckListResponseDto = MemberCheckListResponseDto
                 .builder()
                 .studyMemberId(studymemberEntity.getId())
+                .nickName(studymemberEntity.getUser().getNickname())
                 .checkListItemDtoList(checkListItemDtoList)
                 .build();
             memberCheckListResponseDtos.add(memberCheckListResponseDto);
@@ -224,6 +290,27 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public Long findNextSprintId(Long studyId, Long weeklySprintId) {
         return weeklySprintRepository.findNextSprintId(studyId, weeklySprintId);
+    }
+
+    @Transactional
+    @Override
+    public WeeklySprintDetailResponse deleteGoal(Long userId,Long studyId, Long weeklySprintId, Long goalId) {
+        deleteGoalAndSave(goalId);
+        return readGoalAndCheckListItem(userId,studyId,weeklySprintId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteGoalAndSave(Long goalId) {
+        // TODO 예외처리
+        Goal goal = goalRepository.findGoalAndCheckListItem(goalId);
+        goal.updateStatus(OptionType.DELETE);
+
+        List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
+
+        for(ChecklistItem checklistItem : checklistItemList) {
+            checklistItem.updateChecklistItemAndOptional(CheckListStatus.DELETE);
+        }
     }
 
 

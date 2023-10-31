@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberCheckListResponseDto {
     private Long studyMemberId;
+    private String nickName;
     // TODO : 배열 초기화
     List<CheckListItemDto> checkListItemDtoList = new ArrayList<>();
 }

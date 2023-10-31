@@ -31,10 +31,19 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepository{
 
   // TODO : STUDYMEMBERID만 반환하기
   @Override
-  public List<StudyMember> findByStudyIdAndStatus(Long studyId,Status status) {
+  public List<StudyMember> findByStudyIdAndStatus(Long studyId, Status status) {
     return jpaStudyMemberRepository.findByStudyIdAndStatus(studyId,status);
   }
 
+  @Override
+  public StudyMember myfindAndNickNameByStudyId(Long userId, Long studyId) {
+    return queryDslStudyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
+  }
+
+  @Override
+  public List<StudyMember> findAndNickNameByStudyId(Long userId,Long studyId) {
+    return queryDslStudyMemberRepository.findAndNickNameByStudyIdNEUserId(userId, studyId);
+  }
 
   // TODO : SUTDYMEMBER랑 연결된 CHECKLIST한번에 가져오기
 //  @Override
