@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum GameResponseMessage {
-    GAME_WAITING_SUCCESS("게임 대기 등록 완료", HttpStatus.OK);
+    GAME_WAITING_SUCCESS("게임 대기 등록 완료", HttpStatus.OK),
+    GAME_IS_END("게임 종료", HttpStatus.OK);
 
     private final String message;
     private final HttpStatus status;
