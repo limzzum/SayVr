@@ -85,7 +85,6 @@ public class StudyServiceImpl implements StudyService {
       StudyMineListResponseDto studyMineListResponseDto = StudyMineListResponseDto.builder()
               .studyInfoDtoList(studyInfoDtoList)
               .build();
-
     return studyMineListResponseDto;
   }
 
