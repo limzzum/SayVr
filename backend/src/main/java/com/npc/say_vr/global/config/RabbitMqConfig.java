@@ -1,41 +1,45 @@
 package com.npc.say_vr.global.config;
 
-import ch.qos.logback.classic.pattern.MessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
+@EnableRabbit
 public class RabbitMqConfig {
 
-    private static final String EXCAHGE_NAME = "sample.exchange";
-    private static final String QUEUE_NAME = "sample.queue";
-    private static final String ROUTING_KEY = "sample.routing.#";
+    private static final String EXCHANGE_NAME = "game.exchange";
+    private static final String QUEUE_NAME = "game.queue";
+    private static final String ROUTING_KEY = "room.*";
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(EXCAHGE_NAME);
+    public Queue queue() {
+        return new Queue(QUEUE_NAME, true);
     }
 
     @Bean
-    Queue queue() {
-        return new Queue(QUEUE_NAME);
+    public TopicExchange exchange() {
+        return new TopicExchange(EXCHANGE_NAME);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
+    public Binding binding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
     @Bean
-    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
-        MessageConverter messageConverter) {
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, ObjectMapper mapper) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter(mapper));
         return rabbitTemplate;
     }
+
 }
