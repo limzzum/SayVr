@@ -30,6 +30,22 @@ public class ConversationApiController {
     //TODO: 예외처리 -> 실패했을 때
 
     //내 정보 조회 API TODO: (VR에서 등급조회 기타 등등 이후 협상할 것)
+
+    @PostMapping("/")
+    public ResponseEntity<?> createConversation
+//    (@AuthenticationPrincipal Long userId,
+    (@RequestBody CreateConversationRequestDto createConversationRequestDto) {
+        // 시작시 상태: 시작, 으로 오고, 문장 두개 줌, 평가있으면 같이 받음,,
+        // Line ProficiencyInfo
+        Long userId = 1L;
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(CONVERSATION_CREATE_SUCCESS.getMessage())
+            .httpStatus(CONVERSATION_CREATE_SUCCESS.getHttpStatus())
+            .data(conversationService.createConversation(userId, createConversationRequestDto))
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping("/score")
     public ResponseEntity<?> readMyProficiencyInfo() {
 //    (@AuthenticationPrincipal Long userId) {
@@ -66,22 +82,6 @@ public class ConversationApiController {
             .message(CONVERSATION_READ_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_READ_SUCCESS.getHttpStatus())
             .data(conversationService.readConversation(userId, conversationId))
-            .build();
-        return ResponseEntity.ok(responseDto);
-    }
-
-    //TODO: 대화 시작 후 어떤 단계로 끊어서 진행 할 건지,, 대화 시작시 요청 보내라고? VR과 대화 필요,
-    @PostMapping("/")
-    public ResponseEntity<?> createConversation
-//    (@AuthenticationPrincipal Long userId,
-    (@RequestBody CreateConversationRequestDto createConversationRequestDto) {
-        // 시작시 상태: 시작, 으로 오고, 문장 두개 줌, 평가있으면 같이 받음,,
-        // Line ProficiencyInfo
-        Long userId = 1L;
-        ResponseDto responseDto = ResponseDto.builder()
-            .message(CONVERSATION_CREATE_SUCCESS.getMessage())
-            .httpStatus(CONVERSATION_CREATE_SUCCESS.getHttpStatus())
-            .data(conversationService.createConversation(userId, createConversationRequestDto))
             .build();
         return ResponseEntity.ok(responseDto);
     }

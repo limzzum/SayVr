@@ -70,15 +70,12 @@ public class ConversationResponseDto {
     @Getter
     public static class ConversationInfoResponseDto {
 
-        private LocalDateTime createdDate;
         private ConversationDto conversation;
 //        private List<Message> messages;
 
         @Builder
-        public ConversationInfoResponseDto(ConversationDto conversation,
-            LocalDateTime createdDate) {
+        public ConversationInfoResponseDto(ConversationDto conversation) {
             this.conversation = conversation;
-            this.createdDate = createdDate;
         }
 
     }
@@ -128,7 +125,6 @@ public class ConversationResponseDto {
         private Integer conversationPronunciation;
         private LocalDateTime createdAt;
 
-        @Builder
         public ConversationDto(Conversation conversation, List<Message> messageList) {
             this.id = conversation.getId();
             this.createdAt = conversation.getCreatedAt();

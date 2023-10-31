@@ -2,6 +2,7 @@ package com.npc.say_vr.domain.vr.service;
 
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDto;
+import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationListResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ProficiencyInfoResponseDto;
 
@@ -14,7 +15,7 @@ public interface ConversationService {
 
     ConversationListResponseDto readMyConversationList(Long userId);
 
-    ConversationDto readConversation(Long userId, Long conversationId);
+    ConversationInfoResponseDto readConversation(Long userId, Long conversationId);
 
 
 }
