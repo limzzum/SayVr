@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,7 +36,8 @@ public class GameSocketController {
 
 
     @MessageMapping("game.{gameId}")
-    public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId, @AuthenticationPrincipal Long userId){
+    public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId, SimpMessageHeaderAccessor accessor){
+        Long userId = Long.valueOf(accessor.getUser().getName());
         log.info("game 웹소켓 메시지 pull");
         SocketType socketType = gameSocketRequestDto.getSocketType();
         GameSocketResponseDto gameSocketResponseDto;
