@@ -62,7 +62,7 @@ public class RedisUtil {
     }
 
     public GameStatusDto getGameStatusList(String key) {
-        return (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
+        return redisGameStatusTemplate.opsForValue().get(key);
     }
 
     public boolean deleteGameStatusList(String key) {
