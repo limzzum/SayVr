@@ -11,6 +11,7 @@ import com.npc.say_vr.domain.game.repository.RankingRepository;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.util.RedisUtil;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -82,8 +83,15 @@ public class GameServiceImpl implements GameService {
         String quizQuestion = getQuizQuestion(quizAnswer);
         gameStatusDto.setQuestion(quizQuestion);
         gameStatusDto.setAnswer(quizAnswer);
+        gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(30));
         redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto, 30 * 1000 * 60);
 
+    }
+
+    @Override
+    public boolean isTimeLimitExceeded(Long gameId) {
+        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        return gameStatusDto.getQuizEndTime().isBefore(LocalDateTime.now());
     }
 
     @Override

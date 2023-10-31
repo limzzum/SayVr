@@ -7,5 +7,7 @@ public interface GameService {
     String getQuizQuestion(String answer);
     String createQuizAnswer();
     void updateQuiz(Long gameId);
+    boolean isTimeLimitExceeded(Long gameId);
+
 
 }
