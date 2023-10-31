@@ -18,7 +18,7 @@ public class RabbitMqConfig {
 
     @Bean
     TopicExchange exchange() {
-        return  new TopicExchange(EXCAHGE_NAME);
+        return new TopicExchange(EXCAHGE_NAME);
     }
 
     @Bean
@@ -32,7 +32,8 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
+        MessageConverter messageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         return rabbitTemplate;
