@@ -17,4 +17,8 @@ public class PlayerDto {
     private int winCnt;
     private String profile;
 
+    public void addWinCnt(){
+        winCnt += 1;
+    }
+
 }
