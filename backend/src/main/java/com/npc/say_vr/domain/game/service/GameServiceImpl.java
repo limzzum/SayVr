@@ -3,6 +3,7 @@ package com.npc.say_vr.domain.game.service;
 import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.domain.Game;
 import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
 import com.npc.say_vr.domain.game.dto.PlayerDto;
 import com.npc.say_vr.domain.game.dto.WaitingGameDto;
@@ -31,6 +32,7 @@ public class GameServiceImpl implements GameService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public Long create() {
         Game game = Game.builder().status(GameStatus.CREATED).totalRound(5).build();
         Game save = gameRepository.save(game);
@@ -38,6 +40,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    @Transactional
     public Long registWaitingQueue(Long userId) {
         Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
         String name = ranking.getTier().getName();
@@ -79,7 +82,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void updateQuiz(Long gameId) {
+    public String updateQuiz(Long gameId) {
         GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
         String quizAnswer = createQuizAnswer();
         String quizQuestion = getQuizQuestion(quizAnswer);
@@ -87,7 +90,7 @@ public class GameServiceImpl implements GameService {
         gameStatusDto.setAnswer(quizAnswer);
         gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(30));
         redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto, 30 * 1000 * 60);
-
+        return quizQuestion;
     }
 
     @Override
@@ -100,6 +103,23 @@ public class GameServiceImpl implements GameService {
     public boolean isEndGame(Long gameId) {
         GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
         return gameStatusDto.getCurRound() == FINAL_ROUND;
+    }
+
+    @Override
+    public GameResultDto getGameResult(Long gameId) {
+        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        PlayerDto playerA = gameStatusDto.getPlayerA();
+        PlayerDto playerB = gameStatusDto.getPlayerB();
+
+
+        if(playerA.getWinCnt()> playerB.getWinCnt()){
+            return GameResultDto.builder().winnerId(playerA.getUserId()).loserId(playerB.getUserId()).isDraw(false).build();
+        }
+        if(playerA.getWinCnt() == playerB.getWinCnt()){
+            return GameResultDto.builder().isDraw(true).build();
+        }
+        return GameResultDto.builder().winnerId(playerB.getUserId()).loserId(playerA.getUserId()).isDraw(false).build();
+
     }
 
     @Override
