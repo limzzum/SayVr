@@ -4,6 +4,7 @@ import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessag
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_FORK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_DELETE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_DECK_DETAIL;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_PRIVATE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK_RESET;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK_SAVING;
@@ -62,6 +63,18 @@ public class FlashcardsApiController {
     public ResponseEntity<?> readDecksBySearch() {//(@AuthenticationPrincipal Long userId) {
         Long userId = 1L;
         ResponseDto responseDto = ResponseDto.builder().build();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> readPersonalDecks(
+        @PathVariable Long userId) {//(@AuthenticationPrincipal Long userId) {
+        userId = 1L;
+        ResponseDto responseDto = ResponseDto.builder()
+            .data(flashcardsService.readPersonalDecks(userId))
+            .message(SUCCESS_READ_PRIVATE_DECK.getMessage())
+            .httpStatus(SUCCESS_READ_PRIVATE_DECK.getHttpStatus())
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
