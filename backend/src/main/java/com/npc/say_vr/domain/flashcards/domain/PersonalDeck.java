@@ -55,7 +55,8 @@ public class PersonalDeck {
     private List<DeckTag> tags;
 //    = new ArrayList<>();
 
-    private Integer forkCount;
+
+    private int forkCount = 0;
 
     private Integer wordCount;
 
