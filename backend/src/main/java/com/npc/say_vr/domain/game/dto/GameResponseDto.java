@@ -31,11 +31,21 @@ public class GameResponseDto {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class GameSocketResponseDto {
+    public static class GameSocketResponseDto<T> {
         private SocketType socketType;
         private GameStatusDto gameStatusDto;
-        private String text;
+        private T data;
+        private String message;
 
     }
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class GameResultDto {
+        private boolean isDraw;
+        private Long winnerId;
+        private Long loserId;
+    }
+
 
 }
