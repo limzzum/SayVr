@@ -47,5 +47,13 @@ public class GameResponseDto {
         private Long loserId;
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class GameQuizResultDto {
+        private Long userId;
+        private boolean isAnswer;
+    }
+
 
 }
