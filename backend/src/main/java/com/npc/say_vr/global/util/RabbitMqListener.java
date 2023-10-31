@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class RabbitMqListener {
+
     @RabbitListener(queues = "sample.queue")
     public void receiveMessage(final Message message) {
         log.info(message.toString());
