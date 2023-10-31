@@ -73,7 +73,7 @@ public class ConversationApiController {
     }
 
     //내 대화 조회 API
-    @GetMapping("/list/{conversationId}")
+    @GetMapping("/{conversationId}")
     public ResponseEntity<?> readConversation
 //    (@AuthenticationPrincipal Long userId,
     (@PathVariable Long conversationId) {
