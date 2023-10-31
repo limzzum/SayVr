@@ -1,6 +1,9 @@
 package com.npc.say_vr.global.util;
 
+import static com.npc.say_vr.domain.game.constant.GameResponseMessage.PLAYER_OUT_MESSAGE;
+
 import com.npc.say_vr.domain.game.constant.SocketType;
+import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameSocketResponseDto;
 import com.npc.say_vr.domain.game.service.GameService;
 import com.rabbitmq.client.Channel;
@@ -57,14 +60,19 @@ public class RabbitMqListener {
     @EventListener
     public void connectionListener(SessionConnectedEvent event){
         log.info("connected");
-        String name = event.getUser().getName();
-        System.out.println("userId " + name);
     }
 
     @EventListener
     public void connectionListener(SessionDisconnectEvent event){
         log.info("disconnected");
-        String name = event.getUser().getName();
-        System.out.println("userId " + name);
+        Long userId = Long.valueOf(event.getUser().getName());
+        Long gameId = gameService.findGameIdByUserId(userId);
+
+        GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+            .message(PLAYER_OUT_MESSAGE.getMessage())
+            .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(Long.valueOf(gameId))
+                .outUserId(userId).build()))
+            .build();
+        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
     }
 }
