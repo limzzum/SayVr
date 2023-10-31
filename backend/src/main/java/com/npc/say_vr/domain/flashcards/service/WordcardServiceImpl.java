@@ -11,7 +11,6 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResp
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,11 +32,10 @@ public class WordcardServiceImpl implements WordcardService {
         PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
         FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
         // TODO 이미 있는 단어인지 확인
-
-        List<Wordcard> words = flashcardDeck.getWordcards();
         Word word = wordRepository.findByEnglishAndKorean(requestDto.getEng(), requestDto.getKor());
         Word newWord;
         Wordcard wordcard;
+
         if (word == null) {
             newWord = Word.builder()
                 .korean(requestDto.getKor())
@@ -47,6 +45,7 @@ public class WordcardServiceImpl implements WordcardService {
             wordcard = Wordcard.builder().word(newWord).status(WordcardStatus.UNCHECKED)
                 .flashcardDeck(flashcardDeck).build();
             wordcard = wordcardRepository.save(wordcard);
+
         } else {
             // DB에 존재하는 단어
             //단어장에 이미 있는지 확인하기
@@ -58,14 +57,18 @@ public class WordcardServiceImpl implements WordcardService {
                 wordcard = Wordcard.builder().word(word).status(WordcardStatus.UNCHECKED)
                     .flashcardDeck(flashcardDeck).build();
                 wordcard = wordcardRepository.save(wordcard);
+
             }
         }
-
+        //TODO 개수 바뀔까?
+        personalDeck.updateWordCount(flashcardDeck.getWordcards().size());
+        personalDeck = personalDeckRepository.save(personalDeck);
         return WordUpdateResponseDto.builder()
             .wordcard(wordcard)
             .build();
     }
 
+    //TODO 서버 실행시 단어셋 DB 저장 시킬것
     @Override
     public WordUpdateResponseDto readTodaySentence() {
         return WordUpdateResponseDto.builder().build();
