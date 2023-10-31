@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class RedisUtil {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, GameStatusDto> redisGameStatusTemplate;
+    private final RedisTemplate<String, Object> redisGameStatusTemplate;
     private final RedisTemplate<String, Object> redisBlackListTemplate;
 
     @Value("${jwt.expmin}")
@@ -62,7 +62,7 @@ public class RedisUtil {
     }
 
     public GameStatusDto getGameStatusList(String key) {
-        return redisGameStatusTemplate.opsForValue().get(key);
+        return (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
     }
 
     public boolean deleteGameStatusList(String key) {
@@ -77,7 +77,7 @@ public class RedisUtil {
         List<GameStatusDto> gameStatusDtos = new ArrayList<>();
         Set<String> keys = redisGameStatusTemplate.keys("*");
         for (String key : keys) {
-            GameStatusDto gameStatusDto = redisGameStatusTemplate.opsForValue().get(key);
+            GameStatusDto gameStatusDto = (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
             gameStatusDtos.add(gameStatusDto);
         }
         return gameStatusDtos;
