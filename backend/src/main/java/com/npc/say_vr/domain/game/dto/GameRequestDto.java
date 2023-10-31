@@ -35,4 +35,13 @@ public class GameRequestDto {
         private String text;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PlayerOutRequestDto {
+        private Long gameId;
+        private Long outUserId;
+    }
+
 }
