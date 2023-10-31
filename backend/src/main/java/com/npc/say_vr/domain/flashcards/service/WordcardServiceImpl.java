@@ -71,19 +71,25 @@ public class WordcardServiceImpl implements WordcardService {
         return WordUpdateResponseDto.builder().build();
     }
 
+    //TODO 무슨 용도 였는지 잊음, 단어 자체를 수정할 일은 없음,, 수정버튼이 없어
     @Override
     public WordUpdateResponseDto updateWordcard(Long userId, Long wordcardId) {
         return WordUpdateResponseDto.builder().build();
     }
 
     @Override
-    public WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId) {
-        return WordUpdateResponseDto.builder().build();
+    public WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId,
+        String status) {
+        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+        wordcard.updateStatus(WordcardStatus.valueOf(status));
+        wordcard = wordcardRepository.save(wordcard);
+        return WordUpdateResponseDto.builder().wordcard(wordcard).build();
     }
 
     @Override
     public MessageOnlyResponseDto deleteWordcard(Long userId, Long wordcardId) {
         Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+
         if (wordcard != null) {
             wordcardRepository.delete(wordcard);
             return new MessageOnlyResponseDto("단어가 단어장에서 삭제되었습니다.");

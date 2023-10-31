@@ -67,12 +67,12 @@ public class WordcardApiController {
 
     @PatchMapping("/progress/{wordcardId}")
     public ResponseEntity<?> updateCardProgress//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long wordcardId) {
+    (@PathVariable Long wordcardId, @RequestBody String status) {
         Long userId = 1L;
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_UPDATE_LEARNING_STATUS.getMessage())
             .httpStatus(SUCCESS_UPDATE_LEARNING_STATUS.getHttpStatus())
-            .data(wordcardService.updateLearningProgress(userId, wordcardId))
+            .data(wordcardService.updateLearningProgress(userId, wordcardId, status))
             .build();
         return ResponseEntity.ok(responseDto);
     }

@@ -16,7 +16,7 @@ public interface WordcardService {
 
     WordUpdateResponseDto updateWordcard(Long userId, Long wordcardId);
 
-    WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId);
+    WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId, String status);
 
     MessageOnlyResponseDto deleteWordcard(Long userId, Long wordcardId);
 
