@@ -55,7 +55,7 @@ public class GameServiceImpl implements GameService {
         if(redisUtil.hasKey(name)){
             WaitingGameDto waitingGameDto = (WaitingGameDto) redisUtil.get(name);
             Long gameId = waitingGameDto.getGameId();
-            GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+            GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
             User user = userRepository.findById(userId).orElseThrow();
             PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
@@ -79,7 +79,7 @@ public class GameServiceImpl implements GameService {
     public boolean checkQuizAnswer(SubmitAnswerRequestDto submitQuizAnswer) {
         Long gameId = submitQuizAnswer.getGameId();
         String submitText = submitQuizAnswer.getText();
-        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
 
         Long userId = submitQuizAnswer.getUserId();
         if(gameStatusDto.getAnswer().equals(submitText)){
@@ -107,7 +107,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public String updateQuiz(Long gameId) {
-        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
         String quizAnswer = createQuizAnswer();
         String quizQuestion = getQuizQuestion(quizAnswer);
         gameStatusDto.setQuestion(quizQuestion);
@@ -119,19 +119,19 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public boolean isTimeLimitExceeded(Long gameId) {
-        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
         return gameStatusDto.getQuizEndTime().isBefore(LocalDateTime.now());
     }
 
     @Override
     public boolean isEndGame(Long gameId) {
-        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
         return gameStatusDto.getCurRound() == FINAL_ROUND;
     }
 
     @Override
     public GameResultDto getGameResult(Long gameId) {
-        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(String.valueOf(gameId));
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
         PlayerDto playerA = gameStatusDto.getPlayerA();
         PlayerDto playerB = gameStatusDto.getPlayerB();
 
@@ -158,7 +158,7 @@ public class GameServiceImpl implements GameService {
         //TODO : 레디스 게임 상태 관리 삭제 & 랭킹 점수 업데이트
         String gameId = String.valueOf(playerOutRequestDto.getGameId());
         Long outUserId = playerOutRequestDto.getOutUserId();
-        GameStatusDto gameStatusDto = (GameStatusDto) redisUtil.getGameStatusList(gameId);
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
 
 
 
