@@ -118,6 +118,20 @@ public class FlashcardsRequestDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class WordcardUpdateRequestDto {
+
+        private String wordcardStatus;
+
+        public WordcardStatus toEnum() {
+            return WordcardStatus.valueOf(wordcardStatus);
+
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CreateWordcardRequestDto {
 
         private String kor;

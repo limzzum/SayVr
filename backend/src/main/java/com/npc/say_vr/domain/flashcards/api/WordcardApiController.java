@@ -8,6 +8,7 @@ import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessag
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_WORDCARD;
 
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,8 @@ public class WordcardApiController {
     }
 
     //TODO: 퀴즈에 쓰기 쉽게 답을 제외한 선택지 세개씩 뽑아서 주는 것
+
+    //TODO:이 걸 만 든 이유??
     @PutMapping("/card/{wordcardId}")
     public ResponseEntity<?> updateWordcard//(@AuthenticationPrincipal Long userId,
     (@PathVariable Long wordcardId) {
@@ -67,12 +70,12 @@ public class WordcardApiController {
 
     @PatchMapping("/progress/{wordcardId}")
     public ResponseEntity<?> updateCardProgress//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long wordcardId, @RequestBody String status) {
+    (@PathVariable Long wordcardId, @RequestBody WordcardUpdateRequestDto requestDto) {
         Long userId = 1L;
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_UPDATE_LEARNING_STATUS.getMessage())
             .httpStatus(SUCCESS_UPDATE_LEARNING_STATUS.getHttpStatus())
-            .data(wordcardService.updateLearningProgress(userId, wordcardId, status))
+            .data(wordcardService.updateLearningProgress(userId, wordcardId, requestDto))
             .build();
         return ResponseEntity.ok(responseDto);
     }
@@ -89,6 +92,7 @@ public class WordcardApiController {
         return ResponseEntity.ok(responseDto);
     }
 
+    //TODO:이 걸 만 든 이유??
     @GetMapping("/tts/{wordcardId}")
     public ResponseEntity<?> readWordVoice(@PathVariable Long wordcardId) {
         ResponseDto responseDto = ResponseDto.builder()

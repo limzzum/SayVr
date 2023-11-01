@@ -2,6 +2,7 @@ package com.npc.say_vr.domain.flashcards.dto;
 
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
+import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
 import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
 import com.npc.say_vr.domain.flashcards.domain.Wordcard;
@@ -17,11 +18,13 @@ public class FlashcardsResponseDto {
 
         private String kor;
         private String eng;
+        private WordcardStatus wordcardStatus;
 
 
         public WordcardDto(Wordcard wordcard) {
             this.eng = wordcard.getWord().getEnglish();
             this.kor = wordcard.getWord().getKorean();
+            this.wordcardStatus = wordcard.getStatus();
         }
     }
 
@@ -30,9 +33,12 @@ public class FlashcardsResponseDto {
 
         private List<WordcardDto> wordcardList;
 
+        //TODO: filter로 백에서 프론트가 할 로직을,, 대신해 줄 수 있나? 복습 모드 unchecked만 보내주기
         public FlashcardDto(FlashcardDeck flashcardDeck) {
-            this.wordcardList = flashcardDeck.getWordcards().stream().map(WordcardDto::new).collect(
-                Collectors.toList());
+            this.wordcardList = flashcardDeck.getWordcards().stream()
+                .filter(wordcard -> !wordcard.getStatus().equals(WordcardStatus.DELETED))
+                .map(WordcardDto::new)
+                .collect(Collectors.toList());
         }
 
     }
@@ -131,11 +137,12 @@ public class FlashcardsResponseDto {
     @Getter
     public static class WordUpdateResponseDto {
 
-        Wordcard wordcard;
+        WordcardDto wordcard;
 
         @Builder
         public WordUpdateResponseDto(Wordcard wordcard) {
-            this.wordcard = wordcard;
+
+            this.wordcard = new WordcardDto(wordcard);
         }
 
         @Builder

@@ -1,6 +1,7 @@
 package com.npc.say_vr.domain.flashcards.service;
 
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
 
@@ -16,7 +17,8 @@ public interface WordcardService {
 
     WordUpdateResponseDto updateWordcard(Long userId, Long wordcardId);
 
-    WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId, String status);
+    WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId,
+        WordcardUpdateRequestDto status);
 
     MessageOnlyResponseDto deleteWordcard(Long userId, Long wordcardId);
 
