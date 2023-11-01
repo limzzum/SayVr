@@ -64,7 +64,7 @@ public class UserApiController {
     public ResponseEntity<?> modifyName(
         @AuthenticationPrincipal Long userId, @RequestParam String name) {
 
-        userService.updateUserName(userId, name);
+        userService.updateNickname(userId, name);
 
         return ResponseEntity.ok(ResponseDto.builder()
             .message(SUCCESS_NAME_UPDATE.getMessage())
