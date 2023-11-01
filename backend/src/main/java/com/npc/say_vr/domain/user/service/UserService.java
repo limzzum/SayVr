@@ -10,7 +10,7 @@ public interface UserService {
 
     FileUploadResponseDto updateUserProfileImg(Long userId, MultipartFile profileImg);
 
-    void updateUserName(Long userId, String name);
+    void updateNickname(Long userId, String nickName);
 
     void deleteUser(Long userId);
 
