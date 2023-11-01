@@ -66,12 +66,24 @@ public class FlashcardsApiController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<?> readPersonalDecks(
+    @GetMapping("/list/{userId}")
+    public ResponseEntity<?> readPrivateDecks(
         @PathVariable Long userId) {//(@AuthenticationPrincipal Long userId) {
         userId = 1L;
         ResponseDto responseDto = ResponseDto.builder()
-            .data(flashcardsService.readPersonalDecks(userId))
+            .data(flashcardsService.readPrivateDecks(userId))
+            .message(SUCCESS_READ_PRIVATE_DECK.getMessage())
+            .httpStatus(SUCCESS_READ_PRIVATE_DECK.getHttpStatus())
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> readPublicDecks(
+        @PathVariable Long userId) {//(@AuthenticationPrincipal Long userId) {
+        userId = 1L;
+        ResponseDto responseDto = ResponseDto.builder()
+            .data(flashcardsService.readPublicDecks())
             .message(SUCCESS_READ_PRIVATE_DECK.getMessage())
             .httpStatus(SUCCESS_READ_PRIVATE_DECK.getHttpStatus())
             .build();
