@@ -47,9 +47,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<StudyMember> studyMembers;
 
-    @OneToMany(mappedBy = "user")
-    private List<ChecklistItem> checklistItemList;
-
     public void updateName(String username) {
         this.username = username;
     }
