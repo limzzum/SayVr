@@ -8,7 +8,7 @@ import com.npc.say_vr.domain.study.domain.Goal;
 import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
-import com.npc.say_vr.domain.study.dto.common.CheckListItemDto;
+import com.npc.say_vr.domain.study.dto.responseDto.CheckListItemDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateWeeklySprintRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;

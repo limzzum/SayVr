@@ -4,8 +4,8 @@ import static com.npc.say_vr.domain.study.domain.QChecklistItem.checklistItem;
 import static com.npc.say_vr.domain.study.domain.QGoal.goal;
 
 import com.npc.say_vr.domain.study.constant.CheckListStatus;
-import com.npc.say_vr.domain.study.dto.common.CheckListItemDto;
-import com.npc.say_vr.domain.study.dto.common.QCheckListItemDto;
+import com.npc.say_vr.domain.study.dto.responseDto.CheckListItemDto;
+import com.npc.say_vr.domain.study.dto.responseDto.QCheckListItemDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

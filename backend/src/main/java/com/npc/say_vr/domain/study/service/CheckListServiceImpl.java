@@ -7,6 +7,7 @@ import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateCheckListRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListRequestDto;
+import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListStatusResponseDto;
 import com.npc.say_vr.domain.study.repository.CheckListItemRepository.CheckListItemRepository;
 import com.npc.say_vr.domain.study.repository.WeeklySprintRepository.WeeklySprintRepository;
 import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
@@ -51,5 +52,19 @@ public class CheckListServiceImpl implements CheckListService {
     // TODO : 예외처리 & studymemberid나 그런걸로 예외처리 같이 해도 좋겠다
     ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
     checklistItem.updateDescription(updateCheckListRequestDto.getDescription());
+  }
+  @Transactional
+  @Override
+  public void updateCheckListItemStatus(Long checkListId,
+                                        UpdateCheckListStatusResponseDto updateCheckListStatusResponseDto) {
+    // TODO : 예외처리 & studymemberid나 그런걸로 예외처리 같이 해도 좋겠다
+    ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
+    checklistItem.updateCheckListStatus(updateCheckListStatusResponseDto.getCheckListStatus());
+  }
+  @Transactional
+  @Override
+  public void deleteCheckListItemStatus(Long checkListId) {
+    ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
+    checklistItem.updateCheckListStatus(CheckListStatus.DELETE);
   }
 }
