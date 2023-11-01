@@ -2,6 +2,7 @@ package com.npc.say_vr.domain.study.dto.responseDto;
 
 import com.npc.say_vr.domain.study.constant.StudyRole;
 import com.npc.say_vr.domain.study.constant.StudyStatus;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,6 +17,7 @@ public class StudyInfoDto {
     private String rule;
     private StudyStatus studyStatus;
 
+    @QueryProjection
     @Builder
     public StudyInfoDto(Long studyId, String name, int maxPeople, int currentPeople, String description, String rule,
                           StudyStatus studyStatus) {

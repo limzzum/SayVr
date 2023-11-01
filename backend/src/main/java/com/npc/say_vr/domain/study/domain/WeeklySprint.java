@@ -14,9 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +42,6 @@ public class WeeklySprint extends BaseEntity {
   private List<ChecklistItem> checklistItemList;
 
   @OneToMany(mappedBy = "weeklySprint")
-  private List<Goal> Goal;
+  private List<Goal> GoalList;
 
 }
