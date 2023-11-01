@@ -21,13 +21,17 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Goal extends BaseEntity {
+public class Goal extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,9 +50,21 @@ public abstract class Goal extends BaseEntity {
   private WeeklySprint weeklySprint;
 
   @OneToMany(mappedBy = "goal")
-  private List<StudyChecklistItem> checklistItemList;
+  private List<ChecklistItem> checklistItemList;
 
   @Size(max = 30)
   private String description;
+
+  public void updateGoal(int count) {
+    this.count = count;
+  }
+
+  public void updateETCGoal(String description) {
+    this.description = description;
+  }
+
+  public void updateStatus(OptionType optionType) {
+    this.optionType = optionType;
+  }
 
 }
