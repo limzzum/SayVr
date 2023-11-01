@@ -58,7 +58,7 @@ public class PersonalDeck {
 
     private int forkCount = 0;
 
-    private Integer wordCount;
+    private int wordCount = 0;
 
     public void updateWordCount(int count) {
         this.wordCount = count;
