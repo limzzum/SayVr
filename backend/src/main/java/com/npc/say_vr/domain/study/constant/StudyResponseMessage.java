@@ -18,7 +18,8 @@ public enum StudyResponseMessage {
     GOAL_CREATE_SUCCESS(HttpStatus.CREATED,"목표 생성 완료"),
     GOAL_UPDATE_SUCCESS(HttpStatus.ACCEPTED,"목표 수정 완료"),
     GOAL_DELETE_SUCCESS(HttpStatus.OK,"목표 삭제 완료"),
-    CHECKLISTITEM_CREATE_SUCCESS(HttpStatus.CREATED,"체크리스트 생성 완료");
+    CHECKLISTITEM_CREATE_SUCCESS(HttpStatus.CREATED,"체크리스트 생성 완료"),
+    CHECKLISTITEM_UPDATE_SUCCESS(HttpStatus.OK,"체크리스트 수정 완료");
 
     private final HttpStatus httpStatus;
     private final String message;
