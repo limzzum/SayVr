@@ -224,7 +224,7 @@ public class GoalServiceImpl implements GoalService{
             goal.updateETCGoal(updateGoalRequestDto.getDescription());
             List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
             for(ChecklistItem checklistItem : checklistItemList) {
-                checklistItem.updateDescription(goal.getDescription());
+                checklistItem.updateETCChecklistItem(goal.getDescription());
             }
         }else {
             goal.updateGoal(updateGoalRequestDto.getCount());
@@ -237,7 +237,7 @@ public class GoalServiceImpl implements GoalService{
                 }else {
                     itemStatus = CheckListStatus.ONGOING;
                 }
-                checklistItem.updateDescriptionAndStatus(itemStatus,description);
+                checklistItem.updateChecklistItemAndStatus(itemStatus,description);
             }
         }
     }
@@ -323,7 +323,7 @@ public class GoalServiceImpl implements GoalService{
         List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
 
         for(ChecklistItem checklistItem : checklistItemList) {
-            checklistItem.updateCheckListStatus(CheckListStatus.DELETE);
+            checklistItem.updateChecklistItemAndOptional(CheckListStatus.DELETE);
         }
     }
 
