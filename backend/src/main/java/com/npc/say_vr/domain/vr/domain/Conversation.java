@@ -7,22 +7,27 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Conversation extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "conversation_id")
     private Long id;
 
@@ -31,16 +36,24 @@ public class Conversation extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "conversation")
-    private List<Talk> talkList;
+    private List<Message> messageList;
+
+//    @OneToOne(fetch = FetchType.LAZY, mappedBy = "conversation")
+//    private Score score;
 
     private String review;
     private String situation;
 
     @Range(min = 0, max = 100)
-    private Integer average_grammar;
+    private int conversationGrammar;
     @Range(min = 0, max = 100)
-    private Integer average_context;
+    private int conversationContext;
     @Range(min = 0, max = 100)
-    private Integer average_pronunciation;
+    private int conversationPronunciation;
+
+    public void updateMessageList(List<Message> messageList) {
+        this.messageList = messageList;
+    }
+
 
 }
