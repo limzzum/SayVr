@@ -5,6 +5,7 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckSettingsUpd
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.SearchRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckDetailResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckListResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
 import com.npc.say_vr.global.dto.ResponseDto;
 
@@ -14,7 +15,9 @@ public interface FlashcardsService {
 
     DeckDetailResponseDto createForkedDeck(Long userId, Long deckId);
 
-    ResponseDto readPersonalDecks(Long userId);
+    DeckListResponseDto readPrivateDecks(Long userId);
+
+    DeckListResponseDto readPublicDecks();
     //TODO: what to do when deck is private and requested access, possible exception
 
     ResponseDto readDeckSearch(Long userId, SearchRequestDto searchRequestDto);
