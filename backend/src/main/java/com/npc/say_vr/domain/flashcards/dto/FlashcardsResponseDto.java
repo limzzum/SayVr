@@ -59,6 +59,16 @@ public class FlashcardsResponseDto {
     }
 
     @Getter
+    public static class DeckCreateResponseDto {
+
+        private PersonalDeck personalDeck;
+
+        public DeckCreateResponseDto(PersonalDeck personalDeck) {
+            this.personalDeck = personalDeck;
+        }
+    }
+
+    @Getter
     public static class DeckDetailResponseDto {
 
         PersonalDeck personalDeck;

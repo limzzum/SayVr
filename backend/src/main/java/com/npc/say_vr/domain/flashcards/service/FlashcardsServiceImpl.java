@@ -10,6 +10,7 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateFlashcard
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckSettingsUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.SearchRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckCreateResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckDetailResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckListResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
@@ -41,22 +42,23 @@ public class FlashcardsServiceImpl implements FlashcardsService {
 
 
     @Override
-    public DeckDetailResponseDto createPersonalDeck(Long userId,
+    public DeckCreateResponseDto createPersonalDeck(Long userId,
         CreateFlashcardsRequestDto requestDto) {
         //TODO: 예외 처리 유저 없을때 ->
         FlashcardDeck flashcardDeck = FlashcardDeck.builder().build();
         flashcardDeck = flashcardsRepository.save(flashcardDeck);
         User user = userRepository.findById(userId).orElseThrow();
         PersonalDeck personalDeck = requestDto.createPersonalDeck(user, flashcardDeck);
+        personalDeck.updateSavingProgress(SavingProgressStatus.ENABLED);
         personalDeck = personalDeckRepository.save(personalDeck);
 
         //TODO: 메세지 지원이 한 것 보고 constant에 생성 성공 메세지 & 코드
 
-        return new DeckDetailResponseDto(personalDeck);
+        return new DeckCreateResponseDto(personalDeck);
     }
 
     @Override
-    public DeckDetailResponseDto createForkedDeck(Long userId, Long personalDeckId) {
+    public DeckCreateResponseDto createForkedDeck(Long userId, Long personalDeckId) {
         PersonalDeck deckToFork = personalDeckRepository.findById(personalDeckId).orElseThrow();
         deckToFork.updateForkCount();
         personalDeckRepository.save(deckToFork);
@@ -75,7 +77,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
             .build();
         personalDeck = personalDeckRepository.save(personalDeck);
 
-        return new DeckDetailResponseDto(personalDeck);
+        return new DeckCreateResponseDto(personalDeck);
     }
 
     @Override
@@ -117,54 +119,72 @@ public class FlashcardsServiceImpl implements FlashcardsService {
         }
     }
 
+    @Transactional
     @Override
     public DeckDetailResponseDto updateSavingProgressOption(Long userId, Long deckId,
         DeckUpdateRequestDto requestDto) {
         PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
-        personalDeck.updateSavingProgress(requestDto.toEnum());
-        personalDeck = personalDeckRepository.save(personalDeck);
+        if (!personalDeck.getUser().getId().equals(userId)) {
+            log.info("not authorized");
+//            return new MessageOnlyResponseDto("권한이 없습니다");
+        } else {
+            personalDeck.updateSavingProgress(requestDto.toEnum());
+            personalDeck = personalDeckRepository.save(personalDeck);
+        }
         return new DeckDetailResponseDto(personalDeck);
     }
 
+    @Transactional
     @Override
-    public DeckDetailResponseDto updateResetProgress(Long userId, Long deckId,
-        DeckUpdateRequestDto requestDto) {
+    public DeckDetailResponseDto updateResetProgress(Long userId, Long deckId) {
         PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
-        FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
-
-        personalDeck.updateSavingProgress(SavingProgressStatus.DISABLED);
-        //TODO: 학습상태 전부 unchecked로 바꾸기
-        List<Wordcard> words = flashcardDeck.getWordcards();
-        words = words.stream().map(wordcard -> {
-                wordcard.updateStatus(WordcardStatus.UNCHECKED);
-                return wordcard;
-            })
-            .collect(Collectors.toList());
-        words = wordcardRepository.saveAll(words);
-        flashcardDeck.updateWords(words);
-        flashcardDeck = flashcardsRepository.save(flashcardDeck);
-        personalDeck.updateFlashcardDeck(flashcardDeck);
-        personalDeck = personalDeckRepository.save(personalDeck);
-
+        if (!personalDeck.getUser().getId().equals(userId)) {
+            log.info("not authorized");
+//            return new MessageOnlyResponseDto("권한이 없습니다");
+        } else {
+            FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
+            //TODO: 학습상태 전부 unchecked로 바꾸기
+            List<Wordcard> words = flashcardDeck.getWordcards();
+            words = words.stream().map(wordcard -> {
+                    wordcard.updateStatus(WordcardStatus.UNCHECKED);
+                    return wordcard;
+                })
+                .collect(Collectors.toList());
+            words = wordcardRepository.saveAll(words);
+            flashcardDeck.updateWords(words);
+            flashcardDeck = flashcardsRepository.save(flashcardDeck);
+            personalDeck.updateFlashcardDeck(flashcardDeck);
+            personalDeck = personalDeckRepository.save(personalDeck);
+        }
         return new DeckDetailResponseDto(personalDeck);
     }
 
+    @Transactional
     @Override
     public DeckDetailResponseDto updateDeck(Long userId, Long deckId,
         DeckSettingsUpdateRequestDto requestDto) {
         PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
-
-        personalDeck.updateStatus(requestDto.toEnum());
-        personalDeck.updateName(requestDto.getName());
-        personalDeck = personalDeckRepository.save(personalDeck);
-
+        if (!personalDeck.getUser().getId().equals(userId)) {
+            log.info("not authorized");
+//            return new MessageOnlyResponseDto("권한이 없습니다");
+        } else {
+            personalDeck.updateStatus(requestDto.toEnum());
+            personalDeck.updateName(requestDto.getName());
+            personalDeck = personalDeckRepository.save(personalDeck);
+        }
         return new DeckDetailResponseDto(personalDeck);
     }
 
+    @Transactional
     @Override
     public MessageOnlyResponseDto deleteDeck(Long userId, Long deckId) {
         PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();//TODO 없을때
-        personalDeck.updateStatus(FlashcardStatus.DELETED);
-        return new MessageOnlyResponseDto("단어장이 삭제되었습니다");
+        if (personalDeck.getUser().getId().equals(userId)) {
+            personalDeck.updateStatus(FlashcardStatus.DELETED);
+            personalDeckRepository.save(personalDeck);
+            return new MessageOnlyResponseDto("단어장이 삭제되었습니다");
+        } else {
+            return new MessageOnlyResponseDto("권한이 없습니다");
+        }
     }
 }

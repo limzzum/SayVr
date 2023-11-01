@@ -4,6 +4,7 @@ import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessag
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_FORK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_DELETE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_DECK_DETAIL;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_DECK_SEARCH;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_PRIVATE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_DECK_RESET;
@@ -12,6 +13,7 @@ import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessag
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateFlashcardsRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckSettingsUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.SearchRequestDto;
 import com.npc.say_vr.domain.flashcards.service.FlashcardsService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +62,14 @@ public class FlashcardsApiController {
     //TODO: 단어장 생성, 단어장 조회(검색) -1 내단어장 -2 공개단어장 -3 태그 내 -4 태그 공개
     //TODO: search, 검색 기반으로 전달받는 정보가 private/ public , search keyword?,
     @GetMapping("/search")
-    public ResponseEntity<?> readDecksBySearch() {//(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<?> readDecksBySearch(
+        @RequestBody SearchRequestDto requestDto) {//(@AuthenticationPrincipal Long userId) {
         Long userId = 1L;
-        ResponseDto responseDto = ResponseDto.builder().build();
+        ResponseDto responseDto = ResponseDto.builder()
+            .data(flashcardsService.readDeckSearch(userId, requestDto))
+            .message(SUCCESS_READ_DECK_SEARCH.getMessage())
+            .httpStatus(SUCCESS_READ_DECK_SEARCH.getHttpStatus())
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
@@ -79,9 +86,7 @@ public class FlashcardsApiController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> readPublicDecks(
-        @PathVariable Long userId) {//(@AuthenticationPrincipal Long userId) {
-        userId = 1L;
+    public ResponseEntity<?> readPublicDecks() {//(@AuthenticationPrincipal Long userId) {
         ResponseDto responseDto = ResponseDto.builder()
             .data(flashcardsService.readPublicDecks())
             .message(SUCCESS_READ_PRIVATE_DECK.getMessage())
@@ -116,12 +121,12 @@ public class FlashcardsApiController {
 
     @PatchMapping("/reset-progress/{deckId}")
     public ResponseEntity<?> updateDeckSavingProgress//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long deckId, @RequestBody DeckUpdateRequestDto requestDto) {
+    (@PathVariable Long deckId) {
         Long userId = 1L;
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_UPDATE_DECK_RESET.getMessage())
             .httpStatus(SUCCESS_UPDATE_DECK_RESET.getHttpStatus())
-            .data(flashcardsService.updateResetProgress(userId, deckId, requestDto))
+            .data(flashcardsService.updateResetProgress(userId, deckId))
             .build();
         return ResponseEntity.ok(responseDto);
     }

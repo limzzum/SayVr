@@ -49,7 +49,9 @@ public class PersonalDeck {
     private FlashcardStatus status;
 
     @Enumerated(value = EnumType.STRING)
-    private SavingProgressStatus savingProgressStatus;
+//    @ColumnDefault(value = SavingProgressStatus.ENABLED)
+    @Column(columnDefinition = "ENUM('ENABLED', 'DISABLED') DEFAULT 'ENABLED'")
+    private SavingProgressStatus savingProgressStatus = SavingProgressStatus.ENABLED;
 
     @OneToMany(mappedBy = "personalDeck")
     private List<DeckTag> tags;
