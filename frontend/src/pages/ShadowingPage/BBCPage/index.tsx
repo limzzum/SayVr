@@ -1,33 +1,24 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { getPlaylistItems, PlaylistItem } from "../../../api/ShadowingPageAPI/EmbedVODAPI";
 import "./style.css";
 import BBC from "../../../assets/YoutubeCard/BBC.png";
+import { useNavigate } from "react-router-dom";
 
 function BBCPage() {
-  const [playlistItems, setPlaylistItems] = useState<any[]>([]);
+  const [playlistItems, setPlaylistItems] = useState<PlaylistItem[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const apiUrl = "https://www.googleapis.com/youtube/v3/playlistItems";
-    const apiKey = "AIzaSyCXec2vao9cSFYtNLN5nbmNpt1bF4B1Umo";
-    const playlistId = "PLcetZ6gSk969Tk3cxyIF0_RKRuM60zK9Q";
+    const playlistId = "PLcetZ6gSk96-ayXj5thbTpbh2vHWpP08o";
 
-    const params = {
-      part: "snippet",
-      maxResults: 25,
-      status: "",
-      playlistId: playlistId,
-      key: apiKey,
-    };
-
-    axios
-      .get(apiUrl, { params })
+    getPlaylistItems(playlistId)
       .then((response) => {
         setPlaylistItems(response.data.items);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("데이터를 불러오는 중 오류 발생:", error);
       });
-  }, []);
+  }, [playlistItems]);
 
   return (
     <div className="container">
@@ -38,22 +29,27 @@ function BBCPage() {
         <div className="row justify-content-start align-items-center">
           <div className="d-flex">
             {playlistItems.map((item) => (
-              <a
-                key={item.id}
-                href={`https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`}
-                className="playlist-item-link"
-              >
-                <div className="card" style={{width: "18rem"}}>
+              <div key={item.id}>
+                <div
+                  className="card"
+                  style={{ width: "18rem", cursor: "pointer" }}
+                  onClick={() => {
+                    console.log(item.snippet);
+                    navigate("/Shadowing/ShadowingDetailPage", { state: { videoId: item.snippet.resourceId.videoId } });
+                  }}
+                >
                   <img
                     src={item.snippet.thumbnails.medium.url}
                     alt={item.snippet.title}
                     className="card-img-top video-thumbnail"
                   />
                   <div className="card-body">
-                    <p className="card-text video-title">{item.snippet.title}</p>
+                    <p className="card-text video-title" title={item.snippet.title}>
+                      {item.snippet.title}
+                    </p>
                   </div>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </div>
