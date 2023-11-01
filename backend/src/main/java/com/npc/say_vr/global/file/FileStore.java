@@ -12,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileStore {
 
     private final String fileDir = "/var/www/profiles"; //
-    //    "C:\\Users\\SSAFY\\Documents\\profile";
-    //"/Users/limzzum";
 
     private String makeFolder() {
 

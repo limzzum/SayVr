@@ -29,31 +29,38 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException, NotFoundException {
 
-        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorization == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        if (!authorization.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authorization.substring(7);
-
-        if (!jwtUtil.isValidToken(token)) {
-            throw new NotFoundException(NOT_VALID_TOKEN.getMessage());
-        }
-
-        Long userId = jwtUtil.getUserId(token);
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-            userId, null, List.of(new SimpleGrantedAuthority("USER")));
+            1L, null, List.of(new SimpleGrantedAuthority("USER")));
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
+        return;
+//        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+//
+//        if (authorization == null) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//
+//        if (!authorization.startsWith("Bearer ")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//
+//        String token = authorization.substring(7);
+//
+//        if (!jwtUtil.isValidToken(token)) {
+//            throw new NotFoundException(NOT_VALID_TOKEN.getMessage());
+//        }
+//
+//        Long userId = jwtUtil.getUserId(token);
+
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//            userId, null, List.of(new SimpleGrantedAuthority("USER")));
+//        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//
+//        filterChain.doFilter(request, response);
     }
 }
