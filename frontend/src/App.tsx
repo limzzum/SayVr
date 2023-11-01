@@ -12,6 +12,7 @@ import BBCPage from "./pages/ShadowingPage/BBCPage"
 import CNNPage from "./pages/ShadowingPage/CNNPage";
 import TeamCOCOPage from "./pages/ShadowingPage/TeamCOCOPage";
 import TEDPage from "./pages/ShadowingPage/TEDPage"; 
+import ShadowingDtailPage from "./pages/ShadowingPage/ShadowingDetailPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       <Route path="/Shadowing/CNNPage" element={<CNNPage />} />
       <Route path="/Shadowing/TeamCOCOPage" element={<TeamCOCOPage />} />
       <Route path="/Shadowing/TEDPage" element={<TEDPage />} />
+      <Route path="/Shadowing/ShadowingDetailPage" element={<ShadowingDtailPage />} />
       <Route path="/Study" element={<StudyPage />} />
       <Route path="/VocabList" element={<VocabListPage />} />
     </Routes>
