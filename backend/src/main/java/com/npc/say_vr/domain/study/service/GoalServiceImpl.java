@@ -256,6 +256,7 @@ public class GoalServiceImpl implements GoalService{
 
         List<StudyMember> studyMemberEntityList = new ArrayList<>();
 
+        // TODO : userId말고 studyId로 받아서 찾고 제외하는게 더 좋게 성능이 개선될 것 가틈
         StudyMember myStudyMember = studyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
 
         studyMemberEntityList.add(myStudyMember);
