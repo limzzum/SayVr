@@ -22,14 +22,16 @@ public class UserResponseDto {
     @Getter
     public static class UserInfoResponseDto {
 
-        private String name;
+        private String username;
+        private String nickname;
         private String profile;
         private Long ranking;
         private String tier;
 
         @Builder
         public UserInfoResponseDto(User user) {
-            this.name = user.getUsername();
+            this.username = user.getUsername();
+            this.nickname = user.getNickname();
             this.profile = user.getProfile();
         }
     }
