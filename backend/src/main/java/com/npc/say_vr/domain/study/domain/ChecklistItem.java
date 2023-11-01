@@ -62,13 +62,17 @@ public class ChecklistItem  extends BaseEntity {
   @JoinColumn(name = "weeklySprint_id")
   private WeeklySprint weeklySprint;
 
-  public void updateChecklistItemAndDone(CheckListStatus checkListStatus,String description) {
+  public void updateChecklistItemAndStatus(CheckListStatus checkListStatus,String description) {
     this.checkListStatus = checkListStatus;
     this.description = description;
   }
 
   public void updateChecklistItemAndOptional(CheckListStatus checkListStatus) {
     this.checkListStatus = checkListStatus;
+  }
+
+  public void updateETCChecklistItem(String description) {
+    this.description = description;
   }
 
 }

@@ -25,6 +25,8 @@ import com.npc.say_vr.global.constant.Status;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,7 @@ public class GoalServiceImpl implements GoalService{
     public WeeklySprintDetailResponse createWeeklySprint(Long userId,Long studyId, CreateWeeklySprintRequestDto createWeeklySprintRequestDto) {
         // TODO : 성능개선하기 => 시퀀스 전략 : BATCH INSERT OR JDBCTEMPLATE 전략 => 시간 측정!
         // TODO : checklist 저장하고 가져올 때 성능개선..????
+        // TODO : 이전 weeklysprint가 실행중일 때 예외처리
         LocalDate startDate = createWeeklySprintRequestDto.getStartDate();
         List<CreateGoalRequestDto> goalDtoList = createWeeklySprintRequestDto.getGoalDtoList();
 
@@ -71,7 +74,7 @@ public class GoalServiceImpl implements GoalService{
             Goal goal;
             if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
                 goal = Goal.builder()
-                        .count(createGoalRequestDto.getCount())
+                        .count(1)
                         .optionType(createGoalRequestDto.getOptionType())
                         .weeklySprint(weeklySprint)
                         .description(createGoalRequestDto.getDescription())
@@ -90,7 +93,7 @@ public class GoalServiceImpl implements GoalService{
             goalEntityList.add(goal);
         }
 
-        // TODO : 2중FOR문 개선하기
+        // TODO : 2중FOR문 개선하기 & count 개선
         for(StudyMember studyMember : studyMembers) {
             List<CheckListItemDto> checkListItemDtoList = new ArrayList<>();
             MemberCheckListResponseDto memberCheckListResponseDto = MemberCheckListResponseDto
@@ -100,10 +103,14 @@ public class GoalServiceImpl implements GoalService{
                     .checkListItemDtoList(checkListItemDtoList)
                     .build();
             for(Goal goal : goalEntityList) {
+                String description = goal.getDescription();
+                if(!goal.getOptionType().equals(OptionType.ETC)) {
+                    description += " (" + 0 + "/" + goal.getCount()+")"; // TODO : 개선하기
+                }
                 ChecklistItem checklistItem = ChecklistItem.builder()
                         .checkListStatus(CheckListStatus.ONGOING)
                         .optionCheckItem(OptionCheckItem.STUDYGOAL)
-                        .description(goal.getDescription())
+                        .description(description)
                         .current_count(0)
                         .goal(goal)
                         .studyMember(studyMember)
@@ -138,7 +145,7 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public WeeklySprintDetailResponse createGoal(Long userId,Long studyId, Long weeklySprintId,CreateGoalRequestDto createGoalRequestDto) {
 
-        if(goalRepository.existGoal(weeklySprintId,createGoalRequestDto.getOptionType())) {
+        if(!createGoalRequestDto.getOptionType().equals(OptionType.ETC) && goalRepository.existGoal(weeklySprintId,createGoalRequestDto.getOptionType())) {
             // TODO : 만약 이미 있는 옵션 타입이라면 예외 처리
             log.info("이미 있는 옵션 타입입니다.");
             return null;
@@ -157,7 +164,7 @@ public class GoalServiceImpl implements GoalService{
         Goal goal;
         if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
             goal = Goal.builder()
-                .count(createGoalRequestDto.getCount())
+                .count(1)
                 .optionType(createGoalRequestDto.getOptionType())
                 .weeklySprint(weeklySprint)
                 .description(createGoalRequestDto.getDescription())
@@ -173,13 +180,18 @@ public class GoalServiceImpl implements GoalService{
             goalRepository.save(goal);
         }
 
+        String description = goal.getDescription();
+        if(!goal.getOptionType().equals(OptionType.ETC)) {
+            description += "(" + 0 + "/" + goal.getCount()+")";
+        }
+
         List<StudyMember> studyMemberEntityList = studyMemberRepository.findByStudyIdAndStatus(studyId,Status.ACTIVE);
 
         for(StudyMember studyMember : studyMemberEntityList){
             ChecklistItem checklistItem = ChecklistItem.builder()
                 .checkListStatus(CheckListStatus.ONGOING)
                 .optionCheckItem(OptionCheckItem.STUDYGOAL)
-                .description(goal.getDescription())
+                .description(description)
                 .current_count(0)
                 .goal(goal)
                 .studyMember(studyMember)
@@ -209,28 +221,23 @@ public class GoalServiceImpl implements GoalService{
         Goal goal = goalRepository.findGoalAndCheckListItem(goalId);
         // TODO : 코드 리팩토링
         if(goal.getOptionType().equals(OptionType.ETC)) {
-            goal.updateETCGoal(updateGoalRequestDto.getCount(), updateGoalRequestDto.getDescription());
+            goal.updateETCGoal(updateGoalRequestDto.getDescription());
             List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
             for(ChecklistItem checklistItem : checklistItemList) {
-                CheckListStatus itemStatus;
-                if(goal.getCount() <= checklistItem.getCurrent_count()) {
-                    itemStatus = CheckListStatus.DONE;
-                }else {
-                    itemStatus = CheckListStatus.ONGOING;
-                }
-                checklistItem.updateChecklistItemAndDone(itemStatus, goal.getDescription());
+                checklistItem.updateETCChecklistItem(goal.getDescription());
             }
         }else {
-            goal.updateGoal(goal.getCount());
+            goal.updateGoal(updateGoalRequestDto.getCount());
             List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
             for(ChecklistItem checklistItem : checklistItemList) {
+                String description = replaceNumbers(checklistItem.getDescription(), null,goal.getCount());
                 CheckListStatus itemStatus;
                 if(goal.getCount() <= checklistItem.getCurrent_count()) {
                     itemStatus = CheckListStatus.DONE;
                 }else {
                     itemStatus = CheckListStatus.ONGOING;
                 }
-                checklistItem.updateChecklistItemAndOptional(itemStatus);
+                checklistItem.updateChecklistItemAndStatus(itemStatus,description);
             }
         }
     }
@@ -319,6 +326,28 @@ public class GoalServiceImpl implements GoalService{
             checklistItem.updateChecklistItemAndOptional(CheckListStatus.DELETE);
         }
     }
+
+    @Override
+    public String replaceNumbers(String input, Integer replacement1, Integer replacement2) {
+        Pattern pattern = Pattern.compile("\\(\\d+/\\d+\\)");
+        Matcher matcher = pattern.matcher(input);
+
+        String replaced = input;
+
+        while (matcher.find()) {
+            String match = matcher.group();
+            String[] parts = match.substring(1, match.length() - 1).split("/");
+
+            int newReplacement1 = (replacement1 != null) ? replacement1 : Integer.parseInt(parts[0]);
+            int newReplacement2 = (replacement2 != null) ? replacement2 : Integer.parseInt(parts[1]);
+
+            String replacementStr = "(" + newReplacement1 + "/" + newReplacement2 + ")";
+            replaced = replaced.replace(match, replacementStr);
+        }
+
+        return replaced;
+    }
+
 
 
 }

@@ -30,4 +30,6 @@ public interface GoalService {
     WeeklySprintDetailResponse deleteGoal(Long userId,Long studyId,Long weeklySprintId,Long goalId);
 
     void deleteGoalAndSave(Long goalId);
+
+    String replaceNumbers(String input, Integer replacement1, Integer replacement2);
 }

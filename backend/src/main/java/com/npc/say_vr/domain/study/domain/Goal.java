@@ -59,8 +59,7 @@ public class Goal extends BaseEntity {
     this.count = count;
   }
 
-  public void updateETCGoal(int count, String description) {
-    this.count = count;
+  public void updateETCGoal(String description) {
     this.description = description;
   }
 
