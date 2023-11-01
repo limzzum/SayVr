@@ -5,7 +5,6 @@ import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.global.entity.BaseEntity;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -48,8 +47,18 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<StudyMember> studyMembers;
 
-    @OneToMany(mappedBy = "user")
-    private List<ChecklistItem> checklistItemList;
+    public void updateName(String username) {
+        this.username = username;
+    }
+
+    public void updateProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public void signOut() {
+        this.userStatus = UserStatus.DELETE;
+    }
+
 
     //TODO
 //    private String provider;
