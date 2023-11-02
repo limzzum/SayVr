@@ -31,7 +31,7 @@ public class checkListApiController {
   private final CheckListService checkListService;
   private final GoalService goalService;
 
-  @PostMapping("{studyId}/{weeklySprintId}")
+  @PostMapping("/{studyId}/{weeklySprintId}")
   public ResponseEntity<?> createCheckListItem(@PathVariable Long studyId, @PathVariable Long weeklySprintId,@RequestBody CreateCheckListRequestDto createCheckListRequestDto) {
     Long userId = 1L;
     checkListService.createCheckListItem(studyId,weeklySprintId,createCheckListRequestDto);
@@ -43,7 +43,7 @@ public class checkListApiController {
     return ResponseEntity.ok(responseDto);
   }
 
-  @PutMapping("{studyId}/{weeklySprintId}/{checkListId}")
+  @PutMapping("/{studyId}/{weeklySprintId}/{checkListId}")
   public ResponseEntity<?> updateCheckListItem(@PathVariable Long studyId, @PathVariable Long weeklySprintId,@PathVariable Long checkListId,@RequestBody UpdateCheckListRequestDto updateCheckListRequestDto) {
     Long userId = 1L;
     checkListService.updateCheckListItem(checkListId,updateCheckListRequestDto);
