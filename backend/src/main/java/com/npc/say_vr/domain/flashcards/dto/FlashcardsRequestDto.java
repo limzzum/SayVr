@@ -60,6 +60,21 @@ public class FlashcardsRequestDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class PageRequestDto {
+
+        private Long userId;
+        private String type;
+        private List<String> tags;
+        private String keyword;
+        private Integer page;
+        private Integer pageSize;
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ForkRequestDto {
 
         private Long userId;

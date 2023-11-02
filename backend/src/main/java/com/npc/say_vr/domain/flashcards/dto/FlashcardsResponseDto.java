@@ -16,12 +16,14 @@ public class FlashcardsResponseDto {
     @Getter
     public static class WordcardDto {
 
+        private Long id;
         private String kor;
         private String eng;
         private WordcardStatus wordcardStatus;
 
 
         public WordcardDto(Wordcard wordcard) {
+            this.id = wordcard.getId();
             this.eng = wordcard.getWord().getEnglish();
             this.kor = wordcard.getWord().getKorean();
             this.wordcardStatus = wordcard.getStatus();
@@ -67,21 +69,34 @@ public class FlashcardsResponseDto {
     @Getter
     public static class DeckCreateResponseDto {
 
-        private PersonalDeck personalDeck;
+        private Long id;
+        private Long userId;
+        private String name;
+        private String nickname;
+        private Long flashcardDeckId;
+        private FlashcardStatus status;
+        private SavingProgressStatus savingProgressStatus;
 
         public DeckCreateResponseDto(PersonalDeck personalDeck) {
-            this.personalDeck = personalDeck;
+            this.id = personalDeck.getId();
+            this.userId = personalDeck.getUser().getId();
+            this.name = personalDeck.getName();
+            this.nickname = personalDeck.getUser().getNickname();
+            this.flashcardDeckId = personalDeck.getFlashcardDeck().getId();
+            this.status = personalDeck.getStatus();
+            this.savingProgressStatus = personalDeck.getSavingProgressStatus();
         }
     }
 
     @Getter
     public static class DeckDetailResponseDto {
 
-        PersonalDeck personalDeck;
+        //        PersonalDeck personalDeck;
         //        FlashcardDeck flashcardDeck;
         private Long id;
         private Long userId;
         private String name;
+        private String nickname;
         private Long flashcardDeckId;
         private FlashcardDto flashcardDto;
         private FlashcardStatus status;
@@ -97,6 +112,7 @@ public class FlashcardsResponseDto {
             this.id = personalDeck.getId();
             this.userId = personalDeck.getUser().getId();
             this.name = personalDeck.getName();
+            this.nickname = personalDeck.getUser().getNickname();
             this.flashcardDeckId = personalDeck.getFlashcardDeck().getId();
             this.flashcardDto = new FlashcardDto(personalDeck.getFlashcardDeck());
             this.status = personalDeck.getStatus();
