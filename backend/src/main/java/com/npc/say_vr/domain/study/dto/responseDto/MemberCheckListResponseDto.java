@@ -1,6 +1,5 @@
 package com.npc.say_vr.domain.study.dto.responseDto;
 
-import com.npc.say_vr.domain.study.dto.common.CheckListItemDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
