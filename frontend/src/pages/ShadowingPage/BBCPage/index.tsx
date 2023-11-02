@@ -34,7 +34,6 @@ function BBCPage() {
                   className="card"
                   style={{ width: "18rem", cursor: "pointer" }}
                   onClick={() => {
-                    console.log(item.snippet);
                     navigate("/Shadowing/ShadowingDetailPage", { state: { videoId: item.snippet.resourceId.videoId } });
                   }}
                 >

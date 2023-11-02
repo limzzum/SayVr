@@ -3,6 +3,7 @@ package com.npc.say_vr.domain.study.repository.studyMemberRepository;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.global.constant.Status;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,11 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepository{
   @Override
   public StudyMember save(StudyMember studyMember) {
     return jpaStudyMemberRepository.save(studyMember);
+  }
+
+  @Override
+  public Optional<StudyMember> findById(Long studyMemberId) {
+    return jpaStudyMemberRepository.findById(studyMemberId);
   }
 
   @Override

@@ -1,13 +1,11 @@
-package com.npc.say_vr.domain.study.dto.common;
+package com.npc.say_vr.domain.study.dto.responseDto;
 
 import com.npc.say_vr.domain.study.constant.CheckListStatus;
 import com.npc.say_vr.domain.study.constant.OptionCheckItem;
 import com.npc.say_vr.domain.study.domain.ChecklistItem;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data

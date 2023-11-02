@@ -1,13 +1,17 @@
 package com.npc.say_vr.domain.study.repository.studyMemberRepository;
 
 import com.npc.say_vr.domain.study.domain.StudyMember;
+import com.npc.say_vr.domain.study.domain.WeeklySprint;
 import com.npc.say_vr.global.constant.Status;
 import java.util.List;
+import java.util.Optional;
 
 public interface StudyMemberRepository {
   StudyMember findByUserIdAndStudyId(Long userId, Long studyId);
 
   StudyMember save(StudyMember studyMember);
+
+  Optional<StudyMember> findById(Long studyMemberId);
 
   StudyMember findEarliestJoinedMember(Long studyId);
 

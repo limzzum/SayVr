@@ -8,7 +8,7 @@ import com.npc.say_vr.domain.study.domain.Goal;
 import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
-import com.npc.say_vr.domain.study.dto.common.CheckListItemDto;
+import com.npc.say_vr.domain.study.dto.responseDto.CheckListItemDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateWeeklySprintRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;
@@ -256,6 +256,7 @@ public class GoalServiceImpl implements GoalService{
 
         List<StudyMember> studyMemberEntityList = new ArrayList<>();
 
+        // TODO : userId말고 studyId로 받아서 찾고 제외하는게 더 좋게 성능이 개선될 것 가틈
         StudyMember myStudyMember = studyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
 
         studyMemberEntityList.add(myStudyMember);
