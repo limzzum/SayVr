@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 
-const key = 'c3f3e5bcffcd421f8e8c4208407de3cd';
 const endpoint = 'https://api.cognitive.microsofttranslator.com';
 const location = 'eastus';
 
@@ -24,7 +23,7 @@ const Translation: React.FC<TranslationProps> = () => {
       url: `${endpoint}${route}`,
       data: requestBody,
       headers: {
-        'Ocp-Apim-Subscription-Key': key,
+        'Ocp-Apim-Subscription-Key': `${process.env.REACT_APP_AZURE_API_KEY}`,
         'Ocp-Apim-Subscription-Region': location,
         'Content-Type': 'application/json',
       },
