@@ -1,22 +1,23 @@
-import { useState, useEffect } from "react"
-import MyWordCard from "../../components/MyWordCard"
-import PlusBtn from "../../assets/Etc/PlusBtn.png"
+import { useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
+import { PersonalDeckTitle, getPersonalFlashcards } from "../../api/VocabListAPI/FlashcardsAPI"
+import PlusBtn from "../../assets/Etc/PlusBtn.png"
+import MyWordCard from "../../components/MyWordCard"
+import AddButton from "../../components/VocabListComponents/AddButton"
 import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal"
 import "./style.css"
-import { PersonalDeck, PersonalDeckResponse, getPersonalFlashcards } from "../../api/VocabListAPI/FlashcardsAPI"
 // const cardTitles:PersonalDeck[] = getPersonalFlashcards().then((res)=>{
 // return res.data.data.personalDeckList;
 // })
 function VocabListPage() {
   const [showModal, setShowModal] = useState(false)
-  const [cardTitles, setCardTitles] = useState<PersonalDeck[]>()
+  const [cardTitles, setCardTitles] = useState<PersonalDeckTitle[]>()
   useEffect(() => {
     // 개인 단어장 목록 가져오기data.personalDeckList
     getPersonalFlashcards()
       .then((res) => {
-        let show: PersonalDeck[] = res.data.data.personalDeckList
-        // setCardTitles(show)
+        let show: PersonalDeckTitle[] = res.data.data.personalDeckList
+        setCardTitles(show)
         console.log(show)
       })
       .catch((error) => {
@@ -40,18 +41,23 @@ function VocabListPage() {
             <h1>내 단어장</h1>
           </div>
           <div className='col'>
-            <Button onClick={handlePlusButtonClick} style={{ backgroundColor: "white", borderColor: "white" }}>
-              <img className='btn' src={PlusBtn} />
-            </Button>
+            <AddButton handleButtonClick={handlePlusButtonClick} />
           </div>
         </div>
-        {cardTitles == null && (
+        {(cardTitles == null || cardTitles.length === 0) && (
           <>
-            <div className='card' style={{ width: "18rem", backgroundColor: "#82B7F3", marginRight: "20px", marginBottom: "20px" }}>
+            <div
+              className='card'
+              style={{ width: "18rem", backgroundColor: "#82B7F3", marginRight: "20px", marginBottom: "20px", height: "230px" }}
+            >
               <div className='card-body'>
-              <Button onClick={handlePlusButtonClick} style={{ backgroundColor: "white", borderColor: "white" }}>
-              <img className='btn' src={PlusBtn} />
-            </Button>
+                <Button
+                  onClick={handlePlusButtonClick}
+                  className='addBtn'
+                  style={{ backgroundColor: "transparent", borderColor: "transparent", borderRadius: "100px" }}
+                >
+                  <img className='btn' alt='add new flashcard' src={PlusBtn} />
+                </Button>
               </div>
             </div>
           </>

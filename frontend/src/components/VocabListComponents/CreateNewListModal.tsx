@@ -1,38 +1,94 @@
 // CreateNewListModal.tsx
-import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import React from "react"
+import { useState } from "react"
+import { Modal, Button } from "react-bootstrap"
+import { createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
+import { useNavigate } from "react-router-dom"
 
 interface CreateNewListModalProps {
-  showModal: boolean;
-  handleClose: () => void;
+  showModal: boolean
+  handleClose: () => void
 }
-
+export enum PrivacyStatus {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+  FORKED ="FORKED"
+}
+export interface CreateFlashcardsRequestDto {
+  name: string
+  privacyStatus: PrivacyStatus
+}
 const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, handleClose }) => {
+  const navigate =useNavigate();
+  const [flashcardForm, setFlashcardForm] = useState<CreateFlashcardsRequestDto>({
+    name: "",
+    privacyStatus: PrivacyStatus.PRIVATE,
+  })
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = event.target
+    if (type === "text") {
+      // Handle text input changes
+      setFlashcardForm((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }))
+    } else if (type === "checkbox") {
+      // Handle checkbox input changes
+      const newPrivacyStatus = checked ? PrivacyStatus.PUBLIC : PrivacyStatus.PRIVATE
+      setFlashcardForm((prevData) => ({
+        ...prevData,
+        [name]: newPrivacyStatus,
+      }))
+    }
+  }
+  const handleSubmit = (e: any) => {
+    e.preventDefault()
+    if (!flashcardForm.name) {
+      alert("제목을 입력해주세요")
+      return
+    }else{
+      createPersonalDeck(flashcardForm).then((res)=>{
+        // navigate()
+        console.log(res.data.data)
+        handleClose();
+      }).catch((error) => {
+        console.error("Error creating deck", error)
+      })
+    }
+  }
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>새 단어장</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="row ">
+      <Modal.Body className='row '>
         <p>제목</p>
-        <input type="text" placeholder="단어장 제목을 입력해주세요" />
-        <div className="row mt-2">
-          <p className="col-2">공개</p>
-          <div className="form-check form-switch col-2">
-            <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
-            <label className="form-check-label" htmlFor="flexSwitchCheckDefault">    
-            </label>
+        <input name='name' type='text' value={flashcardForm.name} placeholder='단어장 제목을 입력해주세요' onChange={handleInputChange} />
+        <div className='row mt-2'>
+          <p className='col-2'>공개</p>
+          <div className='form-check form-switch col-2'>
+            <input
+              className='form-check-input'
+              name='privacyStatus'
+              type='checkbox'
+              checked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
+              id='flexSwitchCheckDefault'
+              onChange={handleInputChange}
+            />
+            <label className='form-check-label' htmlFor='flexSwitchCheckDefault'></label>
           </div>
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant='secondary' onClick={handleClose}>
           닫기
         </Button>
-        <Button variant="primary">생성</Button>
+        <Button variant='primary' onClick={handleSubmit}>
+          생성
+        </Button>
       </Modal.Footer>
     </Modal>
-  );
-};
+  )
+}
 
-export default CreateNewListModal;
+export default CreateNewListModal
