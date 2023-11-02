@@ -1,13 +1,11 @@
-// api.ts
 import axios, { AxiosResponse } from "axios";
 
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
-const API_KEY = "AIzaSyCXec2vao9cSFYtNLN5nbmNpt1bF4B1Umo";
 
 const youtubeAPI = axios.create({
   baseURL: BASE_URL,
   params: {
-    key: API_KEY,
+    key: `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
   },
 });
 
