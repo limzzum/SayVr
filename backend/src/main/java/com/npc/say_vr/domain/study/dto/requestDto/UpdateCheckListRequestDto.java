@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class UpdateCheckListRequestDto {
-
+  private Long studyMemberId;
   private String description;
 }

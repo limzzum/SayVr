@@ -57,6 +57,7 @@ public class CheckListServiceImpl implements CheckListService {
   @Override
   public void updateCheckListItemStatus(Long checkListId,
                                         UpdateCheckListStatusResponseDto updateCheckListStatusResponseDto) {
+    // TODO : 여러번 눌렀을 때 처리!
     // TODO : 예외처리 & studymemberid나 그런걸로 예외처리 같이 해도 좋겠다
     ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
     checklistItem.updateCheckListStatus(updateCheckListStatusResponseDto.getCheckListStatus());
@@ -64,6 +65,7 @@ public class CheckListServiceImpl implements CheckListService {
   @Transactional
   @Override
   public void deleteCheckListItemStatus(Long checkListId) {
+    // TODO : 예외처리 & studymemberid나 그런걸로 예외처리 같이 해도 좋겠다
     ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
     checklistItem.updateCheckListStatus(CheckListStatus.DELETE);
   }
