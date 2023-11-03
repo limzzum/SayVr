@@ -1,12 +1,17 @@
-import React from "react";
+// ShadowingDetailPage.tsx
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import YouTube, { YouTubeProps } from "react-youtube";
 import Translation from "../../../components/TranslationComponents/Translation";
-import "./style.css"
+import getScript from "../../../api/ShadowingPageAPI/GetScriptAPI";
+import "./style.css";
 
 function ShadowingDetailPage() {
   const location = useLocation();
   const videoId = location.state?.videoId;
+  const [script, setScript] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     event.target.pauseVideo();
@@ -17,11 +22,40 @@ function ShadowingDetailPage() {
     width: "640",
   };
 
+  useEffect(() => {
+    console.log("디테일 페이지")
+    console.log(videoId)
+    const fetchScript = async () => {
+      try {
+        if (videoId) {
+          setLoading(true);
+          const script = await getScript(videoId);
+          setScript(script);
+        }
+      } catch (error) {
+        console.error("Error fetching script:", error);
+        setError("Failed to fetch script");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScript();
+  }, [videoId]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
   return (
     <div className="ShadowingDetailPage-container">
       <div className="VOD">{videoId && <YouTube videoId={videoId} opts={opts} onReady={onPlayerReady} />}</div>
       <div>
-        <Translation />
+        {videoId && script && <Translation videoId={videoId} script={script} />} {/* videoId와 script 전달 */}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 // Translation.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 import "./style.css";
 
@@ -7,12 +7,20 @@ const endpoint = "https://api.cognitive.microsofttranslator.com";
 const location = "eastus";
 
 interface TranslationProps {
-  // 필요한 프롭스 추가
+  videoId: string;
+  script: string;
 }
 
-const Translation: React.FC<TranslationProps> = () => {
+const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
   const [textToTranslate, setTextToTranslate] = useState<string>("");
   const [translatedText, setTranslatedText] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("번역기 페이지")
+    console.log(videoId)
+    console.log("Video ID:", videoId);
+    console.log("Script:", script);
+  }, []);
 
   const translate = async () => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
@@ -62,7 +70,7 @@ const Translation: React.FC<TranslationProps> = () => {
             </div>
           </div>
           <div className="button-container">
-            <button className="btn" style={{ backgroundColor: '#1D5193', color: "white" }} onClick={translate}>
+            <button className="btn" style={{ backgroundColor: "#1D5193", color: "white" }} onClick={translate}>
               번역
             </button>
           </div>
