@@ -51,7 +51,7 @@ public class RabbitMqListener {
             gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
                 .data(gameService.getGameResult(Long.valueOf(gameId)))
                 .build();
-            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
             return;
         }
 
@@ -59,7 +59,7 @@ public class RabbitMqListener {
         gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.QUIZ_TIME_OVER)
             .message(quiz)
             .build();
-        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
 
     }
 
@@ -82,6 +82,6 @@ public class RabbitMqListener {
             .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
                 .outUserId(userId).build()))
             .build();
-        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
     }
 }
