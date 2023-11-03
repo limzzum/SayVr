@@ -1,7 +1,7 @@
 // api.ts
 import axios, { AxiosResponse } from "axios"
 import { CreateFlashcardsRequestDto, PrivacyStatus } from "../../components/VocabListComponents/CreateNewListModal"
-
+import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage" 
 const BASE_URL = "http://localhost:8080/api/flashcards"
 
 const axiosInstance = axios.create({
@@ -41,14 +41,14 @@ export interface PersonalDeckTitle {
   id: number,
   name: string,
   nickname?: string,
-  wordCount?: number,
+  wordCount: number,
   forkCount?: number,
 }
 export interface PersonalDeckResponse {
   personalDeckList: PersonalDeckTitle[],
 }
 // id 숫자로 받는지 ? string으로?? bigint로???
-export interface DeckDetailResponseDto {
+export interface DeckDetailResponseDto extends DeckCreateResponseDto {
   id: number,
   name: string,
   userId: number,
@@ -60,15 +60,35 @@ export interface DeckDetailResponseDto {
   wordCount?: number,
   forkCount?: number,
 }
-
-//res. data[data,message,httpStatus]
-export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
-  return axiosInstance.get("/personal")
-}
-export const createPersonalDeck = (data?:CreateFlashcardsRequestDto): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-  return axiosInstance.post("/deck",data)
-}
-export const getOneDeck = (): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-    return axiosInstance.get("/personal")
+export interface DeckCreateResponseDto {
+    id: number,
+    name: string,
+    userId: number,
+    nickname: string,
+    flashcardDeckId: number,
+    status: PrivacyStatus,
+    savingProgressStatus:ProgressStatus,
   }
+
+  export interface WordUpdateResponseDto{
+    wordcard: WordcardDto,
+
+  }
+//res. data[data,message,httpStatus]
+//userId -> header에 있어야,,
+export const createPersonalDeck = (data?:CreateFlashcardsRequestDto): Promise<AxiosResponse<ResponseDto<DeckCreateResponseDto>>> => {
+    return axiosInstance.post("/deck",data)
+}
+export const createWordcard = (deckId:number,data?:CreateWordcardRequestDto): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
+    return axiosInstance.post(`/card/${deckId}`,data)
+}
+export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
+    return axiosInstance.get("/personal")
+}
+export const getPublicFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
+    return axiosInstance.get("/list")
+}
+export const getOneDeck = (deckId:number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
+    return axiosInstance.get(`/deck/${deckId}`)
+}
 

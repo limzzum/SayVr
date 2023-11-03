@@ -1,16 +1,16 @@
 import React from "react"
 interface Props{
     handleButtonClick: ()=>void,
+    size:string,
 }
 
-const AddButton : React.FC<Props> = ({ handleButtonClick }) => {
+const AddButton : React.FC<Props> = ({ handleButtonClick,size }) => {
   return (
     <>
       <svg
         className='addBtn'
         onClick={handleButtonClick}
-        width='45'
-        height='45'
+        width={size}        height={size}
         viewBox='0 0 45 45'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
