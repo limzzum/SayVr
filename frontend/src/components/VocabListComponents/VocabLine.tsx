@@ -1,6 +1,5 @@
-import { FC, useState } from "react"
+import { FC } from "react"
 import { WordcardDto } from "../../api/VocabListAPI/FlashcardsAPI"
-import AddButton from "./AddButton"
 
 interface VocabLineProps {
   props?: WordcardDto

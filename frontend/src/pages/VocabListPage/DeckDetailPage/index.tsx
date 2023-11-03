@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router"
-import { DeckDetailResponseDto, FlashcardDto, WordcardDto } from "../../../api/VocabListAPI/FlashcardsAPI"
+import { useEffect, useState } from "react"
+import { DeckDetailResponseDto, WordcardDto } from "../../../api/VocabListAPI/FlashcardsAPI"
+import AddButton from "../../../components/VocabListComponents/AddButton"
 import IconButton from "../../../components/VocabListComponents/IconButton"
 import QuizIcon from "../../../components/VocabListComponents/Icons/QuizIcon"
 import { VocabLine } from "../../../components/VocabListComponents/VocabLine"
-import AddButton from "../../../components/VocabListComponents/AddButton"
 interface DeckDetailProps {
   props?: DeckDetailResponseDto
   changeView: (menu: string) => void
@@ -15,7 +14,7 @@ export interface CreateWordcardRequestDto {
   eng: string
 }
 const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate();
   const [mode, setMode] = useState("button") //button add
   const [wordForm, setWordForm] = useState<CreateWordcardRequestDto>({ kor: "", eng: "" })
   const [wordList, setWordList] = useState<WordcardDto[]>([])
@@ -81,7 +80,6 @@ const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
               {wordList?.map((wordcard, index) => {
                 return (
                   <>
-                    {" "}
                     <VocabLine key={index + "wordcard" + props.id} props={wordcard}></VocabLine>
                   </>
                 )
@@ -89,8 +87,10 @@ const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
               <div className='vocab-line'>{mode === "button" && <AddButton handleButtonClick={()=>setMode("add")} size='45' />}
               {mode === "add" && 
               <>
-              <form>
-                <input ></input>
+              <form onSubmit={()=>addWord}>
+                <input type="text" onChange={handleInputChange} value={wordForm.eng} placeholder="Enter word"></input>
+                <hr></hr>
+                <input type="text" onChange={handleInputChange} value={wordForm.kor} placeholder="단어 입력"></input>
               </form>
               </>}
               </div>

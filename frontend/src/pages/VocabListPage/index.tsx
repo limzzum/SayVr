@@ -91,6 +91,7 @@ function VocabListPage() {
       })
 
     console.log(personalCardTitles)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handlePlusButtonClick = () => {
@@ -197,6 +198,13 @@ function VocabListPage() {
             <DeckDetail props={selectedDeck} changeView={setMenu} />
           </>
         )}
+        {menu === "learn" && (<>
+        
+        </>)}
+        {menu === "quiz" && (<>
+        
+        </>)}
+        
       </div>
     </>
   )

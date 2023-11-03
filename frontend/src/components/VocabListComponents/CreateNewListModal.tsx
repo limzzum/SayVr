@@ -1,9 +1,7 @@
 // CreateNewListModal.tsx
-import React from "react"
-import { useState } from "react"
-import { Modal, Button } from "react-bootstrap"
-import { DeckCreateResponseDto, createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react"
+import { Button, Modal } from "react-bootstrap"
+import { createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
 
 interface CreateNewListModalProps {
   showModal: boolean
@@ -20,7 +18,7 @@ export interface CreateFlashcardsRequestDto {
   privacyStatus: PrivacyStatus
 }
 const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, handleClose, goToDetail }) => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [flashcardForm, setFlashcardForm] = useState<CreateFlashcardsRequestDto>({
     name: "",
     privacyStatus: PrivacyStatus.PRIVATE,

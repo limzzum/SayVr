@@ -1,5 +1,4 @@
-import { Button } from "react-bootstrap"
-import { DeckDetailResponseDto, PersonalDeckTitle } from "../api/VocabListAPI/FlashcardsAPI"
+import { PersonalDeckTitle } from "../api/VocabListAPI/FlashcardsAPI"
 import AddButton from "./VocabListComponents/AddButton"
 
 interface MyWordCardProps {
