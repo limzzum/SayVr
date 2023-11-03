@@ -1,7 +1,13 @@
 package com.npc.say_vr.global.file;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -43,6 +49,35 @@ public class FileStore {
         }
         return folderPath + File.separator + uuid + "-" + multipartFile.getOriginalFilename();
 
+    }
+
+    public String storeBufferedImage(String imageUrl) {
+        if (imageUrl == null) {
+            return null;
+        }
+
+        String folderPath = makeFolder();
+        String uuid = UUID.randomUUID().toString();
+        String fileName = uuid + "-" + getImageNameFromUrl(imageUrl);
+        String savePath = fileDir + File.separator + folderPath + File.separator + fileName;
+
+        try (InputStream in = new URL(imageUrl).openStream()) {
+            Path destination = Path.of(savePath);
+            Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return folderPath + File.separator + fileName;
+
+    }
+
+    private String getImageNameFromUrl(String imageUrl) {
+        int lastSlashIndex = imageUrl.lastIndexOf('/');
+        if (lastSlashIndex != -1) {
+            return imageUrl.substring(lastSlashIndex + 1);
+        }
+        return imageUrl;
     }
 
     public void deleteFile(String filePath) {

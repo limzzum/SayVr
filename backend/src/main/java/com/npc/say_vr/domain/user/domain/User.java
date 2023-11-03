@@ -40,6 +40,9 @@ public class User extends BaseEntity {
     @NotNull
     private String username;
 
+    @NotNull
+    private String email;
+
     @Size(min = 2, max = 10)
     @NotNull
     private String nickname;
