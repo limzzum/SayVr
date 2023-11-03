@@ -2,26 +2,25 @@
 import React from "react"
 import { useState } from "react"
 import { Modal, Button } from "react-bootstrap"
-import { DeckCreateResponseDto, createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
+import { createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
 import { useNavigate } from "react-router-dom"
 
-interface CreateNewListModalProps {
+interface DeckSettingModalProps {
   showModal: boolean
   handleClose: () => void
-  goToDetail: (newDeck: number) => void
 }
 export enum PrivacyStatus {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
-  FORKED = "FORKED",
+  FORKED ="FORKED"
 }
-export interface CreateFlashcardsRequestDto {
+export interface DeckSettingsUpdateRequestDto {
   name: string
   privacyStatus: PrivacyStatus
 }
-const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, handleClose, goToDetail }) => {
-  const navigate = useNavigate()
-  const [flashcardForm, setFlashcardForm] = useState<CreateFlashcardsRequestDto>({
+const DeckSettingModal: React.FC<DeckSettingModalProps> = ({ showModal, handleClose }) => {
+  const navigate =useNavigate();
+  const [infoForm, setInfoForm] = useState<DeckSettingsUpdateRequestDto>({
     name: "",
     privacyStatus: PrivacyStatus.PRIVATE,
   })
@@ -29,14 +28,14 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
     const { name, value, type, checked } = event.target
     if (type === "text") {
       // Handle text input changes
-      setFlashcardForm((prevData) => ({
+      setInfoForm((prevData) => ({
         ...prevData,
         [name]: value,
       }))
     } else if (type === "checkbox") {
       // Handle checkbox input changes
       const newPrivacyStatus = checked ? PrivacyStatus.PUBLIC : PrivacyStatus.PRIVATE
-      setFlashcardForm((prevData) => ({
+      setInfoForm((prevData) => ({
         ...prevData,
         [name]: newPrivacyStatus,
       }))
@@ -44,20 +43,17 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
   }
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    if (!flashcardForm.name) {
+    if (!infoForm.name) {
       alert("제목을 입력해주세요")
       return
-    } else {
-      createPersonalDeck(flashcardForm)
-        .then((res) => {
-          // navigate()
-          console.log(res.data.data.id)
-          handleClose()
-          goToDetail(res.data.data.id)
-        })
-        .catch((error) => {
-          console.error("Error creating deck", error)
-        })
+    }else{
+      createPersonalDeck(infoForm).then((res)=>{
+        // navigate()
+        console.log(res.data.data)
+        handleClose();
+      }).catch((error) => {
+        console.error("Error creating deck", error)
+      })
     }
   }
   return (
@@ -67,7 +63,7 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
       </Modal.Header>
       <Modal.Body className='row '>
         <p>제목</p>
-        <input name='name' type='text' value={flashcardForm.name} placeholder='단어장 제목을 입력해주세요' onChange={handleInputChange} />
+        <input name='name' type='text' value={infoForm.name} placeholder='단어장 제목을 입력해주세요' onChange={handleInputChange} />
         <div className='row mt-2'>
           <p className='col-2'>공개</p>
           <div className='form-check form-switch col-2'>
@@ -75,7 +71,7 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
               className='form-check-input'
               name='privacyStatus'
               type='checkbox'
-              checked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
+              checked={infoForm.privacyStatus === PrivacyStatus.PUBLIC}
               id='flexSwitchCheckDefault'
               onChange={handleInputChange}
             />
@@ -84,8 +80,8 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={handleClose}>
-          닫기
+        <Button variant='danger' onClick={handleClose}>
+          삭제
         </Button>
         <Button variant='primary' onClick={handleSubmit}>
           생성
@@ -95,4 +91,4 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
   )
 }
 
-export default CreateNewListModal
+export default DeckSettingModal

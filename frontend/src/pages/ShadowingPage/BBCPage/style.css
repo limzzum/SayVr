@@ -15,7 +15,7 @@
 }
 .youtube-profile-container {
   text-align: center;
-  margin: 0 auto;
+  margin: 50px auto !important;;
 }
 
 .card {
@@ -28,8 +28,8 @@
   padding: 10px;
 }
 .youtube-profile {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: 100px;
 }
 

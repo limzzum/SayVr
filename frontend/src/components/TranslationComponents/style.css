@@ -1,113 +1,67 @@
-.translator {
+/* style.css */
+.translation-container {
+  display: flex;
   width: 80%;
   margin-left: 10%;
 }
 
-.row-wrapper {
-  display: flex;
+.half-width-container {
+  flex: 1;
+  margin: 0 10px;
 }
 
-.translator-container {
-  width: 50%;
-}
-
-.text-box {
-  min-height: 200px;
+.text-box,
+.output-box {
   width: 100%;
-  padding: 10px 15px;
-  padding-right: 80px;
+  padding: 15px;
   font-size: 18px;
   border-radius: 7px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-textarea {
-  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-  box-shadow: -2px 5px 10px -5px #000000bf;
-  outline: none;
-  border: none;
+.input-container textarea {
+  height: 150px;
   resize: none;
+  border: none;
+  outline: none;
+}
+.badge {
+  width: 15%; /* 변경된 부분 */
+  background-color: #1D5193; /* 추가된 부분 */
+  margin-left: 10%;
+  margin-top: 1%;
 }
 
-textarea::placeholder,
-.output-placeholder {
-  color: dimgray;
-  user-select: none;
-  cursor: text;
-}
-
-.input-form {
-  position: relative;
-}
-
-.icon-btn {
-  position: absolute;
+span {
   font-size: 20px;
-  cursor: pointer;
-  margin: 13.5px 20px;
-  transition: 0.2s ease-in-out;
-  right: 0;
-}
-
-.icon-btn:hover {
-  color: #696969bf;
-}
-
-.speaker {
-  font-size: 27px;
-  bottom: 2px;
-  right: 30px;
-}
-
-.copy-btn {
-  bottom: 5px;
-}
-
-.copy-output-btn {
-  bottom: -2px;
 }
 
 .output-box {
-  position: relative;
-  box-shadow: 2px 5px 10px -5px rgba(0, 0, 0, 0.75);
-}
-
-.loading-output {
-  font-size: 20px;
-  font-weight: bold;
-  color: #6c757d;
-  letter-spacing: 2px;
-}
-
-.top-row {
+  min-height: 150px;
   display: flex;
-  align-items: center;
-  height: 30px;
-  margin: 7px 0px;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .btn-translate,
 .top-row select {
-  margin-left: auto;
   width: 7em;
+  margin-top: 10px;
 }
 
 .translation-error {
   color: #ff1234;
 }
 
-@media (max-width: 1279px) {
-  .translator {
+@media (max-width: 768px) {
+  .translation-container {
+    flex-direction: column;
     width: 100%;
     margin-left: 0%;
   }
-}
 
-@media (max-width: 768px) {
-  .translator-container {
+  .half-width-container {
     width: 100%;
-  }
-
-  .row-wrapper {
-    flex-direction: column;
+    margin: 0;
   }
 }

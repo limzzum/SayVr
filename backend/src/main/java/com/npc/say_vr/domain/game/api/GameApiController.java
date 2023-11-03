@@ -25,7 +25,7 @@ public class GameApiController {
         return ResponseEntity.ok(
             ResponseDto.builder().message(GAME_WAITING_SUCCESS.getMessage())
                 .data(GameWaitingResponseDto.builder().gameId(gameId).build())
-                .httpStatus(GAME_WAITING_SUCCESS.getStatus()));
+                .httpStatus(GAME_WAITING_SUCCESS.getStatus()).build());
     }
 
 }

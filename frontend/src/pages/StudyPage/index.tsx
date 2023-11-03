@@ -42,14 +42,8 @@ function StudyPage() {
           </div>
         </div>
         <div className="row card-row justify-content-center align-items-center">
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
+          {/* <MyWordCard /> */}
+
         </div>
       </div>
     </div>

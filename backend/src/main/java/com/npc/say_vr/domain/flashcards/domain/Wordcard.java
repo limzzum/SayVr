@@ -13,11 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Wordcard extends BaseEntity {
 
@@ -37,4 +41,7 @@ public class Wordcard extends BaseEntity {
     @JoinColumn(name = "flashcard_deck_id")
     private FlashcardDeck flashcardDeck;
 
+    public void updateStatus(WordcardStatus status) {
+        this.status = status;
+    }
 }

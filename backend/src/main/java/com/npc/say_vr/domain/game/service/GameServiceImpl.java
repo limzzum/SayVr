@@ -60,6 +60,7 @@ public class GameServiceImpl implements GameService {
             PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
+            redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
             updateQuiz(gameId);
             return waitingGameDto.getGameId();
         }
