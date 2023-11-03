@@ -1,5 +1,5 @@
 package com.npc.say_vr.domain.user.api;
-
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.LOGIN_SUCCESS;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.CREATE_ACCESS_TOKEN;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_GET_USER_INFO;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_NAME_UPDATE;
@@ -93,51 +93,11 @@ public class UserApiController {
 
     @PostMapping("/facebookLogin")
     public ResponseEntity<?> facebookLogin(@RequestBody Map<String, String> jsonData) throws Exception {
-
-//        RestTemplate restTemplate = new RestTemplate();
-////        jsonData = new HashMap<>();
-////        jsonData.put("accessToken","EAAUy2jzMxcABOx14tYmBTUTDwk1QL9vRS2tReqQ4WKm8YiNGXtl7eSRBzH19yPdgrNo5zvEHlCCO9IcpBQsnHGLRnSZAhUY9xwJPaUxS0YTweBKFhwLM3kHO4jOVw5mqzzq2ndtFbHGvBDP5VynAfYnMJrBaQmSsHemZAIGSkPD3ZCxUbjLoOFWkqKLpX8UAz5DOjKqB1bH98Abx3U4vgP2zNV8LxHSYSiaBf3U3yFZBUquOMhcu1iKmi1yMdPAuKZBXlAQZDZD");
-//
-//        @SuppressWarnings("rawtypes")
-//        Map result = restTemplate.getForObject(
-//            "https://graph.facebook.com/v18.0/me?access_token={value1}&fields={value2}", // 요청할 URL
-//            Map.class, // 서버에서 받은 결과의 타입
-//            jsonData.get("accessToken"), // URL의 첫 번째 자리에 들어갈 값
-//            "id,name,email,picture" // 페이스북 측에 요청하는 로그인 사용자 정보
-//        );
-//
-//        System.out.println(result.toString());
-//
-//        @SuppressWarnings("null")
-//        String email = (String) result.get("email");
-//        String name = (String) result.get("name");
-//        String url = (String) ((Map) ((Map) result.get("picture")).get("data")).get("url");
-//        System.out.println(url);
-//        // 기존 회원 정보 가져오기
-//        User user = userService.get(email);
-////        if (user == null) {
-////             페이스북에서 받은 최소 정보를 가지고 회원 가입을 위한 객체를 준비한다.
-////        User user = User.builder()
-////                .userStatus(UserStatus.ACTIVE)
-////                    .nickname(name)
-////            .profile()
-////            .email()
-////                        .username(email)
-////                            .build();
-////
-////        }
-////        userRepository.save(user);
-//
-//        Map<String, String> map = new HashMap<>();
-//
-//        map.put("name",name);
-
         userService.createFacebookUser(jsonData);
-
         return ResponseEntity.ok(ResponseDto.builder()
-            .message(SUCCESS_NAME_UPDATE.getMessage())
-//                .data(map)
-            .httpStatus(SUCCESS_NAME_UPDATE.getStatus()).build());
+            .message(LOGIN_SUCCESS.getMessage())
+            .data(userService.createFacebookUser(jsonData))
+            .httpStatus(LOGIN_SUCCESS.getStatus()).build());
     }
 
 }

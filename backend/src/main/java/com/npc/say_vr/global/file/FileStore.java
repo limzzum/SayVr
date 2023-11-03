@@ -51,14 +51,14 @@ public class FileStore {
 
     }
 
-    public String storeBufferedImage(String imageUrl) {
+    public String storeBufferedImage(String imageUrl,String id) {
         if (imageUrl == null) {
             return null;
         }
 
         String folderPath = makeFolder();
         String uuid = UUID.randomUUID().toString();
-        String fileName = uuid + "-" + getImageNameFromUrl(imageUrl);
+        String fileName = uuid + "-" + id;
         String savePath = fileDir + File.separator + folderPath + File.separator + fileName;
 
         try (InputStream in = new URL(imageUrl).openStream()) {
@@ -72,13 +72,13 @@ public class FileStore {
 
     }
 
-    private String getImageNameFromUrl(String imageUrl) {
-        int lastSlashIndex = imageUrl.lastIndexOf('/');
-        if (lastSlashIndex != -1) {
-            return imageUrl.substring(lastSlashIndex + 1);
-        }
-        return imageUrl;
-    }
+//    private String getImageNameFromUrl(String imageUrl) {
+//        int lastSlashIndex = imageUrl.lastIndexOf('?');
+//        if (lastSlashIndex != -1) {
+//            return imageUrl.substring(lastSlashIndex + 1);
+//        }
+//        return imageUrl;
+//    }
 
     public void deleteFile(String filePath) {
         File file = new File(fileDir + File.separator + filePath);

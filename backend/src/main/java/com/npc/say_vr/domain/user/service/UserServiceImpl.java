@@ -6,11 +6,13 @@ import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.NOT_EXIST
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
+import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
 import com.npc.say_vr.domain.user.exception.UserExistException;
 import com.npc.say_vr.domain.user.exception.UserNotFoundException;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.file.FileStore;
+import com.npc.say_vr.global.util.JwtUtil;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -60,8 +62,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String SaveUserProfileUrl(String profileUrl) {
-        return fileStore.storeBufferedImage(profileUrl);
+    public String SaveUserProfileUrl(String profileUrl,String id) {
+        return fileStore.storeBufferedImage(profileUrl,id);
     }
 
     @Override
@@ -86,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createFacebookUser(Map<String, String> jsonData) throws Exception {
+    public TokenResponseDto createFacebookUser(Map<String, String> jsonData) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
 //        jsonData = new HashMap<>();
 //        jsonData.put("accessToken","EAAUy2jzMxcABOx14tYmBTUTDwk1QL9vRS2tReqQ4WKm8YiNGXtl7eSRBzH19yPdgrNo5zvEHlCCO9IcpBQsnHGLRnSZAhUY9xwJPaUxS0YTweBKFhwLM3kHO4jOVw5mqzzq2ndtFbHGvBDP5VynAfYnMJrBaQmSsHemZAIGSkPD3ZCxUbjLoOFWkqKLpX8UAz5DOjKqB1bH98Abx3U4vgP2zNV8LxHSYSiaBf3U3yFZBUquOMhcu1iKmi1yMdPAuKZBXlAQZDZD");
@@ -103,11 +105,12 @@ public class UserServiceImpl implements UserService {
         String email = (String) result.get("email");
         String name = (String) result.get("name");
         String url = (String) ((Map) ((Map) result.get("picture")).get("data")).get("url");
+        String id = (String) result.get("id");
 
         User user = userRepository.findByEmail(email);
 
         if(user == null) {
-            String imageUrl = SaveUserProfileUrl(url);
+            String imageUrl = SaveUserProfileUrl(url,id);
             User newUser = User.builder()
                 .username(name)
                 .email(email)
@@ -115,7 +118,12 @@ public class UserServiceImpl implements UserService {
                 .profile(imageUrl)
                 .userStatus(UserStatus.ACTIVE)
                 .build();
+
+            user = userRepository.save(newUser);
         }
-        User saved = userRepository.save(user);
+        return TokenResponseDto.builder()
+//                .accessToken(jwtUtil.createJwtToken(user.getId()))
+//                .refreshToken(jwtUtil.createRefreshToken(user.getId()))
+                .build();
     }
 }

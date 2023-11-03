@@ -5,17 +5,19 @@ import FacebookLogin from "@greatsumini/react-facebook-login";
 // axios.defaults.withCredentials = true;
 
 function Login() {
-
   function facebookLogin(accessToken) {
     const data = {
       accessToken: accessToken,
     };
 
+    // const Baseurl = "http://localhost:8080";
+    const Baseurl = "https://말해vr.site";
+
     axios
-      .post("http://localhost:8080/api/user/facebookLogin", data)
+      .post(Baseurl + "/api/user/facebookLogin", data)
       .then((response) => {
         console.log(response);
-        if (response.data.status === "success") {
+        if (response.data.httpStatus === "OK") {
           window.location.href = "/";
           alert("페이스북 로그인 성공!");
         } else {
@@ -31,40 +33,40 @@ function Login() {
   return (
     <div className="loginB">
       <div className="login-body">
-          <div className="login-other">
-            <FacebookLogin
-              appId="1463287787865536"
-              initParams={{
-                cookie: true,
-                xfbml: true,
-                version: "v16.0",
-              }}
-              scope="email, public_profile"
-              style={{
-                backgroundColor: "#4267b2",
-                color: "#fff",
-                fontSize: "16px",
-                padding: "12px 24px",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-              onSuccess={(response) => {
-                console.log("Login Success!");
-                console.log(response);
-                facebookLogin(response.accessToken);
-              }}
-              onFail={(error) => {
-                console.log("Login Failed!");
-                console.log("status: ", error.status);
-              }}
-              onProfileSuccess={(response) => {
-                console.log("Get Profile Success!");
-                console.log("name: ", response);
-                console.log(response);
-              }}
-            />
-          </div>
+        <div className="login-other">
+          <FacebookLogin
+            appId="1463287787865536"
+            initParams={{
+              cookie: true,
+              xfbml: true,
+              version: "v16.0",
+            }}
+            scope="email, public_profile"
+            style={{
+              backgroundColor: "#4267b2",
+              color: "#fff",
+              fontSize: "16px",
+              padding: "12px 24px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            onSuccess={(response) => {
+              console.log("Login Success!");
+              console.log(response);
+              facebookLogin(response.accessToken);
+            }}
+            onFail={(error) => {
+              console.log("Login Failed!");
+              console.log("status: ", error.status);
+            }}
+            onProfileSuccess={(response) => {
+              console.log("Get Profile Success!");
+              console.log("name: ", response);
+              console.log(response);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
