@@ -18,7 +18,7 @@ public class RabbitMqConfig {
 
     private static final String EXCHANGE_NAME = "game.exchange";
     private static final String QUEUE_NAME = "game.queue";
-    private static final String ROUTING_KEY = "room.*";
+    private static final String ROUTING_KEY = "game.*";
 
     @Bean
     public Queue queue() {

@@ -11,11 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FlashcardDeck extends BaseEntity {
 
@@ -23,10 +27,10 @@ public class FlashcardDeck extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "flashcard_deck_id")
     private Long id;
-    private String name;
 
     @OneToMany(mappedBy = "flashcardDeck")
     private List<Wordcard> wordcards;
+//    = new ArrayList<>();
 
     @OneToOne(mappedBy = "flashcardDeck")
     private PersonalDeck personalDeck;
@@ -34,4 +38,11 @@ public class FlashcardDeck extends BaseEntity {
     @OneToOne(mappedBy = "flashcardDeck")
     private StudyDeck studyDeck;
 
+    public void updatePersonalDeck(PersonalDeck personalDeck) {
+        this.personalDeck = personalDeck;
+    }
+
+    public void updateWords(List<Wordcard> words) {
+        this.wordcards = words;
+    }
 }

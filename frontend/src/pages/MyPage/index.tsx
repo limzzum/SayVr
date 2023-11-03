@@ -66,21 +66,15 @@ function MyPage() {
       <div className="row card-row custom-chart-container">
         <h3>내 단어장</h3>
         <Slider {...carouselSettings}>
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
-          <MyWordCard />
+          {/* <MyWordCard /> */}
+
         </Slider>
       </div>
       <div className="row card-row custom-chart-container">
         <h3>내 스터디</h3>
         <Slider {...carouselSettings}>
-          <MyStudyCard />
-          <MyStudyCard />
-          <MyStudyCard />
+          {/* <MyStudyCard /> */}
+
           {/* 추가적인 카드들 */}
         </Slider>
       </div>

@@ -1,20 +1,40 @@
-.TEDPage-container {
-    background-color: #eef5fa;
-    border: 1px solid gray;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin: 30px auto;
-    height: 75vh;
+.TEDpage-container {
+  background-color: #eef5fa;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 30px auto;
+}
+.TEDpage-container .d-flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
   }
   .youtube-profile-container {
-    display: grid;
-    place-items: center; /* 가로 및 세로 방향 가운데 정렬 */
+    text-align: center;
+    margin: 50px auto !important;;
   }
-  
-  .youtube-profile {
-    width: 100px;
-    height: 100px;
-    border-radius: 100px;
+
+.card {
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card-body {
+    padding: 10px;
   }
-  
+.youtube-profile {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+}
+.video-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
