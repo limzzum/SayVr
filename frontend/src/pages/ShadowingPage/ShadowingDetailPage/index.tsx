@@ -1,8 +1,8 @@
-// ShadowingDetailPage/index.tsx
 import React from "react";
 import { useLocation } from "react-router-dom";
 import YouTube, { YouTubeProps } from "react-youtube";
 import Translation from "../../../components/TranslationComponents/Translation";
+import "./style.css"
 
 function ShadowingDetailPage() {
   const location = useLocation();

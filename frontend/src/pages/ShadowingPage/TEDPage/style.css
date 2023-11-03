@@ -15,7 +15,7 @@
   }
   .youtube-profile-container {
     text-align: center;
-    margin: 0 auto;
+    margin: 50px auto !important;;
   }
 
 .card {
