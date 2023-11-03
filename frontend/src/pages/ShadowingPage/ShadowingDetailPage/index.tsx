@@ -1,4 +1,3 @@
-// ShadowingDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import YouTube, { YouTubeProps } from "react-youtube";
@@ -23,14 +22,12 @@ function ShadowingDetailPage() {
   };
 
   useEffect(() => {
-    console.log("디테일 페이지")
-    console.log(videoId)
     const fetchScript = async () => {
       try {
         if (videoId) {
           setLoading(true);
           const script = await getScript(videoId);
-          setScript(script);
+          // setScript(script);
         }
       } catch (error) {
         console.error("Error fetching script:", error);

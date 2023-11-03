@@ -1,6 +1,7 @@
 // Translation.tsx
 import React, { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig } from "axios";
+import getScript from "../../api/ShadowingPageAPI/GetScriptAPI";
 import "./style.css";
 
 const endpoint = "https://api.cognitive.microsofttranslator.com";
@@ -11,37 +12,44 @@ interface TranslationProps {
   script: string;
 }
 
-const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
+const Translation: React.FC<TranslationProps> = ({ videoId }) => {
   const [textToTranslate, setTextToTranslate] = useState<string>("");
   const [translatedText, setTranslatedText] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("번역기 페이지")
-    console.log(videoId)
+    console.log("번역기 페이지");
     console.log("Video ID:", videoId);
-    console.log("Script:", script);
-  }, []);
+  }, [videoId]);
 
   const translate = async () => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
     const body = [{ Text: textToTranslate }];
     const requestBody = JSON.stringify(body);
 
-    const config: AxiosRequestConfig = {
-      method: "post",
-      url: `${endpoint}${route}`,
-      data: requestBody,
-      headers: {
-        "Ocp-Apim-Subscription-Key": `${process.env.REACT_APP_AZURE_API_KEY}`,
-        "Ocp-Apim-Subscription-Region": location,
-        "Content-Type": "application/json",
-      },
-    };
-
     try {
-      const response = await axios(config);
-      const translatedText = response.data[0].translations[0].text;
-      setTranslatedText(translatedText);
+      // getScript 함수를 사용하여 스크립트 배열을 가져오기
+      const script = await getScript(videoId);
+
+      // script 배열을 사용하여 각 스크립트를 번역
+      const translatedScripts = await Promise.all(
+        script.map(async (scriptItem) => {
+          const config: AxiosRequestConfig = {
+            method: "post",
+            url: `${endpoint}${route}`,
+            data: JSON.stringify([{ Text: scriptItem.script }]),
+            headers: {
+              "Ocp-Apim-Subscription-Key": `${process.env.REACT_APP_AZURE_API_KEY}`,
+              "Ocp-Apim-Subscription-Region": location,
+              "Content-Type": "application/json",
+            },
+          };
+          const translationResponse = await axios(config);
+          return translationResponse.data[0].translations[0].text;
+        })
+      );
+
+      // 번역된 스크립트를 화면에 표시
+      setTranslatedText(translatedScripts.join("\n"));
     } catch (error) {
       console.error(error);
     }
