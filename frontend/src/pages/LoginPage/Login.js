@@ -12,7 +12,7 @@ function Login() {
     };
 
     axios
-      .post("http://localhost:8080/api/user/facebookLogin", data)
+      .post("https://말해vr:site/api/user/facebookLogin", data)
       .then((response) => {
         console.log(response);
         if (response.data.status === "success") {
