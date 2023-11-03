@@ -47,7 +47,7 @@ public class GameSocketController {
                 GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
                 gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
                     .gameStatusDto(gameStatusDto).build();
-                rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+                rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
             }
             return;
         }
@@ -67,7 +67,7 @@ public class GameSocketController {
                     gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
                         .data(gameService.getGameResult(Long.valueOf(gameId)))
                         .build();
-                    rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+                    rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
                     return;
                 }
                 gameService.updateQuiz(Long.valueOf(gameId));
@@ -81,7 +81,7 @@ public class GameSocketController {
                 .data(gameQuizResultDto)
                 .message(message)
                 .build();
-            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
             return;
         }
 
@@ -92,14 +92,14 @@ public class GameSocketController {
                 .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(Long.valueOf(gameId))
                         .outUserId(userId).build()))
                 .build();
-            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
             return;
         }
 
 
         gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
             .message(gameSocketRequestDto.getMessage()).build();
-        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "room." + gameId, gameSocketResponseDto);
+        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
     }
 
 
