@@ -1,0 +1,60 @@
+import React, { useState, useEffect } from "react";
+import { getPlaylistItems, PlaylistItem } from "../../../api/ShadowingPageAPI/EmbedVODAPI";
+import "./style.css"
+import TED from "../../../assets/YoutubeCard/TED.png"
+import { useNavigate } from "react-router-dom";
+
+function TEDPage() {
+  const [playlistItems, setPlaylistItems] = useState<PlaylistItem[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const playlistId = "PLOGi5-fAu8bHF0k5WPpXXTKjKOCnILt_5";
+
+    getPlaylistItems(playlistId)
+      .then((response) => {
+        setPlaylistItems(response.data.items);
+      })
+      .catch((error) => {
+        console.error("데이터를 불러오는 중 오류 발생:", error);
+      });
+  }, []);
+
+  return (
+    <div className="container">
+      <div className="TEDpage-container">
+        <div className="youtube-profile-container">
+          <img src={TED} className="youtube-profile" alt="TED Logo" />
+        </div>
+        <div className="row justify-content-start align-items-center">
+          <div className="d-flex">
+            {playlistItems.map((item) => (
+              <div key={item.id}>
+                <div
+                  className="card"
+                  style={{ width: "18rem", cursor: "pointer" }}
+                  onClick={() => {
+                    navigate("/Shadowing/ShadowingDetailPage", { state: { videoId: item.snippet.resourceId.videoId } });
+                  }}
+                >
+                  <img
+                    src={item.snippet.thumbnails.medium.url}
+                    alt={item.snippet.title}
+                    className="card-img-top video-thumbnail"
+                  />
+                  <div className="card-body">
+                    <p className="card-text video-title" title={item.snippet.title}>
+                      {item.snippet.title}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default TEDPage

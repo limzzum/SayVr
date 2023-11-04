@@ -1,0 +1,40 @@
+.BBCpage-container {
+  background-color: #eef5fa;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 30px auto;
+}
+.BBCpage-container .d-flex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.youtube-profile-container {
+  text-align: center;
+  margin: 50px auto !important;;
+}
+
+.card {
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card-body {
+  padding: 10px;
+}
+.youtube-profile {
+  width: 150px;
+  height: 150px;
+  border-radius: 100px;
+}
+
+.video-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
