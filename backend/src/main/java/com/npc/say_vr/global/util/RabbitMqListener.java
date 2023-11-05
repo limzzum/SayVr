@@ -68,20 +68,20 @@ public class RabbitMqListener {
         log.info("connected");
     }
 
-    @EventListener
-    public void connectionListener(SessionDisconnectEvent event){
-        log.info("disconnected");
-        Long userId = Long.valueOf(event.getUser().getName());
-        Long gameId = gameService.findGameIdByUserId(userId);
-
-        if(gameId == null){
-            throw new IllegalArgumentException("todo");
-        }
-        GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
-            .message(PLAYER_OUT_MESSAGE.getMessage())
-            .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
-                .outUserId(userId).build()))
-            .build();
-        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
-    }
+//    @EventListener
+//    public void connectionListener(SessionDisconnectEvent event){
+//        log.info("disconnected");
+//        Long userId = Long.valueOf(event.getUser().getName());
+//        Long gameId = gameService.findGameIdByUserId(userId);
+//
+//        if(gameId == null){
+//            throw new IllegalArgumentException("todo");
+//        }
+//        GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+//            .message(PLAYER_OUT_MESSAGE.getMessage())
+//            .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
+//                .outUserId(userId).build()))
+//            .build();
+//        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
+//    }
 }
