@@ -117,7 +117,8 @@ const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
                   <IconButton
                     icon={<LearnIcon />}
                     size={55}
-                    handleButtonClick={() => console.log("quiz")}
+                    handleButtonClick={() => {console.log("learn");
+                    changeView("learn");}}
                   ></IconButton>
                 </div>
                 <div>

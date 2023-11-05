@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
-import { BsArrowLeft, BsArrowRight, BsChevronLeft } from "react-icons/bs";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Slider from "react-slick";
 import {
   DeckDetailResponseDto,
@@ -13,6 +13,7 @@ import MyWordCard from "../../components/MyWordCard";
 import AddButton from "../../components/VocabListComponents/AddButton";
 import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal";
 import DeckDetail from "./DeckDetailPage";
+import DeckLearn from "./DeckLearnPage";
 import DeckListPage from "./DeckListPage";
 import "./style.css";
 
@@ -273,7 +274,11 @@ function VocabListPage() {
             <DeckDetail props={selectedDeck} changeView={setMenu} />
           </>
         )}
-        {menu === "learn" && <></>}
+        {menu === "learn" && (
+          <>
+            <DeckLearn changeView={setMenu} props={selectedDeck} />
+          </>
+        )}
         {menu === "quiz" && <></>}
         {menu === "public" && (
           <>

@@ -7,11 +7,36 @@ import QuizIcon from "../../../components/VocabListComponents/Icons/QuizIcon"
 import { VocabLine } from "../../../components/VocabListComponents/VocabLine"
 import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon"
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon"
+import Slider from "react-slick"
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
 interface DeckDetailProps {
   props?: DeckDetailResponseDto
   changeView: (menu: string) => void
 }
-
+const carouselSettings = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1, // 한 번에 보여질 카드 수
+  slidesToScroll: 1, // 넘어갈 카드 수
+  arrows: false,
+  nextArrow: <BsArrowRight />,
+  prevArrow: <BsArrowLeft />,
+  responsive: [
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+  ],
+};
 const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
   const navigate = useNavigate();
   const [mode, setMode] = useState("button") //button add
@@ -42,7 +67,7 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
           <div className='row justify-content-center align-items-center'>
             <div className='title-space' style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
-                <h1>{props.name}</h1>
+                <h1>{props.name} learn</h1>
               </div>
 
               <div style={{ display: "flex" }}>
@@ -65,25 +90,18 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
                 </div>
               </div>
             </div>
-            <div style={{ marginTop: "100px", borderRadius: "10px", backgroundColor: "aliceblue", minHeight: "70vh" }}>
+            <Slider  {...carouselSettings}>
+            <div style={{ marginTop: "100px",  backgroundColor: "aliceblue", minHeight: "70vh" }}>
+              
               {wordList?.map((wordcard, index) => {
                 return (
                   <>
-                    <VocabLine key={index + "wordcard" + props.id} props={wordcard}></VocabLine>
+                    {/* <VocabLine key={index + "wordcard" + props.id} props={wordcard}></VocabLine> */}
                   </>
                 )
               })}
-              <div className='vocab-line'>{mode === "button" && <AddButton handleButtonClick={()=>setMode("add")} size='45' />}
-              {mode === "add" && 
-              <>
-              <form>
-                <input type="text"></input>
-                <hr></hr>
-                <input type="text"></input>
-              </form>
-              </>}
-              </div>
-            </div>
+              
+            </div>    </Slider>
           </div>
         </div>
       </div>
