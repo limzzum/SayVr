@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import MainPage from "./pages/MainPage";
-import MatchingGamePage from "./pages/MatchingGamePage";
+import { MatchingGamePage } from "./pages/MatchingGamePage";
 import MyPage from "./pages/MyPage";
 import MyStudyAnalysisPage from "./pages/MyStudyAnalysisPage";
 import ShadowingPage from "./pages/ShadowingPage";
@@ -19,6 +19,7 @@ function App() {
       <Route path="/Login" element={<LoginPage />} />
       <Route path="/" element={<MainPage />} />
       <Route path="/MatchingGame" element={<MatchingGamePage />} />
+      <Route path="/MatchingGame/game" element={<MatchingGamePage />} />
       <Route path="/My" element={<MyPage />} />
       <Route path="/MyStudyAnalysis" element={<MyStudyAnalysisPage />} />
       <Route path="/Shadowing" element={<ShadowingPage />} />
@@ -26,7 +27,10 @@ function App() {
       <Route path="/Shadowing/CNNPage" element={<CNNPage />} />
       <Route path="/Shadowing/TeamCOCOPage" element={<TeamCOCOPage />} />
       <Route path="/Shadowing/TEDPage" element={<TEDPage />} />
-      <Route path="/Shadowing/ShadowingDetailPage" element={<ShadowingDtailPage />} />
+      <Route
+        path="/Shadowing/ShadowingDetailPage"
+        element={<ShadowingDtailPage />}
+      />
       <Route path="/Study" element={<StudyPage />} />
       <Route path="/VocabList" element={<VocabListPage />} />
     </Routes>
