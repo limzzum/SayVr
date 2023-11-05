@@ -10,6 +10,9 @@ import { VocabLine } from "../../../components/VocabListComponents/VocabLine";
 import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon";
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon";
 import SettingsModal from "../../../components/VocabListComponents/SettingsModal";
+import { Button, Form } from "react-bootstrap";
+import { BsChevronLeft } from "react-icons/bs";
+import AddIcon from "../../../components/VocabListComponents/Icons/AddIcon";
 interface DeckDetailProps {
   props?: DeckDetailResponseDto;
   changeView: (menu: string) => void;
@@ -40,8 +43,25 @@ const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  const refreshDeckInfo = (updated:DeckDetailResponseDto) => {
-  props=updated;
+  const refreshDeckInfo = (updated: DeckDetailResponseDto) => {
+    props = updated;
+  };
+  const BackArrow = () => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "transparent",
+            color: "black",
+            backgroundColor: "transparent",
+            width: "50px",
+          }}
+          onClick={() => changeView("main")}
+        >
+          <BsChevronLeft />
+        </Button>
+      </>
+    );
   };
   const addWord = () => {};
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +95,10 @@ const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
               style={{ display: "flex", justifyContent: "space-between" }}
             >
               <div>
-                <h1>{props.name}</h1>
+                <h1>
+                  <BackArrow />
+                  {props.name}
+                </h1>
               </div>
 
               <div style={{ display: "flex" }}>
@@ -133,21 +156,59 @@ const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
                 )}
                 {mode === "add" && (
                   <>
-                    <form onSubmit={() => addWord}>
-                      <input
-                        type="text"
-                        onChange={handleInputChange}
-                        value={wordForm.eng}
-                        placeholder="Enter word"
-                      ></input>
-                      <hr></hr>
-                      <input
-                        type="text"
-                        onChange={handleInputChange}
-                        value={wordForm.kor}
-                        placeholder="단어 입력"
-                      ></input>
-                    </form>
+                    <div className="row">
+                      <div className="col-11">
+                        <Form>
+                          <Form.Group className="mb-3" controlId="eng">
+                            <Form.Label>영문</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="Enter"
+                              onChange={handleInputChange}
+                              value={wordForm.eng}
+                            />
+                          </Form.Group>{" "}
+                          <Form.Group className="mb-3" controlId="kor">
+                            <Form.Label>한글</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="Enter"
+                              onChange={handleInputChange}
+                              value={wordForm.kor}
+                            />
+                          </Form.Group>
+                        </Form>
+                      </div>
+
+                      {/* <form
+                        onSubmit={() => addWord}
+                        style={{ width: "1000px" }}
+                      >
+                        <input
+                          type="text"
+                          onChange={handleInputChange}
+                          value={wordForm.eng}
+                          placeholder="Enter"
+                        ></input>
+                        <hr></hr>
+                        <input
+                          type="text"
+                          onChange={handleInputChange}
+                          value={wordForm.kor}
+                          placeholder="입력"
+                        ></input>
+                      </form> */}
+                      <div
+                        className="col-1"
+                        style={{ display: "flex",justifyContent: "center",alignItems:"center" }}
+                      >
+                        <IconButton
+                          icon={<AddIcon />}
+                          size={45}
+                          handleButtonClick={addWord}
+                        />
+                      </div>
+                    </div>
                   </>
                 )}
               </div>
