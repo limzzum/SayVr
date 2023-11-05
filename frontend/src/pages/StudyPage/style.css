@@ -1,21 +1,67 @@
 .studypage-container {
-    background-color: white;
-    border: 1px solid gray;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin: 30px auto;
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 30px auto;
 }
-.studypage-inner-container{
-    background-color: white;
-    border: 1px solid gray;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin: 30px auto;
-    width: 60vw;
-    height: 30vh;
+.studypage-inner-container {
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 30px auto;
+  width: 60vw;
+  height: 30vh;
 }
 .btn {
-    width: 5rem;
+  width: 5rem;
+}
+
+.study-list-container {
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 30px auto;
+}
+
+.study-line {
+  background-color: white;
+  /* border: 1px solid gray; */
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 30px auto;
+}
+
+.addBtn:hover {
+  /* border-radius: 50%!important;
+  border-color:transparent;
+  &:active {
+      border-color: transparent;
+    } */
+}
+path:hover {
+  fill: cornflowerblue; /* Change the fill color on hover */
+  cursor: pointer; /* Change the cursor to indicate interactivity */
+}
+.create-new-list-modal-study {
+}
+
+.btn {
+  width: 5rem;
+}
+
+.card {
+  /* border-radius: 10px; */
+  /* background: linear-gradient(0deg, #eef5fa 0%, #eef5fa 100%), */
+  /* linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 100%), #82b7f3; */
+  border-radius: 10px;
+  border-color: transparent !important;
+  background: var(--B1, #82b7f3);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) !important;
 }
