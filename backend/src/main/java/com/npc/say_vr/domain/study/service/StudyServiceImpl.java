@@ -5,9 +5,11 @@ import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
+import com.npc.say_vr.domain.study.dto.requestDto.StudySliceRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
+import com.npc.say_vr.domain.study.dto.responseDto.StudyListResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyMineListResponseDto;
 import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
 import com.npc.say_vr.domain.study.repository.studyRepository.StudyRepository;
@@ -198,8 +200,22 @@ public class StudyServiceImpl implements StudyService {
                 .build();
     }
 
+    @Override
+    public StudyListResponseDto readStudyAllList(Long userId) {
+        return StudyListResponseDto.builder()
+                .studyInfoDtoList(studyRepository.findByList())
+                .build();
+    }
 
-  public StudyInfoDto createStudyInfoDto(Study study) {
+    @Override
+    public StudyListResponseDto readStudyKeyWord(Long userId, StudySliceRequestDto studySliceRequestDto) {
+        return StudyListResponseDto.builder()
+                .studyInfoDtoList(studyRepository.findByKeyword(studySliceRequestDto.getStudyId(),studySliceRequestDto.getSize(),studySliceRequestDto.getKeyword()))
+                .build();
+    }
+
+
+    public StudyInfoDto createStudyInfoDto(Study study) {
       return StudyInfoDto.builder()
               .studyId(study.getId())
               .name(study.getName())
