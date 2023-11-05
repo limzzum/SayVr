@@ -12,6 +12,10 @@ import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.JoinStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.StudySliceRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateStudyRequestDto;
+import com.npc.say_vr.domain.study.dto.responseDto.StudyPageDetailResponseDto;
+import com.npc.say_vr.domain.study.service.GoalService;
+import com.npc.say_vr.domain.study.service.StudyDeckService;
+import com.npc.say_vr.domain.study.service.StudyDeckServiceImpl;
 import com.npc.say_vr.domain.study.service.StudyService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +38,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudyApiController {
 
   private final StudyService studyService;
+  private final GoalService goalService;
+  private final StudyDeckService studyDeckService;
 
   // TODO : user 가져오기, 예외 처리
   @PostMapping("")
   public ResponseEntity<?> createStudy(@RequestBody CreateStudyRequestDto createStudyRequestDto) {
     Long userId = 1L;
+    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
+            .studyDetailResponseDto(studyService.createStudy(userId,createStudyRequestDto))
+            .build();
+
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_CREATE_SUCCESS.getMessage())
-            .data(studyService.createStudy(userId,createStudyRequestDto))
+            .data(studyPageDetailResponseDto)
             .httpStatus(STUDY_CREATE_SUCCESS.getHttpStatus())
             .build();
 
@@ -51,10 +61,15 @@ public class StudyApiController {
   // TODO : user 가져오기, 예외 처리
   @GetMapping("/{studyId}")
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
-    Long userId = 2L;
+    Long userId = 1L;
+    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
+            .studyDetailResponseDto(studyService.readStudy(userId, studyId))
+            .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,studyId))
+            .studyDeckDetailResponseDto(studyDeckService.readStudyDeckList(userId,studyId))
+            .build();
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_READ_SUCCESS.getMessage())
-            .data(studyService.readStudy(userId, studyId))
+            .data(studyPageDetailResponseDto)
             .httpStatus(STUDY_READ_SUCCESS.getHttpStatus())
             .build();
     return ResponseEntity.ok(responseDto);
@@ -96,9 +111,14 @@ public class StudyApiController {
   @PostMapping("/join")
   public ResponseEntity<?> joinStudy(@RequestBody JoinStudyRequestDto joinStudyRequestDto) {
     Long userId = 2L;
+    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
+            .studyDetailResponseDto(studyService.joinStudy(userId, joinStudyRequestDto.getStudyId()))
+            .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,joinStudyRequestDto.getStudyId()))
+            .studyDeckDetailResponseDto(studyDeckService.readStudyDeckList(userId,joinStudyRequestDto.getStudyId()))
+            .build();
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_JOIN_SUCCESS.getMessage())
-            .data(studyService.joinStudy(userId, joinStudyRequestDto.getStudyId()))
+            .data(studyPageDetailResponseDto)
             .httpStatus(STUDY_JOIN_SUCCESS.getHttpStatus())
             .build();
 
@@ -120,6 +140,11 @@ public class StudyApiController {
   @PutMapping("/{studyId}")
   public ResponseEntity<?> updateStudy(@PathVariable Long studyId, @RequestBody UpdateStudyRequestDto updateStudyRequestDto) {
     Long userId = 1L;
+    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
+            .studyDetailResponseDto(studyService.updateStudy(userId, studyId,updateStudyRequestDto))
+            .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,studyId))
+            .studyDeckDetailResponseDto(studyDeckService.readStudyDeckList(userId,studyId))
+            .build();
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_UPDATE_SUCCESS.getMessage())
             .data(studyService.updateStudy(userId, studyId,updateStudyRequestDto))
