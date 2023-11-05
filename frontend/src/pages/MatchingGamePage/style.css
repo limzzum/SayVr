@@ -1,0 +1,13 @@
+.matching-game-container {
+    background-image: url("../../assets/MatchingGamePageAssets/Background.png");
+    background-size: cover; /* 이미지를 화면에 맞게 조정 */
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 92vh; /* 뷰포트(화면) 높이를 100% 차지하도록 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
+  }
+  

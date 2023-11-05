@@ -1,0 +1,10 @@
+.ShadowingDetailPage-container {
+  margin-top: 1%;
+}
+
+.VOD {
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+  margin: auto; /* 좌우 중앙 정렬을 위해 margin: auto; 추가 */
+}
