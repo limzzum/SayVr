@@ -15,6 +15,9 @@
     height: 400px;
     background-color: #F1F7FA;
     border: none;
+    .react-calendar {
+        color: black !important;
+    }
 }
 
 .cal-container{
@@ -26,7 +29,6 @@
     padding: 10px;
     margin: auto;
     margin-bottom: 30px;
-
 }
 
 .grade-container {
@@ -38,3 +40,7 @@
     margin: auto;
     margin-bottom: 30px;
 }
+
+/* .react-calendar__tile {
+    color: black !important;
+} */
