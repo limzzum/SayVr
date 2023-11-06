@@ -6,6 +6,7 @@ import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
 import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
 import com.npc.say_vr.domain.flashcards.domain.Wordcard;
+import com.querydsl.core.annotations.QueryProjection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -63,7 +64,15 @@ public class FlashcardsResponseDto {
             this.wordCount = personalDeck.getWordCount();
         }
 
-
+        @QueryProjection
+        public DeckTitleResponseDto(String nickname, String name, Long id, int forkCount,
+            int wordCount) {
+            this.nickname = nickname;
+            this.name = name;
+            this.id = id;
+            this.forkCount = forkCount;
+            this.wordCount = wordCount;
+        }
     }
 
     @Getter
