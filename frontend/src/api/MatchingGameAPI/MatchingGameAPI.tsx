@@ -1,6 +1,8 @@
 // api.ts
 import axios, { AxiosResponse } from "axios";
-const BASE_URL = "http://localhost:8080/api/game";
+import { serverURL } from "../../pages/MatchingGamePage/constants/constants";
+
+const BASE_URL = serverURL+"/api/game";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
