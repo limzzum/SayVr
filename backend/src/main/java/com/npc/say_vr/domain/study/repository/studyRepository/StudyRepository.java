@@ -12,4 +12,8 @@ public interface StudyRepository {
 
     Optional<Study> findById(Long studyId);
 
+    List<StudyInfoDto> findByKeyword(Long studyId,Integer size,String keyword);
+
+    List<StudyInfoDto> findByList();
+
 }

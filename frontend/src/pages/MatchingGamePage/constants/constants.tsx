@@ -1,1 +1,2 @@
-export const URL : string = "http://localhost:8080/api/ws";
+export const socketURL: string = "https://xn--vr-kg0j662g.site/api/ws";
+export const serverURL: string = "https://xn--vr-kg0j662g.site";
