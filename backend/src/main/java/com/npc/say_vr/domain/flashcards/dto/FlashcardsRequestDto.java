@@ -169,4 +169,17 @@ public class FlashcardsRequestDto {
                 .build();
         }
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReadDeckSearchRequestDto  {
+
+        private String keyword;
+        private String sortBy; // TODO : ENUM으로 만들기
+        private Long lastId;
+        private int pageSize;
+
+    }
 }

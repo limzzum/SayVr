@@ -153,6 +153,8 @@ public class FlashcardsResponseDto {
 
         private List<DeckTitleResponseDto> personalDeckList;
 
+
+        // TODO : 생성자를 이렇게 만들어져서 DTO로 QUERYDSL 생성하기가 어렵...나중에 고치기
         public DeckListResponseDto(List<PersonalDeck> personalDeckList) {
             this.personalDeckList = personalDeckList.stream()
                 .map(DeckTitleResponseDto::new).collect(Collectors.toList());
