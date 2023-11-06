@@ -1,22 +1,20 @@
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import img from "../../assets/MainPageAssets/MainPageImage.jpg";
 import MyPageBadge from "../../assets/MygradeAssets/MyPageBadge.png";
-import MyStudyCard from "../../components/MyStudyCard";
-import MyWordCard from "../../components/MyWordCard";
 import "./style.css";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 function MyPage() {
-  const arrowStyle = {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    zIndex: 1,
-    fontSize: "24px",
-    color: "black", // 검정색으로 변경
-    cursor: "pointer",
-  };
+  // const arrowStyle = {
+  //   position: "absolute",
+  //   top: "50%",
+  //   transform: "translateY(-50%)",
+  //   zIndex: 1,
+  //   fontSize: "24px",
+  //   color: "black", // 검정색으로 변경
+  //   cursor: "pointer",
+  // };
 
   const carouselSettings = {
     dots: true,
