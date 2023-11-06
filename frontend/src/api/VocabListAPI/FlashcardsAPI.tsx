@@ -15,7 +15,7 @@ export enum ProgressStatus {
   ENABLED = "ENABLED",
   DISABLED = "DISABLED",
 }
-export enum wordcardStatus {
+export enum WordcardStatus {
   UNCHECKED = "UNCHECKED",
   CHECKED = "CHECKED",
 }
@@ -29,7 +29,7 @@ export interface WordcardDto {
   id: number
   kor: string
   eng: string
-  wordcardStatus: wordcardStatus
+  WordcardStatus: WordcardStatus
 }
 
 export interface FlashcardDto {
@@ -86,6 +86,10 @@ export interface SearchRequestDto {
 export interface MessageOnlyResponseDto {
   message: string
 }
+
+export interface WordcardUpdateRequestDto {
+  wordcardStatus: WordcardStatus
+}
 //res. data[data,message,httpStatus]
 //userId -> header에 있어야,,
 export const createPersonalDeck = (data?: CreateFlashcardsRequestDto): Promise<AxiosResponse<ResponseDto<DeckCreateResponseDto>>> => {
@@ -130,9 +134,15 @@ export const resetDeckProgress = (deckId: number): Promise<AxiosResponse<Respons
   return axiosInstance.patch(`/reset-progress/${deckId}`)
 }
 
-export const updateWordProgress = (wordcardId: number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-  return axiosInstance.patch(`/progress/${wordcardId}`)
+export const updateWordProgress = (
+  wordcardId: number,
+  data: WordcardUpdateRequestDto
+): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
+  return axiosInstance.patch(`/progress/${wordcardId}`, data)
 }
 export const deleteDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
   return axiosInstance.delete(`/deck/${deckId}`)
+}
+export const deleteCard = (wordcardId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
+  return axiosInstance.delete(`/deck/${wordcardId}`)
 }
