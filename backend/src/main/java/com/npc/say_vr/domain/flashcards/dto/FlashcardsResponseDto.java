@@ -152,7 +152,7 @@ public class FlashcardsResponseDto {
 
     @Getter
     public static class WordUpdateResponseDto {
-
+        String errorMessage;
         WordcardDto wordcard;
 
         @Builder
@@ -162,8 +162,8 @@ public class FlashcardsResponseDto {
         }
 
         @Builder
-        public WordUpdateResponseDto() {
-
+        public WordUpdateResponseDto(String errorMessage) {
+        this.errorMessage = errorMessage;
         }
     }
 

@@ -55,7 +55,8 @@ public class WordcardServiceImpl implements WordcardService {
                 flashcardDeck.getId(), word.getId(), WordcardStatus.DELETED);
             if (preexist != null) {// 이미 단어장에 존재하는 단어->
                 log.info("redundant, returning preexisting word");
-                return WordUpdateResponseDto.builder().wordcard(preexist).build();
+//                return WordUpdateResponseDto.builder().wordcard(preexist).build();
+                return new WordUpdateResponseDto("이미 단어장에 존재하는 단어입니다");
             } else {
                 log.info("add word to deck");
                 wordcard = Wordcard.builder().word(word).status(WordcardStatus.UNCHECKED)
