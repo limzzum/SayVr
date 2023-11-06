@@ -26,7 +26,7 @@ export interface PlaylistItem {
 
 export const getPlaylistItems = (
   playlistId: string,
-  maxResults = 25
+  maxResults = 24
 ): Promise<AxiosResponse<{ items: PlaylistItem[] }>> => {
   return youtubeAPI.get("/playlistItems", {
     params: {
