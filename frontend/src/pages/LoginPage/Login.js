@@ -10,8 +10,8 @@ function Login() {
       accessToken: accessToken,
     };
 
-    // const Baseurl = "http://localhost:8080";
-    const Baseurl = "https://말해vr.site";
+    const Baseurl = "http://localhost:8080";
+    // const Baseurl = "https://말해vr.site";
 
     axios
       .post(Baseurl + "/api/user/facebookLogin", data)
@@ -19,6 +19,7 @@ function Login() {
         console.log(response);
         if (response.data.httpStatus === "OK") {
           window.location.href = "/";
+          // 이제 localstorge에 저장하기!
           alert("페이스북 로그인 성공!");
         } else {
           alert("페이스북 로그인 실패!");
