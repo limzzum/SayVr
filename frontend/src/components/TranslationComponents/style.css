@@ -5,52 +5,45 @@
   margin-left: 10%;
 }
 
-.half-width-container {
+.carousel-container,
+.output-container {
   flex: 1;
   margin: 0 10px;
+  width: 50%;
 }
 
-.text-box,
+.carousel {
+  display: flex;
+}
+
+.carousel-item,
 .output-box {
-  width: 100%;
+  border: 1px solid #ccc;
   padding: 15px;
-  font-size: 18px;
   border-radius: 7px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 18px; /* 글자 크기 추가 */
 }
 
-.input-container textarea {
-  height: 150px;
-  resize: none;
-  border: none;
-  outline: none;
+.carousel-item {
+  flex: 0 0 auto;
+  width: 100%;
+  display: none;
 }
-.badge {
-  width: 15%; /* 변경된 부분 */
-  background-color: #1D5193; /* 추가된 부분 */
+
+.carousel-item.active {
+  display: block;
+}
+
+.button-container {
+  width: 80%;
   margin-left: 10%;
-  margin-top: 1%;
-}
-
-span {
-  font-size: 20px;
-}
-
-.output-box {
-  min-height: 150px;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
 }
 
-.btn-translate,
-.top-row select {
-  width: 7em;
-  margin-top: 10px;
-}
-
-.translation-error {
-  color: #ff1234;
+button {
+  width: 30%;
 }
 
 @media (max-width: 768px) {
@@ -60,8 +53,45 @@ span {
     margin-left: 0%;
   }
 
-  .half-width-container {
+  .carousel-container,
+  .output-container {
     width: 100%;
     margin: 0;
   }
+}
+
+.badge {
+  width: 15%;
+  background-color: #1D5193;
+  margin-left: 10%;
+  margin-top: 1%;
+  text-align: center;
+}
+
+span {
+  font-size: 20px;
+  color: white;
+}
+.button-container {
+  width: 80%;
+  margin-left: 10%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px; /* 좀 더 간격을 주기 위한 수정 */
+}
+
+button {
+  width: 30%;
+  background-color: #1D5193;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease; /* 부드러운 색상 전환을 위한 추가 */
+}
+
+button:hover {
+  background-color: #003366; /* 마우스 호버시 배경색 변경 */
 }
