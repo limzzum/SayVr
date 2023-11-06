@@ -49,10 +49,11 @@ public class FlashcardsRequestDto {
 
         private Long userId;
         private String type;
-        private List<String> tags;
         private String keyword;
-        private Integer page;
-        private Integer pageSize;
+
+//        private List<String> tags;
+//        private Integer page;
+//        private Integer pageSize;
 
     }
 

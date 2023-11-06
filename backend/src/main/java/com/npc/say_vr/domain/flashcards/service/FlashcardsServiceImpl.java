@@ -57,6 +57,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
         return new DeckCreateResponseDto(personalDeck);
     }
 
+    //TODO: 테스팅 필요!!! 공개 조회시 거르고 조회해야 함
     @Override
     public DeckCreateResponseDto createForkedDeck(Long userId, Long personalDeckId) {
         PersonalDeck deckToFork = personalDeckRepository.findById(personalDeckId).orElseThrow();
@@ -90,8 +91,8 @@ public class FlashcardsServiceImpl implements FlashcardsService {
 
     @Override
     public DeckListResponseDto readPublicDecks() {
-        List<PersonalDeck> personalDeckList = personalDeckRepository.findByStatusIsNotAndStatusIs(
-            FlashcardStatus.DELETED, FlashcardStatus.PUBLIC);
+        List<PersonalDeck> personalDeckList = personalDeckRepository.findByStatusIsNotAndStatusIsNotAndStatusIs(
+            FlashcardStatus.DELETED, FlashcardStatus.FORKED, FlashcardStatus.PUBLIC);
         return new DeckListResponseDto(personalDeckList);
     }
 

@@ -27,6 +27,7 @@ public class WordcardServiceImpl implements WordcardService {
     private final WordcardRepository wordcardRepository;
     private final WordRepository wordRepository;
 
+    @Transactional
     @Override
     public WordUpdateResponseDto createWordcard(Long userId, Long deckId,
         CreateWordcardRequestDto requestDto) {
