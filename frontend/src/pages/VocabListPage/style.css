@@ -6,7 +6,9 @@
   padding: 10px;
   margin: 30px auto;
 }
-
+.slick-slide.slick-cloned {
+  display: none;
+}
 .vocab-line{
   background-color: white;
   /* border: 1px solid gray; */
