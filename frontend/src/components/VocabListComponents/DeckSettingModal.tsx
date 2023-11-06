@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { DeckDetailResponseDto, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI";
 import { PrivacyStatus } from "./CreateNewListModal";
+import { useNavigate } from "react-router-dom";
 
 interface SettingsModalProps {
   showModal: boolean;
   handleClose: () => void;
   id:number,
+  handleRefresh:(updated:DeckDetailResponseDto)=>void,
   info: DeckDetailResponseDto;
-  goToDetail: (updated: DeckDetailResponseDto) => void
 }
 export interface DeckSettingsUpdateRequestDto {
   name: string;
@@ -18,11 +19,11 @@ export interface DeckSettingsUpdateRequestDto {
 const DeckSettingsModal: React.FC<SettingsModalProps> = ({
   showModal,
   handleClose,
-  goToDetail,
+handleRefresh,
   info,
   id,
 }) => {
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const [mode, setMode] = useState("settings");
   const [flashcardForm, setFlashcardForm] =
     useState<DeckSettingsUpdateRequestDto>({
@@ -32,13 +33,13 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
     if (type === "text") {
-      // Handle text input changes
+
       setFlashcardForm((prevData) => ({
         ...prevData,
         [name]: value,
       }));
     } else if (type === "checkbox") {
-      // Handle checkbox input changes
+
       const newPrivacyStatus = checked
         ? PrivacyStatus.PUBLIC
         : PrivacyStatus.PRIVATE;
@@ -66,7 +67,8 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({
           // navigate()
           console.log(res.data.data.id);
           handleClose();
-          goToDetail(res.data.data)
+          handleRefresh(res.data.data)
+          // navigate(`/flashcard/${id}`);
         })
         .catch((error) => {
           console.error("Error updating deck", error);
@@ -77,7 +79,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>단어장 설정 {flashcardForm.name} {flashcardForm.flashcardStatus}</Modal.Title>
+        <Modal.Title>단어장 설정 </Modal.Title>
       </Modal.Header>{" "}
       {mode === "settings" && (
         <>

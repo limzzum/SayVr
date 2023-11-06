@@ -74,7 +74,8 @@ export interface DeckUpdateRequestDto {
   savingProgressStatus: ProgressStatus
 }
 export interface WordUpdateResponseDto {
-  wordcard: WordcardDto
+  wordcard: WordcardDto,
+  errorMessage?:string,
 }
 
 export interface SearchRequestDto {
