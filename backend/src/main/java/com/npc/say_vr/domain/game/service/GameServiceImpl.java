@@ -53,20 +53,19 @@ public class GameServiceImpl implements GameService {
         String name = ranking.getTier().getName();
 
         if(redisUtil.hasKey(name)){
-            WaitingGameDto waitingGameDto = (WaitingGameDto) redisUtil.get(name);
-            Long gameId = waitingGameDto.getGameId();
-            GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
+            String gameId = (String) redisUtil.get(name);
+            GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
             User user = userRepository.findById(userId).orElseThrow();
             PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
-            redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
-            updateQuiz(gameId);
-            return waitingGameDto.getGameId();
+            redisUtil.setGameStatusList(gameId,gameStatusDto);
+            updateQuiz(Long.valueOf(gameId));
+            return Long.valueOf(gameId);
         }
 
         Long gameId = create();
-        redisUtil.set(name, WaitingGameDto.builder().gameId(gameId).waitingUserId(userId).build(), 30);
+        redisUtil.set(name, String.valueOf(gameId), 30* 1000* 60);
 
         User user = userRepository.findById(userId).orElseThrow();
         PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)

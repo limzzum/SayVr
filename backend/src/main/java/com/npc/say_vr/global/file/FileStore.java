@@ -40,14 +40,14 @@ public class FileStore {
         String folderPath = makeFolder();
         String uuid = UUID.randomUUID().toString();
         String saveName = fileDir + File.separator + folderPath + File.separator + uuid + "-"
-            + multipartFile.getOriginalFilename();
+            + multipartFile.getOriginalFilename().replace(" ", "");
 
         try {
             multipartFile.transferTo(new File(saveName));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return folderPath + File.separator + uuid + "-" + multipartFile.getOriginalFilename();
+        return folderPath + File.separator + uuid + "-" + multipartFile.getOriginalFilename().replace(" ", "");
 
     }
 

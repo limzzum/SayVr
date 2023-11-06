@@ -1,13 +1,35 @@
 .matching-game-container {
-    background-image: url("../../assets/MatchingGamePageAssets/Background.png");
-    background-size: cover; /* 이미지를 화면에 맞게 조정 */
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 92vh; /* 뷰포트(화면) 높이를 100% 차지하도록 설정 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
-  }
-  
+  background-image: url("../../assets/MatchingGamePageAssets/Background.png");
+  background-size: cover; /* 이미지를 화면에 맞게 조정 */
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 92vh; /* 뷰포트(화면) 높이를 100% 차지하도록 설정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
+}
+
+.waiting-game-container {
+  background-image: url("../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
+  background-size: cover;
+  width: 318px;
+  height: 429px;
+  justify-content: center;
+
+  margin-bottom: 20px;
+}
+
+.profile-image {
+  position: absolute;
+  justify-content: center;
+  background-clip: border-box;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  top: 650px;
+  left: 1310px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
