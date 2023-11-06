@@ -5,14 +5,12 @@ interface VocabLineProps {
   props?: WordcardDto
 }
 
-export const VocabLine: FC<VocabLineProps> = ({props}) => {
-  
+export const VocabLine: FC<VocabLineProps> = ({ props }) => {
   return (
     <>
       <div className='vocab-line'>
         <div>{props?.kor}</div>
-		<div>{props?.eng}</div>
-		
+        <div>{props?.eng}</div>
       </div>
     </>
   )

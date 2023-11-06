@@ -2,6 +2,7 @@
 import axios, { AxiosResponse } from "axios"
 import { CreateFlashcardsRequestDto, PrivacyStatus } from "../../components/VocabListComponents/CreateNewListModal"
 import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage" 
+import { DeckSettingsUpdateRequestDto } from "../../components/VocabListComponents/DeckSettingModal"
 const BASE_URL = "http://localhost:8080/api/flashcards"
 
 const axiosInstance = axios.create({
@@ -69,10 +70,11 @@ export interface DeckCreateResponseDto {
     status: PrivacyStatus,
     savingProgressStatus:ProgressStatus,
   }
-
+  export interface DeckUpdateRequestDto{
+    savingProgressStatus: ProgressStatus,
+  }
   export interface WordUpdateResponseDto{
     wordcard: WordcardDto,
-
   }
 //res. data[data,message,httpStatus]
 //userId -> header에 있어야,,
@@ -91,4 +93,16 @@ export const getPublicFlashcards = (): Promise<AxiosResponse<ResponseDto<Persona
 export const getOneDeck = (deckId:number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
     return axiosInstance.get(`/deck/${deckId}`)
 }
+export const updateDeckSettings= (deckId:number, data:DeckSettingsUpdateRequestDto):Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
+  return axiosInstance.put(`/deck/${deckId}`,data)
+}
+export const updateProgressSaving= (deckId:number,data:DeckUpdateRequestDto):Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
+  return axiosInstance.patch(`/saving/${deckId}`,data)
+}
+export const resetDeckProgress= (deckId:number):Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
+  return axiosInstance.patch(`/reset-progress/${deckId}`)
+}
 
+export const updateWordProgress= (wordcardId:number):Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
+  return axiosInstance.patch(`/card/${wordcardId}`)
+}
