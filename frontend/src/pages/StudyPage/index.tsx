@@ -1,5 +1,4 @@
 import PlusBtn from "../../assets/Etc/PlusBtn.png";
-import MyWordCard from "../../components/MyWordCard";
 import "./style.css";
 function StudyPage() {
   return (
@@ -27,7 +26,7 @@ function StudyPage() {
             <p style={{ fontSize: "1.5em" }}>스터디 목표</p>
           </div>
           <div className="col">
-            <img className="btn" style={{ width: "4em" }} src={PlusBtn} />
+            <img className="btn" alt="addbutton" style={{ width: "4em" }} src={PlusBtn} />
           </div>
         </div>
         <div className="row ustify-content-center align-items-center">
@@ -38,7 +37,7 @@ function StudyPage() {
             <p style={{ fontSize: "1.5em" }}>스터디 단어장</p>
           </div>
           <div className="col">
-            <img className="btn" style={{ width: "4em" }} src={PlusBtn} />
+            <img className="btn" alt="addbutton" style={{ width: "4em" }} src={PlusBtn} />
           </div>
         </div>
         <div className="row card-row justify-content-center align-items-center">

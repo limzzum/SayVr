@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import ApexCharts from "react-apexcharts";
 import Calendar, { CalendarProps } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import ApexCharts from "react-apexcharts";
 import AverageScore from "../../assets/MygradeAssets/AverageScore.png";
 import ContextScore from "../../assets/MygradeAssets/ContextScore.png";
 import GrammarScore from "../../assets/MygradeAssets/GrammarScore.png";
@@ -59,6 +59,7 @@ function MyStudyAnalysisPage() {
         chartElement.parentNode.removeChild(chartElement);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array to run the effect only once
 
   return (
