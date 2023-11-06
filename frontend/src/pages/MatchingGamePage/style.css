@@ -4,20 +4,21 @@
   background-repeat: no-repeat;
   background-position: center;
   height: 92vh; /* 뷰포트(화면) 높이를 100% 차지하도록 설정 */
+  padding-top: 0px;
+  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  padding-top: 60px; /* 네비게이션 바 높이만큼 여백 추가 */
+  flex-direction: column;
 }
 
 .waiting-game-container {
   background-image: url("../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
   background-size: cover;
+  background-position: center;
   width: 318px;
   height: 429px;
-  justify-content: center;
-
   margin-bottom: 20px;
 }
 
@@ -32,4 +33,13 @@
   left: 1310px;
   transform: translate(-50%, -50%);
   z-index: 1;
+}
+
+.waiting-time{
+  /* size: 500px; */
+  justify-items: center;
+  color: black;
+  text-align: center;
+  font-size: xxx-large;
+  width: 150px;
 }
