@@ -12,7 +12,6 @@ import {
 import MyWordCard from "../../components/MyWordCard"
 import AddButton from "../../components/VocabListComponents/AddButton"
 import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal"
-import DeckLearn from "./DeckLearnPage"
 import DeckListPage from "./DeckListPage"
 import "./style.css"
 

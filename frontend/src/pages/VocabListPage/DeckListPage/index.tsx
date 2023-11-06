@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react"
+import { Button } from "react-bootstrap"
+import { BsChevronLeft } from "react-icons/bs"
+import { useNavigate } from "react-router-dom"
 import {
-  DeckDetailResponseDto,
   PersonalDeckTitle,
-  getOneDeck,
   getPersonalFlashcards,
-  getPublicFlashcards,
+  getPublicFlashcards
 } from "../../../api/VocabListAPI/FlashcardsAPI"
-import AddButton from "../../../components/VocabListComponents/AddButton"
 import MyWordCard from "../../../components/MyWordCard"
+import AddButton from "../../../components/VocabListComponents/AddButton"
 import CreateNewListModal from "../../../components/VocabListComponents/CreateNewListModal"
 import "../../VocabListPage/style.css"
-import { BsChevronLeft } from "react-icons/bs"
-import { Button } from "react-bootstrap"
-import { useNavigate } from "react-router-dom"
 
 interface DeckListProps {
   category: string
