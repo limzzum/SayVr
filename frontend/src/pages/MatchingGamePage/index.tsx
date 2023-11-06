@@ -1,7 +1,7 @@
 import "./style.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Axios 추가
-import { URL, serverUrl, localUrl } from "./constants/constants";
+import { socketURL, serverURL } from "./constants/constants";
 import { Client, Frame } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { config } from "process";
@@ -40,7 +40,7 @@ interface Player {
   profile: string;
 }
 
-const socket = new SockJS(URL);
+const socket = new SockJS(socketURL);
 const stompClient = new Client({ webSocketFactory: () => socket });
 
 stompClient.activate();
@@ -61,7 +61,7 @@ function MatchingGamePage() {
       .then((response) => {
         console.log(response);
         setGameId(response.data.data.gameId);
-        setImageUrl(serverUrl + "/profiles/" + response.data.data.profile);
+        setImageUrl(serverURL + "/profiles/" + response.data.data.profile);
 
         // const subscription = gameId && subscribeToChatRoom(gameId);
 
