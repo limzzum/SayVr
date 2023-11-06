@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final FileStore fileStore;
+    private final JwtUtil jwtUtil;
 
     private Long createUser(User user) {
         if (isExistUser(user.getId())) {
@@ -122,8 +123,8 @@ public class UserServiceImpl implements UserService {
             user = userRepository.save(newUser);
         }
         return TokenResponseDto.builder()
-//                .accessToken(jwtUtil.createJwtToken(user.getId()))
-//                .refreshToken(jwtUtil.createRefreshToken(user.getId()))
+                .accessToken(jwtUtil.createJwtToken(user.getId()))
+                .refreshToken(jwtUtil.createRefreshToken(user.getId()))
                 .build();
     }
 }

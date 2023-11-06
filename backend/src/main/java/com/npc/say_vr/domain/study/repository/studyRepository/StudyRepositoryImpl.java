@@ -29,4 +29,14 @@ public class StudyRepositoryImpl implements StudyRepository{
         return jpaStudyRepository.findById(studyId);
     }
 
+    @Override
+    public List<StudyInfoDto> findByKeyword(Long studyId, Integer size, String keyword) {
+        return queryDslStudyRepostiory.findByKeyword(studyId,size,keyword);
+    }
+
+    @Override
+    public List<StudyInfoDto> findByList() {
+        return queryDslStudyRepostiory.findByList();
+    }
+
 }

@@ -21,10 +21,12 @@ public class GameResponseDto {
     @Getter
     public static class GameWaitingResponseDto {
         private Long gameId;
+        private String profile;
 
         @Builder
-        public GameWaitingResponseDto(Long gameId) {
+        public GameWaitingResponseDto(Long gameId, String profile) {
             this.gameId = gameId;
+            this.profile = profile;
         }
     }
 

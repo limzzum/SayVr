@@ -23,6 +23,8 @@ public interface GoalService {
 
     WeeklySprintDetailResponse readGoalAndCheckListItem(Long userId,Long studyId,Long weeklySprintId);
 
+    WeeklySprintDetailResponse readNowWeeklySprint(Long userId,Long studyId);
+
     Long findPreviousSprintId(Long studyId, Long weeklySprintId);
 
     Long findNextSprintId(Long studyId, Long weeklySprintId);

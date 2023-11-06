@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -245,7 +246,7 @@ public class GoalServiceImpl implements GoalService{
     // TODO : 1:n 관계로는 리스트를 같이 가져오기보단 관계 안묶인거 먼저 조회해놓고 지연 로딩으로 따로 가져와서 batch size 최적화 해보기
     // TODO : nickname, studymemberid
     @Override
-    public WeeklySprintDetailResponse readGoalAndCheckListItem(Long userId,Long studyId,Long weeklySprintId) {
+    public WeeklySprintDetailResponse readGoalAndCheckListItem(Long userId,Long studyId,@Nullable Long weeklySprintId) {
         // TODO : 예외처리
         WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow();
         List<GoalResponseDto> goalResponseDtoList = goalRepository.findGoalAndWeeklySprintId(weeklySprintId);
@@ -295,6 +296,14 @@ public class GoalServiceImpl implements GoalService{
             .nextWeeklySprintId(nextWeeklySprintId)
             .goalDetailResponseDto(goalDetailResponseDto)
             .build();
+    }
+
+    @Override
+    public WeeklySprintDetailResponse readNowWeeklySprint(Long userId, Long studyId) {
+        // TODO : 예외처리
+        Long weeklySprintId = weeklySprintRepository.findNowSprintId(studyId);
+        if(weeklySprintId == null) return null;
+        return readGoalAndCheckListItem(userId,studyId, weeklySprintId);
     }
 
     @Override

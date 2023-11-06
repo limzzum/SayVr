@@ -28,6 +28,7 @@ public class RedisUtil {
     }
 
     public Object get(String key) {
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         return redisTemplate.opsForValue().get(key);
     }
 
@@ -62,6 +63,7 @@ public class RedisUtil {
     }
 
     public GameStatusDto getGameStatusList(String key) {
+        redisGameStatusTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(GameStatusDto.class));
         return (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
     }
 
@@ -76,15 +78,12 @@ public class RedisUtil {
     public List<GameStatusDto> getGameStatusValues() {
         List<GameStatusDto> gameStatusDtos = new ArrayList<>();
         Set<String> keys = redisGameStatusTemplate.keys("*");
+        redisGameStatusTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(GameStatusDto.class));
         for (String key : keys) {
             GameStatusDto gameStatusDto = (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
             gameStatusDtos.add(gameStatusDto);
         }
         return gameStatusDtos;
     }
-
-
-
-
 
 }
