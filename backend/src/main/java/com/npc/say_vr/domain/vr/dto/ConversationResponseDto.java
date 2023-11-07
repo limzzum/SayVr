@@ -4,6 +4,7 @@ import com.npc.say_vr.domain.vr.domain.Conversation;
 import com.npc.say_vr.domain.vr.domain.Message;
 import com.npc.say_vr.domain.vr.domain.Score;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -112,6 +113,33 @@ public class ConversationResponseDto {
             this.pronunciation = message.getPronunciation();
         }
     }
+
+    @Getter
+    public static class DatedConversation {
+
+        private String date;
+        private Long id;
+
+        public DatedConversation(Conversation conversation) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            this.date = conversation.getCreatedAt().format(formatter);
+            this.id = conversation.getId();
+        }
+
+    }
+
+    @Getter
+    public static class ConversationDatedListDto {
+
+        List<DatedConversation> datedConversationList;
+
+        public ConversationDatedListDto(List<Conversation> conversationList) {
+            this.datedConversationList = conversationList.stream().map(DatedConversation::new)
+                .collect(Collectors.toList());
+        }
+
+    }
+
 
     @Getter
     public static class ConversationDto {
