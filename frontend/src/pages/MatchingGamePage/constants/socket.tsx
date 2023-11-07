@@ -43,7 +43,6 @@ export const sendMsg = (destination: any, body={}) => {
 
 export const subscribe = (destination: string, callback: any) => {
 
-  console.log("구독 호출은 됐는데");
   if (stompClient && stompClient.connected) {
     console.log("subscribe const 호출됨")
     return stompClient.subscribe(destination, (message: Frame) => {
@@ -75,7 +74,6 @@ export enum SocketType {
     playerB : Player,
     question : string,
     answer : string
-
   }
 
   export interface Player {
