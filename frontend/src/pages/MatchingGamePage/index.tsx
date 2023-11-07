@@ -1,14 +1,14 @@
-import "./style.css";
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // Axios 추가
-import { socketURL, serverURL } from "./constants/constants";
-import { Client, Frame } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
-import { config } from "process";
+import { socketURL, subscribeURL, serverURL, imageURL } from "./constants/constants";
+import Socket from "./constants/socket";
+import { useNavigate } from 'react-router-dom';
 import {
   SocketType,
   waitingGame,
 } from "../../api/MatchingGameAPI/MatchingGameAPI";
+import Header from "../../components/MatchingGameComponents/WaitingPage/header";
+import Body from "../../components/MatchingGameComponents/WaitingPage/body";
+import Footer from "../../components/MatchingGameComponents/WaitingPage/footer";
 
 interface receiveMessage {
   socketType: SocketType;
@@ -40,30 +40,45 @@ interface Player {
   profile: string;
 }
 
-const socket = new SockJS(socketURL);
-const stompClient = new Client({ webSocketFactory: () => socket });
+interface SocketResponseDto<T> {
+  socketType? : SocketType,
+  gameStatus? : GameStatus,
+  data?: T,
+  message?: string;
+}
 
-stompClient.activate();
-
+let imagePath = "";
 function MatchingGamePage() {
   const [gameId, setGameId] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState(""); // 이미지 URL 상태
+  const [imageUrl, setImageUrl] = useState("");
+
+  const history = useNavigate();
 
   const messageToSend: sendMessage = {
     socketType: SocketType.GAME_INFO,
     message: "hihi",
   };
 
+  
+  const socketReceive = (response: any) => {
+
+    if(response.socketType == SocketType.GAME_INFO){
+      console.log("게임 매칭")
+      history('/MatchingGame/game')
+    }
+    console.log("socket 구독 receive");
+    console.log(response);
+  };
+
   useEffect(() => {
-    // publishMessageToChatRoom(1, messageToSend);
+    Socket.connect();
     console.log("axios 요청 호출");
     waitingGame()
       .then((response) => {
         console.log(response);
         setGameId(response.data.data.gameId);
-        setImageUrl(serverURL + "/profiles/" + response.data.data.profile);
-
-        // const subscription = gameId && subscribeToChatRoom(gameId);
+      
+        setImageUrl(imageURL + response.data.data.profile);
 
         return () => {};
       })
@@ -71,45 +86,41 @@ function MatchingGamePage() {
         // 오류 처리
       });
 
-    return () => {};
+    return () => {
+      Socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
-    if (stompClient && gameId) {
-      console.log("구독 실행 전");
-      subscribeToChatRoom(gameId);
+    if (gameId) {
+      console.log("gameId : " + gameId);
+      Socket.subscribe(subscribeURL+"."+gameId, socketReceive)
     }
 
     return () => {
-      stompClient.deactivate();
     };
-  }, [stompClient]);
-  return (
-    <div className="matching-game-container">
-      {imageUrl && (
-        <img src={imageUrl} alt="Game Image" className="profile-image" />
-      )}
+  },[gameId] );
 
-      <div className="waiting-game-container"></div>
+  useEffect(() => {
+    imagePath = imageUrl.valueOf();
+
+    return () => {
+      
+    };
+  },[imageUrl] );
+
+
+  return (
+    <div style={{display : 'flex', flexDirection : 'column'}}>
+      <Header/>
+      {imageUrl && (
+        <Body image={imageUrl}></Body>
+      )}
+      <Footer/>
     </div>
   );
 }
 
-function subscribeToChatRoom(gameId: number) {
-  return stompClient.subscribe(`/topic/game.${gameId}`, (message: Frame) => {
-    console.log("Received message:");
-
-    const receivedMessage: receiveMessage = JSON.parse(message.body);
-    console.log("Received message:", receivedMessage);
-  });
-}
-
-function publishMessageToChatRoom(gameId: number, message: sendMessage) {
-  stompClient.publish({
-    destination: `/pub/game.${gameId}`,
-    body: JSON.stringify(message),
-  });
-}
 
 function MatchingGameStart() {
   // const [gameId, setGameId] = useState<number | null>(null);
