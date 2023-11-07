@@ -1,4 +1,4 @@
-.study-analysis-container{
+.study-analysis-container {
     padding: 10px;
     margin: 30px auto;
     width: 70vw;
@@ -13,17 +13,17 @@
 .calendar {
     width: 700px;
     height: 400px;
-    background-color: #F1F7FA;
+    background-color: #f1f7fa;
     border: none;
     .react-calendar {
         color: black !important;
     }
 }
 
-.cal-container{
+.cal-container {
     background-color: white;
     border: 1px solid gray;
-    background-color: #F1F7FA;
+    background-color: #f1f7fa;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -41,6 +41,10 @@
     margin-bottom: 30px;
 }
 
-/* .react-calendar__tile {
-    color: black !important;
-} */
+.highlighted-tile {
+    background-color: #007bff;
+    color: white !important;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
