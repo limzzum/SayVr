@@ -1,6 +1,6 @@
-import PlusBtn from "../../assets/Etc/PlusBtn.png";
+import PlusBtn from "../../../assets/Etc/PlusBtn.png";
 import MyWordCard from "../../../components/MyWordCard";
-import "./style.css";
+import "../style.css";
 function StudyDetail() {
   return (
     <div className="container">

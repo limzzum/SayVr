@@ -1,12 +1,14 @@
+import { useNavigate } from "react-router-dom"
 import { StudyInfoDto } from "../../api/StudyPageAPI/StudyAPI"
 import AddButton from "./AddButton"
 
 interface StudyCardProps {
   addNew: () => void
   props?: StudyInfoDto
-  goTo: (id: number) => void
 }
-function MyWordCard({ addNew, goTo, props }: StudyCardProps) {
+function MyStudyCard({ addNew, props }: StudyCardProps) {
+  const navigate = useNavigate()
+
   if (!props) {
     return (
       <>
@@ -30,13 +32,15 @@ function MyWordCard({ addNew, goTo, props }: StudyCardProps) {
     )
   }
   const { maxPeople, currentPeople, name, studyId } = props
-
+  const handleNavigation = (studyId: number) => {
+    navigate(`/study/${studyId}`)
+  }
   return (
     <div
       className='card'
       style={{ width: "24rem", backgroundColor: "#82B7F3", marginRight: "20px", marginBottom: "20px", height: "230px" }}
       onClick={() => {
-        goTo(studyId)
+        handleNavigation(studyId)
       }}
     >
       <div className='card-body'>
@@ -56,4 +60,4 @@ function MyWordCard({ addNew, goTo, props }: StudyCardProps) {
   )
 }
 
-export default MyWordCard
+export default MyStudyCard
