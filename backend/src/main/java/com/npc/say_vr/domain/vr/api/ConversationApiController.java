@@ -11,6 +11,7 @@ import com.npc.say_vr.domain.vr.service.ConversationService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,28 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConversationApiController {
 
     private final ConversationService conversationService;
-    //TODO: api 목록
-    // 내 정보 조회 -> 등급 발음/문맥/문법 평균 총평 VR - SERVER 라서 유저에게 안가고 나에게? 유저 부분에서 해야 할 것 같지만,,
-    // 대화 상세 조회-> 대화 ID 별 상세 whole conversation
-
-    // TODO: 날짜별로 목록 가져오기, 월별로 있는 날짜 가져오기 -> 월별로 목록주기?
-
-    //
-
-
-
-
     //TODO: 예외처리 -> 실패했을 때
-
-    //내 정보 조회 API TODO: (VR에서 등급조회 기타 등등 이후 협상할 것)
 
     @PostMapping("/")
     public ResponseEntity<?> createConversation
-//    (@AuthenticationPrincipal Long userId,
-    (@RequestBody CreateConversationRequestDto createConversationRequestDto) {
-        // 시작시 상태: 시작, 으로 오고, 문장 두개 줌, 평가있으면 같이 받음,,
-        // Line ProficiencyInfo
-        Long userId = 1L;
+        (@AuthenticationPrincipal Long userId,
+            @RequestBody CreateConversationRequestDto createConversationRequestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(CONVERSATION_CREATE_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_CREATE_SUCCESS.getHttpStatus())
@@ -55,10 +40,7 @@ public class ConversationApiController {
     }
 
     @GetMapping("/score")
-    public ResponseEntity<?> readMyProficiencyInfo() {
-//    (@AuthenticationPrincipal Long userId) {
-        //ProficiencyInfoDto -->
-        Long userId = 1L;
+    public ResponseEntity<?> readMyProficiencyInfo(@AuthenticationPrincipal Long userId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(PROFICIENCY_READ_SUCCESS.getMessage())
             .httpStatus(PROFICIENCY_READ_SUCCESS.getHttpStatus())
@@ -68,9 +50,8 @@ public class ConversationApiController {
     }
 
     @GetMapping("/monthly")
-    public ResponseEntity<?> readMonthlyConversation(@RequestBody MonthlyListRequestDto requestDto) {
-//    (@AuthenticationPrincipal Long userId) {
-        Long userId = 1L;
+    public ResponseEntity<?> readMonthlyConversation(@AuthenticationPrincipal Long userId,
+        @RequestBody MonthlyListRequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(CONVERSATION_LIST_READ_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_LIST_READ_SUCCESS.getHttpStatus())
@@ -81,9 +62,7 @@ public class ConversationApiController {
 
     //내 대화 목록 조회 -> 며칠자 대화 ID
     @GetMapping("/list")
-    public ResponseEntity<?> readMyConversationList() {
-//    (@AuthenticationPrincipal Long userId) {
-        Long userId = 1L;
+    public ResponseEntity<?> readMyConversationList(@AuthenticationPrincipal Long userId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(CONVERSATION_LIST_READ_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_LIST_READ_SUCCESS.getHttpStatus())
@@ -92,12 +71,9 @@ public class ConversationApiController {
         return ResponseEntity.ok(responseDto);
     }
 
-    //내 대화 조회 API
     @GetMapping("/{conversationId}")
     public ResponseEntity<?> readConversation
-//    (@AuthenticationPrincipal Long userId,
-    (@PathVariable Long conversationId) {
-        Long userId = 1L;
+        (@AuthenticationPrincipal Long userId, @PathVariable Long conversationId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(CONVERSATION_READ_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_READ_SUCCESS.getHttpStatus())
