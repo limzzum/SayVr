@@ -8,6 +8,7 @@ import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.StudySliceRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDetailResponseDto;
+import com.npc.say_vr.domain.study.dto.responseDto.StudyEnterResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyListResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyMineListResponseDto;
@@ -33,7 +34,7 @@ public class StudyServiceImpl implements StudyService {
  private final UserRepository userRepository;
   @Transactional
   @Override
-  public StudyDetailResponseDto createStudy(Long userId, CreateStudyRequestDto createStudyRequestDto) {
+  public StudyEnterResponseDto createStudy(Long userId, CreateStudyRequestDto createStudyRequestDto) {
       // TODO : user 예외처리
     User leader = userRepository.findById(userId).orElseThrow();
     Study study = studyRepository.save(createStudyRequestDto.toEntity());
@@ -46,13 +47,9 @@ public class StudyServiceImpl implements StudyService {
         .build();
     studyMemberRepository.save(studyMember);
     log.info("방장 studyMember에 추가 완료 : "+ studyMember.getId());
-    StudyInfoDto studyInfoDto = createStudyInfoDto(study);
 
-    return StudyDetailResponseDto.builder()
-            .studyInfoDto(studyInfoDto)
-            .memberId(studyMember.getId())
-            .studyRole(studyMember.getStudyRole())
-            .nickName(leader.getNickname())
+    return StudyEnterResponseDto.builder()
+            .studyId(study.getId())
             .build();
   }
 
@@ -92,7 +89,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional
     @Override
-    public StudyDetailResponseDto joinStudy(Long userId, Long studyId) {
+    public StudyEnterResponseDto joinStudy(Long userId, Long studyId) {
         // TODO : user,study 예외처리
         User user = userRepository.findById(userId).orElseThrow();
         Study study = studyRepository.findById(studyId).orElseThrow();
@@ -130,13 +127,9 @@ public class StudyServiceImpl implements StudyService {
         if(study.getCurrentPeople() == study.getMaxPeople()) {
             study.updateStudyStatus(StudyStatus.FULL);
         }
-        StudyInfoDto studyInfoDto = createStudyInfoDto(study);
 
-        return StudyDetailResponseDto.builder()
-                .studyInfoDto(studyInfoDto)
-                .memberId(studyMember.getId())
-                .studyRole(studyMember.getStudyRole())
-                .nickName(user.getNickname())
+        return StudyEnterResponseDto.builder()
+                .studyId(studyId)
                 .build();
   }
 

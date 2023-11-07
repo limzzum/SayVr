@@ -1,4 +1,3 @@
-// Translation.tsx
 import React, { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 import "./style.css";
@@ -7,12 +6,19 @@ import { ScriptItem } from "../../api/ShadowingPageAPI/GetScriptAPI";
 const endpoint = "https://api.cognitive.microsofttranslator.com";
 const location = "eastus";
 
+interface ExtendedYouTube {
+  getCurrentTime(): number;
+  getPlayerState(): number;
+}
+
 interface TranslationProps {
   videoId: string;
   script: ScriptItem[];
+  displayScript: (currentTime: number) => void;
+  playerRef: React.RefObject<ExtendedYouTube | null>;
 }
 
-const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
+const Translation: React.FC<TranslationProps> = ({ videoId, script, displayScript, playerRef }) => {
   const [translatedTexts, setTranslatedTexts] = useState<string[]>(Array(script.length).fill(""));
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -23,12 +29,13 @@ const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
 
   const translate = async (index: number) => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
+
     const config: AxiosRequestConfig = {
       method: "post",
       url: `${endpoint}${route}`,
       data: JSON.stringify([{ Text: script[index].text }]),
       headers: {
-        "Ocp-Apim-Subscription-Key": `${process.env.REACT_APP_AZURE_API_KEY}`,
+        "Ocp-Apim-Subscription-Key": `${process.env.REACT_APP_AZURE_Translation_API_KEY}`,
         "Ocp-Apim-Subscription-Region": location,
         "Content-Type": "application/json",
       },
@@ -43,13 +50,15 @@ const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
         newTexts[index] = translatedText;
         return newTexts;
       });
+
+      const player = playerRef.current;
+      if (player) {
+        const currentTime = player.getCurrentTime();
+        displayScript(currentTime);
+      }
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const handleTranslateAll = async () => {
-    await Promise.all(script.map((_, index) => translate(index)));
   };
 
   return (
@@ -63,6 +72,7 @@ const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
             {script.map((_, index) => (
               <div key={index} className={`carousel-item ${index === currentIndex ? "active" : ""}`}>
                 <p>{script[index].text}</p>
+                <button onClick={() => translate(index)}>번역하기</button>
               </div>
             ))}
           </div>
@@ -72,23 +82,6 @@ const Translation: React.FC<TranslationProps> = ({ videoId, script }) => {
             <p>{translatedTexts[currentIndex] || "Translated text will appear here"}</p>
           </div>
         </div>
-      </div>
-      <div className="button-container">
-        <button onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))} disabled={currentIndex === 0}>
-          이전
-        </button>
-        <button
-          onClick={() => {
-            setCurrentIndex(Math.min(script.length - 1, currentIndex + 1));
-            translate(currentIndex);
-          }}
-          disabled={currentIndex === script.length - 1}
-        >
-          다음
-        </button>
-        <button className="btn" style={{ backgroundColor: "#1D5193", color: "white" }} onClick={handleTranslateAll}>
-          전체 번역
-        </button>
       </div>
     </div>
   );
