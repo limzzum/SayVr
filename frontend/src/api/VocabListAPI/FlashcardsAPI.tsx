@@ -11,6 +11,7 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 })
+//TODO enum -> as const
 export enum ProgressStatus {
   ENABLED = "ENABLED",
   DISABLED = "DISABLED",
@@ -46,10 +47,14 @@ export interface PersonalDeckTitle {
   wordCount: number
   forkCount?: number
 }
+
 export interface PersonalDeckResponse {
   personalDeckList: PersonalDeckTitle[]
 }
-// id 숫자로 받는지 ? string으로?? bigint로???
+export interface DeckListResponseDto {
+  personalDeckList: PersonalDeckTitle[]
+}
+
 export interface DeckDetailResponseDto extends DeckCreateResponseDto {
   id: number
   name: string
@@ -79,12 +84,17 @@ export interface WordUpdateResponseDto {
   errorMessage?:string,
 }
 
-export interface SearchRequestDto {
-  // 미정인 부분이 많아서 백과 동시에, 어떤 제한 조건 걸지, 정렬 걸지
-  userId: number
-  type: string
-  keyword: string
+export interface ReadDeckSearchRequestDto {
+  keyword?: string
+  sortBy:string,
+  lastId:number,
+  pageSize:number
 }
+// export const OrderByType={
+//   "저장순":"forkCount",
+//   "단어수순":"wordCount",
+//   "최신순":"createdAt"
+// }as const;
 export interface MessageOnlyResponseDto {
   message: string
 }
@@ -108,8 +118,9 @@ export const createWordcard = (
   return axiosInstance.post(`/card/${deckId}`, data)
 }
 
-export const searchDecks = (data: SearchRequestDto): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
-  return axiosInstance.get("/search")
+export const searchDecks = (data: ReadDeckSearchRequestDto): Promise<AxiosResponse<ResponseDto<DeckListResponseDto>>> => {
+  
+  return axiosInstance.get("/search?",{params:data})
 }
 export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
   return axiosInstance.get("/personal")
