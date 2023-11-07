@@ -29,7 +29,7 @@ export interface WordcardDto {
   id: number
   kor: string
   eng: string
-  WordcardStatus: WordcardStatus
+  wordcardStatus: WordcardStatus
 }
 
 export interface FlashcardDto {
@@ -74,7 +74,8 @@ export interface DeckUpdateRequestDto {
   savingProgressStatus: ProgressStatus
 }
 export interface WordUpdateResponseDto {
-  wordcard: WordcardDto
+  wordcard: WordcardDto,
+  errorMessage?:string,
 }
 
 export interface SearchRequestDto {
