@@ -1,21 +1,14 @@
 package com.npc.say_vr.domain.flashcards.repository;
 
 import static com.npc.say_vr.domain.flashcards.domain.QPersonalDeck.personalDeck;
-import static com.npc.say_vr.domain.study.domain.QStudy.study;
-import static io.jsonwebtoken.lang.Strings.hasText;
-
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
 import com.npc.say_vr.domain.flashcards.domain.QPersonalDeck;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.ReadDeckSearchRequestDto;
-import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckTitleResponseDto;
-import com.npc.say_vr.domain.flashcards.dto.QFlashcardsResponseDto_DeckTitleResponseDto;
-import com.npc.say_vr.domain.study.dto.responseDto.QStudyInfoDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
