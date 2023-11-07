@@ -12,9 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, Long> {
 
-//    List<Conversation> findByUser_IdAndCreatedAt_YearAndCreatedAt_Month(Long user_id,
-//        int createdAt_year, Month createdAt_month);
-
     @Query("SELECT c FROM Conversation c WHERE c.user.id = :userId AND YEAR(c.createdAt) = :year AND MONTH(c.createdAt) = :month")
     List<Conversation> findByUserIdAndYearAndMonth(@Param("userId") Long userId, @Param("year") int year, @Param("month") int month);
 

@@ -133,18 +133,13 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ConversationDatedListDto readMonthlyConversationList(Long userId, MonthlyListRequestDto requestDto) {
-//        Month monthEnum = Month.of(requestDto.getMonth());
-//        List<Conversation> conversationList = conversationRepository.findByUser_IdAndCreatedAt_YearAndCreatedAt_Month(
-//            userId, year, monthEnum);
         List<Conversation> conversationList = conversationRepository.findByUserIdAndYearAndMonth(userId, requestDto.getYear(),
             requestDto.toNumber());
         return new ConversationDatedListDto(conversationList);
     }
-    //유저 확인을 또 해줄 필요가 있을까??Long userId,
 
     @Override
     public ConversationInfoResponseDto readConversation(Long userId, Long conversationId) {
-        //TOT
         Conversation conversation = conversationRepository.findById(conversationId).orElseThrow();
         return ConversationInfoResponseDto.builder()
             .conversation(new ConversationDto(conversation, conversation.getMessageList()))
