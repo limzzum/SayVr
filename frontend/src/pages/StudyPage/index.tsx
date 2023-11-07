@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { StudyInfoDto, getStudyList, getStudyMineList } from "../../api/StudyPageAPI/StudyAPI";
+import {
+  StudyInfoDto,
+  getStudyList,
+  getStudyMineList,
+} from "../../api/StudyPageAPI/StudyAPI";
 import MyStudyCard from "../../components/StudyComponents/MyStudyCard";
 import AllStudyCard from "../../components/StudyComponents/AllStudyCard";
 import AddButton from "../../components/StudyComponents/AddButton";
 import CreateNewStudyModal from "../../components/StudyComponents/CreatNewStudyModal";
+import ReadStudyInfoModal from "../../components/StudyComponents/ReadStudyInfoModal";
 // import StudyDetail from "./StudyDetailPage";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Slider from "react-slick";
 import "./style.css";
-import { studyInfoDto } from "../../api/StudyPageAPI/StudyDetailApi";
 
 interface ArrowProps {
   onClick: () => void;
@@ -39,7 +43,7 @@ const carouselSettings = {
 };
 
 function StudyPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showReadModal, setShowReadModal] = useState(false);
   const [menu, setMenu] = useState("main");
@@ -92,7 +96,7 @@ function StudyPage() {
         // TODO : 에러 메시지
         console.error("Error fetching getStudyMineList", error);
       });
-      getStudyList()
+    getStudyList()
       .then((res) => {
         let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
         setAllStudyList(show);
@@ -125,8 +129,8 @@ function StudyPage() {
   // }
 
   const goToDetail = async (studyId: number) => {
-    navigate(`/study/${studyId}`)
-  }
+    navigate(`/study/${studyId}`);
+  };
 
   return (
     <>
@@ -169,10 +173,9 @@ function StudyPage() {
                   </h1>
                 </div>
               </div>
-              {(studyMineList == null ||
-                studyMineList.length === 0) && (
+              {(studyMineList == null || studyMineList.length === 0) && (
                 <>
-                  <MyStudyCard addNew={handleCreatePlusButtonClick}/>
+                  <MyStudyCard addNew={handleCreatePlusButtonClick} />
                 </>
               )}
               <Slider ref={sliderMine} {...carouselSettings}>
@@ -261,6 +264,14 @@ function StudyPage() {
                 showModal={showCreateModal}
                 handleClose={handleCreateCloseModal}
                 goToDetail={goToDetail}
+              />
+            </div>
+            <div className="create-new-list-modal">
+              <ReadStudyInfoModal
+                showModal={showReadModal}
+                handleClose={handleReadCloseModal}
+                goToDetail={goToDetail}
+                readStudyInfo={readStudyInfo}
               />
             </div>
           </>

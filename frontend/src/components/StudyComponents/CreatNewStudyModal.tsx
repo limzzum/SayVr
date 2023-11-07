@@ -1,96 +1,121 @@
-// CreateNewListModal.tsx
-import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap"
-import { createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
+import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
+import { createStudy } from "../../api/StudyPageAPI/StudyAPI";
 
 interface CreateNewListModalProps {
-  showModal: boolean
-  handleClose: () => void
-  goToDetail: (newDeck: number) => void
+  showModal: boolean;
+  handleClose: () => void;
+  goToDetail: (newStudy: number) => void;
 }
-export enum PrivacyStatus {
-  PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE",
-  FORKED = "FORKED",
+
+export interface CreateStudyRequestDto {
+  name: string;
+  maxPeople: number;
+  description: string;
+  rule: string;
 }
-export interface CreateFlashcardsRequestDto {
-  name: string
-  privacyStatus: PrivacyStatus
-}
-const CreateNewStudyModal: React.FC<CreateNewListModalProps> = ({ showModal, handleClose, goToDetail }) => {
-  // const navigate = useNavigate()
-  const [flashcardForm, setFlashcardForm] = useState<CreateFlashcardsRequestDto>({
+const CreateNewStudyModal: React.FC<CreateNewListModalProps> = ({
+  showModal,
+  handleClose,
+  goToDetail,
+}) => {
+  const [studyForm, setStudyForm] = useState<CreateStudyRequestDto>({
     name: "",
-    privacyStatus: PrivacyStatus.PRIVATE,
-  })
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = event.target
-    if (type === "text") {
-      // Handle text input changes
-      setFlashcardForm((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }))
-    } else if (type === "checkbox") {
-      // Handle checkbox input changes
-      const newPrivacyStatus = checked ? PrivacyStatus.PUBLIC : PrivacyStatus.PRIVATE
-      setFlashcardForm((prevData) => ({
-        ...prevData,
-        [name]: newPrivacyStatus,
-      }))
-    }
-  }
+    maxPeople: 12,
+    description: "",
+    rule: "",
+  });
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+    setStudyForm((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setStudyForm((prevData) => ({
+      ...prevData,
+      [name]: Number(value),
+    }));
+  };
+
   const handleSubmit = (e: any) => {
-    e.preventDefault()
-    if (!flashcardForm.name) {
-      alert("제목을 입력해주세요")
-      return
+    e.preventDefault();
+    if (!studyForm.name) {
+      alert("제목을 입력해주세요");
+      return;
     } else {
-      createPersonalDeck(flashcardForm)
+      createStudy(studyForm)
         .then((res) => {
-          // navigate()
-          console.log(res.data.data.id)
-          handleClose()
-          goToDetail(res.data.data.id)
+          console.log(res.data);
+          // handleClose();
+          // goToDetail(res.data.data.id);
+          // TODO ::: 위에 구현
         })
         .catch((error) => {
-          console.error("Error creating deck", error)
-        })
+          console.error("스터디 생성 중 오류 발생", error);
+        });
     }
-  }
+  };
+
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>새 단어장</Modal.Title>
+        <Modal.Title>스터디 만들기</Modal.Title>
       </Modal.Header>
-      <Modal.Body className='row '>
-        <p>제목</p>
-        <input name='name' type='text' value={flashcardForm.name} placeholder='단어장 제목을 입력해주세요' onChange={handleInputChange} />
-        <div className='row mt-2'>
-          <p className='col-2'>공개</p>
-          <div className='form-check form-switch col-2'>
-            <input
-              className='form-check-input'
-              name='privacyStatus'
-              type='checkbox'
-              checked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
-              id='flexSwitchCheckDefault'
-              onChange={handleInputChange}
-            />
-            <label className='form-check-label' htmlFor='flexSwitchCheckDefault'></label>
-          </div>
+      <Modal.Body className="row">
+        <p>스터디 제목</p>
+        <input
+          name="name"
+          type="text"
+          value={studyForm.name}
+          placeholder="스터디 제목을 입력해주세요"
+          onChange={handleInputChange}
+        />
+        <div className="row mt-2">
+          <p className="col-4">최대 참여 인원</p>
+          <select
+            name="maxPeople"
+            value={studyForm.maxPeople}
+            onChange={handleSelectChange}
+          >
+            {Array.from({ length: 11 }, (_, index) => index + 2).map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
         </div>
+        <p>스터디 설명</p>
+        <textarea
+          name="description"
+          value={studyForm.description}
+          placeholder="스터디 설명을 입력해주세요"
+          onChange={handleInputChange}
+        ></textarea>
+        <p>스터디 규칙</p>
+        <textarea
+          name="rule"
+          value={studyForm.rule}
+          placeholder="스터디 규칙을 입력해주세요"
+          onChange={handleInputChange}
+        ></textarea>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={handleClose}>
-          닫기
+        <Button variant="secondary" onClick={handleClose}>
+          취소
         </Button>
-        <Button variant='primary' onClick={handleSubmit}>
+        <Button variant="primary" onClick={handleSubmit}>
           생성
         </Button>
       </Modal.Footer>
     </Modal>
-  )
-}
+  );
+};
 
-export default CreateNewStudyModal
+export default CreateNewStudyModal;
