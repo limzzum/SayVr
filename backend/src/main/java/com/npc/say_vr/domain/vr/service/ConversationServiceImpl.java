@@ -6,7 +6,9 @@ import com.npc.say_vr.domain.vr.domain.Conversation;
 import com.npc.say_vr.domain.vr.domain.Message;
 import com.npc.say_vr.domain.vr.domain.Score;
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
+import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.MonthlyListRequestDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto;
+import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDatedListDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationListResponseDto;
@@ -15,6 +17,7 @@ import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ScoreDto;
 import com.npc.say_vr.domain.vr.repository.ConversationRepository;
 import com.npc.say_vr.domain.vr.repository.MessageRepository;
 import com.npc.say_vr.domain.vr.repository.ScoreRepository;
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -127,7 +130,13 @@ public class ConversationServiceImpl implements ConversationService {
             .conversationList(conversationDtoList)
             .build();
     }
-    //유저 확인을 또 해줄 필요가 있을까??Long userId,
+
+    @Override
+    public ConversationDatedListDto readMonthlyConversationList(Long userId, MonthlyListRequestDto requestDto) {
+        List<Conversation> conversationList = conversationRepository.findByUserIdAndYearAndMonth(userId, requestDto.getYear(),
+            requestDto.toNumber());
+        return new ConversationDatedListDto(conversationList);
+    }
 
     @Override
     public ConversationInfoResponseDto readConversation(Long userId, Long conversationId) {
