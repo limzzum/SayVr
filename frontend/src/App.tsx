@@ -12,7 +12,9 @@ import TEDPage from "./pages/ShadowingPage/TEDPage";
 import TeamCOCOPage from "./pages/ShadowingPage/TeamCOCOPage";
 import StudyPage from "./pages/StudyPage";
 import VocabListPage from "./pages/VocabListPage";
+import DeckDetail from "./pages/VocabListPage/DeckDetailPage";
 import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage"
+
 function App() {
   return (
     <Routes>
@@ -34,6 +36,8 @@ function App() {
       />
       <Route path="/Study" element={<StudyPage />} />
       <Route path="/VocabList" element={<VocabListPage />} />
+      <Route path="/flashcard/:id" element={<DeckDetail />} />
+      
     </Routes>
   );
 }
