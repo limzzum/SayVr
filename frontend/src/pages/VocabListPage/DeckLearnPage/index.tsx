@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
 import Slider from "react-slick"
-import { DeckDetailResponseDto, WordcardDto } from "../../../api/VocabListAPI/FlashcardsAPI"
+import { DeckDetailResponseDto, WordcardDto, WordcardStatus, resetDeckProgress } from "../../../api/VocabListAPI/FlashcardsAPI"
 import Wordcard from "../../../components/VocabListComponents/Wordcard"
 import { Button } from "react-bootstrap"
 interface DeckDetailProps {
   props?: DeckDetailResponseDto
   changeView: (menu: string) => void
+  handleRefresh: (updated: DeckDetailResponseDto) => void
 }
 interface ArrowProps {
   onClick: () => void
@@ -33,7 +34,7 @@ const carouselSettings = {
     },
   ],
 }
-const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
+const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh }) => {
   const slider = useRef<Slider | null>(null)
   // const navigate = useNavigate()
   // const [mode, setMode] = useState("button") //button add
@@ -43,7 +44,7 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
       setWordList(props.flashcardDto.wordcardList)
       console.log(props)
     }
-  }, [])
+  }, [props])
 
   // const handl
 
@@ -86,6 +87,17 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
       </>
     )
   }
+  const handleReset = () => {
+    resetDeckProgress(props?.id).then((res) => {
+      handleRefresh(res.data.data)
+      setWordList(res.data.data.flashcardDto.wordcardList)
+      console.log("reset")
+      console.log(res.data.data)
+    })
+  }
+  const backToFirst=()=>{
+    // handleRefresh()
+  }
   // if (isDeckCreate(props))
   return (
     <>
@@ -106,7 +118,7 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
         <ArrowLeft onClick={() => slider?.current?.slickPrev()} />
         <div style={{ width: "50%" }}>
           <Slider ref={slider} {...carouselSettings}>
-            {wordList.filter((wordcard) => wordcard.WordcardStatus === "UNCHECKED").length === 0 ? (
+            {wordList.every((wordcard) => wordcard.wordcardStatus === WordcardStatus.CHECKED) ? (
               <div
                 className='card'
                 style={{
@@ -118,13 +130,43 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
                   justifyContent: "center",
                 }}
               >
-                <h1>단어를 모두 학습하셨습니다. 초기화하시겠습니까?</h1>
+                <h1>
+                  단어를 모두 학습하셨습니다. 초기화하시겠습니까?{" "}
+                  <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => handleReset()}>
+                    학습 기록 초기화
+                  </Button>
+                </h1>
               </div>
             ) : (
-              wordList?.map((wordcard, index) => (
-                <Wordcard props={wordcard} changeView={changeView} key={index} next={() => slider?.current?.slickNext()} />
-              ))
+              wordList
+                ?.filter((wordcard) => wordcard.wordcardStatus === WordcardStatus.UNCHECKED)
+                .map((wordcard, index) => (
+                  <Wordcard props={wordcard} changeView={changeView} key={index} next={() => slider?.current?.slickNext()} />
+                ))
             )}
+            <div
+              className='card'
+              style={{
+                display: "flex",
+                backgroundColor: "aliceblue",
+                marginRight: "20px",
+                marginBottom: "20px",
+                height: "450px",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                className='words'
+                style={{ display: "flex", height: "100%", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly" }}
+              >
+                <h1>
+                  단어를 모두 학습하셨습니다. 다시 처음으로 돌아갈까요? 
+                </h1>
+                <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => handleReset()}>
+                    처음부터
+                  </Button>
+              </div>
+            </div>
           </Slider>
         </div>
         <ArrowRight onClick={() => slider?.current?.slickNext()} />

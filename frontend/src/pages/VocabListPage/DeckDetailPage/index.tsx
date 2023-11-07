@@ -56,6 +56,7 @@ const DeckDetail: React.FC = () => {
   //     setWordList(props.flashcardDto.wordcardList)
   //   }
   // }, [props])
+  // const  
   useEffect(() => {
     if (id) {
       getOneDeck(deckId)
@@ -137,7 +138,7 @@ const DeckDetail: React.FC = () => {
   // if (isDeckCreate(props))
   return (
     <>
-      <div className='container mt-5' style={{ borderColor: "transparent" }}>
+      <div className='container mt-5' style={{ borderColor: "transparent", width:"70vw" }}>
         <div
           className='vocab-list-container row card-row justify-content-center align-items-center '
           style={{ borderColor: "transparent" }}
@@ -161,6 +162,7 @@ const DeckDetail: React.FC = () => {
                       // changeView("main")
                       setMenu("quiz")
                     }}
+                    onHover
                   ></IconButton>
                 </div>
                 <div>
@@ -171,10 +173,11 @@ const DeckDetail: React.FC = () => {
                       console.log("learn")
                       setMenu("learn")
                     }}
+                    onHover
                   ></IconButton>
                 </div>
                 <div>
-                  <IconButton icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>
+                  <IconButton onHover icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>
                 </div>
               </div>
             </div>
@@ -219,7 +222,7 @@ const DeckDetail: React.FC = () => {
                             </Form>
                           </div>
                           <div className='col-1' style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <IconButton icon={<AddIcon />} size={45} handleButtonClick={addWord} />
+                            <IconButton onHover icon={<AddIcon />} size={45} handleButtonClick={addWord} />
                           </div>
                         </div>
                       </>
@@ -236,7 +239,7 @@ const DeckDetail: React.FC = () => {
       </div>
       {menu === "learn" && (
         <>
-          <DeckLearn changeView={setMenu} props={deck} />
+          <DeckLearn handleRefresh={setDeck} changeView={setMenu} props={deck} />
         </>
       )}
     </>
