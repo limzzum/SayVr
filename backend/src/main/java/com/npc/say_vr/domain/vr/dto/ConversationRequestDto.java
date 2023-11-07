@@ -15,6 +15,20 @@ public class ConversationRequestDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class MonthlyListRequestDto {
+        private String month;
+        private int year;
+
+        public int toNumber(){
+            return Integer.parseInt(getMonth());
+        }
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CreateConversationRequestDto {
 
         //        private Long userId;
