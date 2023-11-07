@@ -298,6 +298,7 @@ public class GoalServiceImpl implements GoalService{
             .build();
     }
 
+    // TODO : 동적으로 작성하기 => 만약 weeklysprintId가 없다면 가장 최근 값들고오는걸로 repository 가져올 수 있을 것 가틈!
     @Override
     public WeeklySprintDetailResponse readNowWeeklySprint(Long userId, Long studyId) {
         // TODO : 예외처리
