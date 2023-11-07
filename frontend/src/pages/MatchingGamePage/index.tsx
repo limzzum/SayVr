@@ -1,4 +1,3 @@
-import "./style.css";
 import React, { useEffect, useState } from "react";
 import { socketURL, subscribeURL, serverURL, imageURL } from "./constants/constants";
 import Socket from "./constants/socket";
@@ -7,6 +6,9 @@ import {
   SocketType,
   waitingGame,
 } from "../../api/MatchingGameAPI/MatchingGameAPI";
+import Header from "../../components/MatchingGameComponents/WaitingPage/header";
+import Body from "../../components/MatchingGameComponents/WaitingPage/body";
+import Footer from "../../components/MatchingGameComponents/WaitingPage/footer";
 
 interface receiveMessage {
   socketType: SocketType;
@@ -45,12 +47,10 @@ interface SocketResponseDto<T> {
   message?: string;
 }
 
-
+let imagePath = "";
 function MatchingGamePage() {
   const [gameId, setGameId] = useState<number | null>(null);
   const [imageUrl, setImageUrl] = useState("");
-  const [waitingSeconds, setWaitingSeconds] = useState(0);
-  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const history = useNavigate();
 
@@ -60,36 +60,25 @@ function MatchingGamePage() {
   };
 
   
-  const socketReceive = (response: SocketResponseDto<any>) => {
+  const socketReceive = (response: any) => {
 
     if(response.socketType == SocketType.GAME_INFO){
       console.log("게임 매칭")
       history('/MatchingGame/game')
     }
-    console.log("비교 " +response.socketType === SocketType.GAME_INFO)
     console.log("socket 구독 receive");
-    const context = response;
-    console.log(response.socketType);
+    console.log(response);
   };
 
-
-  Socket.connect();
   useEffect(() => {
-    // publishMessageToChatRoom(1, messageToSend);
+    Socket.connect();
     console.log("axios 요청 호출");
     waitingGame()
       .then((response) => {
         console.log(response);
         setGameId(response.data.data.gameId);
-        console.log("gameId : " + gameId);
       
-        // gameId && Socket.subscribe(subscribeURL+"."+gameId, socketReceive)
-
-
         setImageUrl(imageURL + response.data.data.profile);
-        console.log("image : "+imageUrl);
-
-        // const subscription = gameId && subscribeToChatRoom(gameId);
 
         return () => {};
       })
@@ -97,69 +86,41 @@ function MatchingGamePage() {
         // 오류 처리
       });
 
-    return () => {};
+    return () => {
+      Socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
     if (gameId) {
-      console.log("use effect : "+gameId)
+      console.log("gameId : " + gameId);
       Socket.subscribe(subscribeURL+"."+gameId, socketReceive)
-      setIsSubscribed(true);
     }
-    // if(imageUrl){
-    //   console.log("useEffect image : "+ imageUrl)
-    // }
-
 
     return () => {
-      Socket.disconnect();
     };
   },[gameId] );
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setWaitingSeconds((prevSeconds) => prevSeconds + 1);
-    }, 1000);
+    imagePath = imageUrl.valueOf();
 
     return () => {
-      clearInterval(interval);
+      
     };
-  }, []);
+  },[imageUrl] );
 
-  const formatTime = (seconds:number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    const formattedTime = `${String(minutes).padStart(2, '0')} : ${String(remainingSeconds).padStart(2, '0')}`;
-    return formattedTime;
-  };
-  
+
   return (
-    <div className="matching-game-container">
-      <div className="waiting-time">{formatTime(waitingSeconds)}</div>
+    <div style={{display : 'flex', flexDirection : 'column'}}>
+      <Header/>
       {imageUrl && (
-        <img src={imageUrl} alt="Game Image" className="profile-image" />
+        <Body image={imageUrl}></Body>
       )}
-
-      <div className="waiting-game-container"></div>
+      <Footer/>
     </div>
   );
 }
 
-// function subscribeToChatRoom(gameId: number) {
-//   return stompClient.subscribe(`/topic/game.${gameId}`, (message: Frame) => {
-//     console.log("Received message:");
-
-//     const receivedMessage: receiveMessage = JSON.parse(message.body);
-//     console.log("Received message:", receivedMessage);
-//   });
-// }
-
-// function publishMessageToChatRoom(gameId: number, message: sendMessage) {
-//   stompClient.publish({
-//     destination: `/pub/game.${gameId}`,
-//     body: JSON.stringify(message),
-//   });
-// }
 
 function MatchingGameStart() {
   // const [gameId, setGameId] = useState<number | null>(null);
