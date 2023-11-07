@@ -6,6 +6,7 @@ import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.CONV
 import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.PROFICIENCY_READ_SUCCESS;
 
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
+import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.MonthlyListRequestDto;
 import com.npc.say_vr.domain.vr.service.ConversationService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,13 @@ public class ConversationApiController {
     //TODO: api 목록
     // 내 정보 조회 -> 등급 발음/문맥/문법 평균 총평 VR - SERVER 라서 유저에게 안가고 나에게? 유저 부분에서 해야 할 것 같지만,,
     // 대화 상세 조회-> 대화 ID 별 상세 whole conversation
+
+    // TODO: 날짜별로 목록 가져오기, 월별로 있는 날짜 가져오기 -> 월별로 목록주기?
+
+    //
+
+
+
 
     //TODO: 예외처리 -> 실패했을 때
 
@@ -55,6 +63,18 @@ public class ConversationApiController {
             .message(PROFICIENCY_READ_SUCCESS.getMessage())
             .httpStatus(PROFICIENCY_READ_SUCCESS.getHttpStatus())
             .data(conversationService.readProficiency(userId))
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/monthly")
+    public ResponseEntity<?> readMonthlyConversation(@RequestBody MonthlyListRequestDto requestDto) {
+//    (@AuthenticationPrincipal Long userId) {
+        Long userId = 1L;
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(CONVERSATION_LIST_READ_SUCCESS.getMessage())
+            .httpStatus(CONVERSATION_LIST_READ_SUCCESS.getHttpStatus())
+            .data(conversationService.readMonthlyConversationList(userId, requestDto))
             .build();
         return ResponseEntity.ok(responseDto);
     }
