@@ -29,7 +29,7 @@ export interface WordcardDto {
   id: number
   kor: string
   eng: string
-  WordcardStatus: WordcardStatus
+  wordcardStatus: WordcardStatus
 }
 
 export interface FlashcardDto {

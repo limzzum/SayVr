@@ -4,6 +4,7 @@ import IconButton from "./IconButton"
 import SoundIcon from "./Icons/SoundIcon"
 import UncheckedIcon from "./Icons/UncheckedIcon"
 import CheckedIcon from "./Icons/CheckedIcon"
+import RemoveIcon from "./Icons/RemoveIcon"
 
 interface VocabLineProps {
   props?: WordcardDto
@@ -20,8 +21,17 @@ export const VocabLine: FC<VocabLineProps> = ({ props }) => {
       <div className='vocab-line'>
         <div></div>
         <div>
+          
+   
+        </div>
+        <div className='flex row' style={{ display: "flex" }}>
+          <div className="col">
           <IconButton icon={<SoundIcon />} size={37} handleButtonClick={textToSpeech} />
-          {props?.eng}
+          </div>
+          <div className="col">       {props?.eng}</div>
+          <div className="col" style={{display:"flex",justifyContent:"end"}}>
+            <IconButton icon={<RemoveIcon />} size={37} handleButtonClick={uncheckWord} />
+          </div>
         </div>
         <hr />
         <div className='flex row' style={{ display: "flex" }}>

@@ -42,7 +42,12 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
     setMode(mode)
   }
   const handleReset = () => {
-    resetDeckProgress(id)
+    resetDeckProgress(id).then((res) => {
+      handleRefresh(res.data.data)
+      console.log("reset")
+      console.log(res.data.data)
+    })
+    handleClose()
   }
   const handleSubmit = (e: any) => {
     e.preventDefault()
