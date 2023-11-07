@@ -45,13 +45,10 @@ public class StudyApiController {
   @PostMapping("")
   public ResponseEntity<?> createStudy(@RequestBody CreateStudyRequestDto createStudyRequestDto) {
     Long userId = 1L;
-    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
-            .studyDetailResponseDto(studyService.createStudy(userId,createStudyRequestDto))
-            .build();
 
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_CREATE_SUCCESS.getMessage())
-            .data(studyPageDetailResponseDto)
+            .data(studyService.createStudy(userId,createStudyRequestDto))
             .httpStatus(STUDY_CREATE_SUCCESS.getHttpStatus())
             .build();
 
@@ -111,14 +108,9 @@ public class StudyApiController {
   @PostMapping("/join")
   public ResponseEntity<?> joinStudy(@RequestBody JoinStudyRequestDto joinStudyRequestDto) {
     Long userId = 2L;
-    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
-            .studyDetailResponseDto(studyService.joinStudy(userId, joinStudyRequestDto.getStudyId()))
-            .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,joinStudyRequestDto.getStudyId()))
-            .studyDeckDetailResponseDto(studyDeckService.readStudyDeckList(userId,joinStudyRequestDto.getStudyId()))
-            .build();
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_JOIN_SUCCESS.getMessage())
-            .data(studyPageDetailResponseDto)
+            .data(studyService.joinStudy(userId, joinStudyRequestDto.getStudyId()))
             .httpStatus(STUDY_JOIN_SUCCESS.getHttpStatus())
             .build();
 

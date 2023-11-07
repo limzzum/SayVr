@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
 import Slider from "react-slick"
-import { DeckDetailResponseDto, WordcardDto } from "../../../api/VocabListAPI/FlashcardsAPI"
-import IconButton from "../../../components/VocabListComponents/IconButton"
-import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon"
-import QuizIcon from "../../../components/VocabListComponents/Icons/QuizIcon"
-import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon"
+import { DeckDetailResponseDto, WordcardDto, WordcardStatus, resetDeckProgress } from "../../../api/VocabListAPI/FlashcardsAPI"
+import Wordcard from "../../../components/VocabListComponents/Wordcard"
+import { Button } from "react-bootstrap"
 interface DeckDetailProps {
   props?: DeckDetailResponseDto
   changeView: (menu: string) => void
+  handleRefresh: (updated: DeckDetailResponseDto) => void
+}
+interface ArrowProps {
+  onClick: () => void
 }
 const carouselSettings = {
   dots: false,
-  infinite: true,
+  infinite: false,
   speed: 500,
   slidesToShow: 1, // 한 번에 보여질 카드 수
   slidesToScroll: 1, // 넘어갈 카드 수
   arrows: false,
-  nextArrow: <BsArrowRight />,
-  prevArrow: <BsArrowLeft />,
   responsive: [
     {
       breakpoint: 600,
@@ -34,13 +34,15 @@ const carouselSettings = {
     },
   ],
 }
-const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
+const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh }) => {
+  const slider = useRef<Slider | null>(null)
   // const navigate = useNavigate()
   // const [mode, setMode] = useState("button") //button add
-  const [wordList, setWordList] = useState<WordcardDto[]>([])
+  const [wordList, setWordList] = useState<WordcardDto[]>(props?.flashcardDto ? props.flashcardDto.wordcardList : [])
   useEffect(() => {
-    if (props && props.flashcardDto) {
+    if (props && props.flashcardDto.wordcardList.length > 0) {
       setWordList(props.flashcardDto.wordcardList)
+      console.log(props)
     }
   }, [props])
 
@@ -53,49 +55,124 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView }) => {
       </>
     )
   }
+  const ArrowLeft = (props: ArrowProps) => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "transparent",
+            color: "black",
+            backgroundColor: "transparent",
+          }}
+          onClick={props.onClick}
+        >
+          <BsArrowLeft />
+        </Button>
+      </>
+    )
+  }
+  const ArrowRight = (props: ArrowProps) => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "transparent",
+            color: "black",
+            backgroundColor: "transparent",
+          }}
+          onClick={props.onClick}
+        >
+          <BsArrowRight />
+        </Button>
+      </>
+    )
+  }
+  const handleReset = () => {
+    resetDeckProgress(props?.id).then((res) => {
+      handleRefresh(res.data.data)
+      setWordList(res.data.data.flashcardDto.wordcardList)
+      console.log("reset")
+      console.log(res.data.data)
+    })
+  }
+  const backToFirst=()=>{
+    // handleRefresh()
+  }
   // if (isDeckCreate(props))
   return (
     <>
-      <div className='container mt-5' style={{ borderColor: "transparent" }}>
-        <div
+      <div className='container mt-5' style={{ display: "flex", borderColor: "transparent", justifyContent: "center" }}>
+        {/* <div
           className='vocab-list-container row card-row justify-content-center align-items-center '
           style={{ borderColor: "transparent" }}
-        >
-          <div className='row justify-content-center align-items-center'>
-            <div className='title-space' style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <h1>{props.name} learn</h1>
+        > */}
+        {/* <div className='row justify-content-center align-items-center'> */}
+        {/* <div
+          style={{
+            marginTop: "100px",
+            borderRadius: "10px",
+            backgroundColor: "aliceblue",
+            minHeight: "70vh",
+          }}
+        ></div> */}
+        <ArrowLeft onClick={() => slider?.current?.slickPrev()} />
+        <div style={{ width: "50%" }}>
+          <Slider ref={slider} {...carouselSettings}>
+            {wordList.every((wordcard) => wordcard.wordcardStatus === WordcardStatus.CHECKED) ? (
+              <div
+                className='card'
+                style={{
+                  display: "flex",
+                  backgroundColor: "aliceblue",
+                  marginRight: "20px",
+                  marginBottom: "20px",
+                  height: "450px",
+                  justifyContent: "center",
+                }}
+              >
+                <h1>
+                  단어를 모두 학습하셨습니다. 초기화하시겠습니까?{" "}
+                  <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => handleReset()}>
+                    학습 기록 초기화
+                  </Button>
+                </h1>
               </div>
-
-              <div style={{ display: "flex" }}>
-                <div>
-                  <IconButton
-                    icon={<QuizIcon />}
-                    size={55}
-                    handleButtonClick={() => {
-                      // navigate(-1);
-                      changeView("main")
-                      console.log("go back")
-                    }}
-                  ></IconButton>
-                </div>
-                <div>
-                  <IconButton icon={<LearnIcon />} size={55} handleButtonClick={() => console.log("quiz")}></IconButton>
-                </div>
-                <div>
-                  <IconButton icon={<SettingsIcon />} size={55} handleButtonClick={() => console.log("quiz")}></IconButton>
-                </div>
+            ) : (
+              wordList
+                ?.filter((wordcard) => wordcard.wordcardStatus === WordcardStatus.UNCHECKED)
+                .map((wordcard, index) => (
+                  <Wordcard props={wordcard} changeView={changeView} key={index} next={() => slider?.current?.slickNext()} />
+                ))
+            )}
+            <div
+              className='card'
+              style={{
+                display: "flex",
+                backgroundColor: "aliceblue",
+                marginRight: "20px",
+                marginBottom: "20px",
+                height: "450px",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                className='words'
+                style={{ display: "flex", height: "100%", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly" }}
+              >
+                <h1>
+                  단어를 모두 학습하셨습니다. 다시 처음으로 돌아갈까요? 
+                </h1>
+                <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => handleReset()}>
+                    처음부터
+                  </Button>
               </div>
             </div>
-            <Slider {...carouselSettings}>
-              <div style={{ marginTop: "100px", backgroundColor: "aliceblue", minHeight: "70vh" }}>
-                {wordList?.map((wordcard, index) => {
-                  return <>{/* <VocabLine key={index + "wordcard" + props.id} props={wordcard}></VocabLine> */}</>
-                })}
-              </div>{" "}
-            </Slider>
-          </div>
+          </Slider>
         </div>
+        <ArrowRight onClick={() => slider?.current?.slickNext()} />
+
+        {/* </div> */}
+        {/* </div> */}
       </div>
     </>
   )

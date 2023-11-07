@@ -1,12 +1,14 @@
+import { useNavigate } from "react-router-dom"
 import { PersonalDeckTitle } from "../api/VocabListAPI/FlashcardsAPI"
 import AddButton from "./VocabListComponents/AddButton"
 
 interface MyWordCardProps {
   addNew: () => void
   props?: PersonalDeckTitle
-  goTo: (id: number) => void
 }
-function MyWordCard({ addNew, goTo, props }: MyWordCardProps) {
+function MyWordCard({ addNew, props }: MyWordCardProps) {
+  const navigate = useNavigate()
+
   if (!props) {
     return (
       <>
@@ -30,13 +32,15 @@ function MyWordCard({ addNew, goTo, props }: MyWordCardProps) {
     )
   }
   const { wordCount, name, id } = props
-
+  const handleNavigation = (id: number) => {
+    navigate(`/flashcard/${id}`)
+  }
   return (
     <div
       className='card'
       style={{ width: "24rem", backgroundColor: "#82B7F3", marginRight: "20px", marginBottom: "20px", height: "230px" }}
       onClick={() => {
-        goTo(id)
+        handleNavigation(id)
       }}
     >
       <div className='card-body'>
@@ -50,7 +54,9 @@ function MyWordCard({ addNew, goTo, props }: MyWordCardProps) {
             </h3>
           </div>
         </div>
-        <h3>ID:{id} {props.nickname!==null && props.nickname }</h3>
+        <h3>
+          ID:{id} {props.nickname !== null && props.nickname}
+        </h3>
       </div>
     </div>
   )

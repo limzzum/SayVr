@@ -12,6 +12,8 @@ import TEDPage from "./pages/ShadowingPage/TEDPage";
 import TeamCOCOPage from "./pages/ShadowingPage/TeamCOCOPage";
 import StudyPage from "./pages/StudyPage";
 import VocabListPage from "./pages/VocabListPage";
+import DeckDetail from "./pages/VocabListPage/DeckDetailPage";
+import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage"
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
       <Route path="/MatchingGame/game" element={<MatchingGameStart />} />
       <Route path="/My" element={<MyPage />} />
       <Route path="/MyStudyAnalysis" element={<MyStudyAnalysisPage />} />
+      <Route path="/MyStudyAnalysis/Detail" element={<MyStudyAnalysisDetailPage />} />
       <Route path="/Shadowing" element={<ShadowingPage />} />
       <Route path="/Shadowing/BBCPage" element={<BBCPage />} />
       <Route path="/Shadowing/CNNPage" element={<CNNPage />} />
@@ -33,8 +36,11 @@ function App() {
       />
       <Route path="/Study" element={<StudyPage />} />
       <Route path="/VocabList" element={<VocabListPage />} />
+      <Route path="/flashcard/:id" element={<DeckDetail />} />
+      
     </Routes>
   );
+  
 }
 
 export default App;
