@@ -18,6 +18,7 @@ export enum ProgressStatus {
 export enum WordcardStatus {
   UNCHECKED = "UNCHECKED",
   CHECKED = "CHECKED",
+  DELETED ="DELETED"
 }
 export interface ResponseDto<T> {
   data: T
@@ -145,5 +146,5 @@ export const deleteDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<Me
   return axiosInstance.delete(`/deck/${deckId}`)
 }
 export const deleteCard = (wordcardId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
-  return axiosInstance.delete(`/deck/${wordcardId}`)
+  return axiosInstance.delete(`/card/${wordcardId}`)
 }

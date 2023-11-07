@@ -1,5 +1,5 @@
 // SettingsModal.tsx
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { DeckDetailResponseDto, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI"
 import { PrivacyStatus } from "./CreateNewListModal"
@@ -68,15 +68,26 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
         })
     }
   }
+  useEffect(() => {
+    if(info){
+         setFlashcardForm({
+      name: info.name,
+      flashcardStatus: info.status,
+    })
+    }
+ 
+  }, [])
+  
   const handleDelete = () => {}
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>단어장 설정 </Modal.Title>
+        <Modal.Title>단어장 설정 {flashcardForm.flashcardStatus} </Modal.Title>
       </Modal.Header>{" "}
       {mode === "settings" && (
         <>
           <Modal.Body className='row '>
+            <h2>info status {info.status} form {flashcardForm.flashcardStatus}</h2>
             <p>제목</p>
             <input
               name='name'
@@ -90,7 +101,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
               <div className='form-check form-switch col-2'>
                 <input
                   className='form-check-input'
-                  name='privacyStatus'
+                  name='flashcardStatus'
                   type='checkbox'
                   checked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
                   id='flexSwitchCheckDefault'
