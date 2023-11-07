@@ -155,7 +155,9 @@ public class FlashcardsServiceImpl implements FlashcardsService {
             //TODO: 학습상태 전부 unchecked로 바꾸기
             List<Wordcard> words = flashcardDeck.getWordcards();
             words = words.stream().map(wordcard -> {
+                 if(wordcard.getStatus().equals(WordcardStatus.CHECKED)){
                     wordcard.updateStatus(WordcardStatus.UNCHECKED);
+                 }
                     return wordcard;
                 })
                 .collect(Collectors.toList());

@@ -66,7 +66,11 @@ public class WordcardServiceImpl implements WordcardService {
             }
         }
         //TODO 개수 바뀔까?
-        personalDeck.updateWordCount(flashcardDeck.getWordcards().size());
+        personalDeck.updateWordCount(Math.toIntExact(
+            flashcardDeck.getWordcards().stream()
+                .filter(wordCard -> wordCard.getStatus() != WordcardStatus.DELETED)
+                .count()
+        ));
         personalDeck = personalDeckRepository.save(personalDeck);
         return WordUpdateResponseDto.builder()
             .wordcard(wordcard)
@@ -100,9 +104,15 @@ public class WordcardServiceImpl implements WordcardService {
     @Override
     public MessageOnlyResponseDto deleteWordcard(Long userId, Long wordcardId) {
         Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
-
+        FlashcardDeck flashcardDeck = wordcard.getFlashcardDeck();
+        PersonalDeck personalDeck = flashcardDeck.getPersonalDeck();
         if (wordcard != null) {
             wordcard.updateStatus(WordcardStatus.DELETED);
+            personalDeck.updateWordCount(Math.toIntExact(
+                flashcardDeck.getWordcards().stream()
+                    .filter(wordCard -> wordCard.getStatus() != WordcardStatus.DELETED)
+                    .count()
+            ));
             wordcardRepository.save(wordcard);
             return new MessageOnlyResponseDto("단어가 단어장에서 삭제되었습니다.");
         }
