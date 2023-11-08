@@ -2,12 +2,20 @@ import { useEffect, useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { BsChevronLeft } from "react-icons/bs"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { DeckDetailResponseDto, ProgressStatus, WordcardDto, createWordcard, getOneDeck } from "../../../api/VocabListAPI/FlashcardsAPI"
+import {
+  DeckDetailResponseDto,
+  ProgressStatus,
+  WordcardDto,
+  createForkedDeck,
+  createWordcard,
+  getOneDeck,
+} from "../../../api/VocabListAPI/FlashcardsAPI"
 import AddButton from "../../../components/VocabListComponents/AddButton"
 import { PrivacyStatus } from "../../../components/VocabListComponents/CreateNewListModal"
 import DeckSettingsModal from "../../../components/VocabListComponents/DeckSettingModal"
 import IconButton from "../../../components/VocabListComponents/IconButton"
 import AddIcon from "../../../components/VocabListComponents/Icons/AddIcon"
+import ForkIcon from "../../../components/VocabListComponents/Icons/ForkIcon"
 import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon"
 import QuizIcon from "../../../components/VocabListComponents/Icons/QuizIcon"
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon"
@@ -24,6 +32,11 @@ export interface CreateWordcardRequestDto {
 }
 // const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const DeckDetail: React.FC = () => {
+  const [tempUser, setTempUser] = useState({
+    name: "유저이름",
+    nickname: "닉네임",
+    id: 2,
+  })
   const { id } = useParams()
   const [deckId, setDeckId] = useState(Number(id))
   const navigate = useNavigate()
@@ -56,7 +69,7 @@ const DeckDetail: React.FC = () => {
   //     setWordList(props.flashcardDto.wordcardList)
   //   }
   // }, [props])
-  // const  
+  // const
   useEffect(() => {
     if (id) {
       getOneDeck(deckId)
@@ -71,6 +84,14 @@ const DeckDetail: React.FC = () => {
 
   const handleSettingsClick = () => {
     setShowModal(true)
+  }
+  const handleForkClick = () => {
+    let message = `단어장 '${deck.name}'을/를 복사하겠습니까?`
+    if (window.confirm(message)) {
+      createForkedDeck(deck.id).then((res) => {
+        navigate(`/flashcard/${res.data.data.id}`)
+      })
+    }
   }
 
   const handleCloseModal = () => {
@@ -138,7 +159,7 @@ const DeckDetail: React.FC = () => {
   // if (isDeckCreate(props))
   return (
     <>
-      <div className='container mt-5' style={{ borderColor: "transparent", width:"70vw" }}>
+      <div className='container mt-5' style={{ borderColor: "transparent", width: "70vw" }}>
         <div
           className='vocab-list-container row card-row justify-content-center align-items-center '
           style={{ borderColor: "transparent" }}
@@ -176,9 +197,19 @@ const DeckDetail: React.FC = () => {
                     onHover
                   ></IconButton>
                 </div>
-                <div>
-                  <IconButton onHover icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>
-                </div>
+                {tempUser.id === deck.userId ? (
+                  <>
+                    <div>
+                      <IconButton onHover icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <IconButton onHover icon={<ForkIcon />} size={55} handleButtonClick={handleForkClick}></IconButton>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             {menu === "detail" && (
