@@ -11,6 +11,7 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 })
+//TODO enum -> as const
 export enum ProgressStatus {
   ENABLED = "ENABLED",
   DISABLED = "DISABLED",
@@ -18,7 +19,9 @@ export enum ProgressStatus {
 export enum WordcardStatus {
   UNCHECKED = "UNCHECKED",
   CHECKED = "CHECKED",
+  DELETED ="DELETED"
 }
+
 export interface ResponseDto<T> {
   data: T
   message: string
@@ -44,6 +47,9 @@ export interface PersonalDeckTitle {
   nickname?: string
   wordCount: number
   forkCount?: number
+}
+export interface DeckListResponseDto {
+  personalDeckList: PersonalDeckTitle[]
 }
 export interface PersonalDeckResponse {
   personalDeckList: PersonalDeckTitle[]
@@ -78,11 +84,11 @@ export interface WordUpdateResponseDto {
   errorMessage?:string,
 }
 
-export interface SearchRequestDto {
-  // 미정인 부분이 많아서 백과 동시에, 어떤 제한 조건 걸지, 정렬 걸지
-  userId: number
-  type: string
-  keyword: string
+export interface ReadDeckSearchRequestDto{
+  keyword:string,
+  sortBy:string,
+  lastId:number,
+  pageSize:number,
 }
 export interface MessageOnlyResponseDto {
   message: string
@@ -107,8 +113,8 @@ export const createWordcard = (
   return axiosInstance.post(`/card/${deckId}`, data)
 }
 
-export const searchDecks = (data: SearchRequestDto): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
-  return axiosInstance.get("/search")
+export const searchDecks = (data: ReadDeckSearchRequestDto): Promise<AxiosResponse<ResponseDto<DeckListResponseDto>>> => {
+  return axiosInstance.get("/search",{params:data})
 }
 export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
   return axiosInstance.get("/personal")
@@ -116,6 +122,7 @@ export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<Perso
 export const getPublicFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
   return axiosInstance.get("/list")
 }
+
 export const getOneDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
   return axiosInstance.get(`/deck/${deckId}`)
 }
@@ -145,5 +152,5 @@ export const deleteDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<Me
   return axiosInstance.delete(`/deck/${deckId}`)
 }
 export const deleteCard = (wordcardId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
-  return axiosInstance.delete(`/deck/${wordcardId}`)
+  return axiosInstance.delete(`/card/${wordcardId}`)
 }
