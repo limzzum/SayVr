@@ -15,6 +15,7 @@ import AddButton from "../../components/VocabListComponents/AddButton"
 import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal"
 import DeckListPage from "./DeckListPage"
 import "./style.css"
+import ScrollTest from "./DeckListPage/ScrollTest"
 
 interface ArrowProps {
   onClick: () => void
@@ -25,7 +26,7 @@ const carouselSettings = {
   speed: 500,
   slidesToShow: 3,
   slidesToScroll: 3,
-  arrows :false,
+  arrows: false,
   responsive: [
     {
       breakpoint: 600,
@@ -56,7 +57,7 @@ function VocabListPage() {
 
   const searchParams: ReadDeckSearchRequestDto = {
     lastId: 1000,
-    pageSize: 3,
+    pageSize: 9,
     sortBy: orderby,
     keyword: keyword,
   }
@@ -103,7 +104,7 @@ function VocabListPage() {
       .catch((error) => {
         console.error("Error fetching personalDeckList", error)
       })
-    getPublicFlashcards()
+    searchDecks(searchParams)
       .then((res) => {
         let show: PersonalDeckTitle[] = res.data.data.personalDeckList
         setPublicCardTitles(show)
@@ -129,7 +130,7 @@ function VocabListPage() {
     setMenu(where)
   }
 
-  const handleSearch = async() => {
+  const handleSearch = async () => {
     searchDecks(searchParams).then((res) => {
       let show: PersonalDeckTitle[] = res.data.data.personalDeckList
       setSearchCardTitles(show)
@@ -186,7 +187,7 @@ function VocabListPage() {
               </div>
               {(personalCardTitles == null || personalCardTitles.length === 0) && (
                 <>
-                  <MyWordCard type="none" addNew={handlePlusButtonClick} />
+                  <MyWordCard type='none' addNew={handlePlusButtonClick} />
                 </>
               )}
               <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
@@ -210,7 +211,13 @@ function VocabListPage() {
                       }}
                     >
                       <div style={{ display: "flex", margin: "1rem" }}>
-                        <div className='title private' onClick={() => setMenu("public")}>
+                        <div
+                          className='title private'
+                          onClick={() => {
+                            setMenu("public")
+                            setSearchCardTitles(publicCardTitles)
+                          }}
+                        >
                           공개 단어장
                         </div>{" "}
                         <div className='container-fluid' style={{ width: "300px" }}>
@@ -248,9 +255,10 @@ function VocabListPage() {
                             />
                             <Button
                               type='submit'
-                              onClick={(e:any) => {
-                                e.preventDefault();
-                                handleSearch()}}
+                              onClick={(e: any) => {
+                                e.preventDefault()
+                                handleSearch()
+                              }}
                               className='btn'
                             >
                               Search
@@ -286,11 +294,12 @@ function VocabListPage() {
         {menu === "public" && (
           <>
             <DeckListPage type="public" changeView={goToList} category='public' searchResult={searchCardTitles} />
+            {/* <ScrollTest type='public' changeView={goToList} category='public' searchResult={searchCardTitles} /> */}
           </>
         )}
         {menu === "private" && (
           <>
-            <DeckListPage type="private" changeView={goToList} category='private' />
+            <DeckListPage type='private' changeView={goToList} category='private' />
           </>
         )}
       </div>
