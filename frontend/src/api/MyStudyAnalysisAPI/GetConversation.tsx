@@ -1,40 +1,45 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 
-interface GetConversationProps {
-  conversationId: number;
+interface DatedConversation {
+  date: string;
+  id: number;
 }
 
-const GetConversation: React.FC<GetConversationProps> = ({ conversationId }) => {
-  useEffect(() => {
-    const fetchConversation = async () => {
-      try {
-        // URL 생성
-        const url = `https://말해vr.site/conversation/${conversationId}`;
+interface MonthlyConversationResponse {
+  message: string;
+  data: {
+    datedConversationList: DatedConversation[];
+  };
+  httpStatus: string;
+}
 
-        // 헤더 설정
-        const headers = {
-          Authorization: 'YourAuthorizationString', // 여기에 실제 Authorization 값 넣어주세요
+const GetConversation: React.FC = () => {
+  useEffect(() => {
+    const fetchMonthlyConversation = async () => {
+      try {
+        const url = 'https://말해vr.site/conversation/monthly';
+
+        const requestBody = {
+          year: 2023,
+          month: '01',
         };
 
-        // GET 요청 보내기
-        const response = await axios.get(url, { headers });
+        const response = await axios.post<MonthlyConversationResponse>(url, requestBody);
 
-        // 성공적으로 응답 받았을 때의 처리
+        console.log('무슨 데이터냐');
         console.log('Response:', response.data);
 
-        // 여기서 받은 데이터를 활용하여 추가적인 로직을 구현할 수 있습니다.
+        // 여기서 response.data를 활용하여 원하는 기능을 추가하면 됩니다.
       } catch (error) {
-        // 오류 발생 시의 처리
-        console.error('Error fetching conversation:', error);
+        console.error('Error fetching monthly conversation:', error);
       }
     };
 
-    // 함수 호출
-    fetchConversation();
-  }, [conversationId]);
+    fetchMonthlyConversation();
+  }, []);
 
-  return <div>Fetching Conversation...</div>;
+  return <div>Fetching Monthly Conversation...</div>;
 };
 
 export default GetConversation;
