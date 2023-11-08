@@ -12,7 +12,7 @@ const NavBar: React.FC = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Link className="nav-link me-4" to="/VocabList">단어장</Link>
-            <Link className="nav-link me-4" to="/Study">스터디</Link>
+            <Link className="nav-link me-4" to="/StudyList">스터디</Link>
             <Link className="nav-link me-4" to="/MyStudyAnalysis">내 학습 기록&통계</Link>
             <Link className="nav-link me-4" to="/Shadowing">쉐도잉</Link>
             <Link className="nav-link me-4" to="/MatchingGame">매칭게임</Link>

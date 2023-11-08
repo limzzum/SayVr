@@ -1,12 +1,16 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
-import { StudyInfoDto } from "../../api/StudyPageAPI/StudyAPI";
+import { StudyInfoDto, joinStudy } from "../../api/StudyPageAPI/StudyAPI";
 
 interface ReadStudyInfoModalProps {
   showModal: boolean;
   handleClose: () => void;
   goToDetail: (newStudy: number) => void;
   readStudyInfo: StudyInfoDto | undefined;
+}
+
+export interface JoinStudyRequestDto {
+  studyId: number;
 }
 
 const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
@@ -18,6 +22,25 @@ const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
   if (!readStudyInfo) {
     return null;
   }
+
+  const handleSubmit = () => {
+    const requestData: JoinStudyRequestDto = {
+      studyId: readStudyInfo.studyId,
+    };
+
+    joinStudy(requestData)
+      .then((res) => {
+        console.log(res.data);
+        if(res.data.httpStatus === "CREATED") {
+          handleClose();
+          goToDetail(res.data.data.studyId);
+        }
+      })
+      .catch((error) => {
+        // TODO : 예외 처리
+        console.error("스터디 가입 중 오류 발생", error);
+      });
+  };
 
   const { name, currentPeople, maxPeople, description, rule } = readStudyInfo;
 
@@ -46,7 +69,7 @@ const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
         </Button>
         <Button
           variant="primary"
-          onClick={() => goToDetail(readStudyInfo.studyId)}
+          onClick={handleSubmit}
         >
           스터디 가입
         </Button>
