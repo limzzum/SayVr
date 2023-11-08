@@ -36,7 +36,7 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
   }
   return (
     <>
-      {/* {props.WordcardStatus === "UNCHECKED" && ( */}
+      {props.wordcardStatus === WordcardStatus.UNCHECKED &&  (
         <>
           <div
             className='card'
@@ -84,7 +84,7 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
             {/* </div>{" "} */}
           </div>
         </>
-      {/* )} */}
+       )} 
     </>
   )
 }

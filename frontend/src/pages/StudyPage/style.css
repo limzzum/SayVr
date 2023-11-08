@@ -29,6 +29,10 @@
   margin: 30px auto;
 }
 
+.slick-slide.slick-cloned {
+  display: none;
+}
+
 .study-line {
   background-color: white;
   /* border: 1px solid gray; */
@@ -50,6 +54,16 @@ path:hover {
   cursor: pointer; /* Change the cursor to indicate interactivity */
 }
 .create-new-list-modal-study {
+}
+
+.icon-button:hover {
+  /* border-radius: 50%!important;
+border-color:transparent;
+&:active {
+    border-color: transparent;
+  } */
+  fill: cornflowerblue;
+  cursor: pointer;
 }
 
 .btn {

@@ -41,7 +41,7 @@ public class QueryDslFlashcardRepository {
                  .limit(pageSize)
                  .fetch();
      }
-
+     // TODO : forkCount, wordCount 변경
     private com.querydsl.core.types.OrderSpecifier<?>[] getOrderByClause(String sortBy, QPersonalDeck personalDeck) {
         if(sortBy == null) sortBy=""; // TODO : 다르게 바꾸기;;;;
          switch (sortBy) {

@@ -7,7 +7,7 @@
   margin: 30px auto;
 }
 .slick-slide.slick-cloned {
-  display: none;
+  /* display: none; */
 }
 .vocab-line{
   background-color: white;

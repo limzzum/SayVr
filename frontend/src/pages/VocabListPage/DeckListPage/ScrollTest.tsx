@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Button, Dropdown, DropdownButton, Form, InputGroup } from "react-bootstrap"
 import { BsChevronLeft } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
@@ -20,15 +20,22 @@ interface DeckListProps {
   searchResult?: PersonalDeckTitle[]
   type: string
 }
-const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchResult, type }) => {
+const ScrollTest: React.FC<DeckListProps> = ({ category, changeView, searchResult, type }) => {
   const navigate = useNavigate()
   const [deckType, setDeckType] = useState(type)
   const [showModal, setShowModal] = useState(false)
   const [orderby, setOrderby] = useState("createdAt")
+  // const [hasMore,setHasMore]=useState(searchResult&&searchResult.length>0?true:false);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+
   const [keyword, setKeyword] = useState("")
+  const [lastId, setLastId]= useState((searchResult && searchResult.length>0)?searchResult[searchResult?.length-1].id:1000);
+
   const [personalCardTitles, setPersonalCardTitles] = useState<PersonalDeckTitle[]>(searchResult ? searchResult : [])
   const searchParams: ReadDeckSearchRequestDto = {
-    lastId: 1000,
+    lastId: lastId,
     pageSize: 9,
     sortBy: orderby,
     keyword: keyword,
@@ -61,6 +68,85 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category])
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      // Check if we're at the bottom of the page
+      loadMoreData();
+    }
+  }, []);
+  const loadMoreData = () => {
+    if (loading || !hasMore) {
+      return;
+    }
+
+    setLoading(true);
+
+    // Adjust your searchParams with the new lastId
+    const searchParams: ReadDeckSearchRequestDto = {
+      lastId: lastId,
+      pageSize: 3,
+      sortBy: orderby,
+      keyword: keyword,
+    };
+
+    // Make your API call here, e.g., searchDecks(searchParams)
+    searchDecks(searchParams)
+      .then((res) => {
+        const newDecks = res.data.data.personalDeckList;
+
+        if (newDecks.length === 0) {
+          // No more data to load
+          setHasMore(false);
+        } else {
+          // Update the lastId for the next load
+          setLastId(newDecks[newDecks.length - 1].id);
+      console.log("set new last id")
+          setPersonalCardTitles((prevDecks) => [...prevDecks, ...newDecks]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching decks", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (hasMore) {
+      window.addEventListener("scroll", handleScroll);
+    } else {
+      window.removeEventListener("scroll", handleScroll);
+    }
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll, hasMore]);
+
+
+//기존
+  // useEffect(() => {
+  //   function onScroll() {
+  //     if (
+  //       window.scrollY + document.documentElement.clientHeight >
+  //       document.documentElement.scrollHeight - 10
+  //     ) {
+  //       handleSearch();
+  //     }
+  //   }
+  //   window.addEventListener('scroll', onScroll);
+
+  //   // Cleanup the event listener when the component unmounts
+  //   return () => {
+  //     window.removeEventListener('scroll', onScroll);
+  //   };
+  // }, []);
+
+  
   const BackArrow = () => {
     return (
       <>
@@ -91,9 +177,15 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
     navigate(`/flashcard/${id}`)
   }
   const handleSearch = async () => {
+    if(!hasMore){
+      return;
+    }
     searchDecks(searchParams).then((res) => {
       let show: PersonalDeckTitle[] = res.data.data.personalDeckList
-      setPersonalCardTitles(show)
+      if(show.length>0){
+        setPersonalCardTitles((prev)=> [...prev,...show])
+      }
+      
       console.log(show)
       // setMenu("public")
     })
@@ -191,13 +283,21 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
               <MyWordCard type='none' addNew={handlePlusButtonClick} />
             </>
           )}
-          {personalCardTitles?.map((deck, index) => {
-            return (
-              <>
-                <MyWordCard type='personal' key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
-              </>
-            )
-          })}
+          {
+            type==="private"?(personalCardTitles?.map((deck, index) => {
+              return (
+                <>
+                  <MyWordCard type='private' key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
+                </>
+              )
+            })):(personalCardTitles?.map((deck, index) => {
+              return (
+                <>
+                  <MyWordCard type='public' key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
+                </>
+              )
+            }))
+          }
         </div>
         <div className='create-new-list-modal'>
           <CreateNewListModal showModal={showModal} handleClose={handleCloseModal} goToDetail={goToDetail} />
@@ -206,4 +306,4 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
     </>
   )
 }
-export default DeckListPage
+export default ScrollTest
