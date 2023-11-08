@@ -115,7 +115,7 @@ function VocabListPage() {
       .catch((error) => {
         console.error("Error fetching personalDeckList", error);
       });
-    searchDecks(searchParams)
+    searchDecks({ lastId: 1000, pageSize: 9, sortBy: "createdAt", keyword: "" })
       .then((res) => {
         let show: PersonalDeckTitle[] = res.data.data.personalDeckList;
         setPublicCardTitles(show);
@@ -358,6 +358,7 @@ function VocabListPage() {
               changeView={goToList}
               category="public"
               searchResult={searchCardTitles}
+              searchParameter={searchParams}
             />
             {/* <ScrollTest type='public' changeView={goToList} category='public' searchResult={searchCardTitles} /> */}
           </>
