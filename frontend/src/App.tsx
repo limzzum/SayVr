@@ -35,8 +35,8 @@ function App() {
         path="/Shadowing/ShadowingDetailPage"
         element={<ShadowingDtailPage />}
       />
-      <Route path="/Study" element={<StudyPage />} />
-      <Route path="/Study/:studyId" element={<StudyDetail />} />
+      <Route path="/StudyList" element={<StudyPage />} />
+      <Route path="/study/:id" element={<StudyDetail />} />
       <Route path="/VocabList" element={<VocabListPage />} />
       <Route path="/flashcard/:id" element={<DeckDetail />} />
       

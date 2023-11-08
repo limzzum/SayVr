@@ -128,8 +128,8 @@ function StudyPage() {
   //   setMenu("detail")
   // }
 
-  const goToDetail = async (studyId: number) => {
-    navigate(`/study/${studyId}`);
+  const goToDetail = async (id: number) => {
+    navigate(`/study/${id}`);
   };
 
   return (
