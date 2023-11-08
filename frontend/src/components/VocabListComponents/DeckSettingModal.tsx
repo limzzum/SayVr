@@ -107,6 +107,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
               value={flashcardForm.name}
               placeholder='단어장 제목을 입력해주세요'
               onChange={handleInputChange}
+              disabled={info.status===PrivacyStatus.FORKED}
             />
             <div className='row mt-2'>
               <p className='col-2'>공개</p>
@@ -118,6 +119,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
                   checked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
                   id='flexSwitchCheckDefault'
                   onChange={handleInputChange}
+                  disabled={info.status===PrivacyStatus.FORKED}
                 />
                 <label className='form-check-label' htmlFor='flexSwitchCheckDefault'></label>
               </div>
