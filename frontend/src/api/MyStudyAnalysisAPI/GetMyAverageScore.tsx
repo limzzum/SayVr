@@ -9,7 +9,8 @@ const GetMyAverageScore = async () => {
       //     Authorization: null,
       //   },
     });
-
+    console.log("가져온 점수 데이터")
+    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error("Error fetching average score:", error);

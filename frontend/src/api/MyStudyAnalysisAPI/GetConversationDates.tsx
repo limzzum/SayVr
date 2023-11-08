@@ -1,18 +1,22 @@
-// GetConversationDates.tsx
-
 import axios from "axios";
 import BASE_URL from "../../config";
 
-const GetConversationDates = async (month: number, year: number) => {
+const GetConversationDates = async (year: number, month: number) => {
+  console.log("API 페이지에 전달된 값");
+  console.log(month);
+  console.log(year);
   try {
     const response = await axios.get(`${BASE_URL}/conversation/monthly`, {
-      params: { month, year },
+      params: {
+        year: year,
+        month: month,
+      },
     });
 
-    const conversationDates = response.data.data.datedConversationList.map(
-      (conversation: any) => conversation.date
-    );
-
+    console.log(response);
+    const conversationDates = response.data.data.datedConversationList.map((conversation: any) => conversation.date);
+    console.log("API 리턴값");
+    console.log(conversationDates);
     return {
       data: conversationDates,
     };
