@@ -1,14 +1,18 @@
 package com.npc.say_vr.domain.game.service;
 
+import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_START_MESSAGE;
+
 import com.npc.say_vr.domain.game.constant.GameStatus;
+import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.domain.Game;
 import com.npc.say_vr.domain.game.domain.Ranking;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
+import com.npc.say_vr.domain.game.dto.GameResponseDto.GameSocketResponseDto;
+import com.npc.say_vr.domain.game.dto.GameResponseDto.GameWaitingResponseDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
 import com.npc.say_vr.domain.game.dto.PlayerDto;
-import com.npc.say_vr.domain.game.dto.WaitingGameDto;
 import com.npc.say_vr.domain.game.repository.GameRepository;
 import com.npc.say_vr.domain.game.repository.RankingRepository;
 import com.npc.say_vr.domain.user.domain.User;
@@ -18,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +42,8 @@ public class GameServiceImpl implements GameService {
     private final RankingRepository rankingRepository;
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
+    private final RabbitTemplate rabbitTemplate;
+    private static final String EXCHANGE_NAME = "amq.topic";
 
     @Override
     @Transactional
@@ -48,20 +55,39 @@ public class GameServiceImpl implements GameService {
 
     @Override
     @Transactional
-    public Long registWaitingQueue(Long userId) {
+    public GameWaitingResponseDto registWaitingQueue(Long userId) {
         Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
         String name = ranking.getTier().getName();
 
         if(redisUtil.hasKey(name)){
             String gameId = (String) redisUtil.get(name);
             GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
+
             User user = userRepository.findById(userId).orElseThrow();
+
+            if(gameStatusDto.getPlayerA().getUserId() == userId){
+                return GameWaitingResponseDto.builder().gameId(Long.valueOf(gameId))
+                    .profile(user.getProfile())
+                    .isGameStart(false)
+                    .build();
+            }
+
+            redisUtil.delete(name);
             PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
             redisUtil.setGameStatusList(gameId,gameStatusDto);
             updateQuiz(Long.valueOf(gameId));
-            return Long.valueOf(gameId);
+            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
+                .data(gameStatusDto)
+                .message(GAME_START_MESSAGE.getMessage())
+                .build();
+            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+
+            return GameWaitingResponseDto.builder().gameId(Long.valueOf(gameId))
+                .profile(user.getProfile())
+                .isGameStart(true)
+                .build();
         }
 
         Long gameId = create();
@@ -72,8 +98,12 @@ public class GameServiceImpl implements GameService {
             .profile(user.getProfile()).build();
         GameStatusDto gameStatusDto = GameStatusDto.builder().gameId(gameId).playerA(playerDto).build();
         redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
-        return gameId;
+        return GameWaitingResponseDto.builder().gameId(Long.valueOf(gameId))
+            .profile(user.getProfile())
+            .isGameStart(false)
+            .build();
     }
+
 
     @Override
     public boolean checkQuizAnswer(SubmitAnswerRequestDto submitQuizAnswer) {
