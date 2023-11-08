@@ -13,7 +13,7 @@ import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/flashcards")
@@ -44,9 +43,8 @@ public class WordcardApiController {
 
     //TODO : 단어장 단어 추가
     @PostMapping("/card/{deckId}")
-    public ResponseEntity<?> createCard//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long deckId, @RequestBody CreateWordcardRequestDto requestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> createCard(@AuthenticationPrincipal Long userId,
+        @PathVariable Long deckId, @RequestBody CreateWordcardRequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_CREATE_WORD.getMessage())
             .httpStatus(SUCCESS_CREATE_WORD.getHttpStatus())
@@ -59,9 +57,8 @@ public class WordcardApiController {
 
     //TODO:이 걸 만 든 이유??
     @PutMapping("/card/{wordcardId}")
-    public ResponseEntity<?> updateWordcard//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long wordcardId) {
-        Long userId = 1L;
+    public ResponseEntity<?> updateWordcard(@AuthenticationPrincipal Long userId,
+        @PathVariable Long wordcardId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_UPDATE_WORDCARD.getMessage())
             .httpStatus(SUCCESS_UPDATE_WORDCARD.getHttpStatus())
@@ -71,9 +68,8 @@ public class WordcardApiController {
     }
 
     @PatchMapping("/progress/{wordcardId}")
-    public ResponseEntity<?> updateCardProgress//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long wordcardId, @RequestBody WordcardUpdateRequestDto requestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> updateCardProgress(@AuthenticationPrincipal Long userId,
+        @PathVariable Long wordcardId, @RequestBody WordcardUpdateRequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_UPDATE_LEARNING_STATUS.getMessage())
             .httpStatus(SUCCESS_UPDATE_LEARNING_STATUS.getHttpStatus())
@@ -83,9 +79,8 @@ public class WordcardApiController {
     }
 
     @DeleteMapping("/card/{wordcardId}")
-    public ResponseEntity<?> deleteCard//(@AuthenticationPrincipal Long userId,
-    (@PathVariable Long wordcardId) {
-        Long userId = 1L;
+    public ResponseEntity<?> deleteCard(@AuthenticationPrincipal Long userId,
+        @PathVariable Long wordcardId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_DELETE_WORDCARD.getMessage())
             .httpStatus(SUCCESS_DELETE_WORDCARD.getHttpStatus())
