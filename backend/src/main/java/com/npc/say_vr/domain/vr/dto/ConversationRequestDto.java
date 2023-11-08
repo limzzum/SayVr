@@ -16,13 +16,8 @@ public class ConversationRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MonthlyListRequestDto {
-        private String month;
+        private int month;
         private int year;
-
-        public int toNumber(){
-            return Integer.parseInt(getMonth());
-        }
-
     }
 
     @Data
