@@ -1,29 +1,32 @@
 import { useEffect, useRef, useState } from "react"
-import { Button } from "react-bootstrap"
+import { Button, Dropdown, DropdownButton, Form, InputGroup } from "react-bootstrap"
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
 import Slider from "react-slick"
 import {
-  DeckDetailResponseDto,
   PersonalDeckTitle,
+  ReadDeckSearchRequestDto,
   getPersonalFlashcards,
-  getPublicFlashcards
+  getPublicFlashcards,
+  searchDecks,
 } from "../../api/VocabListAPI/FlashcardsAPI"
 import MyWordCard from "../../components/MyWordCard"
 import AddButton from "../../components/VocabListComponents/AddButton"
 import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal"
 import DeckListPage from "./DeckListPage"
 import "./style.css"
+import ScrollTest from "./DeckListPage/ScrollTest"
 
 interface ArrowProps {
   onClick: () => void
 }
 const carouselSettings = {
   dots: false,
-  infinite: true,
+  // infinite: true,
   speed: 500,
-  slidesToShow: 3, 
+  slidesToShow: 3,
   slidesToScroll: 3,
+  arrows: false,
   responsive: [
     {
       breakpoint: 600,
@@ -39,15 +42,26 @@ const carouselSettings = {
     },
   ],
 }
+
 function VocabListPage() {
-  const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
   const [menu, setMenu] = useState("main")
-  const [selectedDeck, setSelectedDeck] = useState<DeckDetailResponseDto>()
-  const [personalCardTitles, setPersonalCardTitles] = useState<PersonalDeckTitle[]>()
-  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>()
+  const [personalCardTitles, setPersonalCardTitles] = useState<PersonalDeckTitle[]>([])
+  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>([])
+
   const sliderPersonal = useRef<Slider | null>(null)
   const sliderPublic = useRef<Slider | null>(null)
+  const [searchCardTitles, setSearchCardTitles] = useState<PersonalDeckTitle[]>([])
+  const [orderby, setOrderby] = useState("createdAt")
+  const [keyword, setKeyword] = useState("")
+
+  const searchParams: ReadDeckSearchRequestDto = {
+    lastId: 1000,
+    pageSize: 9,
+    sortBy: orderby,
+    keyword: keyword,
+  }
+
   const ArrowLeft = (props: ArrowProps) => {
     return (
       <>
@@ -90,7 +104,7 @@ function VocabListPage() {
       .catch((error) => {
         console.error("Error fetching personalDeckList", error)
       })
-    getPublicFlashcards()
+    searchDecks(searchParams)
       .then((res) => {
         let show: PersonalDeckTitle[] = res.data.data.personalDeckList
         setPublicCardTitles(show)
@@ -116,6 +130,21 @@ function VocabListPage() {
     setMenu(where)
   }
 
+  const handleSearch = async () => {
+    searchDecks(searchParams).then((res) => {
+      let show: PersonalDeckTitle[] = res.data.data.personalDeckList
+      setSearchCardTitles(show)
+      console.log(show)
+      setMenu("public")
+    })
+  }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    setKeyword(value)
+  }
+
+  const navigate = useNavigate()
   const goToDetail = async (id: number) => {
     // await getOneDeck(id).then((res) => {
     //   console.log(res.data.data);
@@ -158,14 +187,14 @@ function VocabListPage() {
               </div>
               {(personalCardTitles == null || personalCardTitles.length === 0) && (
                 <>
-                  <MyWordCard addNew={handlePlusButtonClick} />
+                  <MyWordCard type='none' addNew={handlePlusButtonClick} />
                 </>
               )}
-              <Slider ref={sliderPersonal} {...carouselSettings}>
+              <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
                 {personalCardTitles?.map((deck, index) => {
                   return (
                     <>
-                      <MyWordCard key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
+                      <MyWordCard type={"private"} key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
                     </>
                   )
                 })}
@@ -182,16 +211,59 @@ function VocabListPage() {
                       }}
                     >
                       <div style={{ display: "flex", margin: "1rem" }}>
-                        <div className='title private' onClick={() => setMenu("public")}>
+                        <div
+                          className='title private'
+                          onClick={() => {
+                            setMenu("public")
+                            setSearchCardTitles(publicCardTitles)
+                          }}
+                        >
                           공개 단어장
                         </div>{" "}
                         <div className='container-fluid' style={{ width: "300px" }}>
-                          <form className='d-flex'>
-                            <input className='form-control' type='search' placeholder='검색' aria-label='Search' />
-                            <button className='btn' type='submit'>
+                          <InputGroup className='mb-3'>
+                            <DropdownButton
+                              variant='outline-secondary'
+                              title={
+                                orderby === "createdAt"
+                                  ? "최신순"
+                                  : orderby === "forkCount"
+                                  ? "저장순"
+                                  : orderby === "wordCount"
+                                  ? "단어순"
+                                  : "정렬"
+                              }
+                              id='input-group-dropdown-1'
+                            >
+                              <Dropdown.Item onClick={() => setOrderby("createdAt")} href='#'>
+                                최신순
+                              </Dropdown.Item>
+                              <Dropdown.Item onClick={() => setOrderby("forkCount")} href='#'>
+                                저장순
+                              </Dropdown.Item>
+                              <Dropdown.Item onClick={() => setOrderby("wordCount")} href='#'>
+                                단어순
+                              </Dropdown.Item>
+                            </DropdownButton>
+                            <Form.Control
+                              placeholder='검색'
+                              name='keyword'
+                              onChange={handleInputChange}
+                              value={keyword}
+                              type='search'
+                              aria-label='Text input with dropdown button'
+                            />
+                            <Button
+                              type='submit'
+                              onClick={(e: any) => {
+                                e.preventDefault()
+                                handleSearch()
+                              }}
+                              className='btn'
+                            >
                               Search
-                            </button>
-                          </form>
+                            </Button>
+                          </InputGroup>
                         </div>
                       </div>
                       <div>
@@ -202,11 +274,11 @@ function VocabListPage() {
                   </h1>
                 </div>
                 <div className='row'>
-                  <Slider ref={sliderPublic} {...carouselSettings}>
+                  <Slider infinite={publicCardTitles?.length >= 3} ref={sliderPublic} {...carouselSettings}>
                     {publicCardTitles?.map((deck, index) => {
                       return (
                         <>
-                          <MyWordCard key={"public" + index + deck.id} addNew={handlePlusButtonClick} props={deck} />
+                          <MyWordCard type={"public"} key={"public" + index + deck.id} addNew={handlePlusButtonClick} props={deck} />
                         </>
                       )
                     })}
@@ -221,12 +293,13 @@ function VocabListPage() {
         )}
         {menu === "public" && (
           <>
-            <DeckListPage changeView={goToList} category='public' />
+            <DeckListPage type="public" changeView={goToList} category='public' searchResult={searchCardTitles} />
+            {/* <ScrollTest type='public' changeView={goToList} category='public' searchResult={searchCardTitles} /> */}
           </>
         )}
         {menu === "private" && (
           <>
-            <DeckListPage changeView={goToList} category='private' />
+            <DeckListPage type='private' changeView={goToList} category='private' />
           </>
         )}
       </div>

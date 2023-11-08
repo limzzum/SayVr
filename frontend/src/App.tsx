@@ -14,6 +14,7 @@ import StudyPage from "./pages/StudyPage";
 import VocabListPage from "./pages/VocabListPage";
 import DeckDetail from "./pages/VocabListPage/DeckDetailPage";
 import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage"
+import StudyDetail from "./pages/StudyPage/StudyDetailPage";
 
 function App() {
   return (
@@ -34,7 +35,8 @@ function App() {
         path="/Shadowing/ShadowingDetailPage"
         element={<ShadowingDtailPage />}
       />
-      <Route path="/Study" element={<StudyPage />} />
+      <Route path="/StudyList" element={<StudyPage />} />
+      <Route path="/study/:id" element={<StudyDetail />} />
       <Route path="/VocabList" element={<VocabListPage />} />
       <Route path="/flashcard/:id" element={<DeckDetail />} />
       

@@ -1,9 +1,10 @@
 // SettingsModal.tsx
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
-import { DeckDetailResponseDto, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI"
-import { PrivacyStatus } from "./CreateNewListModal"
+import { DeckDetailResponseDto, deleteDeck, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI"
+
 import { useNavigate } from "react-router-dom"
+import { PrivacyStatus } from "./CreateNewListModal"
 
 interface SettingsModalProps {
   showModal: boolean
@@ -68,15 +69,37 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
         })
     }
   }
-  const handleDelete = () => {}
+  useEffect(() => {
+    if(info){
+         setFlashcardForm({
+      name: info.name,
+      flashcardStatus: info.status,
+    })
+    }
+ 
+  }, [])
+  
+  const handleDelete = () => {
+    deleteDeck(id).then((res)=>{
+      let message = res.data.data.message;
+      console.log(message)
+      if(message ==="단어장이 삭제되었습니다"){
+        navigate(-1)
+      }else{
+        alert(message)
+      }
+
+    })
+  }
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>단어장 설정 </Modal.Title>
+        <Modal.Title>단어장 설정 {flashcardForm.flashcardStatus} </Modal.Title>
       </Modal.Header>{" "}
       {mode === "settings" && (
         <>
           <Modal.Body className='row '>
+            <h2>info status {info.status} form {flashcardForm.flashcardStatus}</h2>
             <p>제목</p>
             <input
               name='name'
@@ -84,17 +107,19 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
               value={flashcardForm.name}
               placeholder='단어장 제목을 입력해주세요'
               onChange={handleInputChange}
+              disabled={info.status===PrivacyStatus.FORKED}
             />
             <div className='row mt-2'>
               <p className='col-2'>공개</p>
               <div className='form-check form-switch col-2'>
                 <input
                   className='form-check-input'
-                  name='privacyStatus'
+                  name='flashcardStatus'
                   type='checkbox'
                   checked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
                   id='flexSwitchCheckDefault'
                   onChange={handleInputChange}
+                  disabled={info.status===PrivacyStatus.FORKED}
                 />
                 <label className='form-check-label' htmlFor='flexSwitchCheckDefault'></label>
               </div>
