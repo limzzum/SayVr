@@ -134,7 +134,7 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     public ConversationDatedListDto readMonthlyConversationList(Long userId, MonthlyListRequestDto requestDto) {
         List<Conversation> conversationList = conversationRepository.findByUserIdAndYearAndMonth(userId, requestDto.getYear(),
-            requestDto.toNumber());
+            requestDto.getMonth());
         return new ConversationDatedListDto(conversationList);
     }
 
