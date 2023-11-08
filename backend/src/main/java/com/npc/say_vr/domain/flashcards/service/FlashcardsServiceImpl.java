@@ -24,6 +24,7 @@ import com.npc.say_vr.domain.study.repository.flashcardDeckRepostiory.QueryDslFl
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.dto.ResponseDto;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -63,15 +64,23 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     }
 
     //TODO: 테스팅 필요!!! 공개 조회시 거르고 조회해야 함
+    @Transactional
     @Override
     public DeckCreateResponseDto createForkedDeck(Long userId, Long personalDeckId) {
         PersonalDeck deckToFork = personalDeckRepository.findById(personalDeckId).orElseThrow();
         deckToFork.updateForkCount();
         personalDeckRepository.save(deckToFork);
-        FlashcardDeck forkedWords = FlashcardDeck.builder()
-            .wordcards(deckToFork.getFlashcardDeck().getWordcards())
-            .build();
+        FlashcardDeck forkedWords = FlashcardDeck.builder().build();
         forkedWords = flashcardsRepository.save(forkedWords);
+        List<Wordcard> toCopy = deckToFork.getFlashcardDeck().getWordcards();
+        List<Wordcard> copiedList = new ArrayList<>();
+        for (Wordcard tobecopied : toCopy) {
+            Wordcard copied = Wordcard.builder().word(tobecopied.getWord())
+                .status(WordcardStatus.UNCHECKED).flashcardDeck(forkedWords).build();
+            copiedList.add(copied);
+        }
+        copiedList=wordcardRepository.saveAll(copiedList);
+        forkedWords.updateWords(copiedList);
         User user = userRepository.findById(userId).orElseThrow();
         //TODO: 복사할 내용 뜯어오기
         PersonalDeck personalDeck = PersonalDeck.builder()
@@ -79,7 +88,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
             .user(user)
             .name(deckToFork.getName())
             .status(FlashcardStatus.FORKED)
-            .tags(deckToFork.getTags())
+            .wordCount(toCopy.size())
             .build();
         personalDeck = personalDeckRepository.save(personalDeck);
 
@@ -103,9 +112,11 @@ public class FlashcardsServiceImpl implements FlashcardsService {
 
     //TODO: 조회시 걸러야 할 상황들, 1 삭제여부 2 공개 형태 3 검색조건 4 갯수 5
     @Override
-    public DeckListResponseDto readDeckSearch(Long userId, ReadDeckSearchRequestDto readDeckSearchRequestDto) {
+    public DeckListResponseDto readDeckSearch(Long userId,
+        ReadDeckSearchRequestDto readDeckSearchRequestDto) {
 
-        List<PersonalDeck> personalDeckList = queryDslFlashcardRepository.searchAndSortPersonalDecks(readDeckSearchRequestDto);
+        List<PersonalDeck> personalDeckList = queryDslFlashcardRepository.searchAndSortPersonalDecks(
+            readDeckSearchRequestDto);
 
         return new DeckListResponseDto(personalDeckList);
     }
@@ -155,9 +166,9 @@ public class FlashcardsServiceImpl implements FlashcardsService {
             //TODO: 학습상태 전부 unchecked로 바꾸기
             List<Wordcard> words = flashcardDeck.getWordcards();
             words = words.stream().map(wordcard -> {
-                 if(wordcard.getStatus().equals(WordcardStatus.CHECKED)){
-                    wordcard.updateStatus(WordcardStatus.UNCHECKED);
-                 }
+                    if (wordcard.getStatus().equals(WordcardStatus.CHECKED)) {
+                        wordcard.updateStatus(WordcardStatus.UNCHECKED);
+                    }
                     return wordcard;
                 })
                 .collect(Collectors.toList());
