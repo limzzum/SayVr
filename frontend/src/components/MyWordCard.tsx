@@ -5,6 +5,7 @@ import AddButton from "./VocabListComponents/AddButton"
 interface MyWordCardProps {
   addNew: () => void
   props?: PersonalDeckTitle
+  type:string
 }
 function MyWordCard({ addNew, props }: MyWordCardProps) {
   const navigate = useNavigate()

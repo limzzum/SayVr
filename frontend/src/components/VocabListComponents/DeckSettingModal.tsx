@@ -1,9 +1,10 @@
 // SettingsModal.tsx
 import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
-import { DeckDetailResponseDto, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI"
-import { PrivacyStatus } from "./CreateNewListModal"
+import { DeckDetailResponseDto, deleteDeck, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI"
+
 import { useNavigate } from "react-router-dom"
+import { PrivacyStatus } from "./CreateNewListModal"
 
 interface SettingsModalProps {
   showModal: boolean
@@ -78,7 +79,18 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
  
   }, [])
   
-  const handleDelete = () => {}
+  const handleDelete = () => {
+    deleteDeck(id).then((res)=>{
+      let message = res.data.data.message;
+      console.log(message)
+      if(message ==="단어장이 삭제되었습니다"){
+        navigate(-1)
+      }else{
+        alert(message)
+      }
+
+    })
+  }
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
