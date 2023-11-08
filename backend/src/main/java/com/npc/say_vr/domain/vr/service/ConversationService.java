@@ -1,7 +1,6 @@
 package com.npc.say_vr.domain.vr.service;
 
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
-import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.MonthlyListRequestDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDatedListDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResponseDto;

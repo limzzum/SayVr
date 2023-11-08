@@ -6,7 +6,6 @@ import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.CONV
 import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.PROFICIENCY_READ_SUCCESS;
 
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
-import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.MonthlyListRequestDto;
 import com.npc.say_vr.domain.vr.service.ConversationService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
