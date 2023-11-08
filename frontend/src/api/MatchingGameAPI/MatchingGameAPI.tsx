@@ -12,6 +12,7 @@ const axiosInstance = axios.create({
 });
 
 export enum SocketType {
+  GAME_START = "GAME_START",
   GAME_INFO = "GAME_INFO",
   GAME_END = "GAME_END",
   CHAT = "CHAT",
@@ -29,10 +30,17 @@ export interface ResponseDto<T> {
 export interface WaitingGameResponseDto {
   gameId: number;
   profile: string;
+  gameStart: boolean;
 }
 
 export const waitingGame = (): Promise<
   AxiosResponse<ResponseDto<WaitingGameResponseDto>>
 > => {
   return axiosInstance.get("/wait");
+};
+
+export const startGame = () => {
+  return axios.create({
+    baseURL: BASE_URL,
+  }).get("/start");
 };
