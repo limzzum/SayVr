@@ -11,14 +11,6 @@ import lombok.NoArgsConstructor;
 
 public class ConversationRequestDto {
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class MonthlyListRequestDto {
-        private int month;
-        private int year;
-    }
 
     @Data
     @Builder

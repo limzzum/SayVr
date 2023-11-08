@@ -6,7 +6,6 @@ import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.CONV
 import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.PROFICIENCY_READ_SUCCESS;
 
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
-import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.MonthlyListRequestDto;
 import com.npc.say_vr.domain.vr.service.ConversationService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,11 +51,11 @@ public class ConversationApiController {
 
     @GetMapping("/monthly")
     public ResponseEntity<?> readMonthlyConversation(@AuthenticationPrincipal Long userId,
-        @RequestBody MonthlyListRequestDto requestDto) {
+        @RequestParam int year, @RequestParam int month) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(CONVERSATION_LIST_READ_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_LIST_READ_SUCCESS.getHttpStatus())
-            .data(conversationService.readMonthlyConversationList(userId, requestDto))
+            .data(conversationService.readMonthlyConversationList(userId, year, month))
             .build();
         return ResponseEntity.ok(responseDto);
     }
