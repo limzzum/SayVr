@@ -1,6 +1,7 @@
 package com.npc.say_vr.domain.game.service;
 
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_START_MESSAGE;
+import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_STATUS_INFO;
 
 import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.constant.SocketType;
@@ -104,6 +105,19 @@ public class GameServiceImpl implements GameService {
             .build();
     }
 
+    @Override
+    public void gameStart(Long userId) {
+        String gameId = String.valueOf(findGameIdByUserId(userId));
+        updateQuiz(Long.valueOf(gameId));
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
+
+        GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
+            .data(gameStatusDto)
+            .message(GAME_STATUS_INFO.getMessage())
+            .build();
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+
+    }
 
     @Override
     public boolean checkQuizAnswer(SubmitAnswerRequestDto submitQuizAnswer) {
