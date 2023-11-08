@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,11 +52,11 @@ public class ConversationApiController {
 
     @GetMapping("/monthly")
     public ResponseEntity<?> readMonthlyConversation(@AuthenticationPrincipal Long userId,
-        @RequestBody MonthlyListRequestDto requestDto) {
+        @RequestParam int year, @RequestParam int month) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(CONVERSATION_LIST_READ_SUCCESS.getMessage())
             .httpStatus(CONVERSATION_LIST_READ_SUCCESS.getHttpStatus())
-            .data(conversationService.readMonthlyConversationList(userId, requestDto))
+            .data(conversationService.readMonthlyConversationList(userId, year, month))
             .build();
         return ResponseEntity.ok(responseDto);
     }
