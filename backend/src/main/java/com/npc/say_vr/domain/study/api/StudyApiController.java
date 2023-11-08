@@ -139,7 +139,7 @@ public class StudyApiController {
             .build();
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_UPDATE_SUCCESS.getMessage())
-            .data(studyService.updateStudy(userId, studyId,updateStudyRequestDto))
+            .data(studyPageDetailResponseDto)
             .httpStatus(STUDY_UPDATE_SUCCESS.getHttpStatus())
             .build();
 

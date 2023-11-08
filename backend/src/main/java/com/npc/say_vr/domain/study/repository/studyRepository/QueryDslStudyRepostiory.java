@@ -91,7 +91,7 @@ public class QueryDslStudyRepostiory {
                         study.rule,
                         study.studyStatus))
                 .from(study)
-                .where(study.studyStatus.eq(StudyStatus.NOTFULL))
+                .where(study.studyStatus.ne(StudyStatus.DELETE))
                 .orderBy(study.id.desc())
                 .limit(9)
                 .fetch();
