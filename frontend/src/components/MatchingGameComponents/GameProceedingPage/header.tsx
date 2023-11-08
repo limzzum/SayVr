@@ -2,8 +2,19 @@ import{ useEffect, useState } from "react";
 import button from '../../../assets/MatchingGamePageAssets/uil_exit.png'
 import "./style.css";
 
+interface props {
+  player : PlayerProfile,
+  opponent : PlayerProfile
+}
 
-function Header(){
+interface PlayerProfile {
+  name : string,
+  profile : string,
+  ranking : number,
+  tier : string
+}
+
+const GameProceedingHeader: React.FC<props> = ({player, opponent}) => {
     const [waitingSeconds, setWaitingSeconds] = useState(0);
     useEffect(() => {
         const interval = setInterval(() => {
@@ -15,16 +26,10 @@ function Header(){
         };
       }, []);
     
-      const formatTime = (seconds:number) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        const formattedTime = `${String(minutes).padStart(2, '0')} : ${String(remainingSeconds).padStart(2, '0')}`;
-        return formattedTime;
-      };
+      
     return (
         <div  className="header-container">
             <div className="matching-game-container"></div>
-            <div className="waiting-time">{formatTime(waitingSeconds)}</div>
             <img className="exit-button" src={button} alt="Exit"/>
         </div>
 
@@ -33,5 +38,12 @@ function Header(){
 
 }
 
-export default Header;
+export default GameProceedingHeader;
 
+const Profile = () => {
+  return (
+    <div className="body-container">
+        
+    </div>
+  );
+}
