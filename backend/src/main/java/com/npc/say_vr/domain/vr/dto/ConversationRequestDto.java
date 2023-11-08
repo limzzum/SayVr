@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 public class ConversationRequestDto {
 
+
     @Data
     @Builder
     @NoArgsConstructor

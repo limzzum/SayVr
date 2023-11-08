@@ -1,0 +1,91 @@
+.header-container{
+  display: flex;
+  justify-content: center;
+  height: 100px;
+}
+
+.body-container{
+  display: flex;
+  justify-content: center;
+
+}
+
+
+.footer-container{
+  display: flex;
+  position: absolute;
+  left: 50%; /* 가로 가운데 정렬을 위해 왼쪽 위치를 50%로 설정 */
+  top: 500px; /* 세로 가운데 정렬을 위해 위쪽 위치를 50%로 설정 */
+  transform: translate(-50%, -50%); 
+}
+
+
+
+.matching-game-container {
+  position: absolute;
+  background-image: url("../../../assets/MatchingGamePageAssets/Background.png");
+  background-size: cover;
+  width: 100vw;
+  height: 92vh;
+  z-index: -1;
+}
+
+.profile-container {
+  background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
+  background-size:contain;
+  background-position: center;
+  width: 318px;
+  height: 429px;
+  padding: 0;
+  z-index: 1;
+}
+
+.profile-image {
+  position: absolute;
+  justify-content: center;
+  background-clip: border-box;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  top: 360px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.waiting-time{
+  /* size: 500px; */
+  position: relative;
+  position: absolute;
+  margin-right: auto;
+  color: black;
+  text-align: center;
+  font-size: xxx-large;
+  width: 150px;
+}
+
+.loading-spinner {
+  justify-content: center;
+  animation: spin 4s linear infinite;
+}
+
+.loading-text {
+  font-size : 54px;
+  font-weight : bold;
+  color : black;
+  padding-right : 30px;
+}
+
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.exit-button{
+  margin-left: auto;
+  padding: 20px;
+  width: 100px;
+  height: 103px;
+}

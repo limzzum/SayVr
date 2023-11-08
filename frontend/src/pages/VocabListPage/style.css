@@ -7,7 +7,7 @@
   margin: 30px auto;
 }
 .slick-slide.slick-cloned {
-  display: none;
+  /* display: none; */
 }
 .vocab-line{
   background-color: white;
@@ -18,17 +18,19 @@
   margin: 30px auto;
 }
 
-.addBtn:hover {
+.icon-button:hover {
   /* border-radius: 50%!important;
 border-color:transparent;
 &:active {
     border-color: transparent;
   } */
+  fill: cornflowerblue; 
+  cursor: pointer; 
 }
-path:hover {
-  fill: cornflowerblue; /* Change the fill color on hover */
-  cursor: pointer; /* Change the cursor to indicate interactivity */
-}
+/* path:hover {
+  fill: cornflowerblue; 
+  cursor: pointer; 
+} */
 .create-new-list-modal {
 }
 

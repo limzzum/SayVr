@@ -9,14 +9,18 @@ import com.npc.say_vr.domain.flashcards.domain.Wordcard;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateFlashcardsRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckSettingsUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.DeckUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.ReadDeckSearchRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.SearchRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckCreateResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckDetailResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckListResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckTitleResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
 import com.npc.say_vr.domain.flashcards.repository.FlashcardsRepository;
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
+import com.npc.say_vr.domain.flashcards.repository.QueryDslFlashcardRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
+import com.npc.say_vr.domain.study.repository.flashcardDeckRepostiory.QueryDslFlashcardDeckRepostiory;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.dto.ResponseDto;
@@ -39,6 +43,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     private final PersonalDeckRepository personalDeckRepository;
     private final WordcardRepository wordcardRepository;
     private final UserRepository userRepository;
+    private final QueryDslFlashcardRepository queryDslFlashcardRepository;
 
 
     @Override
@@ -97,8 +102,11 @@ public class FlashcardsServiceImpl implements FlashcardsService {
 
     //TODO: 조회시 걸러야 할 상황들, 1 삭제여부 2 공개 형태 3 검색조건 4 갯수 5
     @Override
-    public ResponseDto readDeckSearch(Long userId, SearchRequestDto searchRequestDto) {
-        return null;
+    public DeckListResponseDto readDeckSearch(Long userId, ReadDeckSearchRequestDto readDeckSearchRequestDto) {
+
+        List<PersonalDeck> personalDeckList = queryDslFlashcardRepository.searchAndSortPersonalDecks(readDeckSearchRequestDto);
+
+        return new DeckListResponseDto(personalDeckList);
     }
 
     @Override

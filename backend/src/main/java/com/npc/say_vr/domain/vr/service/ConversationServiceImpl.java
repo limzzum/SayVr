@@ -7,6 +7,7 @@ import com.npc.say_vr.domain.vr.domain.Message;
 import com.npc.say_vr.domain.vr.domain.Score;
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto;
+import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDatedListDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationListResponseDto;
@@ -127,7 +128,13 @@ public class ConversationServiceImpl implements ConversationService {
             .conversationList(conversationDtoList)
             .build();
     }
-    //유저 확인을 또 해줄 필요가 있을까??Long userId,
+
+    @Override
+    public ConversationDatedListDto readMonthlyConversationList(Long userId, int year, int month) {
+        List<Conversation> conversationList = conversationRepository.findByUserIdAndYearAndMonth(userId, year,
+           month);
+        return new ConversationDatedListDto(conversationList);
+    }
 
     @Override
     public ConversationInfoResponseDto readConversation(Long userId, Long conversationId) {
