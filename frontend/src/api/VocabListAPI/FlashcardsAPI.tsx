@@ -21,6 +21,7 @@ export enum WordcardStatus {
   CHECKED = "CHECKED",
   DELETED ="DELETED"
 }
+
 export interface ResponseDto<T> {
   data: T
   message: string
@@ -47,14 +48,13 @@ export interface PersonalDeckTitle {
   wordCount: number
   forkCount?: number
 }
-
-export interface PersonalDeckResponse {
-  personalDeckList: PersonalDeckTitle[]
-}
 export interface DeckListResponseDto {
   personalDeckList: PersonalDeckTitle[]
 }
-
+export interface PersonalDeckResponse {
+  personalDeckList: PersonalDeckTitle[]
+}
+// id 숫자로 받는지 ? string으로?? bigint로???
 export interface DeckDetailResponseDto extends DeckCreateResponseDto {
   id: number
   name: string
@@ -84,17 +84,12 @@ export interface WordUpdateResponseDto {
   errorMessage?:string,
 }
 
-export interface ReadDeckSearchRequestDto {
-  keyword?: string
+export interface ReadDeckSearchRequestDto{
+  keyword:string,
   sortBy:string,
   lastId:number,
-  pageSize:number
+  pageSize:number,
 }
-// export const OrderByType={
-//   "저장순":"forkCount",
-//   "단어수순":"wordCount",
-//   "최신순":"createdAt"
-// }as const;
 export interface MessageOnlyResponseDto {
   message: string
 }
@@ -119,8 +114,7 @@ export const createWordcard = (
 }
 
 export const searchDecks = (data: ReadDeckSearchRequestDto): Promise<AxiosResponse<ResponseDto<DeckListResponseDto>>> => {
-  
-  return axiosInstance.get("/search?",{params:data})
+  return axiosInstance.get("/search",{params:data})
 }
 export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
   return axiosInstance.get("/personal")
@@ -128,6 +122,7 @@ export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<Perso
 export const getPublicFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
   return axiosInstance.get("/list")
 }
+
 export const getOneDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
   return axiosInstance.get(`/deck/${deckId}`)
 }
