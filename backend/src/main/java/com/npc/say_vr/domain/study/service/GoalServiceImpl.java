@@ -72,26 +72,28 @@ public class GoalServiceImpl implements GoalService{
         List<Goal> goalEntityList = new ArrayList<>();
 
         for(CreateGoalRequestDto createGoalRequestDto : goalDtoList) {
-            Goal goal;
-            if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
-                goal = Goal.builder()
+            if(createGoalRequestDto.getCount() > 0) {
+                Goal goal;
+                if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
+                    goal = Goal.builder()
                         .count(1)
                         .optionType(createGoalRequestDto.getOptionType())
                         .weeklySprint(weeklySprint)
                         .description(createGoalRequestDto.getDescription())
                         .build();
-                goalRepository.save(goal);
-            }else {
-                goal = Goal.builder()
+                    goalRepository.save(goal);
+                }else {
+                    goal = Goal.builder()
                         .count(createGoalRequestDto.getCount())
                         .optionType(createGoalRequestDto.getOptionType())
                         .weeklySprint(weeklySprint)
                         .description(createGoalRequestDto.getOptionType().getMessage())
                         .build();
-                goalRepository.save(goal);
+                    goalRepository.save(goal);
+                }
+                goalResponseDtoList.add(new GoalResponseDto().toDto(goal));
+                goalEntityList.add(goal);
             }
-            goalResponseDtoList.add(new GoalResponseDto().toDto(goal));
-            goalEntityList.add(goal);
         }
 
         // TODO : 2중FOR문 개선하기 & count 개선
