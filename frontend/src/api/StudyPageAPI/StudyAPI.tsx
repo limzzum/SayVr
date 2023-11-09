@@ -2,7 +2,7 @@
 import axios, { AxiosResponse } from "axios";
 import { CreateStudyRequestDto } from "../../components/StudyComponents/CreatNewStudyModal";
 import { JoinStudyRequestDto } from "../../components/StudyComponents/ReadStudyInfoModal";
-// import { DeckSettingsUpdateRequestDto } from "../../components/VocabListComponents/DeckSettingModal"
+import { UpdateStudyRequestDto } from "../../components/StudyComponents/UpdateNewStudyModal";
 
 const BASE_URL = "http://localhost:8080/api/study";
 
@@ -54,7 +54,7 @@ export interface StudyInfoDto {
   maxPeople: number;
   currentPeople: number;
   description: string;
-  rule: String;
+  rule: string;
   StudyStatus: StudyStatus;
 }
 
@@ -86,22 +86,21 @@ export interface CheckListItemDto {
   checkListStatus: CheckListStatus;
   optionCheckItem: OptionCheckItem;
   description: string;
-  goalConut : number;
-  currentCount : number;
+  goalConut: number;
+  currentCount: number;
 }
 
 export interface MemberCheckListResponseDto {
   studyMemberId: number;
   nickName: string;
-  checkListItemDtoList :CheckListItemDto[];
+  checkListItemDtoList: CheckListItemDto[];
 }
 
 export interface GoalDetailResponseDto {
   weeklySprintId: number;
   targetDate: Date;
   goalDtoList: GoalResponseDto[];
-  memberCheckListResponseDtoList:MemberCheckListResponseDto[]
-
+  memberCheckListResponseDtoList: MemberCheckListResponseDto[];
 }
 
 export interface WeeklySprintDetailResponse {
@@ -111,14 +110,14 @@ export interface WeeklySprintDetailResponse {
 }
 
 export interface StudyDeckInfo {
- studyDeckId : number;
- name : string;
- falshcardDeckId : number;
- wordCount : number;
+  studyDeckId: number;
+  name: string;
+  falshcardDeckId: number;
+  wordCount: number;
 }
 
 export interface StudyDeckDetailResponseDto {
- studyDeckInfoList : StudyDeckInfo[];
+  studyDeckInfoList: StudyDeckInfo[];
 }
 
 export interface StudyEnterResponseDto {
@@ -151,6 +150,21 @@ export const getStudyList = (): Promise<
 > => {
   return axiosInstance.get("/list");
 };
-export const getOneStudy = (studyId: number): Promise<AxiosResponse<ResponseDto<StudyPageDetailResponseDto>>> => {
-  return axiosInstance.get(`/${studyId}`)
-}
+export const getOneStudy = (
+  studyId: number
+): Promise<AxiosResponse<ResponseDto<StudyPageDetailResponseDto>>> => {
+  return axiosInstance.get(`/${studyId}`);
+};
+
+export const deleteStudyMember = (
+  studyId: number
+): Promise<AxiosResponse<ResponseDto<any>>> => {
+  return axiosInstance.delete(`/quit/${studyId}`);
+};
+
+export const updateStudy = (
+  studyId: number | undefined,
+  data?: UpdateStudyRequestDto
+): Promise<AxiosResponse<ResponseDto<StudyDetailResponseDto>>> => {
+  return axiosInstance.put(`/${studyId}`, data);
+};
