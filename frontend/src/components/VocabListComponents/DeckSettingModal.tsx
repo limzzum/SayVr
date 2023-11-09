@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 import { DeckDetailResponseDto, deleteDeck, resetDeckProgress, updateDeckSettings } from "../../api/VocabListAPI/FlashcardsAPI"
 
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { PrivacyStatus } from "./CreateNewListModal"
 
 interface SettingsModalProps {
@@ -19,6 +19,7 @@ export interface DeckSettingsUpdateRequestDto {
 }
 const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClose, handleRefresh, info, id }) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [mode, setMode] = useState("settings")
   const [flashcardForm, setFlashcardForm] = useState<DeckSettingsUpdateRequestDto>({
     name: info.name,
@@ -45,10 +46,15 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
   const handleReset = () => {
     resetDeckProgress(id).then((res) => {
       handleRefresh(res.data.data)
+      // navigate(location.pathname)
+        // navigate(`/flashcard/${id}`);
+        navigate(0);
       console.log("reset")
-      console.log(res.data.data)
+      // console.log(res.data.data)
     })
+  
     handleClose()
+    setMode("settings")
   }
   const handleSubmit = (e: any) => {
     e.preventDefault()
