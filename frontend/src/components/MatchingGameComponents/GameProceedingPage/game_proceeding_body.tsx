@@ -1,17 +1,23 @@
 import { useState, useRef } from "react";
 import "./proceeding_style.css";
-
-
+import questionImage from "../../../assets/MatchingGamePageAssets/Group 1000004195.png";
 
 const GameProceedingBody = () => {
   return (
-    <div className="body-container">
-        <Chat></Chat>
-      
+    <div className="game-proceeding-body-container">
+      <Question></Question>
+      <Chat></Chat>
+    </div>
+  );
+};
+
+function Question() {
+  return (
+    <div className="question-container">
+      <img src={questionImage}></img>
     </div>
   );
 }
-
 
 function Chat() {
   const [messages, setMessages] = useState<string[]>([]);
@@ -26,7 +32,6 @@ function Chat() {
       if (messageRef.current) {
         messageRef.current.scrollIntoView({ behavior: "smooth" });
       }
-      
     }
   };
 
@@ -52,6 +57,5 @@ function Chat() {
     </div>
   );
 }
-
 
 export default GameProceedingBody;
