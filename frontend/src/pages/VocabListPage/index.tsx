@@ -51,18 +51,12 @@ const carouselSettings = {
 function VocabListPage() {
   const [showModal, setShowModal] = useState(false);
   const [menu, setMenu] = useState("main");
-  const [personalCardTitles, setPersonalCardTitles] = useState<
-    PersonalDeckTitle[]
-  >([]);
-  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>(
-    []
-  );
+  const [personalCardTitles, setPersonalCardTitles] = useState<PersonalDeckTitle[]>([]);
+  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>([]);
 
   const sliderPersonal = useRef<Slider | null>(null);
   const sliderPublic = useRef<Slider | null>(null);
-  const [searchCardTitles, setSearchCardTitles] = useState<PersonalDeckTitle[]>(
-    []
-  );
+  const [searchCardTitles, setSearchCardTitles] = useState<PersonalDeckTitle[]>([]);
   const [orderby, setOrderby] = useState("createdAt");
   const [keyword, setKeyword] = useState("");
 
@@ -250,7 +244,7 @@ function VocabListPage() {
                           }}
                         >
                           공개 단어장
-                        </div>{" "}
+                        </div>
                         <div
                           className="container-fluid"
                           style={{ width: "300px" }}
@@ -299,7 +293,7 @@ function VocabListPage() {
                             <Button
                               type="submit"
                               onClick={(e: any) => {
-                                e.preventDefault();
+                                e.preventDefault();  
                                 handleSearch();
                               }}
                               className="btn"
