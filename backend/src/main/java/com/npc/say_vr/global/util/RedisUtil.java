@@ -80,8 +80,13 @@ public class RedisUtil {
         Set<String> keys = redisGameStatusTemplate.keys("*");
         redisGameStatusTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(GameStatusDto.class));
         for (String key : keys) {
-            GameStatusDto gameStatusDto = (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
-            gameStatusDtos.add(gameStatusDto);
+            try{
+                int i = Integer.parseInt(key);
+                GameStatusDto gameStatusDto = (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
+                gameStatusDtos.add(gameStatusDto);
+            }catch (NumberFormatException numberFormatException){
+
+            }
         }
         return gameStatusDtos;
     }

@@ -22,11 +22,13 @@ public class GameResponseDto {
     public static class GameWaitingResponseDto {
         private Long gameId;
         private String profile;
+        private boolean isGameStart;
 
         @Builder
-        public GameWaitingResponseDto(Long gameId, String profile) {
+        public GameWaitingResponseDto(Long gameId, String profile, boolean isGameStart) {
             this.gameId = gameId;
             this.profile = profile;
+            this.isGameStart = isGameStart;
         }
     }
 
