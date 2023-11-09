@@ -1,16 +1,19 @@
-import { FC,useEffect } from "react"
+import { FC, useEffect, useState } from "react"
 import { ProgressStatus, WordcardDto, WordcardStatus, updateWordProgress } from "../../api/VocabListAPI/FlashcardsAPI"
 import IconButton from "./IconButton"
 import SoundIcon from "./Icons/SoundIcon"
 import { GrClose } from "react-icons/gr"
 import UncheckedIcon from "./Icons/UncheckedIcon"
 import CheckedIcon from "./Icons/CheckedIcon"
+import { useLocation, useNavigate } from "react-router-dom"
 interface WordcardProps {
   props: WordcardDto
   changeView: (where: string) => void
   next: () => void
 }
 const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
+  const navigate= useNavigate();
+  const location = useLocation();
   // if (!props) {
   //   return (
   //     <>
@@ -18,25 +21,37 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
   //     </>
   //   )
   // }
-  useEffect(() => {
-    
-  
-  }, [])
-  
+  const [status, setStatus] = useState<WordcardStatus>(props.wordcardStatus)
+  useEffect(() => {}, [])
+
   const sound = () => {}
   const uncheck = () => {
     updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
-      .then(() => next())
+      .then((res) => {
+        setStatus(WordcardStatus.UNCHECKED)
+        props.wordcardStatus = WordcardStatus.UNCHECKED
+
+        next()
+      })
       .catch((e) => console.log(e))
   }
   const check = () => {
     updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
-      .then(() => next())
+      .then(() => {
+        next()
+        props.wordcardStatus = WordcardStatus.CHECKED
+      })
       .catch((e) => console.log(e))
+  }
+  const handleOut=()=>{
+    // changeView("detail");
+    // navigate(location.pathname);
+    navigate(0)
+    
   }
   return (
     <>
-      {props.wordcardStatus === WordcardStatus.UNCHECKED &&  (
+      {status === WordcardStatus.UNCHECKED && (
         <>
           <div
             className='card'
@@ -57,7 +72,7 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
               style={{ display: "flex", height: "100%", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly" }}
             >
               <div className='row' style={{ width: "100%", display: "flex", flexDirection: "row", justifySelf: "flex-end" }}>
-                <IconButton handleButtonClick={() => changeView("detail")} icon={<GrClose />} size={45} />
+                <IconButton handleButtonClick={() =>handleOut() } icon={<GrClose />} size={45} />
               </div>
               <div className={"top-half row"} style={{ alignItems: "flex-end", display: "flex", width: "100%", flexDirection: "row" }}>
                 <div className='col'>
@@ -74,9 +89,8 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
               </div>
               <div className='row'>
                 <div style={{ display: "flex" }}>
-                <IconButton icon={<CheckedIcon />} size={45} handleButtonClick={check} />
+                  <IconButton icon={<CheckedIcon />} size={45} handleButtonClick={check} />
                   <IconButton icon={<UncheckedIcon />} size={45} handleButtonClick={uncheck} />
-                  
                 </div>
               </div>
             </div>
@@ -84,7 +98,7 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
             {/* </div>{" "} */}
           </div>
         </>
-       )} 
+      )}
     </>
   )
 }
