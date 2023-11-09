@@ -108,8 +108,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void gameStart(Long userId) {
         String gameId = String.valueOf(findGameIdByUserId(userId));
-        System.out.println("gameId : "+ gameId);
-        updateQuiz(Long.valueOf(gameId));
+                updateQuiz(Long.valueOf(gameId));
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
 
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
