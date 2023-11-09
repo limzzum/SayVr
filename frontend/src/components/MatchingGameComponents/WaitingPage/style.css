@@ -14,8 +14,8 @@
 .footer-container{
   display: flex;
   position: absolute;
-  left: 50%; /* 가로 가운데 정렬을 위해 왼쪽 위치를 50%로 설정 */
-  top: 500px; /* 세로 가운데 정렬을 위해 위쪽 위치를 50%로 설정 */
+  left: 50%; 
+  top: 500px;
   transform: translate(-50%, -50%); 
 }
 

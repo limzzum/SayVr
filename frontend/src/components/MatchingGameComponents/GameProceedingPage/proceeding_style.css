@@ -1,0 +1,63 @@
+ /* .header-container{
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+  padding: 30px;
+}
+
+.body-container{
+  display: flex;
+  justify-content: center;
+
+}
+
+
+.footer-container{
+  display: flex;
+  position: absolute;
+  left: 50%; 
+  top: 500px; 
+  transform: translate(-50%, -50%); 
+}
+
+
+
+.matching-game-container {
+  position: absolute;
+  background-image: url("../../../assets/MatchingGamePageAssets/Background.png");
+  background-size: cover;
+  width: 100vw;
+  height: 92vh;
+  z-index: -1;
+}
+
+.profile-container {
+  display: flex;
+  width: 200px;
+  height: 100px;
+  padding: 10px;
+  z-index: 1;
+}
+
+.profile-image {
+  
+  width: 80px;
+  height: 80px;
+  z-index: 1;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+  height: 80px;
+  z-index: 1;
+}
+
+
+.exit-button{
+  margin-left: auto;
+  padding: 20px;
+  width: 100px;
+  height: 103px;
+}  */

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import "./style.css";
+import "./proceeding_style.css";
 
 
 

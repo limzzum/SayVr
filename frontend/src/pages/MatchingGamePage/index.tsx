@@ -10,8 +10,8 @@ import {
 import Header from "../../components/MatchingGameComponents/WaitingPage/header";
 import Body from "../../components/MatchingGameComponents/WaitingPage/body";
 import Footer from "../../components/MatchingGameComponents/WaitingPage/footer";
-import GameProceedingHeader from "../../components/MatchingGameComponents/GameProceedingPage/header";
-import GameProceedingBody from "../../components/MatchingGameComponents/GameProceedingPage/body";
+import GameProceedingHeader from "../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_header";
+import GameProceedingBody from "../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_body";
 
 interface receiveMessage {
   socketType: SocketType;
@@ -37,7 +37,9 @@ interface GameStatus {
 
 interface Player {
   userId: number;
+  nickname: string;
   ranking: number;
+  tierImage: string;
   point: number;
   winCnt: number;
   profile: string;
@@ -51,9 +53,10 @@ interface SocketResponseDto<T> {
 }
 
 
+let player : Player;
+let opponent : Player;
 
-
-function MatchingGamePage() {
+function MatchingGameWaitingPage() {
   const [gameId, setGameId] = useState<number | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const history = useNavigate();
@@ -63,8 +66,11 @@ function MatchingGamePage() {
 
     if(response.socketType == SocketType.GAME_START){
       console.log("게임 매칭")
+      player = response.gameStatus!.playerA;
+      opponent = response.gameStatus!.playerB;
       history('/MatchingGame/game')
     }
+
     if(response.socketType == SocketType.GAME_INFO){
       console.log("게임 info")
       console.log(response);
@@ -129,81 +135,74 @@ function MatchingGamePage() {
   );
 }
 
+// interface PlayerProfile {
+//   name : string,
+//   profile : string,
+//   ranking : number,
+//   tier : string
+// }
+
+// // const player: PlayerProfile ;
+// // const opponent: PlayerProfile;
+
+// function MatchingGameProceedingPage() {
+//   // const [gameId, setGameId] = useState<number | null>(null);
+//   const history = useNavigate();
 
 
+//   // const messageToSend: sendMessage = {
+//   //   socketType: SocketType.GAME_INFO,
+//   //   message: "hihi",
+//   // };
 
+//   const socketReceive = (response: SocketResponseDto<any>) => {
 
-interface PlayerProfile {
-  name : string,
-  profile : string,
-  ranking : number,
-  tier : string
-}
-
-// const player: PlayerProfile ;
-// const opponent: PlayerProfile;
-
-function MatchingGameStart() {
-  // const [gameId, setGameId] = useState<number | null>(null);
-  const history = useNavigate();
-
-
-  // const messageToSend: sendMessage = {
-  //   socketType: SocketType.GAME_INFO,
-  //   message: "hihi",
-  // };
-
-  const socketReceive = (response: SocketResponseDto<any>) => {
-
-    if(response.socketType == SocketType.GAME_START){
-      console.log("게임 매칭")
-      history('/MatchingGame/game')
-    }
-    if(response.socketType == SocketType.GAME_INFO){
-      console.log("게임 info")
-      console.log(response);
-    }
+//     if(response.socketType == SocketType.GAME_INFO){
+//       console.log("게임 info")
+//       console.log(response);
+//     }
   
-    console.log("socket 구독 receive");
-    console.log(response);
-  };
+//     console.log("socket 구독 receive");
+//     console.log(response);
+//   };
   
 
-  // useEffect(() => {
-  //   // 컴포넌트가 마운트될 때, 웹 소켓을 사용할 준비
-  //   stompClient.activate();
-  //   console.log("axios 요청 호출");
-  //   waitingGame()
-  //     .then((response) => {
-  //       console.log(response);
+//   // useEffect(() => {
+//   //   // 컴포넌트가 마운트될 때, 웹 소켓을 사용할 준비
+//   //   stompClient.activate();
+//   //   console.log("axios 요청 호출");
+//   //   waitingGame()
+//   //     .then((response) => {
+//   //       console.log(response);
 
-  //       setGameId(response.data.data.gameId);
-  //       console.log("함수 호출 전");
+//   //       setGameId(response.data.data.gameId);
+//   //       console.log("함수 호출 전");
 
-  //       // 게임 아이디를 받아온 후, 웹 소켓을 초기화하고 구독합니다.
-  //       const subscription = subscribeToChatRoom(response.data.data.gameId);
+//   //       // 게임 아이디를 받아온 후, 웹 소켓을 초기화하고 구독합니다.
+//   //       const subscription = subscribeToChatRoom(response.data.data.gameId);
 
-  //       return () => {
-  //         // 컴포넌트가 언마운트될 때 구독을 해제
-  //         subscription.unsubscribe();
-  //       };
-  //     })
-  //     .catch((error) => {
-  //       // 오류 처리
-  //     });
+//   //       return () => {
+//   //         // 컴포넌트가 언마운트될 때 구독을 해제
+//   //         subscription.unsubscribe();
+//   //       };
+//   //     })
+//   //     .catch((error) => {
+//   //       // 오류 처리
+//   //     });
 
-  //   return () => {
-  //     // 컴포넌트가 언마운트될 때, 웹 소켓 연결 해제
-  //     stompClient.deactivate();
-  //   };
-  // }, []);
+//   //   return () => {
+//   //     // 컴포넌트가 언마운트될 때, 웹 소켓 연결 해제
+//   //     stompClient.deactivate();
+//   //   };
+//   // }, []);
 
-  return (
-    <div style={{display : 'flex', flexDirection : 'column'}}>
-      <GameProceedingBody/>
-      {/* <GameProceedingHeader player=/> */}
-    </div>
-  );
-}
+//   return (
+//     <div style={{display : 'flex', flexDirection : 'column'}}>
+//       <GameProceedingHeader player={player} opponent={opponent}></GameProceedingHeader>
+//       <GameProceedingBody/>
+//       {/* <GameProceedingHeader player=/> */}
+//     </div>
+//   );
+// }
 
-export { MatchingGamePage, MatchingGameStart };
+export default MatchingGameWaitingPage;
