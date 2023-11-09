@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import PlusBtn from "../../../assets/Etc/PlusBtn.png";
 import IconButton from "../../../components/StudyComponents/IconButton";
 import SettingsIcon from "../../../components/StudyComponents/SettingsIcon";
+import WeeklySprintComponent from "../../../components/StudyComponents/WeeklySprintComponent";
 import MyWordCard from "../../../components/MyWordCard";
 import {
   StudyDetailResponseDto,
@@ -10,8 +11,10 @@ import {
   StudyDeckDetailResponseDto,
   getOneStudy,
 } from "../../../api/StudyPageAPI/StudyAPI";
+import AddButton from "../../../components/StudyComponents/AddButton";
 import ReadStudyInfoModalAndOut from "../../../components/StudyComponents/ReadStudyInfoModalAndOut";
 import UpdateNewStudyModal from "../../../components/StudyComponents/UpdateNewStudyModal";
+import CreatWeeklySprintModal from "../../../components/StudyComponents/CreatWeeklySprintModal";
 import "../style.css";
 
 const StudyDetail: React.FC = () => {
@@ -26,7 +29,7 @@ const StudyDetail: React.FC = () => {
     useState<StudyDeckDetailResponseDto>();
   const [showReadModal, setShowReadModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-
+  const [showCreateModal, setCreateModal] = useState(false);
   const handleReadPlusButtonClick = () => {
     setShowReadModal(true);
   };
@@ -43,12 +46,21 @@ const StudyDetail: React.FC = () => {
     setShowReadModal(false);
   };
 
+  const handleCreatePlusButtonClick = () => {
+    setCreateModal(true);
+  };
+
+  const handleCreateCloseModal = () => {
+    setCreateModal(false);
+  };
+
   useEffect(() => {
     if (id) {
       getOneStudy(studyId)
         .then((res) => {
           if (res.data.httpStatus === "OK") {
             let data = res.data.data;
+            console.log(data);
             setStudyDetailInfo(data.studyDetailResponseDto);
             setPreWeeklySprintId(
               data.weeklySprintDetailResponse.preWeeklySprintId
@@ -104,7 +116,10 @@ const StudyDetail: React.FC = () => {
             <p style={{ fontSize: "1.5em" }}>스터디 목표</p>
           </div>
           <div className="col">
-            <img className="btn" style={{ width: "4em" }} src={PlusBtn} />
+          <AddButton
+                            handleButtonClick={handleCreatePlusButtonClick}
+                            size="50"
+                          />{" "}
           </div>
         </div>
         <div className="row ustify-content-center align-items-center">
@@ -137,6 +152,12 @@ const StudyDetail: React.FC = () => {
           // goToDetail={goToDetail}
           readStudyInfo={studyDetailInfo}
           setStudyDetailInfo={setStudyDetailInfo}
+        />
+      </div>
+      <div className="create-new-list-modal">
+        <CreatWeeklySprintModal
+          showModal={showCreateModal}
+          handleClose={handleCreateCloseModal}
         />
       </div>
     </div>
