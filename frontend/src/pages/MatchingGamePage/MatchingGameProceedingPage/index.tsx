@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   SocketType,
   waitingGame,
-  startGame
+  startGame,
 } from "../../../api/MatchingGameAPI/MatchingGameAPI";
 import GameProceedingHeader from "../../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_header";
 import GameProceedingBody from "../../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_body";
@@ -42,22 +42,17 @@ interface Player {
 }
 
 interface SocketResponseDto<T> {
-  socketType : SocketType,
-  gameStatus? : GameStatus,
-  data?: T,
+  socketType: SocketType;
+  gameStatus?: GameStatus;
+  data?: T;
   message?: string;
 }
 
-
-let player : Player;
-let opponent : Player;
-
-
 interface PlayerProfile {
-  name : string,
-  profile : string,
-  ranking : number,
-  tier : string
+  name: string;
+  profile: string;
+  ranking: number;
+  tier: string;
 }
 
 // const player: PlayerProfile ;
@@ -65,8 +60,8 @@ interface PlayerProfile {
 
 function MatchingGameProceedingPage() {
   // const [gameId, setGameId] = useState<number | null>(null);
-  const history = useNavigate();
-
+  const location = useLocation();
+  const players = { ...location.state };
 
   // const messageToSend: sendMessage = {
   //   socketType: SocketType.GAME_INFO,
@@ -74,16 +69,14 @@ function MatchingGameProceedingPage() {
   // };
 
   const socketReceive = (response: SocketResponseDto<any>) => {
-
-    if(response.socketType == SocketType.GAME_INFO){
-      console.log("게임 info")
+    if (response.socketType == SocketType.GAME_INFO) {
+      console.log("게임 info");
       console.log(response);
     }
-  
+
     console.log("socket 구독 receive");
     console.log(response);
   };
-  
 
   // useEffect(() => {
   //   // 컴포넌트가 마운트될 때, 웹 소켓을 사용할 준비
@@ -115,9 +108,12 @@ function MatchingGameProceedingPage() {
   // }, []);
 
   return (
-    <div style={{display : 'flex', flexDirection : 'column'}}>
-      <GameProceedingHeader player={player} opponent={opponent}></GameProceedingHeader>
-      <GameProceedingBody/>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <GameProceedingHeader
+        player={players.playerA}
+        opponent={players.playerB}
+      ></GameProceedingHeader>
+      <GameProceedingBody />
       {/* <GameProceedingHeader player=/> */}
     </div>
   );
