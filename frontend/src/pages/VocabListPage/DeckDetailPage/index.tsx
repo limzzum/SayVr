@@ -9,6 +9,7 @@ import {
   createForkedDeck,
   createWordcard,
   getOneDeck,
+  getTranslation,
 } from "../../../api/VocabListAPI/FlashcardsAPI";
 import AddButton from "../../../components/VocabListComponents/AddButton";
 import { PrivacyStatus } from "../../../components/VocabListComponents/CreateNewListModal";
@@ -24,7 +25,6 @@ import DeckLearn from "../DeckLearnPage";
 import { MdSync } from "react-icons/md";
 import {
   TranslationRequestDto,
-  getTranslation,
 } from "../../../api/VocabListAPI/PapagoAPI";
 import Speak from "../../../components/VocabListComponents/Speak";
 // interface DeckDetailProps {
@@ -157,8 +157,7 @@ const DeckDetail: React.FC = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = event.target;
-    // if (type === "text") {
-      // Handle text input changes
+
       if (name === "eng") {
         setWordForm((prevData) => ({
           ...prevData,
@@ -170,11 +169,7 @@ const DeckDetail: React.FC = () => {
           kor: value,
         }));
       }
-      // setWordForm((prevData) => ({
-      //   ...prevData,
-      //   [name]: value,
-      // }));
-    // }
+
   };
 
   const handleAuto = () => {
@@ -217,7 +212,7 @@ const DeckDetail: React.FC = () => {
         .catch((e) => console.log(e));
     }
   };
-  // if (isDeckCreate(props))
+
   return (
     <>
       <div
