@@ -1,4 +1,3 @@
-// MyStudyAnalysisPage.tsx
 import React, { useEffect, useState } from "react";
 import Calendar, { CalendarProps } from "react-calendar";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,7 @@ type MyCalendarValue = Date | undefined;
 const MyStudyAnalysisPage: React.FC = () => {
   const [value, onChange] = useState<MyCalendarValue>(new Date());
   const [highlightedDates, setHighlightedDates] = useState<string[]>([]);
+  const [conversationIds, setConversationIds] = useState<number[]>([]);
   const [graphData, setGraphData] = useState<ChartData | null>(null);
   const [data, setData] = useState<any>(null);
   const navigate = useNavigate();
@@ -29,7 +29,6 @@ const MyStudyAnalysisPage: React.FC = () => {
         if (averageScoresData && averageScoresData.averageScore) {
           setData(averageScoresData.averageScore);
   
-          // Modify the structure to match ChartData
           const graphData = {
             averageTotal: averageScoresData.averageScore.averageTotal,
             contextTotal: averageScoresData.averageScore.contextTotal,
@@ -45,10 +44,11 @@ const MyStudyAnalysisPage: React.FC = () => {
         if (value) {
           const year = value.getFullYear();
           const month = value.getMonth() + 1;
-
           const conversationDatesResponse = await GetConversationDates(month, year);
           const conversationDates = conversationDatesResponse.data;
+          const conversationIds = conversationDatesResponse.id;
           setHighlightedDates(conversationDates);
+          setConversationIds(conversationIds);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -65,7 +65,8 @@ const MyStudyAnalysisPage: React.FC = () => {
     const isHighlightedDate = highlightedDates.includes(formattedDate);
     if (isHighlightedDate) {
       console.log("이동 버튼 눌림");
-      navigate(`/MyStudyAnalysis/Detail?date=${formattedDate}`);
+      console.log()
+      navigate(`/MyStudyAnalysis/Detail?date=${formattedDate}&ids=${conversationIds.join(",")}`);
     }
   };
 

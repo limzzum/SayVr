@@ -1,10 +1,7 @@
 import axios from "axios";
 import BASE_URL from "../../config";
 
-const GetConversationDates = async (year: number, month: number) => {
-  console.log("API 페이지에 전달된 값");
-  console.log(month);
-  console.log(year);
+const GetConversationDates = async ( month: number, year: number) => {
   try {
     const response = await axios.get(`${BASE_URL}/conversation/monthly`, {
       params: {
@@ -12,17 +9,21 @@ const GetConversationDates = async (year: number, month: number) => {
         month: month,
       },
     });
-
+    console.log(year);
+    console.log(month);
     console.log(response);
     const conversationDates = response.data.data.datedConversationList.map((conversation: any) => conversation.date);
+    const conversationIds = response.data.data.datedConversationList.map((conversation: any) => conversation.id);
+
     console.log("API 리턴값");
     console.log(conversationDates);
     return {
       data: conversationDates,
+      id: conversationIds
     };
   } catch (error) {
     console.error("Error fetching conversation dates:", error);
-    throw error; // Propagate the error to the caller
+    throw error;
   }
 };
 
