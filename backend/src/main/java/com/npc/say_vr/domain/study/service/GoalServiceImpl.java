@@ -120,7 +120,7 @@ public class GoalServiceImpl implements GoalService{
                         .weeklySprint(weeklySprint)
                         .build();
                 checkListItemRepository.save(checklistItem);
-                checkListItemDtoList.add(new CheckListItemDto().toDto(checklistItem, goal.getCount()));
+                checkListItemDtoList.add(new CheckListItemDto().toDto(checklistItem, goal.getCount(),goal.getOptionType()));
             }
             memberCheckListResponseDtoList.add(memberCheckListResponseDto);
         }
