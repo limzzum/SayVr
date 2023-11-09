@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { socketURL, subscribeURL, serverURL, imageURL } from "./constants/constants";
+import {
+  socketURL,
+  subscribeURL,
+  serverURL,
+  imageURL,
+} from "./constants/constants";
 import Socket from "./constants/socket";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import {
   SocketType,
   waitingGame,
-  startGame
+  startGame,
 } from "../../api/MatchingGameAPI/MatchingGameAPI";
 import Header from "../../components/MatchingGameComponents/WaitingPage/header";
 import Body from "../../components/MatchingGameComponents/WaitingPage/body";
@@ -46,40 +51,43 @@ interface Player {
 }
 
 interface SocketResponseDto<T> {
-  socketType : SocketType,
-  gameStatus? : GameStatus,
-  data?: T,
+  socketType: SocketType;
+  gameStatusDto?: GameStatus;
+  data?: T;
   message?: string;
 }
 
-
-let player : Player;
-let opponent : Player;
+let player: Player;
+let opponent: Player;
 
 function MatchingGameWaitingPage() {
   const [gameId, setGameId] = useState<number | null>(null);
+  const [gameStart, setGameStart] = useState(false);
+
   const [imageUrl, setImageUrl] = useState("");
   const history = useNavigate();
 
-
   const socketReceive = (response: SocketResponseDto<any>) => {
-
-    if(response.socketType == SocketType.GAME_START){
-      console.log("게임 매칭")
-      player = response.gameStatus!.playerA;
-      opponent = response.gameStatus!.playerB;
-      history('/MatchingGame/game')
+    if (response.socketType == SocketType.GAME_START) {
+      console.log("게임 매칭");
+      player = response.gameStatusDto!.playerA;
+      opponent = response.gameStatusDto!.playerB;
+      history("/MatchingGame/game", {
+        state: {
+          playerA: player,
+          playerB: opponent,
+        },
+      });
     }
 
-    if(response.socketType == SocketType.GAME_INFO){
-      console.log("게임 info")
+    if (response.socketType == SocketType.GAME_INFO) {
+      console.log("게임 info");
       console.log(response);
     }
-  
+
     console.log("socket 구독 receive");
     console.log(response);
   };
-  
 
   const messageToSend: sendMessage = {
     socketType: SocketType.GAME_INFO,
@@ -92,16 +100,10 @@ function MatchingGameWaitingPage() {
     waitingGame()
       .then((response) => {
         console.log(response);
-        console.log("is start : "+response.data.data.gameStart)
+        console.log("is start : " + response.data.data.gameStart);
         setGameId(response.data.data.gameId);
         setImageUrl(imageURL + response.data.data.profile);
-
-        if(response.data.data.gameStart){
-          console.log("axios 게임시작 요청 호출");
-
-          startGame()
-          history('/MatchingGame/game')
-        }
+        setGameStart(response.data.data.gameStart);
 
         return () => {};
       })
@@ -117,20 +119,21 @@ function MatchingGameWaitingPage() {
   useEffect(() => {
     if (gameId) {
       console.log("gameId : " + gameId);
-      Socket.subscribe(subscribeURL+"."+gameId, socketReceive)
+      Socket.subscribe(subscribeURL + "." + gameId, socketReceive);
+      if (gameStart) {
+        console.log("axios 게임시작 요청 호출");
+        startGame();
+      }
     }
 
-    return () => {
-    };
-  },[gameId] );
+    return () => {};
+  }, [gameId]);
 
   return (
-    <div style={{display : 'flex', flexDirection : 'column'}}>
-      <Header/>
-      {imageUrl && (
-        <Body image={imageUrl}></Body>
-      )}
-      <Footer/>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <Header />
+      {imageUrl && <Body image={imageUrl}></Body>}
+      <Footer />
     </div>
   );
 }
@@ -149,7 +152,6 @@ function MatchingGameWaitingPage() {
 //   // const [gameId, setGameId] = useState<number | null>(null);
 //   const history = useNavigate();
 
-
 //   // const messageToSend: sendMessage = {
 //   //   socketType: SocketType.GAME_INFO,
 //   //   message: "hihi",
@@ -161,11 +163,10 @@ function MatchingGameWaitingPage() {
 //       console.log("게임 info")
 //       console.log(response);
 //     }
-  
+
 //     console.log("socket 구독 receive");
 //     console.log(response);
 //   };
-  
 
 //   // useEffect(() => {
 //   //   // 컴포넌트가 마운트될 때, 웹 소켓을 사용할 준비
