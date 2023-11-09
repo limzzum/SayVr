@@ -32,6 +32,16 @@ public class FlashcardsResponseDto {
     }
 
     @Getter
+    public static class TranslationResponseDto {
+
+        private String result;
+
+        public TranslationResponseDto(String result) {
+            this.result = result;
+        }
+    }
+
+    @Getter
     public static class FlashcardDto {
 
         private List<WordcardDto> wordcardList;

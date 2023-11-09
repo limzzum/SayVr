@@ -8,12 +8,14 @@ import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessag
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_WORDCARD;
 
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.GetTranslationRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,12 +26,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/flashcards")
 public class WordcardApiController {
 
     private final WordcardService wordcardService;
+
+    @PostMapping("/translate")
+    public ResponseEntity<?> createTranslate(@RequestBody GetTranslationRequestDto requestDto) {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_READ_TODAY_SENTENCE.getMessage())
+            .httpStatus(SUCCESS_READ_TODAY_SENTENCE.getHttpStatus())
+            .data(wordcardService.readTodaySentence())
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
 
     @GetMapping("/today")
     public ResponseEntity<?> readTodaySentence() {
