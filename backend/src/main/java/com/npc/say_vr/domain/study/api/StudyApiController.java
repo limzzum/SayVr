@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/study")
@@ -58,7 +57,7 @@ public class StudyApiController {
   // TODO : user 가져오기, 예외 처리
   @GetMapping("/{studyId}")
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
-    Long userId = 1L;
+    Long userId = 2L;
     StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
             .studyDetailResponseDto(studyService.readStudy(userId, studyId))
             .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,studyId))
@@ -119,7 +118,7 @@ public class StudyApiController {
 
   @DeleteMapping("/quit/{studyId}")
   public ResponseEntity<?> deleteStudyMember(@PathVariable Long studyId) {
-    Long userId = 2L;
+    Long userId = 1L;
     studyService.deleteStudyMember(userId,studyId);
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDYMEMBER_DELETE_SUCCESS.getMessage())
@@ -132,14 +131,9 @@ public class StudyApiController {
   @PutMapping("/{studyId}")
   public ResponseEntity<?> updateStudy(@PathVariable Long studyId, @RequestBody UpdateStudyRequestDto updateStudyRequestDto) {
     Long userId = 1L;
-    StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
-            .studyDetailResponseDto(studyService.updateStudy(userId, studyId,updateStudyRequestDto))
-            .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,studyId))
-            .studyDeckDetailResponseDto(studyDeckService.readStudyDeckList(userId,studyId))
-            .build();
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_UPDATE_SUCCESS.getMessage())
-            .data(studyPageDetailResponseDto)
+            .data(studyService.updateStudy(userId, studyId,updateStudyRequestDto))
             .httpStatus(STUDY_UPDATE_SUCCESS.getHttpStatus())
             .build();
 
