@@ -80,7 +80,18 @@ const DeckDetail: React.FC = () => {
         })
         .catch((e) => console.log(e))
     }
-  }, [id])
+  }, [id,menu])
+  useEffect(() => {
+    if (id) {
+      getOneDeck(deckId)
+        .then((res) => {
+          setDeck(res.data.data)
+          console.log(deck)
+          setWordList(res.data.data.flashcardDto.wordcardList)
+        })
+        .catch((e) => console.log(e))
+    }
+  }, [])
 
   const handleSettingsClick = () => {
     setShowModal(true)

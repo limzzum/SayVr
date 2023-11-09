@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
 import Slider from "react-slick"
-import { DeckDetailResponseDto, WordcardDto, WordcardStatus, resetDeckProgress } from "../../../api/VocabListAPI/FlashcardsAPI"
+import { DeckDetailResponseDto, WordcardDto, WordcardStatus, getOneDeck, resetDeckProgress } from "../../../api/VocabListAPI/FlashcardsAPI"
 import Wordcard from "../../../components/VocabListComponents/Wordcard"
 import { Button } from "react-bootstrap"
+import { useLocation, useNavigate } from "react-router-dom"
 interface DeckDetailProps {
   props?: DeckDetailResponseDto
   changeView: (menu: string) => void
@@ -35,9 +36,11 @@ const carouselSettings = {
   ],
 }
 const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh }) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const slider = useRef<Slider | null>(null)
-  // const navigate = useNavigate()
-  // const [mode, setMode] = useState("button") //button add
+
   const [wordList, setWordList] = useState<WordcardDto[]>(props?.flashcardDto ? props.flashcardDto.wordcardList : [])
   useEffect(() => {
     if (props && props.flashcardDto.wordcardList.length > 0) {
@@ -45,8 +48,6 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh
       console.log(props)
     }
   }, [props])
-
-  // const handl
 
   if (!props) {
     return (
@@ -88,34 +89,31 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh
     )
   }
   const handleReset = () => {
-    resetDeckProgress(props?.id).then((res) => {
-      handleRefresh(res.data.data)
-      setWordList(res.data.data.flashcardDto.wordcardList)
-      console.log("reset")
-      console.log(res.data.data)
-    })
+    resetDeckProgress(props?.id)
+      .then((res) => {
+        handleRefresh(res.data.data)
+        setWordList(res.data.data.flashcardDto.wordcardList)
+        console.log("reset")
+        console.log(res.data.data)
+      })
+      .then(() => {})
   }
-  const backToFirst=()=>{
-    // handleRefresh()
+  const backToFirst = () => {
+    getOneDeck(props.id)
+      .then((res) => {
+        handleRefresh(res.data.data)
+        setWordList(res.data.data.flashcardDto.wordcardList)
+        slider?.current?.slickGoTo(0)
+      })
+      .then(() => {
+      
+      })
   }
-  // if (isDeckCreate(props))
+
   return (
     <>
       <div className='container mt-5' style={{ display: "flex", borderColor: "transparent", justifyContent: "center" }}>
-        {/* <div
-          className='vocab-list-container row card-row justify-content-center align-items-center '
-          style={{ borderColor: "transparent" }}
-        > */}
-        {/* <div className='row justify-content-center align-items-center'> */}
-        {/* <div
-          style={{
-            marginTop: "100px",
-            borderRadius: "10px",
-            backgroundColor: "aliceblue",
-            minHeight: "70vh",
-          }}
-        ></div> */}
-        <ArrowLeft onClick={() => slider?.current?.slickPrev()} />
+        {/* <ArrowLeft onClick={() => slider?.current?.slickPrev()} /> */}
         <div style={{ width: "50%" }}>
           <Slider ref={slider} {...carouselSettings}>
             {wordList.every((wordcard) => wordcard.wordcardStatus === WordcardStatus.CHECKED) ? (
@@ -159,20 +157,16 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh
                 className='words'
                 style={{ display: "flex", height: "100%", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly" }}
               >
-                <h1>
-                  단어를 모두 학습하셨습니다. 다시 처음으로 돌아갈까요? 
-                </h1>
-                <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => handleReset()}>
-                    처음부터
-                  </Button>
+                <h1>단어를 모두 학습하셨습니다. 다시 처음으로 돌아갈까요?</h1>
+                <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => backToFirst()}>
+                  처음부터
+                </Button>
               </div>
             </div>
           </Slider>
         </div>
-        <ArrowRight onClick={() => slider?.current?.slickNext()} />
+        {/* <ArrowRight onClick={() => slider?.current?.slickNext()} /> */}
 
-        {/* </div> */}
-        {/* </div> */}
       </div>
     </>
   )
