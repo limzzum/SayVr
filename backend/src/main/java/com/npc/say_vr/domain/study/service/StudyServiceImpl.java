@@ -103,7 +103,7 @@ public class StudyServiceImpl implements StudyService {
         }
 
         if(study.getStudyStatus().equals(StudyStatus.FULL)) {
-            // TDOO : 예외처리
+            // TODO : 예외처리
             return null;
         }
 

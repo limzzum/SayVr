@@ -1,22 +1,20 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  DeckDetailResponseDto,
-  PersonalDeckTitle,
-  getOneDeck,
-  getPersonalFlashcards,
-  getPublicFlashcards,
-} from "../../api/VocabListAPI/FlashcardsAPI";
-// import { readStudyMineList, studyInfoDto } from "../../api/StudyApi/StudyApi";
-// import MyWordCard from "../../components/MyWordCard";
-import AddButton from "../../components/VocabListComponents/AddButton";
-// import CreateNewListModal from "../../components/VocabListComponents/CreateNewListModal";
+  StudyInfoDto,
+  getStudyList,
+  getStudyMineList,
+} from "../../api/StudyPageAPI/StudyAPI";
+import MyStudyCard from "../../components/StudyComponents/MyStudyCard";
+import AllStudyCard from "../../components/StudyComponents/AllStudyCard";
+import AddButton from "../../components/StudyComponents/AddButton";
+import CreateNewStudyModal from "../../components/StudyComponents/CreatNewStudyModal";
+import ReadStudyInfoModal from "../../components/StudyComponents/ReadStudyInfoModal";
 // import StudyDetail from "./StudyDetailPage";
-import "./style.css";
-import Slider from "react-slick";
-import { BsArrowLeft } from "react-icons/bs";
-import { BsArrowRight } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import React from "react";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import Slider from "react-slick";
+import "./style.css";
 
 interface ArrowProps {
   onClick: () => void;
@@ -45,94 +43,101 @@ const carouselSettings = {
 };
 
 function StudyPage() {
-  // const [showModal, setShowModal] = useState(false);
-  // const [menu, setMenu] = useState("main");
+  const navigate = useNavigate();
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showReadModal, setShowReadModal] = useState(false);
+  const [menu, setMenu] = useState("main");
   // const [selectedDeck, setSelectedDeck] = useState<DeckDetailResponseDto>();
-  // const [studyInfoDtoList, setStudyInfoDtoList] = useState<studyInfoDto[]>();
-  // const [publicCardTitles, setPublicCardTitles] =
-  //   useState<PersonalDeckTitle[]>();
-  // const sliderPersonal = useRef<Slider | null>(null);
-  // const sliderPublic = useRef<Slider | null>(null);
-  // const ArrowLeft = (props: ArrowProps) => {
-  //   return (
-  //     <>
-  //       <Button
-  //         style={{
-  //           borderColor: "transparent",
-  //           color: "black",
-  //           backgroundColor: "transparent",
-  //         }}
-  //         onClick={props.onClick}
-  //       >
-  //         <BsArrowLeft />
-  //       </Button>
-  //     </>
-  //   );
-  // };
-  // const ArrowRight = (props: ArrowProps) => {
-  //   return (
-  //     <>
-  //       <Button
-  //         style={{
-  //           borderColor: "blue",
-  //           color: "black",
-  //           backgroundColor: "transparent",
-  //         }}
-  //         onClick={props.onClick}
-  //       >
-  //         <BsArrowRight />
-  //       </Button>
-  //     </>
-  //   );
-  // };
-  // useEffect(() => {
-  //   readStudyMineList()
-  //     .then((res) => {
-  //       let show: studyInfoDto[] = res.data.data.studyInfoDtoList;
-  //       setStudyInfoDtoList(show);
-  //       console.log(show);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching personalDeckList", error);
-  //     });
-  //   // getPublicFlashcards()
-  //   //   .then((res) => {
-  //   //     let show: PersonalDeckTitle[] = res.data.data.personalDeckList;
-  //   //     setPublicCardTitles(show);
-  //   //     console.log(show);
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     console.error("Error fetching publicDeckList", error);
-  //   //   });
-  // }, []);
+  const [studyMineList, setStudyMineList] = useState<StudyInfoDto[]>();
+  const [allStudyList, setAllStudyList] = useState<StudyInfoDto[]>();
+  const sliderMine = useRef<Slider | null>(null);
+  const sliderAll = useRef<Slider | null>(null);
+  const [readStudyInfo, setReadStudyInfo] = useState<StudyInfoDto>();
+  const ArrowLeft = (props: ArrowProps) => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "transparent",
+            color: "black",
+            backgroundColor: "transparent",
+          }}
+          onClick={props.onClick}
+        >
+          <BsArrowLeft />
+        </Button>
+      </>
+    );
+  };
+  const ArrowRight = (props: ArrowProps) => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "blue",
+            color: "black",
+            backgroundColor: "transparent",
+          }}
+          onClick={props.onClick}
+        >
+          <BsArrowRight />
+        </Button>
+      </>
+    );
+  };
+  useEffect(() => {
+    getStudyMineList()
+      .then((res) => {
+        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
+        setStudyMineList(show);
+        console.log("내 스터디 리스트 : " + show);
+      })
+      .catch((error) => {
+        // TODO : 에러 메시지
+        console.error("Error fetching getStudyMineList", error);
+      });
+    getStudyList()
+      .then((res) => {
+        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
+        setAllStudyList(show);
+        console.log("전체 스터디 리스트 : " + show);
+      })
+      .catch((error) => {
+        console.error("Error fetching getStudyList", error);
+      });
+  }, []);
 
-  // const handlePlusButtonClick = () => {
-  //   setShowModal(true);
-  // };
+  const handleCreatePlusButtonClick = () => {
+    setShowCreateModal(true);
+  };
 
-  // const handleCloseModal = () => {
-  //   setShowModal(false);
-  // };
+  const handleCreateCloseModal = () => {
+    setShowCreateModal(false);
+  };
 
-  // // const goToDetail = (createdDeck: DeckResponse) => {
-  // //   setSelectedDeck(createdDeck)
-  // //   setMenu("detail")
-  // // }
+  const handleReadPlusButtonClick = () => {
+    setShowReadModal(true);
+  };
 
-  // const goToDetail = async (id: number) => {
-  //   await getOneDeck(id).then((res) => {
-  //     console.log(res.data.data);
-  //     setSelectedDeck(res.data.data);
-  //   });
-  //   setMenu("detail");
-  // };
+  const handleReadCloseModal = () => {
+    setShowReadModal(false);
+  };
+
+  // const goToDetail = (createdDeck: DeckResponse) => {
+  //   setSelectedDeck(createdDeck)
+  //   setMenu("detail")
+  // }
+
+  const goToDetail = async (id: number) => {
+    navigate(`/study/${id}`);
+  };
 
   return (
     <>
-      {/* <div className="container mt-5 flex justify-content-center">
+      <div className="container mt-5 flex justify-content-center">
         {menu === "main" && (
           <>
-            <div className="study-list-container row card-row  align-items-center ">
+            <div className="vocab-list-container row card-row  align-items-center ">
               <div className="row justify-content-center align-items-center">
                 <div className="col">
                   <h1>
@@ -142,120 +147,158 @@ function StudyPage() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div>
-                        내 스터디{" "}
-                        <AddButton
-                          handleButtonClick={handlePlusButtonClick}
-                          size="50"
-                        />{" "}
+                      <div style={{ display: "flex", margin: "1rem" }}>
+                        <div
+                          className="title private"
+                          onClick={() => setMenu("private")}
+                        >
+                          내 스터디{" "}
+                        </div>{" "}
+                        <div>
+                          <AddButton
+                            handleButtonClick={handleCreatePlusButtonClick}
+                            size="50"
+                          />{" "}
+                        </div>
                       </div>
                       <div>
                         <ArrowLeft
-                          onClick={() => sliderPersonal?.current?.slickPrev()}
+                          onClick={() => sliderMine?.current?.slickPrev()}
                         />
                         <ArrowRight
-                          onClick={() => sliderPersonal?.current?.slickNext()}
+                          onClick={() => sliderMine?.current?.slickNext()}
                         />
                       </div>{" "}
                     </div>
                   </h1>
                 </div>
               </div>
-              {(studyInfoDtoList == null || studyInfoDtoList.length !== 0) && (
+              {(studyMineList == null || studyMineList.length === 0) && (
                 <>
-                  <p>내 스터디가 없습니다</p>
+                  <MyStudyCard addNew={handleCreatePlusButtonClick} />
                 </>
               )}
-              <Slider ref={sliderPersonal} {...carouselSettings}>
-                {studyInfoDtoList?.map((deck, index) => {
+              <Slider ref={sliderMine} {...carouselSettings}>
+                {studyMineList?.map((study, index) => {
                   return (
                     <>
-                      {/* <MyWordCard
-                        key={index + deck.id}
-                        goTo={goToDetail}
-                        addNew={handlePlusButtonClick}
-                        props={deck}
-                      /> */}
+                      <MyStudyCard
+                        key={index + study.studyId}
+                        addNew={handleCreatePlusButtonClick}
+                        props={study}
+                      />
                     </>
                   );
-                // })}
-      //         </Slider>
-      //       </div>
-      //       <div className="row card-row justify-content-center align-items-center custom-chart-container">
-      //         <div className="row justify-content-center align-items-center">
-      //           <div className="col">
-      //             <h1>
-      //               <div
-      //                 style={{
-      //                   display: "flex",
-      //                   justifyContent: "space-between",
-      //                 }}
-      //               >
-      //                 <div
-      //                   style={{ display: "flex", justifyContent: "center" }}
-      //                 >
-      //                   모든 스터디
-      //                   <div
-      //                     className="container-fluid"
-      //                     style={{ width: "300px" }}
-      //                   >
-      //                     <form className="d-flex">
-      //                       <input
-      //                         className="form-control"
-      //                         type="search"
-      //                         placeholder="검색"
-      //                         aria-label="Search"
-      //                       />
-      //                       <button className="btn" type="submit">
-      //                         Search
-      //                       </button>
-      //                     </form>
-      //                   </div>
-      //                 </div>
-      //                 <div>
-      //                   <ArrowLeft
-      //                     onClick={() => sliderPublic?.current?.slickPrev()}
-      //                   />
-      //                   <ArrowRight
-      //                     onClick={() => sliderPublic?.current?.slickNext()}
-      //                   />
-      //                 </div>
-      //               </div>
-      //             </h1>{" "}
-      //           </div>
-      //           <div className="row">
-      //             {/* <MyWordCard /> */}{" "}
-      //             <Slider ref={sliderPublic} {...carouselSettings}>
-      //               {publicCardTitles?.map((deck, index) => {
-      //                 return (
-      //                   <>
-      //                     {/* <MyWordCard
-      //                       key={"public" + index + deck.id}
-      //                       goTo={goToDetail}
-      //                       addNew={handlePlusButtonClick}
-      //                       props={deck}
-      //                     /> */}
-      //                   </>
-      //                 );
-      //               })}
-      //             </Slider>
-      //           </div>
-      //         </div>
-      //       </div>
-      //       <div className="create-new-list-modal-study">
-      //         {/* <CreateNewListModal
-      //           showModal={showModal}
-      //           handleClose={handleCloseModal}
-      //           goToDetail={goToDetail}
-      //         /> */}
-      //       </div>
-      //     </>
-      //   )}
-      //   {menu === "detail" && (
-      //     <>{/* <DeckDetail props={selectedDeck} changeView={setMenu} /> */}</>
-      //   )}
-      // </div> */}
-    // </>
-  // );
+                })}
+              </Slider>
+            </div>
+            <div className="vocab-list-container row card-row  align-items-center ">
+              <div className="row justify-content-center align-items-center">
+                <div className="col">
+                  <h1>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {/* <div
+                        style={{ display: "flex", justifyContent: "center" }}
+                      > */}
+                      <div style={{ display: "flex", margin: "1rem" }}>
+                        <div
+                          className="title private"
+                          onClick={() => setMenu("public")}
+                        >
+                          모든 단어장
+                        </div>{" "}
+                        <div
+                          className="container-fluid"
+                          style={{ width: "300px" }}
+                        >
+                          <form className="d-flex">
+                            <input
+                              className="form-control"
+                              type="search"
+                              placeholder="검색"
+                              aria-label="Search"
+                            />
+                            <button className="btn" type="submit">
+                              Search
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                      <div>
+                        <ArrowLeft
+                          onClick={() => sliderAll?.current?.slickPrev()}
+                        />
+                        <ArrowRight
+                          onClick={() => sliderAll?.current?.slickNext()}
+                        />
+                      </div>
+                    </div>
+                  </h1>
+                </div>
+                <div className="row">
+                  <Slider ref={sliderAll} {...carouselSettings}>
+                    {allStudyList?.map((study, index) => {
+                      return (
+                        <>
+                          <AllStudyCard
+                            key={"public" + index + study.studyId}
+                            addNew={handleCreatePlusButtonClick}
+                            readStudy={handleReadPlusButtonClick}
+                            setReadStudyInfo={setReadStudyInfo}
+                            props={study}
+                          />
+                        </>
+                      );
+                    })}
+                  </Slider>
+                </div>
+              </div>
+            </div>
+            <div className="create-new-list-modal">
+              <CreateNewStudyModal
+                showModal={showCreateModal}
+                handleClose={handleCreateCloseModal}
+                goToDetail={goToDetail}
+              />
+            </div>
+            <div className="create-new-list-modal">
+              <ReadStudyInfoModal
+                showModal={showReadModal}
+                handleClose={handleReadCloseModal}
+                goToDetail={goToDetail}
+                readStudyInfo={readStudyInfo}
+              />
+            </div>
+          </>
+        )}
+        {/* {menu === "detail" && (
+          <>
+            <DeckDetail props={selectedDeck} changeView={setMenu} />
+          </>
+        )}
+        {menu === "learn" && (
+          <>
+            <DeckLearn changeView={setMenu} props={selectedDeck} />
+          </>
+        )}
+        {menu === "quiz" && <></>}
+        {menu === "public" && (
+          <>
+            <DeckListPage changeView={goToList} category="public" />
+          </>
+        )}
+        {menu === "private" && (
+          <>
+            <DeckListPage changeView={goToList} category="private" />
+          </>
+        )} */}
+      </div>
+    </>
+  );
 }
 export default StudyPage;

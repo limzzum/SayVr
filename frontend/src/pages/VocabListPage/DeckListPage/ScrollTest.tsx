@@ -1,139 +1,152 @@
-import React, { useEffect, useState } from "react"
-import { Button, Dropdown, DropdownButton, Form, InputGroup, Spinner } from "react-bootstrap"
+import React, { useCallback, useEffect, useState } from "react"
+import { Button, Dropdown, DropdownButton, Form, InputGroup } from "react-bootstrap"
 import { BsChevronLeft } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
-import { PersonalDeckTitle, ReadDeckSearchRequestDto, searchDecks } from "../../../api/VocabListAPI/FlashcardsAPI"
+import {
+  PersonalDeckTitle,
+  ReadDeckSearchRequestDto,
+  getPersonalFlashcards,
+  getPublicFlashcards,
+  searchDecks,
+} from "../../../api/VocabListAPI/FlashcardsAPI"
 import MyWordCard from "../../../components/MyWordCard"
+import AddButton from "../../../components/VocabListComponents/AddButton"
 import CreateNewListModal from "../../../components/VocabListComponents/CreateNewListModal"
 import "../../VocabListPage/style.css"
 
 interface DeckListProps {
   category: string
   changeView: (menu: string) => void
-  searchResult: PersonalDeckTitle[]
-  searchParameter: ReadDeckSearchRequestDto
+  searchResult?: PersonalDeckTitle[]
   type: string
 }
-const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchResult, searchParameter }) => {
+const ScrollTest: React.FC<DeckListProps> = ({ category, changeView, searchResult, type }) => {
   const navigate = useNavigate()
+  const [deckType, setDeckType] = useState(type)
   const [showModal, setShowModal] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
+  const [orderby, setOrderby] = useState("createdAt")
+  // const [hasMore,setHasMore]=useState(searchResult&&searchResult.length>0?true:false);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const [orderby, setOrderby] = useState(searchParameter.sortBy)
-  const [keyword, setKeyword] = useState(searchParameter.keyword)
-  const [latestId, setLatestId] = useState(searchParameter.sortBy==="createdAt"?searchResult[searchResult.length - 1].id:searchResult.reduce((minId, deck) => {
-    return Math.min(minId, deck.id)
-  }, searchResult[0].id))
 
-  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>(searchResult ? searchResult : [])
-  // const [params, setParams] = useState<ReadDeckSearchRequestDto>(searchParameter);
-  const [searchParams, setSearchParams] = useState<ReadDeckSearchRequestDto>({
-    lastId: latestId,
-    pageSize: 3,
+  const [keyword, setKeyword] = useState("")
+  const [lastId, setLastId]= useState((searchResult && searchResult.length>0)?searchResult[searchResult?.length-1].id:1000);
+
+  const [personalCardTitles, setPersonalCardTitles] = useState<PersonalDeckTitle[]>(searchResult ? searchResult : [])
+  const searchParams: ReadDeckSearchRequestDto = {
+    lastId: lastId,
+    pageSize: 9,
     sortBy: orderby,
     keyword: keyword,
-  })
+  }
 
   useEffect(() => {
-    setSearchParams({
-      lastId: latestId,
-      pageSize: 3,
-      sortBy: orderby,
-      keyword: keyword,
-    })
-    console.log(searchParams)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderby, keyword, latestId])
-
-  useEffect(() => {
-    if (loading && hasMore) {
-      console.log("is loading true? " + loading)
-      setTimeout(() => {
-        searchDecks(searchParams)
+    if (category === "private") {
+      getPersonalFlashcards()
+        .then((res) => {
+          let show: PersonalDeckTitle[] = res.data.data.personalDeckList
+          setPersonalCardTitles(show)
+          console.log(show)
+        })
+        .catch((error) => {
+          console.error("Error fetching personalDeckList", error)
+        })
+    } else if (category === "public") {
+      if (!searchResult) {
+        getPublicFlashcards()
           .then((res) => {
-            const newDecks = res.data.data.personalDeckList
-            console.log(" fetch new load")
-            console.log(newDecks)
-            if (newDecks.length === 0) {
-              console.log("길이 0")
-              setHasMore(false)
-            } else {
-              if (newDecks[newDecks.length - 1].id === latestId) {
-                // setHasMore(false)
-              } else {
-                console.log("new last id :" + newDecks[newDecks.length - 1].id + " , old id: " + latestId)
-                if (searchParams.sortBy === "createdAt") {
-                  setLatestId((prevLastId) => {
-                    const newId = newDecks[newDecks.length - 1].id
-                    return newId
-                  })
-                } else {
-                  const smallestId = newDecks.reduce((minId, deck) => {
-                    return Math.max(minId, deck.id)
-                  }, newDecks[0].id)
-                  setLatestId(smallestId)
-                }
-                setPublicCardTitles((prevDecks) => [...prevDecks, ...newDecks])
-              }
-            }
+            let show: PersonalDeckTitle[] = res.data.data.personalDeckList
+            setPersonalCardTitles(show)
+            console.log(show)
           })
           .catch((error) => {
-            console.error("Error fetching decks", error)
+            console.error("Error fetching publicDeckList", error)
           })
-          .finally(() => {
-            if(latestId===publicCardTitles[publicCardTitles.length-1].id){
-              setLoading(false)
-            }else{
-                 setTimeout(() => setLoading(false), 3000)
-            }
-         
-            // setLoading(false);
-          })
-      }, 2000)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading])
-
-  const handleLoad = () => {
-    if (loading || !hasMore) {
-      return
-    }
-    setLoading(true)
-  }
-  useEffect(() => {
-    console.log(latestId)
-    function onScroll() {
-      if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 10) {
-        handleLoad()
       }
-    }
-    window.addEventListener("scroll", onScroll)
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-    }
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (!searchResult) {
-      // impossible?
-      console.log("결과없이 페이지 불러와진 경우")
-      alert("잘못된 접근입니다")
-      // getPublicFlashcards()
-      //   .then((res) => {
-      //     let show: PersonalDeckTitle[] = res.data.data.personalDeckList;
-      //     setPublicCardTitles(show);
-      //     console.log(show);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error fetching publicDeckList", error);
-      //   });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [category])
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      // Check if we're at the bottom of the page
+      loadMoreData();
+    }
+  }, []);
+  const loadMoreData = () => {
+    if (loading || !hasMore) {
+      return;
+    }
+
+    setLoading(true);
+
+    // Adjust your searchParams with the new lastId
+    const searchParams: ReadDeckSearchRequestDto = {
+      lastId: lastId,
+      pageSize: 3,
+      sortBy: orderby,
+      keyword: keyword,
+    };
+
+    // Make your API call here, e.g., searchDecks(searchParams)
+    searchDecks(searchParams)
+      .then((res) => {
+        const newDecks = res.data.data.personalDeckList;
+
+        if (newDecks.length === 0) {
+          // No more data to load
+          setHasMore(false);
+        } else {
+          // Update the lastId for the next load
+          setLastId(newDecks[newDecks.length - 1].id);
+      console.log("set new last id")
+          setPersonalCardTitles((prevDecks) => [...prevDecks, ...newDecks]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching decks", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (hasMore) {
+      window.addEventListener("scroll", handleScroll);
+    } else {
+      window.removeEventListener("scroll", handleScroll);
+    }
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll, hasMore]);
+
+
+//기존
+  // useEffect(() => {
+  //   function onScroll() {
+  //     if (
+  //       window.scrollY + document.documentElement.clientHeight >
+  //       document.documentElement.scrollHeight - 10
+  //     ) {
+  //       handleSearch();
+  //     }
+  //   }
+  //   window.addEventListener('scroll', onScroll);
+
+  //   // Cleanup the event listener when the component unmounts
+  //   return () => {
+  //     window.removeEventListener('scroll', onScroll);
+  //   };
+  // }, []);
+
+  
   const BackArrow = () => {
     return (
       <>
@@ -164,9 +177,15 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
     navigate(`/flashcard/${id}`)
   }
   const handleSearch = async () => {
+    if(!hasMore){
+      return;
+    }
     searchDecks(searchParams).then((res) => {
       let show: PersonalDeckTitle[] = res.data.data.personalDeckList
-      setPublicCardTitles(show)
+      if(show.length>0){
+        setPersonalCardTitles((prev)=> [...prev,...show])
+      }
+      
       console.log(show)
       // setMenu("public")
     })
@@ -176,7 +195,6 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
     const { value } = event.target
     setKeyword(value)
   }
-
   return (
     <>
       <div className='container mt-5 flex justify-content-center'>
@@ -195,10 +213,18 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
                       <BackArrow />
                     </div>
                     <div className='title' style={{ display: "inline-flex" }}>
+                      {category === "private" && (
+                        <>
+                          <div>내 단어장</div>
+                          <div>
+                            <AddButton handleButtonClick={handlePlusButtonClick} size='50' />
+                          </div>
+                        </>
+                      )}
                       {category === "public" && (
                         <>
-                          <div>공개 단어장</div>
-
+                            <div>공개 단어장</div>
+                         
                           <div className='container-fluid' style={{ width: "300px" }}>
                             <InputGroup className='mb-3'>
                               <DropdownButton
@@ -252,19 +278,26 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
               </h1>
             </div>
           </div>
-          {(publicCardTitles == null || publicCardTitles.length === 0) && (
+          {(personalCardTitles == null || personalCardTitles.length === 0) && (
             <>
               <MyWordCard type='none' addNew={handlePlusButtonClick} />
             </>
           )}
-          {publicCardTitles?.map((deck, index) => {
-            return (
-              <>
-                <MyWordCard type='public' key={index + deck.id + "search"} addNew={handlePlusButtonClick} props={deck} />
-              </>
-            )
-          })}{" "}
-          {loading && <Spinner animation='border' variant='primary' />}
+          {
+            type==="private"?(personalCardTitles?.map((deck, index) => {
+              return (
+                <>
+                  <MyWordCard type='private' key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
+                </>
+              )
+            })):(personalCardTitles?.map((deck, index) => {
+              return (
+                <>
+                  <MyWordCard type='public' key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
+                </>
+              )
+            }))
+          }
         </div>
         <div className='create-new-list-modal'>
           <CreateNewListModal showModal={showModal} handleClose={handleCloseModal} goToDetail={goToDetail} />
@@ -273,4 +306,4 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
     </>
   )
 }
-export default DeckListPage
+export default ScrollTest

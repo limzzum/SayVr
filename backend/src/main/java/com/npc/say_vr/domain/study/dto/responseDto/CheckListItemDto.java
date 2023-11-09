@@ -16,8 +16,8 @@ public class CheckListItemDto {
     private CheckListStatus checkListStatus;
     private OptionCheckItem optionCheckItem;
     private String description;
-    private int goal_count;
-    private int current_count;
+    private int goalCount;
+    private int currentCount;
 
     public CheckListItemDto toDto(ChecklistItem checklistItem, int goal_count) {
         return CheckListItemDto.builder()
@@ -25,8 +25,8 @@ public class CheckListItemDto {
                 .checkListStatus(checklistItem.getCheckListStatus())
                 .optionCheckItem(checklistItem.getOptionCheckItem())
                 .description(checklistItem.getDescription())
-                .goal_count(goal_count)
-                .current_count(checklistItem.getCurrent_count())
+                .goalCount(goal_count)
+                .currentCount(checklistItem.getCurrent_count())
                 .build();
     }
 
@@ -37,7 +37,7 @@ public class CheckListItemDto {
         this.checkListStatus = checkListStatus;
         this.optionCheckItem = optionCheckItem;
         this.description = description;
-        this.goal_count = goal_count;
-        this.current_count = current_count;
+        this.goalCount = goal_count;
+        this.currentCount = current_count;
     }
 }

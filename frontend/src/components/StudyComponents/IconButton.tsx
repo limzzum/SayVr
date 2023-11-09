@@ -4,14 +4,13 @@ interface Props{
     size:number,
     icon:React.ReactNode,
     onHover?:boolean,
-    className?:string
 }
 
-const IconButton : React.FC<Props> = ({ handleButtonClick,size,icon,onHover,className }) => {
+const IconButton : React.FC<Props> = ({ handleButtonClick,size,icon,onHover }) => {
   return (
     <>
       <svg
-        className={(onHover?'icon-button':`button ${className}`)}
+        className={onHover?'icon-button':'button'}
         onClick={handleButtonClick}
         width={`${size}`}      height={`${size}`} 
         viewBox={`0 0 ${size} ${size}`}

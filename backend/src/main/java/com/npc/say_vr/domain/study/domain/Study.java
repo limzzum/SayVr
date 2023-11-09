@@ -38,7 +38,7 @@ public class Study extends BaseEntity {
     @NotNull
     private String name;
 
-    @Range(min = 2, max=10)
+    @Range(min = 2, max=12)
     @NotNull
     private int maxPeople;
 
