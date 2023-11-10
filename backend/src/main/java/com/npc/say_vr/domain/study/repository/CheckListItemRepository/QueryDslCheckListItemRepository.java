@@ -28,7 +28,8 @@ public class QueryDslCheckListItemRepository {
             checklistItem.optionCheckItem,
             checklistItem.description,
             checklistItem.goal.count,
-            checklistItem.current_count))
+            checklistItem.current_count,
+            checklistItem.goal.optionType))
         .from(checklistItem)
         .leftJoin(checklistItem.goal, goal)
         .where(checklistItem.weeklySprint.id.eq(weeklySprintId),
