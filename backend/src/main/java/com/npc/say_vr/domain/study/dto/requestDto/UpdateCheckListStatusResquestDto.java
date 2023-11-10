@@ -4,7 +4,7 @@ import com.npc.say_vr.domain.study.constant.CheckListStatus;
 import lombok.Getter;
 
 @Getter
-public class UpdateCheckListStatusResponseDto {
+public class UpdateCheckListStatusResquestDto {
     private Long studyMemberId;
     private CheckListStatus checkListStatus;
 }

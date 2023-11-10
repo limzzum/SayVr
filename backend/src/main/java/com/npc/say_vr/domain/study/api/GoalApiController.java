@@ -5,6 +5,8 @@ import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.GOAL_UPD
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.GOAL_DELETE_SUCCESS;
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.WEEKLY_CREATE_SUCCESS;
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.WEEKLY_READ_SUCCESS;
+
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateWeeklySprintRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/study/goal")
 public class GoalApiController {
+    // TODO : WeeklySprint => status 엔티티 추가하기
+    // TODO : 배치로 기간 지나면 상태 바꿔줄까...???
 
     private final GoalService goalService;
 
@@ -84,4 +88,17 @@ public class GoalApiController {
             .build();
         return ResponseEntity.ok(responseDto);
     }
+
+    // TEST 코드
+//    @DeleteMapping("/test")
+//    public ResponseEntity<?> testGoal() {
+//        Long userId = 1L;
+//        OptionType optionType = OptionType.GAME;
+//        goalService.updateCheckListOption(userId,optionType);
+//        ResponseDto responseDto = ResponseDto.builder()
+//            .message(GOAL_DELETE_SUCCESS.getMessage())
+//            .httpStatus(GOAL_DELETE_SUCCESS.getHttpStatus())
+//            .build();
+//        return ResponseEntity.ok(responseDto);
+//    }
 }
