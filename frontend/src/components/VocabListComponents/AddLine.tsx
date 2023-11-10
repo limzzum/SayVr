@@ -1,15 +1,11 @@
 import { FC, useEffect, useState } from "react"
-import { WordcardDto, WordcardStatus, deleteCard, getTranslation, updateWordProgress } from "../../api/VocabListAPI/FlashcardsAPI"
-import IconButton from "./IconButton"
-import UncheckedIcon from "./Icons/UncheckedIcon"
-import CheckedIcon from "./Icons/CheckedIcon"
-import RemoveIcon from "./Icons/RemoveIcon"
-import "../../pages/VocabListPage/style.css"
-import Speak from "./Speak"
-import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage"
-import { TranslationRequestDto } from "../../api/VocabListAPI/PapagoAPI"
 import { Form } from "react-bootstrap"
 import { MdSync } from "react-icons/md"
+import { getTranslation } from "../../api/VocabListAPI/FlashcardsAPI"
+import { TranslationRequestDto } from "../../api/VocabListAPI/PapagoAPI"
+import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage"
+import "../../pages/VocabListPage/style.css"
+import IconButton from "./IconButton"
 import AddIcon from "./Icons/AddIcon"
 interface AddLineProps {
   addWord: (wordForm: CreateWordcardRequestDto) => void
@@ -101,20 +97,12 @@ export const AddLine: FC<AddLineProps> = ({ addWord }) => {
         .catch((e) => console.log(e))
     }
 
-    // if(wordForm.eng===""){
-    //   getTranslation(trENGForm).then((res)=>{
-
-    //   })
-    // }
   }
   return (
     <>
-      {/* <div className='vocab-line'> */}
         <div className='row'>
           <div className='col-11'>
             <h1>
-              {/* {wordForm.eng}
-              {wordForm.kor} */}
               {enForm}
               {trKORForm.text}
             </h1>
@@ -157,7 +145,6 @@ export const AddLine: FC<AddLineProps> = ({ addWord }) => {
             />
           </div>
         </div>
-      {/* </div> */}
     </>
   )
 }
