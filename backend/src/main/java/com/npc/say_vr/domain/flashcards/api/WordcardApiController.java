@@ -13,6 +13,10 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.GetTranslationR
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.global.dto.ResponseDto;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +29,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin("*")
 @RestController
@@ -110,6 +117,23 @@ public class WordcardApiController {
             .message(SUCCESS_READ_WORD.getMessage())
             .httpStatus(SUCCESS_READ_WORD.getHttpStatus())
             .data(wordcardService.readWordcard(wordcardId))
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/csvWords/{flashcardId}")
+    public ResponseEntity<?> insertUserData(@AuthenticationPrincipal Long userId, @PathVariable Long flashcardId, @RequestPart(required = false) MultipartFile file) throws IOException {
+        // 받아온 파일을 webapp폴더 하위 data폴더에 저장
+        String path = "src/main/resources/data/words.csv";
+        String uuid = UUID.randomUUID().toString();
+        File dest = new File(uuid + file.getOriginalFilename());
+        file.transferTo(dest);
+
+//        File f =  Paths.get("scr/resources/data/words.csv");
+        wordcardService.createWordList(userId, flashcardId,dest);
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_READ_WORD.getMessage())
+            .httpStatus(SUCCESS_READ_WORD.getHttpStatus())
             .build();
         return ResponseEntity.ok(responseDto);
     }

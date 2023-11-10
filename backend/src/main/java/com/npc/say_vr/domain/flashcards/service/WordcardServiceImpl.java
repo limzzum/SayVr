@@ -15,6 +15,13 @@ import com.npc.say_vr.domain.flashcards.dto.TranslationResponseDto;
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -164,4 +171,77 @@ public class WordcardServiceImpl implements WordcardService {
         return WordUpdateResponseDto.builder()
             .wordcard(wordcard).build();
     }
+
+    // TODO : 성능 개선 & 비동기적 처리 & 예외처리
+    @Transactional
+    @Override
+    public void createWordList(Long userId, Long flashcardId, File dest) throws IOException {
+//        BufferedReader br = new BufferedReader(new FileReader(dest));
+        BufferedReader br = Files.newBufferedReader(Paths.get("src/resources/data/words.csv"));
+        String line;
+        if ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
+                String[] datalines = line.split(",");
+                // TODO : 예외처리 try-catch문 지양
+                try {
+                    String eng = datalines[1];
+                    String kor = datalines[2];
+
+                    createWordcards(userId, flashcardId, kor, eng);
+                } catch (NumberFormatException e) {
+                    continue;  // 첫번째 줄(제목 행) 제외하기 위함
+                }
+            }
+            br.close();
+        }
+    }
+    @Transactional
+    @Override
+    public void createWordcards(Long userId, Long deckId, String kor, String eng) {
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
+        log.info("get deck to add::{}", personalDeck);
+        // TODO 이미 있는 단어인지 확인
+        Word word = wordRepository.findByEnglishAndKorean(eng, kor);
+        log.info("word is null or exist:{}", word);
+        Word newWord;
+        Wordcard wordcard;
+
+        if (word == null) {
+            log.info("when word is null, create new");
+            newWord = Word.builder()
+                        .english(eng)
+                        .korean(kor)
+                        .build();
+            newWord = wordRepository.save(newWord);
+            wordcard = Wordcard.builder()
+                        .flashcardDeck(flashcardDeck)
+                        .status(WordcardStatus.UNCHECKED)
+                        .word(newWord)
+                        .build();
+            wordcard = wordcardRepository.save(wordcard);
+
+        } else {
+            log.info("when word exists check if redundant");
+            // DB에 존재하는 단어
+            //단어장에 이미 있는지 확인하기
+            Wordcard preexist = wordcardRepository.findByFlashcardDeck_IdAndWord_IdAndStatusIsNot(
+                flashcardDeck.getId(), word.getId(), WordcardStatus.DELETED);
+            if (preexist != null) {// 이미 단어장에 존재하는 단어->
+                log.info("redundant, returning preexisting word");
+                return;
+            } else {
+                log.info("add word to deck");
+                wordcard = Wordcard.builder().word(word).status(WordcardStatus.UNCHECKED)
+                    .flashcardDeck(flashcardDeck).build();
+                wordcard = wordcardRepository.save(wordcard);
+
+            }
+        }
+        //TODO 개수 바뀔까?
+        personalDeck.updateWordCount(flashcardDeck.getWordcards().size());
+        personalDeckRepository.save(personalDeck);
+    }
+
+
 }
