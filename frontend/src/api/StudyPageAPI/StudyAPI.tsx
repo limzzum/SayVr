@@ -3,6 +3,11 @@ import axios, { AxiosResponse } from "axios";
 import { CreateStudyRequestDto } from "../../components/StudyComponents/CreatNewStudyModal";
 import { JoinStudyRequestDto } from "../../components/StudyComponents/ReadStudyInfoModal";
 import { UpdateStudyRequestDto } from "../../components/StudyComponents/UpdateNewStudyModal";
+import { CreateWeeklySprintRequestDto } from "../../components/StudyComponents/CreatWeeklySprintModal";
+import {
+  CreateCheckListRequestDto,
+  UpdateCheckListStatusResquestDto,
+} from "../../components/StudyComponents/CheckListCard";
 
 const BASE_URL = "http://localhost:8080/api/study";
 
@@ -19,7 +24,7 @@ export enum CheckListStatus {
 }
 export enum OptionCheckItem {
   STUDYGOAL = "STUDYGOAL",
-  PERSONAL = "CHECKED",
+  PERSONAL = "PERSONAL",
 }
 
 export enum OptionType {
@@ -88,6 +93,7 @@ export interface CheckListItemDto {
   description: string;
   goalConut: number;
   currentCount: number;
+  optionType: OptionType;
 }
 
 export interface MemberCheckListResponseDto {
@@ -167,4 +173,41 @@ export const updateStudy = (
   data?: UpdateStudyRequestDto
 ): Promise<AxiosResponse<ResponseDto<StudyDetailResponseDto>>> => {
   return axiosInstance.put(`/${studyId}`, data);
+};
+
+export const createWeeklySprint = (
+  studyId: Number,
+  data?: CreateWeeklySprintRequestDto
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.post(`/goal/${studyId}`, data);
+};
+
+export const updateCheckListItemStatus = (
+  studyId: Number,
+  weeklySprintId: Number,
+  checkListId: number,
+  data?: UpdateCheckListStatusResquestDto
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.patch(
+    `/checkList/status/${studyId}/${weeklySprintId}/${checkListId}`,
+    data
+  );
+};
+
+export const deleteCheckListItem = (
+  studyId: Number,
+  weeklySprintId: number,
+  checkListId: number
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.delete(
+    `/checkList/${studyId}/${weeklySprintId}/${checkListId}`
+  );
+};
+
+export const createCheckListItem = (
+  studyId: Number,
+  weeklySprintId: number,
+  data?: CreateCheckListRequestDto
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.post(`/checkList/${studyId}/${weeklySprintId}`, data);
 };

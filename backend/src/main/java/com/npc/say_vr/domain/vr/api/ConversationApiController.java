@@ -5,6 +5,8 @@ import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.CONV
 import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.CONVERSATION_READ_SUCCESS;
 import static com.npc.say_vr.domain.vr.constant.ConversationResponseMessage.PROFICIENCY_READ_SUCCESS;
 
+import com.npc.say_vr.domain.study.constant.OptionType;
+import com.npc.say_vr.domain.study.service.GoalService;
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
 import com.npc.say_vr.domain.vr.service.ConversationService;
 import com.npc.say_vr.global.dto.ResponseDto;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConversationApiController {
 
     private final ConversationService conversationService;
+    private final GoalService goalService;
     //TODO: 예외처리 -> 실패했을 때
 
     @PostMapping("/")
@@ -36,6 +39,7 @@ public class ConversationApiController {
             .httpStatus(CONVERSATION_CREATE_SUCCESS.getHttpStatus())
             .data(conversationService.createConversation(userId, createConversationRequestDto))
             .build();
+        goalService.updateCheckListOption(userId, OptionType.VR);
         return ResponseEntity.ok(responseDto);
     }
 

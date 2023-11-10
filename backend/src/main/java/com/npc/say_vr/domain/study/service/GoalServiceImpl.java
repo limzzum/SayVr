@@ -72,26 +72,28 @@ public class GoalServiceImpl implements GoalService{
         List<Goal> goalEntityList = new ArrayList<>();
 
         for(CreateGoalRequestDto createGoalRequestDto : goalDtoList) {
-            Goal goal;
-            if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
-                goal = Goal.builder()
+            if(createGoalRequestDto.getCount() > 0) {
+                Goal goal;
+                if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
+                    goal = Goal.builder()
                         .count(1)
                         .optionType(createGoalRequestDto.getOptionType())
                         .weeklySprint(weeklySprint)
                         .description(createGoalRequestDto.getDescription())
                         .build();
-                goalRepository.save(goal);
-            }else {
-                goal = Goal.builder()
+                    goalRepository.save(goal);
+                }else {
+                    goal = Goal.builder()
                         .count(createGoalRequestDto.getCount())
                         .optionType(createGoalRequestDto.getOptionType())
                         .weeklySprint(weeklySprint)
                         .description(createGoalRequestDto.getOptionType().getMessage())
                         .build();
-                goalRepository.save(goal);
+                    goalRepository.save(goal);
+                }
+                goalResponseDtoList.add(new GoalResponseDto().toDto(goal));
+                goalEntityList.add(goal);
             }
-            goalResponseDtoList.add(new GoalResponseDto().toDto(goal));
-            goalEntityList.add(goal);
         }
 
         // TODO : 2중FOR문 개선하기 & count 개선
@@ -118,7 +120,7 @@ public class GoalServiceImpl implements GoalService{
                         .weeklySprint(weeklySprint)
                         .build();
                 checkListItemRepository.save(checklistItem);
-                checkListItemDtoList.add(new CheckListItemDto().toDto(checklistItem, goal.getCount()));
+                checkListItemDtoList.add(new CheckListItemDto().toDto(checklistItem, goal.getCount(),goal.getOptionType()));
             }
             memberCheckListResponseDtoList.add(memberCheckListResponseDto);
         }
@@ -357,6 +359,29 @@ public class GoalServiceImpl implements GoalService{
         }
 
         return replaced;
+    }
+
+    @Transactional
+    @Override
+    public void updateCheckListOption(Long userId, OptionType optionType) {
+        LocalDate today = LocalDate.now();
+
+        List<ChecklistItem> checklistItemList = checkListItemRepository.findByUserIdAndOptiontype(userId,optionType,today);
+
+        if(checklistItemList == null) return;
+
+        // TODO : 성능개선
+        for(ChecklistItem checklistItem : checklistItemList) {
+            int count = checklistItem.getCurrent_count() + 1 ;
+            String description = replaceNumbers(checklistItem.getDescription(), count,null);
+            CheckListStatus itemStatus;
+            if(checklistItem.getGoal().getCount() <= count) {
+                itemStatus = CheckListStatus.DONE;
+            }else {
+                itemStatus = CheckListStatus.ONGOING;
+            }
+            checklistItem.updateDescriptionAndStatusAndCurrentCount(itemStatus,description,count);
+        }
     }
 
 

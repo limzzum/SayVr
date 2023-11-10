@@ -1,8 +1,11 @@
 package com.npc.say_vr.domain.flashcards.service;
 
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.GetTranslationRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.AutoCompleteResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.TranslationResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
 
 public interface WordcardService {
@@ -10,8 +13,7 @@ public interface WordcardService {
     WordUpdateResponseDto createWordcard(Long userId, Long deckId,
         CreateWordcardRequestDto requestDto);
 
-    //TODO: would reading one card at a time be needed
-    //    PersonalDeck readDeckDetail(Long userId, Long deckId);
+    AutoCompleteResponseDto createTranslation(GetTranslationRequestDto requestDto);
 
     WordUpdateResponseDto readTodaySentence();
 

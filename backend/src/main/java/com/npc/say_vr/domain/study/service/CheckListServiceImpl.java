@@ -2,15 +2,17 @@ package com.npc.say_vr.domain.study.service;
 
 import com.npc.say_vr.domain.study.constant.CheckListStatus;
 import com.npc.say_vr.domain.study.constant.OptionCheckItem;
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.domain.study.domain.ChecklistItem;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateCheckListRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListRequestDto;
-import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListStatusResponseDto;
+import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListStatusResquestDto;
 import com.npc.say_vr.domain.study.repository.CheckListItemRepository.CheckListItemRepository;
 import com.npc.say_vr.domain.study.repository.WeeklySprintRepository.WeeklySprintRepository;
 import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,11 +58,11 @@ public class CheckListServiceImpl implements CheckListService {
   @Transactional
   @Override
   public void updateCheckListItemStatus(Long checkListId,
-                                        UpdateCheckListStatusResponseDto updateCheckListStatusResponseDto) {
+                                        UpdateCheckListStatusResquestDto updateCheckListStatusResquestDto) {
     // TODO : 여러번 눌렀을 때 처리!
     // TODO : 예외처리 & studymemberid나 그런걸로 예외처리 같이 해도 좋겠다
     ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
-    checklistItem.updateCheckListStatus(updateCheckListStatusResponseDto.getCheckListStatus());
+    checklistItem.updateCheckListStatus(updateCheckListStatusResquestDto.getCheckListStatus());
   }
   @Transactional
   @Override
@@ -69,4 +71,5 @@ public class CheckListServiceImpl implements CheckListService {
     ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
     checklistItem.updateCheckListStatus(CheckListStatus.DELETE);
   }
+
 }

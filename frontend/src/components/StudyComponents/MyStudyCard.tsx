@@ -32,8 +32,8 @@ function MyStudyCard({ addNew, props }: StudyCardProps) {
     )
   }
   const { maxPeople, currentPeople, name, studyId } = props
-  const handleNavigation = (studyId: number) => {
-    navigate(`/study/${studyId}`)
+  const handleNavigation = (id: number) => {
+    navigate(`/study/${id}`)
   }
   return (
     <div

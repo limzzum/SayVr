@@ -16,7 +16,8 @@ public enum UserResponseMessage {
     NOT_VALID_REFRESH_TOKEN("유효하지 않은 토큰입니다", HttpStatus.NETWORK_AUTHENTICATION_REQUIRED),
     SUCCESS_PROFILE_UPDATE("프로필 사진이 업데이트 되었습니다.", HttpStatus.ACCEPTED),
     SUCCESS_NAME_UPDATE("닉네임 변경 완료", HttpStatus.ACCEPTED),
-    SUCCESS_USER_DELETE("탈퇴가 완료되었습니다", HttpStatus.OK);
+    SUCCESS_USER_DELETE("탈퇴가 완료되었습니다", HttpStatus.OK),
+    SUCCESS_ACTIVITY_READ("활동 조회 성공", HttpStatus.OK);
 
 
     private final String message;

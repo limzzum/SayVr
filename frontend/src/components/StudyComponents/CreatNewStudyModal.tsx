@@ -53,8 +53,8 @@ const CreateNewStudyModal: React.FC<CreateNewListModalProps> = ({
       createStudy(studyForm)
         .then((res) => {
           console.log(res.data);
-          // handleClose();
-          // goToDetail(res.data.data.id);
+          handleClose();
+          goToDetail(res.data.data.studyId);
           // TODO ::: 위에 구현
         })
         .catch((error) => {
