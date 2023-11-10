@@ -1,7 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import MainPage from "./pages/MainPage";
-import { MatchingGamePage, MatchingGameStart } from "./pages/MatchingGamePage";
+import MatchingGameWaitingPage from "./pages/MatchingGamePage";
+import MatchingGameProceedingPage from "./pages/MatchingGamePage/MatchingGameProceedingPage";
 import MyPage from "./pages/MyPage";
 import MyStudyAnalysisPage from "./pages/MyStudyAnalysisPage";
 import ShadowingPage from "./pages/ShadowingPage";
@@ -21,8 +22,8 @@ function App() {
     <Routes>
       <Route path="/Login" element={<LoginPage />} />
       <Route path="/" element={<MainPage />} />
-      <Route path="/MatchingGame" element={<MatchingGamePage />} />
-      <Route path="/MatchingGame/game" element={<MatchingGameStart />} />
+      <Route path="/MatchingGame" element={<MatchingGameWaitingPage />} />
+      <Route path="/MatchingGame/game" element={<MatchingGameProceedingPage />} />
       <Route path="/My" element={<MyPage />} />
       <Route path="/MyStudyAnalysis" element={<MyStudyAnalysisPage />} />
       <Route path="/MyStudyAnalysis/Detail" element={<MyStudyAnalysisDetailPage />} />
