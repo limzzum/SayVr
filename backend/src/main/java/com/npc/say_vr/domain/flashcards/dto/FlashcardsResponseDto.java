@@ -5,8 +5,10 @@ import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
 import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
 import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
+import com.npc.say_vr.domain.flashcards.domain.Word;
 import com.npc.say_vr.domain.flashcards.domain.Wordcard;
 import com.querydsl.core.annotations.QueryProjection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -28,6 +30,37 @@ public class FlashcardsResponseDto {
             this.eng = wordcard.getWord().getEnglish();
             this.kor = wordcard.getWord().getKorean();
             this.wordcardStatus = wordcard.getStatus();
+        }
+    }
+
+    @Getter
+    public static class AutoCompleteResponseDto{
+        private List<String> wordList;
+        private String result;
+
+        public AutoCompleteResponseDto(List<Word> wordList,String targetLanguage, String result){
+            if (wordList != null && !wordList.isEmpty()) {
+                this.wordList = wordList.stream()
+                    .map(word -> targetLanguage.equals("ko") ? word.getKorean() : word.getEnglish())
+                    .collect(Collectors.toList());
+            } else {
+                this.wordList = Collections.emptyList(); // or set it to null if that makes more sense
+            }
+//            this.wordList = wordList.stream()
+//                .map((word)-> targetLanguage.equals("ko") ? word.getKorean() : word.getEnglish())
+//                .collect(Collectors.toList());
+            this.result =result;
+        }
+
+    }
+
+    @Getter
+    public static class TranslationResponseDto {
+
+        private String result;
+
+        public TranslationResponseDto(String result) {
+            this.result = result;
         }
     }
 
@@ -163,7 +196,7 @@ public class FlashcardsResponseDto {
 
     @Getter
     public static class WordUpdateResponseDto {
-
+        String errorMessage;
         WordcardDto wordcard;
 
         @Builder
@@ -173,8 +206,8 @@ public class FlashcardsResponseDto {
         }
 
         @Builder
-        public WordUpdateResponseDto() {
-
+        public WordUpdateResponseDto(String errorMessage) {
+        this.errorMessage = errorMessage;
         }
     }
 

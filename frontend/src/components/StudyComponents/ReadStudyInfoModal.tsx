@@ -59,7 +59,7 @@ const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
           </h3>
           <h3>스터디 설명</h3>
           <p>{description}</p>
-          <h3>스터디 목표</h3>
+          <h3>스터디 규칙</h3>
           <p>{rule}</p>
         </div>
       </Modal.Body>

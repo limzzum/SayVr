@@ -57,7 +57,7 @@ public class StudyApiController {
   // TODO : user 가져오기, 예외 처리
   @GetMapping("/{studyId}")
   public ResponseEntity<?> readStudyDetail(@PathVariable Long studyId) {
-    Long userId = 2L;
+    Long userId = 1L;
     StudyPageDetailResponseDto studyPageDetailResponseDto = StudyPageDetailResponseDto.builder()
             .studyDetailResponseDto(studyService.readStudy(userId, studyId))
             .weeklySprintDetailResponse(goalService.readNowWeeklySprint(userId,studyId))

@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PersonalDeckRepository extends JpaRepository<PersonalDeck, Long> {
 
-    List<PersonalDeck> findByStatusIsNotAndStatusIs(FlashcardStatus deletedStatus,
+    List<PersonalDeck> findByStatusIsNotAndStatusIsNotAndStatusIs(FlashcardStatus deletedStatus,
+        FlashcardStatus forkedStatus,
         FlashcardStatus status);
 
     List<PersonalDeck> findByUser_Id(Long userId);
