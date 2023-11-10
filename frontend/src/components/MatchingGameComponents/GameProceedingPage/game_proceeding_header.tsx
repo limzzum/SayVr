@@ -28,6 +28,7 @@ const GameProceedingHeader: React.FC<props> = ({ player, opponent }) => {
         ranking={player.ranking}
         tierImage={player.tierImage}
       ></Profile>
+      <Score winCntA={player.winCnt!} winCntB={opponent.winCnt!}></Score>
       <Profile
         nickname={opponent.nickname}
         profile={opponent.profile}
@@ -65,3 +66,19 @@ const Profile: React.FC<PlayerProfile> = ({
     </div>
   );
 };
+
+interface ScoreProps {
+  winCntA: number,
+  winCntB: number
+}
+
+const Score: React.FC<ScoreProps> = ({
+  winCntA, winCntB
+}) => {
+  return (
+    <div className="score">
+      {winCntA} : {winCntB}
+    </div>
+  );
+};
+
