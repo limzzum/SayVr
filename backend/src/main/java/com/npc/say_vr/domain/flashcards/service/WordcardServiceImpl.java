@@ -6,16 +6,28 @@ import com.npc.say_vr.domain.flashcards.domain.PersonalDeck;
 import com.npc.say_vr.domain.flashcards.domain.Word;
 import com.npc.say_vr.domain.flashcards.domain.Wordcard;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.GetTranslationRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.AutoCompleteResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.TranslationResponseDto;
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
@@ -26,6 +38,14 @@ public class WordcardServiceImpl implements WordcardService {
     private final PersonalDeckRepository personalDeckRepository;
     private final WordcardRepository wordcardRepository;
     private final WordRepository wordRepository;
+    private final RestTemplate restTemplate;
+
+    @Value("${spring.translate.url}")
+    private String papagoUrl;
+    @Value("${spring.translate.naver.client.id}")
+    private String naverApiClientId;
+    @Value("${spring.translate.naver.client.secret}")
+    private String naverApiClientSecret;
 
     @Override
     public WordUpdateResponseDto createWordcard(Long userId, Long deckId,
@@ -69,6 +89,36 @@ public class WordcardServiceImpl implements WordcardService {
         return WordUpdateResponseDto.builder()
             .wordcard(wordcard)
             .build();
+    }
+
+    @Override
+    public AutoCompleteResponseDto createTranslation(GetTranslationRequestDto requestDto) {
+        String apiUrl = papagoUrl + "/v1/papago/n2mt";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Naver-Client-Id", naverApiClientId);
+        headers.set("X-Naver-Client-Secret", naverApiClientSecret);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String postParams =
+            "source=" + requestDto.getSource() + "&target=" + requestDto.getTarget() + "&text="
+                + requestDto.getText();
+        List<Word> dbList = new ArrayList<>();
+        if(requestDto.getSource().equals("en")){
+            dbList = wordRepository.findByEnglishIgnoreCase(requestDto.getText());
+
+        } else if (requestDto.getSource().equals("ko")) {
+            dbList = wordRepository.findByKoreanIgnoreCase(requestDto.getText());
+        }
+        String result="초기값";
+        HttpEntity<String> entity = new HttpEntity<>(postParams, headers);
+        ResponseEntity<TranslationResponseDto> response = restTemplate.postForEntity(apiUrl, entity, TranslationResponseDto.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            result = response.getBody().getMessage().getResult().getTranslatedText();
+        } else {
+            throw new RuntimeException(
+                "Translation request failed with status code: " + response.getStatusCode());
+        }
+        return new AutoCompleteResponseDto(dbList, requestDto.getTarget(), result);
     }
 
     //TODO 서버 실행시 단어셋 DB 저장 시킬것
