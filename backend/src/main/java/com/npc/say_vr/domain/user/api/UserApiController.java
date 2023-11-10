@@ -5,14 +5,12 @@ import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_GE
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_NAME_UPDATE;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_PROFILE_UPDATE;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_USER_DELETE;
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_ACTIVITY_READ;
 
-import com.npc.say_vr.domain.user.constant.UserStatus;
-import com.npc.say_vr.domain.user.domain.User;
-import com.npc.say_vr.domain.user.repository.UserRepository;
+import com.npc.say_vr.domain.user.service.ActivityService;
 import com.npc.say_vr.domain.user.service.UserService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import com.npc.say_vr.global.util.JwtUtil;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin
@@ -41,6 +38,7 @@ public class UserApiController {
 
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final ActivityService activityService;
 
     @GetMapping("")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal Long userId) {
@@ -49,6 +47,14 @@ public class UserApiController {
             .message(SUCCESS_GET_USER_INFO.getMessage())
             .httpStatus(SUCCESS_GET_USER_INFO.getStatus())
             .data(userService.readUser(userId)).build());
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<?> getUserActive(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(ResponseDto.builder()
+            .message(SUCCESS_ACTIVITY_READ.getMessage())
+            .httpStatus(SUCCESS_ACTIVITY_READ.getStatus())
+            .data(activityService.readActivity(userId)).build());
     }
 
     @GetMapping("/refreshtoken")
