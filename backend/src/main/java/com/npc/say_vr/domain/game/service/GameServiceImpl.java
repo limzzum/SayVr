@@ -44,6 +44,8 @@ public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
+    private final GameScheduler gameScheduler;
+
     private static final String EXCHANGE_NAME = "amq.topic";
 
     @Override
@@ -107,12 +109,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void gameStart(Long userId) {
-        String gameId = String.valueOf(findGameIdByUserId(userId));
-        updateQuiz(Long.valueOf(gameId));
-        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
+        Long gameId = findGameIdByUserId(userId);
+        updateQuiz(gameId);
+        gameScheduler.addGameRoom(gameId);
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
 
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
-            .data(gameStatusDto)
+            .gameStatusDto(gameStatusDto)
             .message(GAME_STATUS_INFO.getMessage())
             .build();
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
@@ -134,11 +137,13 @@ public class GameServiceImpl implements GameService {
                 redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
                 return true;
             }
+            PlayerDto playerB = gameStatusDto.getPlayerB();
+            playerB.addWinCnt();
+            gameStatusDto.setPlayerB(playerB);
+            redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
+            return true;
         }
-        PlayerDto playerB = gameStatusDto.getPlayerB();
-        playerB.addWinCnt();
-        gameStatusDto.setPlayerB(playerB);
-        redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
+
         return false;
     }
 
@@ -157,6 +162,7 @@ public class GameServiceImpl implements GameService {
         gameStatusDto.setQuestion(quizQuestion);
         gameStatusDto.setAnswer(quizAnswer);
         gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(30));
+        gameStatusDto.setCurRound(gameStatusDto.getCurRound() + 1);
         redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
         return quizQuestion;
     }
