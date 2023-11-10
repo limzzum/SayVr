@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
-  Dropdown,
-  DropdownButton,
-  Form,
-  InputGroup,
+  Button
 } from "react-bootstrap";
 import { BsChevronLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import {
   PersonalDeckTitle,
-  ReadDeckSearchRequestDto,
-  getPersonalFlashcards,
-  getPublicFlashcards,
-  searchDecks,
+  getPersonalFlashcards
 } from "../../../api/VocabListAPI/FlashcardsAPI";
 import MyWordCard from "../../../components/MyWordCard";
 import AddButton from "../../../components/VocabListComponents/AddButton";
@@ -33,19 +26,11 @@ const PrivateList: React.FC<DeckListProps> = ({
   type,
 }) => {
   const navigate = useNavigate();
-  const [deckType, setDeckType] = useState(type);
   const [showModal, setShowModal] = useState(false);
-  const [orderby, setOrderby] = useState("createdAt");
-  const [keyword, setKeyword] = useState("");
   const [personalCardTitles, setPersonalCardTitles] = useState<
     PersonalDeckTitle[]
   >(searchResult ? searchResult : []);
-  const searchParams: ReadDeckSearchRequestDto = {
-    lastId: 1000,
-    pageSize: 9,
-    sortBy: orderby,
-    keyword: keyword,
-  };
+
 
   useEffect(() => {
     getPersonalFlashcards()
