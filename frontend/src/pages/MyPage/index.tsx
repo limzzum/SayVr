@@ -119,6 +119,7 @@ function MyPage() {
         {/* <ActivityCalendar data={dummyData} /> */}
         <div>
           <p>잔디</p>
+        
         </div>
       </div>
       <div className="row card-row custom-chart-container">
