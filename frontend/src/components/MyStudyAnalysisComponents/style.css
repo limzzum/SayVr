@@ -1,0 +1,13 @@
+/* style.css */
+
+.apexcharts-legend-marker {
+    background: red !important; /* 원하는 색상으로 변경 */
+    color: red !important; /* 원하는 색상으로 변경 */
+    height: 12px !important;
+    width: 12px !important;
+    left: 0px !important;
+    top: 0px !important;
+    border-width: 0px !important;
+    border-color: rgb(255, 255, 255) !important;
+    border-radius: 12px !important;
+}

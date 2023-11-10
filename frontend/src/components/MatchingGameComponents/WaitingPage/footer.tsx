@@ -1,4 +1,6 @@
 import spinner from '../../../assets/MatchingGamePageAssets/loading-spinner.png'
+import "./style.css";
+
 
 function Footer() {
   return (
