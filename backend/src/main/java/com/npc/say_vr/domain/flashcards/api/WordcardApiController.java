@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.flashcards.api;
 
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_TRANSLATION;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_WORD;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_DELETE_WORDCARD;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_TODAY_SENTENCE;
@@ -37,9 +38,9 @@ public class WordcardApiController {
     @PostMapping("/translate")
     public ResponseEntity<?> createTranslate(@RequestBody GetTranslationRequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
-            .message(SUCCESS_READ_TODAY_SENTENCE.getMessage())
-            .httpStatus(SUCCESS_READ_TODAY_SENTENCE.getHttpStatus())
-            .data(wordcardService.readTodaySentence())
+            .message(SUCCESS_CREATE_TRANSLATION.getMessage())
+            .httpStatus(SUCCESS_CREATE_TRANSLATION.getHttpStatus())
+            .data(wordcardService.createTranslation(requestDto))
             .build();
         return ResponseEntity.ok(responseDto);
     }

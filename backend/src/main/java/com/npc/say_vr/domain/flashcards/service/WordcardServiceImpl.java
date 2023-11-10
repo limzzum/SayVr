@@ -8,12 +8,15 @@ import com.npc.say_vr.domain.flashcards.domain.Wordcard;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.GetTranslationRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.AutoCompleteResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
-import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.TranslationResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.TranslationResponseDto;
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,7 +92,7 @@ public class WordcardServiceImpl implements WordcardService {
     }
 
     @Override
-    public TranslationResponseDto createTranslation(GetTranslationRequestDto requestDto) {
+    public AutoCompleteResponseDto createTranslation(GetTranslationRequestDto requestDto) {
         String apiUrl = papagoUrl + "/v1/papago/n2mt";
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Naver-Client-Id", naverApiClientId);
@@ -99,18 +102,23 @@ public class WordcardServiceImpl implements WordcardService {
         String postParams =
             "source=" + requestDto.getSource() + "&target=" + requestDto.getTarget() + "&text="
                 + requestDto.getText();
+        List<Word> dbList = new ArrayList<>();
+        if(requestDto.getSource().equals("en")){
+            dbList = wordRepository.findByEnglishIgnoreCase(requestDto.getText());
 
+        } else if (requestDto.getSource().equals("ko")) {
+            dbList = wordRepository.findByKoreanIgnoreCase(requestDto.getText());
+        }
+        String result="초기값";
         HttpEntity<String> entity = new HttpEntity<>(postParams, headers);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
+        ResponseEntity<TranslationResponseDto> response = restTemplate.postForEntity(apiUrl, entity, TranslationResponseDto.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-//            return response.getBody();
-            return new TranslationResponseDto("임시");
+            result = response.getBody().getMessage().getResult().getTranslatedText();
         } else {
             throw new RuntimeException(
                 "Translation request failed with status code: " + response.getStatusCode());
         }
-//        return new TranslationResponseDto("임시");
+        return new AutoCompleteResponseDto(dbList, requestDto.getTarget(), result);
     }
 
     //TODO 서버 실행시 단어셋 DB 저장 시킬것
