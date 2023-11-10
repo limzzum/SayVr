@@ -365,8 +365,6 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public void updateCheckListOption(Long userId, OptionType optionType) {
         LocalDate today = LocalDate.now();
-        System.out.println("오늘 몇일이야");
-        System.out.println(today);
 
         List<ChecklistItem> checklistItemList = checkListItemRepository.findByUserIdAndOptiontype(userId,optionType,today);
 
