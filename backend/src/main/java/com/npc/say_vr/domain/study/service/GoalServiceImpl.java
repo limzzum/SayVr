@@ -361,6 +361,29 @@ public class GoalServiceImpl implements GoalService{
         return replaced;
     }
 
+    @Transactional
+    @Override
+    public void updateCheckListOption(Long userId, OptionType optionType) {
+        LocalDate today = LocalDate.now();
+
+        List<ChecklistItem> checklistItemList = checkListItemRepository.findByUserIdAndOptiontype(userId,optionType,today);
+
+        if(checklistItemList == null) return;
+
+        // TODO : 성능개선
+        for(ChecklistItem checklistItem : checklistItemList) {
+            int count = checklistItem.getCurrent_count() + 1 ;
+            String description = replaceNumbers(checklistItem.getDescription(), count,null);
+            CheckListStatus itemStatus;
+            if(checklistItem.getGoal().getCount() <= count) {
+                itemStatus = CheckListStatus.DONE;
+            }else {
+                itemStatus = CheckListStatus.ONGOING;
+            }
+            checklistItem.updateDescriptionAndStatusAndCurrentCount(itemStatus,description,count);
+        }
+    }
+
 
 
 }
