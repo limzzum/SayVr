@@ -67,6 +67,12 @@ public class ChecklistItem  extends BaseEntity {
     this.description = description;
   }
 
+  public void updateDescriptionAndStatusAndCurrentCount(CheckListStatus checkListStatus,String description,int count) {
+    this.checkListStatus = checkListStatus;
+    this.description = description;
+    this.current_count = count;
+  }
+
   public void updateCheckListStatus(CheckListStatus checkListStatus) {
     this.checkListStatus = checkListStatus;
   }
