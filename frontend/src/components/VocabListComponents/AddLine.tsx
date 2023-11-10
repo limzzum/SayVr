@@ -93,8 +93,11 @@ export const AddLine: FC<AddLineProps> = ({ addWord }) => {
 
   const handleAuto = (targetLang: string) => {
     // console.log(trENGForm)
-
     if (targetLang === "ko") {
+      if(enForm===""){
+        alert("단어를 먼저 입력해야합니다")
+        return;
+      }
       setAutoK(true)
       getTranslation(trKORForm)
         .then((res) => {
@@ -110,6 +113,10 @@ export const AddLine: FC<AddLineProps> = ({ addWord }) => {
 
         })
     } else if (targetLang === "en") {
+      if(koForm===""){
+        alert("단어를 먼저 입력해야합니다")
+        return;
+      }
       setAutoE(true)
       console.log(trENGForm)
       getTranslation(trENGForm)
