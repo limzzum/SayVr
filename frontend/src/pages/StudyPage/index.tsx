@@ -21,7 +21,7 @@ interface ArrowProps {
 }
 const carouselSettings = {
   dots: false,
-  infinite: true,
+  // infinite: true,
   speed: 500,
   slidesToShow: 3, // 한 번에 보여질 카드 수
   slidesToScroll: 3, // 넘어갈 카드 수
@@ -48,8 +48,8 @@ function StudyPage() {
   const [showReadModal, setShowReadModal] = useState(false);
   const [menu, setMenu] = useState("main");
   // const [selectedDeck, setSelectedDeck] = useState<DeckDetailResponseDto>();
-  const [studyMineList, setStudyMineList] = useState<StudyInfoDto[]>();
-  const [allStudyList, setAllStudyList] = useState<StudyInfoDto[]>();
+  const [studyMineList, setStudyMineList] = useState<StudyInfoDto[]>([]);
+  const [allStudyList, setAllStudyList] = useState<StudyInfoDto[]>([]);
   const sliderMine = useRef<Slider | null>(null);
   const sliderAll = useRef<Slider | null>(null);
   const [readStudyInfo, setReadStudyInfo] = useState<StudyInfoDto>();
@@ -178,7 +178,7 @@ function StudyPage() {
                   <MyStudyCard addNew={handleCreatePlusButtonClick} />
                 </>
               )}
-              <Slider ref={sliderMine} {...carouselSettings}>
+              <Slider infinite={studyMineList.length >= 3} ref={sliderMine} {...carouselSettings}>
                 {studyMineList?.map((study, index) => {
                   return (
                     <>
@@ -241,7 +241,7 @@ function StudyPage() {
                   </h1>
                 </div>
                 <div className="row">
-                  <Slider ref={sliderAll} {...carouselSettings}>
+                  <Slider infinite={allStudyList?.length >= 3} ref={sliderAll} {...carouselSettings}>
                     {allStudyList?.map((study, index) => {
                       return (
                         <>

@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.flashcards.api;
 
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_TRANSLATION;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_CREATE_WORD;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_DELETE_WORDCARD;
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_READ_TODAY_SENTENCE;
@@ -8,6 +9,7 @@ import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessag
 import static com.npc.say_vr.domain.flashcards.constant.FlashcardsResponseMessage.SUCCESS_UPDATE_WORDCARD;
 
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.CreateWordcardRequestDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.GetTranslationRequestDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateRequestDto;
 import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.global.dto.ResponseDto;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +34,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class WordcardApiController {
 
     private final WordcardService wordcardService;
+
+    @PostMapping("/translate")
+    public ResponseEntity<?> createTranslate(@RequestBody GetTranslationRequestDto requestDto) {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_CREATE_TRANSLATION.getMessage())
+            .httpStatus(SUCCESS_CREATE_TRANSLATION.getHttpStatus())
+            .data(wordcardService.createTranslation(requestDto))
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
 
     @GetMapping("/today")
     public ResponseEntity<?> readTodaySentence() {

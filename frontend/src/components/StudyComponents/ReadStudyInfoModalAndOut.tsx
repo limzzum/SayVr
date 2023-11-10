@@ -1,6 +1,10 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
-import { StudyDetailResponseDto, joinStudy } from "../../api/StudyPageAPI/StudyAPI";
+import { useNavigate } from "react-router-dom";
+import {
+  StudyDetailResponseDto,
+  deleteStudyMember,
+} from "../../api/StudyPageAPI/StudyAPI";
 
 interface ReadStudyInfoModalProps {
   showModal: boolean;
@@ -19,30 +23,33 @@ const ReadStudyInfoModalAndOut: React.FC<ReadStudyInfoModalProps> = ({
   // goToDetail,
   readStudyInfo,
 }) => {
+  const navigate = useNavigate();
   if (!readStudyInfo) {
     return null;
   }
 
-  // const handleSubmit = () => {
-  //   const requestData: JoinStudyRequestDto = {
-  //     studyId: readStudyInfo.studyId,
-  //   };
+  const handleNavigation = () => {
+    console.log("이동중");
+    navigate("/");
+  };
 
-  //   joinStudy(requestData)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       if(res.data.httpStatus === "CREATED") {
-  //         handleClose();
-  //         // goToDetail(res.data.data.studyId);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       // TODO : 예외 처리
-  //       console.error("스터디 가입 중 오류 발생", error);
-  //     });
-  // };
+  const handleSubmit = () => {
+    deleteStudyMember(readStudyInfo.studyInfoDto.studyId)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.httpStatus === "ACCEPTED") {
+          handleClose();
+          handleNavigation();
+        }
+      })
+      .catch((error) => {
+        // TODO : 예외 처리
+        console.error("스터디 탈퇴 중 오류 발생", error);
+      });
+  };
 
-  const { name, currentPeople, maxPeople, description, rule } = readStudyInfo.studyInfoDto;
+  const { name, currentPeople, maxPeople, description, rule } =
+    readStudyInfo.studyInfoDto;
 
   return (
     <Modal show={showModal} onHide={handleClose}>
@@ -59,7 +66,7 @@ const ReadStudyInfoModalAndOut: React.FC<ReadStudyInfoModalProps> = ({
           </h3>
           <h3>스터디 설명</h3>
           <p>{description}</p>
-          <h3>스터디 목표</h3>
+          <h3>스터디 규칙</h3>
           <p>{rule}</p>
         </div>
       </Modal.Body>
@@ -67,17 +74,8 @@ const ReadStudyInfoModalAndOut: React.FC<ReadStudyInfoModalProps> = ({
         <Button variant="secondary" onClick={handleClose}>
           닫기
         </Button>
-        <Button
-          variant="primary"
-          // onClick={handleSubmit}
-        >
+        <Button variant="primary" onClick={handleSubmit}>
           스터디 탈퇴
-        </Button>
-        <Button
-          variant="primary"
-          // onClick={handleSubmit}
-        >
-          스터디 수정
         </Button>
       </Modal.Footer>
     </Modal>

@@ -6,7 +6,7 @@ import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.CHECKLIS
 import static com.npc.say_vr.domain.study.constant.StudyResponseMessage.CHECKLISTITEM_DELETE_SUCCESS;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateCheckListRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListRequestDto;
-import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListStatusResponseDto;
+import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListStatusResquestDto;
 import com.npc.say_vr.domain.study.service.CheckListService;
 import com.npc.say_vr.domain.study.service.GoalService;
 import com.npc.say_vr.global.dto.ResponseDto;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/study/checkList")
@@ -56,10 +55,10 @@ public class checkListApiController {
   }
 
   @PatchMapping("/status/{studyId}/{weeklySprintId}/{checkListId}") // TODO : POSTMAN TEST & API 명세서 수정
-  public ResponseEntity<?> updateCheckListItem(@PathVariable Long studyId, @PathVariable Long weeklySprintId, @PathVariable Long checkListId, @RequestBody
-                                               UpdateCheckListStatusResponseDto updateCheckListRequestDto) {
+  public ResponseEntity<?> updateCheckListItemStatus(@PathVariable Long studyId, @PathVariable Long weeklySprintId, @PathVariable Long checkListId, @RequestBody
+  UpdateCheckListStatusResquestDto updateCheckListStatusResquestDto) {
     Long userId = 1L;
-    checkListService.updateCheckListItemStatus(checkListId,updateCheckListRequestDto);
+    checkListService.updateCheckListItemStatus(checkListId,updateCheckListStatusResquestDto);
     ResponseDto responseDto = ResponseDto.builder()
             .message(CHECKLISTITEMSTATUS_UPDATE_SUCCESS.getMessage())
             .data(goalService.readGoalAndCheckListItem(userId,studyId,weeklySprintId))

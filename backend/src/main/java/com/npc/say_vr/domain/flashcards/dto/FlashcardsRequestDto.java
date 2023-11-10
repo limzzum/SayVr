@@ -20,6 +20,19 @@ public class FlashcardsRequestDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class GetTranslationRequestDto {
+
+        private String source;
+        private String target;
+        private String text;
+
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CreateFlashcardsRequestDto {
 
         private String name;
@@ -175,7 +188,7 @@ public class FlashcardsRequestDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ReadDeckSearchRequestDto  {
+    public static class ReadDeckSearchRequestDto {
 
         private String keyword;
         private String sortBy; // TODO : ENUM으로 만들기

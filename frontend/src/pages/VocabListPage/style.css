@@ -18,7 +18,18 @@
   margin: 30px auto;
 }
 
-.icon-button:hover {
+.checked-button.checked > path{
+  fill:rgb(44 179 43)
+}
+
+
+.unchecked-button.unchecked > path{
+  fill:rgb(221 21 21)
+}
+.button:hover{
+  cursor:pointer;
+}
+.icon-button:hover  {
   /* border-radius: 50%!important;
 border-color:transparent;
 &:active {
