@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import GetConversation from "../../../api/MyStudyAnalysisAPI/GetConversation";
+import Translation from "../../../components/MyStudyAnalysisComponents/Translation/Translation";
 import "./style.css";
 
 declare global {
@@ -29,7 +30,7 @@ function MyStudyAnalysisDetailPage() {
     }>;
     review?: string;
   } | null>(null);
-  
+
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -157,6 +158,9 @@ function MyStudyAnalysisDetailPage() {
         <div className="col-md-4">
           <div className="script-container">{conversationData?.review}</div>
         </div>
+      </div>
+      <div>
+        <Translation />
       </div>
     </div>
   );
