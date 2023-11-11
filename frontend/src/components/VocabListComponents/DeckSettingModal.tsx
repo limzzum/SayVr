@@ -33,6 +33,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
         [name]: value,
       }))
     } else if (type === "checkbox") {
+      // console.log("handle change")
       const newPrivacyStatus = checked ? PrivacyStatus.PUBLIC : PrivacyStatus.PRIVATE
       setFlashcardForm((prevData) => ({
         ...prevData,
@@ -49,7 +50,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
       // navigate(location.pathname)
         // navigate(`/flashcard/${id}`);
         navigate(0);
-      console.log("reset")
+      // console.log("reset")
       // console.log(res.data.data)
     })
   
@@ -62,16 +63,17 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
       alert("제목을 입력해주세요")
       return
     } else {
-      console.log(flashcardForm)
+      // console.log(flashcardForm)
       updateDeckSettings(id, flashcardForm)
         .then((res) => {
-          console.log(res.data.data.id)
+          // console.log(res.data.data.id)
           handleClose()
           handleRefresh(res.data.data)
           // navigate(`/flashcard/${id}`);
         })
         .catch((error) => {
           console.error("Error updating deck", error)
+          alert("단어장 정보를 수정하는데 실패했습니다.")
         })
     }
   }
@@ -81,6 +83,8 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
       name: info.name,
       flashcardStatus: info.status,
     })
+    // console.log("useeffect")
+    // console.log(flashcardForm)
     }
  
   }, [])
@@ -88,7 +92,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
   const handleDelete = () => {
     deleteDeck(id).then((res)=>{
       let message = res.data.data.message;
-      console.log(message)
+      // console.log(message)
       if(message ==="단어장이 삭제되었습니다"){
         navigate(-1)
       }else{
@@ -100,12 +104,11 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>단어장 설정 {flashcardForm.flashcardStatus} </Modal.Title>
+        <Modal.Title>단어장 설정 </Modal.Title>
       </Modal.Header>{" "}
       {mode === "settings" && (
         <>
           <Modal.Body className='row '>
-            <h2>info status {info.status} form {flashcardForm.flashcardStatus}</h2>
             <p>제목</p>
             <input
               name='name'
@@ -122,10 +125,12 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
                   className='form-check-input'
                   name='flashcardStatus'
                   type='checkbox'
-                  checked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
+
+                  // checked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
                   id='flexSwitchCheckDefault'
                   onChange={handleInputChange}
                   disabled={info.status===PrivacyStatus.FORKED}
+                  defaultChecked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
                 />
                 <label className='form-check-label' htmlFor='flexSwitchCheckDefault'></label>
               </div>

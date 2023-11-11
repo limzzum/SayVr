@@ -23,9 +23,7 @@ import SettingsIcon from "../../../components/VocabListComponents/Icons/Settings
 import { VocabLine } from "../../../components/VocabListComponents/VocabLine";
 import DeckLearn from "../DeckLearnPage";
 import { MdSync } from "react-icons/md";
-import {
-  TranslationRequestDto,
-} from "../../../api/VocabListAPI/PapagoAPI";
+import { TranslationRequestDto } from "../../../api/VocabListAPI/PapagoAPI";
 import Speak from "../../../components/VocabListComponents/Speak";
 // interface DeckDetailProps {
 //   props?: DeckDetailResponseDto
@@ -48,20 +46,21 @@ const DeckDetail: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menu, setMenu] = useState("detail");
-  const [deck, setDeck] = useState<DeckDetailResponseDto>({
-    id: 0,
-    flashcardDeckId: 0,
-    flashcardDto: {
-      wordcardList: [], // Initialize with an empty array
-    },
-    name: "",
-    nickname: "",
-    userId: 0,
-    savingProgressStatus: ProgressStatus.DISABLED,
-    status: PrivacyStatus.PRIVATE,
-    forkCount: 0,
-    wordCount: 0,
-  });
+  const [deck, setDeck] = useState<DeckDetailResponseDto>();
+  //   {
+  //   id: 0,
+  //   flashcardDeckId: 0,
+  //   flashcardDto: {
+  //     wordcardList: [], // Initialize with an empty array
+  //   },
+  //   name: "",
+  //   nickname: "",
+  //   userId: 0,
+  //   savingProgressStatus: ProgressStatus.DISABLED,
+  //   status: PrivacyStatus.PRIVATE,
+  //   forkCount: 0,
+  //   wordCount: 0,
+  // }
   // const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [mode, setMode] = useState("button"); //button add
@@ -91,10 +90,10 @@ const DeckDetail: React.FC = () => {
       getOneDeck(deckId)
         .then((res) => {
           setDeck(res.data.data);
-          console.log(deck);
+          // console.log(deck);
           setWordList(res.data.data.flashcardDto.wordcardList);
         })
-        .catch((e) => console.log(e));
+        .catch((e) => { console.log(e); alert("단어장 정보를 불러오는데 실패했습니다.")});
     }
   }, [id, menu]);
   useEffect(() => {
@@ -102,10 +101,10 @@ const DeckDetail: React.FC = () => {
       getOneDeck(deckId)
         .then((res) => {
           setDeck(res.data.data);
-          console.log(deck);
+          // console.log(deck);
           setWordList(res.data.data.flashcardDto.wordcardList);
         })
-        .catch((e) => console.log(e));
+        .catch((e) =>{ console.log(e); alert("단어장 정보를 불러오는데 실패했습니다.")});
     }
   }, []);
 
@@ -120,11 +119,13 @@ const DeckDetail: React.FC = () => {
     setShowModal(true);
   };
   const handleForkClick = () => {
-    let message = `단어장 '${deck.name}'을/를 복사하겠습니까?`;
-    if (window.confirm(message)) {
-      createForkedDeck(deck.id).then((res) => {
-        navigate(`/flashcard/${res.data.data.id}`);
-      });
+    if (deck && deck !== null) {
+      let message = `단어장 '${deck.name}'을/를 복사하겠습니까?`;
+      if (window.confirm(message)) {
+        createForkedDeck(deck.id).then((res) => {
+          navigate(`/flashcard/${res.data.data.id}`);
+        });
+      }
     }
   };
 
@@ -158,27 +159,28 @@ const DeckDetail: React.FC = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = event.target;
 
-      if (name === "eng") {
-        setWordForm((prevData) => ({
-          ...prevData,
-          eng: value,
-        }));
-      } else if (name === "kor") {
-        setWordForm((prevData) => ({
-          ...prevData,
-          kor: value,
-        }));
-      }
-
+    if (name === "eng") {
+      setWordForm((prevData) => ({
+        ...prevData,
+        eng: value,
+      }));
+    } else if (name === "kor") {
+      setWordForm((prevData) => ({
+        ...prevData,
+        kor: value,
+      }));
+    }
   };
 
   const handleAuto = () => {
-    console.log(trENGForm)
-    getTranslation(trENGForm).then((res) => {
-      let result = res.data.message.result;
-      console.log(result);
-      setTest(result.translatedText);
-    }).catch((e)=>console.log(e));
+    // console.log(trENGForm);
+    getTranslation(trENGForm)
+      .then((res) => {
+        let result = res.data.message.result;
+        // console.log(result);
+        setTest(result.translatedText);
+      })
+      .catch((e) =>{ console.log(e); alert("단어를 번역하는데 실패했습니다.")});
     // if(wordForm.eng===""){
     //   getTranslation(trENGForm).then((res)=>{
 
@@ -197,7 +199,7 @@ const DeckDetail: React.FC = () => {
       createWordcard(deckId, wordForm)
         .then((res) => {
           const response = res.data.data;
-          console.log(response);
+          // console.log(response);
           if (!response.errorMessage) {
             setWordList((prev) => [...prev, response.wordcard]);
             setKoForm("");
@@ -209,7 +211,7 @@ const DeckDetail: React.FC = () => {
           // wordList.push(res.data.data.wordcard)
           // navigate(location.pathname);
         })
-        .catch((e) => console.log(e));
+        .catch((e) =>{ console.log(e); alert("단어를 추가하는데 실패했습니다.")});
     }
   };
 
@@ -253,13 +255,13 @@ const DeckDetail: React.FC = () => {
                     icon={<LearnIcon />}
                     size={55}
                     handleButtonClick={() => {
-                      console.log("learn");
+                      // console.log("learn");
                       setMenu("learn");
                     }}
                     onHover
                   ></IconButton>
                 </div>
-                {tempUser.id === deck.userId ? (
+                {deck && tempUser.id === deck.userId ? (
                   <>
                     <div>
                       <IconButton
@@ -375,13 +377,15 @@ const DeckDetail: React.FC = () => {
             )}
           </div>
           <div className="create-new-list-modal">
-            <DeckSettingsModal
-              showModal={showModal}
-              handleClose={handleCloseModal}
-              id={deckId}
-              info={deck}
-              handleRefresh={setDeck}
-            />
+            {deck && (
+              <DeckSettingsModal
+                showModal={showModal}
+                handleClose={handleCloseModal}
+                id={deckId}
+                info={deck}
+                handleRefresh={setDeck}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -394,9 +398,9 @@ const DeckDetail: React.FC = () => {
           />
         </>
       )}
-      {menu ==="quiz" &&(
+      {menu === "quiz" && (
         <>
-        <Speak word="yes" />
+          <Speak word="yes" />
         </>
       )}
     </>
