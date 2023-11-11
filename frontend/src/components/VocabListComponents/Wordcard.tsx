@@ -6,6 +6,7 @@ import { GrClose } from "react-icons/gr"
 import UncheckedIcon from "./Icons/UncheckedIcon"
 import CheckedIcon from "./Icons/CheckedIcon"
 import { useLocation, useNavigate } from "react-router-dom"
+import Speak from "./Speak"
 interface WordcardProps {
   props: WordcardDto
   changeView: (where: string) => void
@@ -76,7 +77,8 @@ const Wordcard: FC<WordcardProps> = ({ props, changeView, next }) => {
               </div>
               <div className={"top-half row"} style={{ alignItems: "flex-end", display: "flex", width: "100%", flexDirection: "row" }}>
                 <div className='col'>
-                  <IconButton handleButtonClick={sound} icon={<SoundIcon />} size={45} />
+                <Speak word={props.eng} />
+                  {/* <IconButton handleButtonClick={sound} icon={<SoundIcon />} size={45} /> */}
                 </div>
                 <div className='col' style={{ justifySelf: "center" }}>
                   <h1>{props.eng}</h1>

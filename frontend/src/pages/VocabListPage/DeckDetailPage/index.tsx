@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Form } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import { BsChevronLeft } from "react-icons/bs"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import {
@@ -11,20 +11,17 @@ import {
   getOneDeck,
 } from "../../../api/VocabListAPI/FlashcardsAPI"
 import AddButton from "../../../components/VocabListComponents/AddButton"
+import { AddLine } from "../../../components/VocabListComponents/AddLine"
 import { PrivacyStatus } from "../../../components/VocabListComponents/CreateNewListModal"
 import DeckSettingsModal from "../../../components/VocabListComponents/DeckSettingModal"
 import IconButton from "../../../components/VocabListComponents/IconButton"
-import AddIcon from "../../../components/VocabListComponents/Icons/AddIcon"
 import ForkIcon from "../../../components/VocabListComponents/Icons/ForkIcon"
 import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon"
 import QuizIcon from "../../../components/VocabListComponents/Icons/QuizIcon"
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon"
+import Speak from "../../../components/VocabListComponents/Speak"
 import { VocabLine } from "../../../components/VocabListComponents/VocabLine"
 import DeckLearn from "../DeckLearnPage"
-// interface DeckDetailProps {
-//   props?: DeckDetailResponseDto
-//   changeView: (menu: string) => void
-// }
 
 export interface CreateWordcardRequestDto {
   kor: string
@@ -59,10 +56,6 @@ const DeckDetail: React.FC = () => {
   // const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false)
   const [mode, setMode] = useState("button") //button add
-  const [wordForm, setWordForm] = useState<CreateWordcardRequestDto>({
-    kor: "",
-    eng: "",
-  })
   const [wordList, setWordList] = useState<WordcardDto[]>([])
   // useEffect(() => {
   //   if (props && props.flashcardDto) {
@@ -80,7 +73,7 @@ const DeckDetail: React.FC = () => {
         })
         .catch((e) => console.log(e))
     }
-  }, [id,menu])
+  }, [id, menu])
   useEffect(() => {
     if (id) {
       getOneDeck(deckId)
@@ -132,16 +125,6 @@ const DeckDetail: React.FC = () => {
     )
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = event.target
-    if (type === "text") {
-      // Handle text input changes
-      setWordForm((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }))
-    }
-  }
   if (!id) {
     return (
       <>
@@ -149,7 +132,7 @@ const DeckDetail: React.FC = () => {
       </>
     )
   }
-  const addWord = () => {
+  const addWord = (wordForm: CreateWordcardRequestDto) => {
     if (id) {
       createWordcard(deckId, wordForm)
         .then((res) => {
@@ -157,6 +140,7 @@ const DeckDetail: React.FC = () => {
           console.log(response)
           if (!response.errorMessage) {
             setWordList((prev) => [...prev, response.wordcard])
+            setMode("button")
           } else {
             alert(response.errorMessage)
           }
@@ -167,7 +151,7 @@ const DeckDetail: React.FC = () => {
         .catch((e) => console.log(e))
     }
   }
-  // if (isDeckCreate(props))
+
   return (
     <>
       <div className='container mt-5' style={{ borderColor: "transparent", width: "70vw" }}>
@@ -244,29 +228,7 @@ const DeckDetail: React.FC = () => {
                     {mode === "button" && <AddButton handleButtonClick={() => setMode("add")} size='45' />}
                     {mode === "add" && (
                       <>
-                        <div className='row'>
-                          <div className='col-11'>
-                            <Form>
-                              <Form.Group className='mb-3' controlId='eng'>
-                                <Form.Label>영문</Form.Label>
-                                <Form.Control
-                                  type='text'
-                                  placeholder='Enter'
-                                  name='eng'
-                                  onChange={handleInputChange}
-                                  value={wordForm.eng}
-                                />
-                              </Form.Group>{" "}
-                              <Form.Group className='mb-3' controlId='kor'>
-                                <Form.Label>한글</Form.Label>
-                                <Form.Control type='text' placeholder='입력' name='kor' onChange={handleInputChange} value={wordForm.kor} />
-                              </Form.Group>
-                            </Form>
-                          </div>
-                          <div className='col-1' style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <IconButton onHover icon={<AddIcon />} size={45} handleButtonClick={addWord} />
-                          </div>
-                        </div>
+                        <AddLine addWord={addWord} />
                       </>
                     )}
                   </div>
@@ -282,6 +244,11 @@ const DeckDetail: React.FC = () => {
       {menu === "learn" && (
         <>
           <DeckLearn handleRefresh={setDeck} changeView={setMenu} props={deck} />
+        </>
+      )}
+      {menu === "quiz" && (
+        <>
+          <Speak word='yes' />
         </>
       )}
     </>
