@@ -7,6 +7,7 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.AutoCompleteRe
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.TranslationResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +31,6 @@ public interface WordcardService {
     //TODO: undecided
     WordUpdateResponseDto readWordcard(Long wordcardId);
 
-    void createWordList(Long userId, Long flashcardId, File file) throws IOException;
+    void createWordList(Long userId, Long flashcardId, BufferedReader br) throws IOException;
     public void createWordcards(Long userId, Long deckId, String kor, String eng);
 }

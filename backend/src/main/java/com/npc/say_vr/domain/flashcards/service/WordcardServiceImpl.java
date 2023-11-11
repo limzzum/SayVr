@@ -175,17 +175,15 @@ public class WordcardServiceImpl implements WordcardService {
     // TODO : 성능 개선 & 비동기적 처리 & 예외처리
     @Transactional
     @Override
-    public void createWordList(Long userId, Long flashcardId, File dest) throws IOException {
-//        BufferedReader br = new BufferedReader(new FileReader(dest));
-        BufferedReader br = Files.newBufferedReader(Paths.get("src/resources/data/words.csv"));
+    public void createWordList(Long userId, Long flashcardId, BufferedReader br) throws IOException {
         String line;
         if ((line = br.readLine()) != null) {
             while ((line = br.readLine()) != null) {
                 String[] datalines = line.split(",");
-                // TODO : 예외처리 try-catch문 지양
                 try {
-                    String eng = datalines[1];
-                    String kor = datalines[2];
+                    String kor = datalines[0].replace("\"", "").trim();
+                    String eng = datalines[2].replace("\"", "").trim();
+
 
                     createWordcards(userId, flashcardId, kor, eng);
                 } catch (NumberFormatException e) {
@@ -238,8 +236,8 @@ public class WordcardServiceImpl implements WordcardService {
 
             }
         }
-        //TODO 개수 바뀔까?
-        personalDeck.updateWordCount(flashcardDeck.getWordcards().size());
+        int count = personalDeck.getWordCount();
+        personalDeck.updateWordCount(count+1);
         personalDeckRepository.save(personalDeck);
     }
 
