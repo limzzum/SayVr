@@ -53,6 +53,7 @@ public class FlashcardsApiController {
     @PostMapping("/deck/fork/{personalDeckId}")
     public ResponseEntity<?> createForkedDeck(@AuthenticationPrincipal Long userId,
         @PathVariable Long personalDeckId) {
+        System.out.println("fork, user:"+userId+" deck:"+personalDeckId);
         ResponseDto responseDto = ResponseDto.builder()
             .message(SUCCESS_CREATE_DECK.getMessage())
             .httpStatus(SUCCESS_CREATE_FORK.getHttpStatus())

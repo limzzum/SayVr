@@ -6,6 +6,7 @@ import UncheckedIcon from "./Icons/UncheckedIcon"
 import CheckedIcon from "./Icons/CheckedIcon"
 import RemoveIcon from "./Icons/RemoveIcon"
 import "../../pages/VocabListPage/style.css"
+import Speak from "./Speak"
 interface VocabLineProps {
   props: WordcardDto
 }
@@ -17,6 +18,11 @@ export const VocabLine: FC<VocabLineProps> = ({ props }) => {
   const [checkIcon, setCheckIcon] = useState("checked-button")
   const [uncheckIcon, setUncheckIcon] = useState("unchecked-button")
   const textToSpeech = () => {
+    if('speechSynthesis' in window){
+      alert("yes")
+    }else{
+      alert("no")
+    }
     console.log(props?.eng)
   }
   const uncheckWord = () => {
@@ -64,7 +70,8 @@ export const VocabLine: FC<VocabLineProps> = ({ props }) => {
             <div></div>
             <div className='flex row' style={{ display: "flex" }}>
               <div className='col'>
-                <IconButton icon={<SoundIcon />} size={37} handleButtonClick={textToSpeech} />
+                <Speak word={props.eng} />
+                {/* <IconButton icon={<SoundIcon />} size={37} handleButtonClick={textToSpeech} /> */}
               </div>
               <div className='col'> {props?.eng}</div>
               <div className='col' style={{ display: "flex", justifyContent: "end" }}>
