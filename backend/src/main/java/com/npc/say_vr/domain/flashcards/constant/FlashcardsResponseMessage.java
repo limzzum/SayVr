@@ -10,6 +10,7 @@ public enum FlashcardsResponseMessage {
     SUCCESS_CREATE_DECK(HttpStatus.CREATED, "단어장 생성 성공"),
     SUCCESS_CREATE_FORK(HttpStatus.CREATED, "단어장 복사 성공"),
     SUCCESS_CREATE_WORD(HttpStatus.CREATED, "단어 추가 성공"),
+    SUCCESS_CREATE_TRANSLATION(HttpStatus.CREATED, "단어 번역 성공"),
     SUCCESS_READ_TODAY_SENTENCE(HttpStatus.OK, "오늘의 문장 조회 성공"),
     SUCCESS_READ_PRIVATE_DECK(HttpStatus.OK, "개인 단어장 목록조회 성공"),
     SUCCESS_READ_PUBLIC_DECK(HttpStatus.OK, "공개 단어장 목록조회 성공"),

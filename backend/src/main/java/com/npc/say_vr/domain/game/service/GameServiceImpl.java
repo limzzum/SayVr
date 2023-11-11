@@ -74,7 +74,7 @@ public class GameServiceImpl implements GameService {
             }
 
             redisUtil.delete(name);
-            PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
+            PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(1L).tierImage("bronze").point(0L).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
             redisUtil.setGameStatusList(gameId,gameStatusDto);
@@ -95,7 +95,7 @@ public class GameServiceImpl implements GameService {
         redisUtil.set(name, String.valueOf(gameId), 30* 1000* 60);
 
         User user = userRepository.findById(userId).orElseThrow();
-        PlayerDto playerDto = PlayerDto.builder().userId(userId).ranking(1L).point(0L).winCnt(0)
+        PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(1L).tierImage("bronze").point(0L).winCnt(0)
             .profile(user.getProfile()).build();
         GameStatusDto gameStatusDto = GameStatusDto.builder().gameId(gameId).playerA(playerDto).build();
         redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
@@ -108,11 +108,11 @@ public class GameServiceImpl implements GameService {
     @Override
     public void gameStart(Long userId) {
         String gameId = String.valueOf(findGameIdByUserId(userId));
-        updateQuiz(Long.valueOf(gameId));
+                updateQuiz(Long.valueOf(gameId));
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
 
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
-            .data(gameStatusDto)
+            .gameStatusDto(gameStatusDto)
             .message(GAME_STATUS_INFO.getMessage())
             .build();
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
