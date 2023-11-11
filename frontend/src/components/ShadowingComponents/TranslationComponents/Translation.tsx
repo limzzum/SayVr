@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 import "./style.css";
-import { ScriptItem } from "../../api/ShadowingPageAPI/GetScriptAPI";
+import { ScriptItem } from "../../../api/ShadowingPageAPI/GetScriptAPI";
 
 const endpoint = "https://api.cognitive.microsofttranslator.com";
 const location = "eastus";

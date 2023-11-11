@@ -1,0 +1,61 @@
+/* style.css */
+.translation-container {
+  display: flex;
+  width: 80%;
+  margin-left: 10%;
+}
+
+.half-width-container {
+  flex: 1;
+  margin: 0 10px;
+  display: flex;
+  flex-direction: column; /* 컨테이너 내의 요소들을 세로로 배열 */
+}
+
+.text-box,
+.output-box {
+  flex: 1; /* 높이를 동일하게 맞추기 위해 flex 속성 추가 */
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 7px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.input-container textarea,
+.output-box p {
+  height: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  margin: 0;
+}
+
+.output-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.btn-translate,
+.top-row select {
+  width: 7em;
+  margin-top: 10px;
+}
+
+.translation-error {
+  color: #ff1234;
+}
+
+@media (max-width: 768px) {
+  .translation-container {
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0%;
+  }
+
+  .half-width-container {
+    width: 100%;
+    margin: 0;
+  }
+}
