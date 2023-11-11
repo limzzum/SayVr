@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-
+import {
+  socketURL,
+  subscribeURL,
+  serverURL,
+  imageURL,
+  publishURL,
+} from "../constants/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   SocketType,
-  waitingGame,
-  startGame,
 } from "../../../api/MatchingGameAPI/MatchingGameAPI";
+import Socket from "../constants/socket";
+
 import GameProceedingHeader from "../../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_header";
 import GameProceedingBody from "../../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_body";
 
@@ -43,7 +49,7 @@ interface Player {
 
 interface SocketResponseDto<T> {
   socketType: SocketType;
-  gameStatus?: GameStatus;
+  gameStatusDto?: GameStatus;
   data?: T;
   message?: string;
 }
@@ -55,13 +61,39 @@ interface PlayerProfile {
   tier: string;
 }
 
-// const player: PlayerProfile ;
-// const opponent: PlayerProfile;
+// let curRound: number;
+// let playerA: Player;
+// let playerB: Player;
+// let question: string;
 
 function MatchingGameProceedingPage() {
-  // const [gameId, setGameId] = useState<number | null>(null);
+   const [curRound, setCurRound] = useState(1);
+   const [playerA, setPlayerA] = useState<Player>({
+    userId: 0,
+    nickname: '',
+    ranking: 0,
+    tierImage: '',
+    point: 0,
+    winCnt: 0,
+    profile: '',
+  });
+  const [playerB, setPlayerB] = useState<Player>({
+    userId: 0,
+    nickname: '',
+    ranking: 0,
+    tierImage: '',
+    point: 0,
+    winCnt: 0,
+    profile: '',
+  });
+   const [question, setQuestion] = useState("");
+   const [chatMessage, setChatMessage] = useState("");
+
+
   const location = useLocation();
-  const players = { ...location.state };
+  const gameInfo = { ...location.state };
+
+
 
   // const messageToSend: sendMessage = {
   //   socketType: SocketType.GAME_INFO,
@@ -69,51 +101,87 @@ function MatchingGameProceedingPage() {
   // };
 
   const socketReceive = (response: SocketResponseDto<any>) => {
+    console.log("게임 진행 소켓 받음");
+    console.log(response);
     if (response.socketType == SocketType.GAME_INFO) {
       console.log("게임 info");
-      console.log(response);
+      setCurRound(response.gameStatusDto!.curRound);
+      setPlayerA(response.gameStatusDto!.playerA);
+      setPlayerB(response.gameStatusDto!.playerB);
+      setQuestion(response.gameStatusDto!.question);
+    }
+
+    if (response.socketType == SocketType.CHAT) {
+      console.log("채팅");
+      setChatMessage(response.data);
+
+    }
+
+    if (response.socketType == SocketType.QUIZ) {
+      console.log("퀴즈 정보");
+      if(response.data.answer){
+        setCurRound(response.gameStatusDto!.curRound);
+        setPlayerA(response.gameStatusDto!.playerA);
+        setPlayerB(response.gameStatusDto!.playerB);
+        setQuestion(response.gameStatusDto!.question);
+        // let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
+        alert( "유저 아이디 : " + response.data.userId + " 정답입니다")
+      }
+    }
+
+    if (response.socketType == SocketType.QUIZ_TIME_OVER) {
+      console.log("퀴즈 시간 종료");
+      alert("퀴즈 시간 종료")
+   
+    }
+
+    if (response.socketType == SocketType.GAME_END) {
+      console.log("게임 종료");
+      alert("게임 종료")
+
+    
+    }
+ 
+    if (response.socketType == SocketType.PLAYER_OUT) {
+      console.log("player out");
+                           
     }
 
     console.log("socket 구독 receive");
     console.log(response);
   };
 
-  // useEffect(() => {
-  //   // 컴포넌트가 마운트될 때, 웹 소켓을 사용할 준비
-  //   stompClient.activate();
-  //   console.log("axios 요청 호출");
-  //   waitingGame()
-  //     .then((response) => {
-  //       console.log(response);
+  const messageToSend: sendMessage = {
+    socketType: SocketType.GAME_INFO,
+    message: "hihi",
+  };
 
-  //       setGameId(response.data.data.gameId);
-  //       console.log("함수 호출 전");
+  useEffect(() => {
+    setPlayerA(gameInfo.playerA);
+    setPlayerB(gameInfo.playerB);
+    Socket.connect().then(()=>{
+      Socket.subscribe(subscribeURL + "." + gameInfo.gameId, socketReceive);
+      console.log(gameInfo.gameId);
+      console.log("useEffect socket 연결")
+      Socket.sendMsg(publishURL + "."+gameInfo.gameId, messageToSend)
+  
+    })
+ 
+    //Socket.sendMsg
+    return () => {
+      Socket.disconnect();
+      console.log("게임 진행 페이지 , socket disconnect");
 
-  //       // 게임 아이디를 받아온 후, 웹 소켓을 초기화하고 구독합니다.
-  //       const subscription = subscribeToChatRoom(response.data.data.gameId);
-
-  //       return () => {
-  //         // 컴포넌트가 언마운트될 때 구독을 해제
-  //         subscription.unsubscribe();
-  //       };
-  //     })
-  //     .catch((error) => {
-  //       // 오류 처리
-  //     });
-
-  //   return () => {
-  //     // 컴포넌트가 언마운트될 때, 웹 소켓 연결 해제
-  //     stompClient.deactivate();
-  //   };
-  // }, []);
+    };
+  }, []);
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <GameProceedingHeader
-        player={players.playerA}
-        opponent={players.playerB}
+        player={playerA}
+        opponent={playerB}
       ></GameProceedingHeader>
-      <GameProceedingBody />
+      <GameProceedingBody gameId={gameInfo.gameId} chatMessage={chatMessage} question={question}/>
       {/* <GameProceedingHeader player=/> */}
     </div>
   );

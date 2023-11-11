@@ -1,7 +1,9 @@
 package com.npc.say_vr.domain.study.repository.CheckListItemRepository;
 
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.domain.study.domain.ChecklistItem;
 import com.npc.say_vr.domain.study.dto.responseDto.CheckListItemDto;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +29,11 @@ public class CheckListItemRepositoryImpl implements CheckListItemRepository {
   @Override
   public Optional<ChecklistItem> findById(Long checkListId) {
     return jpaCheckListItemRepository.findById(checkListId);
+  }
+
+  @Override
+  public List<ChecklistItem> findByUserIdAndOptiontype(Long userId, OptionType optionType,
+      LocalDate today) {
+    return queryDslCheckListItemRepository.findByUserIdAndOptiontype(userId,optionType,today);
   }
 }

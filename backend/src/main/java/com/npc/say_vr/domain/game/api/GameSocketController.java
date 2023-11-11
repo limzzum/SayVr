@@ -12,6 +12,9 @@ import com.npc.say_vr.domain.game.dto.GameResponseDto.GameQuizResultDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameSocketResponseDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
 import com.npc.say_vr.domain.game.service.GameService;
+import com.npc.say_vr.domain.study.constant.OptionType;
+import com.npc.say_vr.domain.study.service.GoalService;
+import com.npc.say_vr.domain.user.service.ActivityService;
 import com.npc.say_vr.global.util.RedisUtil;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,8 @@ public class GameSocketController {
     private final RabbitTemplate rabbitTemplate;
     private final RedisUtil redisUtil;
     private final GameService gameService;
+    private final ActivityService activityService;
+    private final GoalService goalService;
 
     private static final String EXCHANGE_NAME = "amq.topic";
 
@@ -52,6 +57,14 @@ public class GameSocketController {
             return;
         }
 
+        if(socketType.equals(SocketType.CHAT)){
+            System.out.println(gameSocketRequestDto.getMessage());
+                gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
+                    .data(gameSocketRequestDto.getMessage()).build();
+                rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+            return;
+        }
+
         if(socketType.equals(SocketType.QUIZ)){
             String text = gameSocketRequestDto.getMessage();
             boolean isAnswer = false;
@@ -68,6 +81,8 @@ public class GameSocketController {
                         .data(gameService.getGameResult(Long.valueOf(gameId)))
                         .build();
                     rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+                    activityService.saveActicity(userId, OptionType.GAME);
+                    goalService.updateCheckListOption(userId,OptionType.GAME);
                     return;
                 }
                 gameService.updateQuiz(Long.valueOf(gameId));
@@ -82,6 +97,10 @@ public class GameSocketController {
                 .message(message)
                 .build();
             rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.CHAT)
+                .data(gameSocketRequestDto.getMessage()).build();
+            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+
             return;
         }
 

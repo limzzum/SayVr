@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.study.service;
 
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateGoalRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateWeeklySprintRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateGoalRequestDto;
@@ -34,4 +35,7 @@ public interface GoalService {
     void deleteGoalAndSave(Long goalId);
 
     String replaceNumbers(String input, Integer replacement1, Integer replacement2);
+
+
+    void updateCheckListOption(Long userId, OptionType optionType);
 }

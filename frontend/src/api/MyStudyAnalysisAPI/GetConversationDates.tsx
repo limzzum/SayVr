@@ -1,17 +1,17 @@
 import axios from "axios";
-import BASE_URL from "../../config";
+import API_URL from "../../config";
 
 const GetConversationDates = async ( month: number, year: number) => {
   try {
-    const response = await axios.get(`${BASE_URL}/conversation/monthly`, {
+    const response = await axios.get(`${API_URL}/conversation/monthly`, {
       params: {
         year: year,
         month: month,
       },
     });
     console.log(year);
-    console.log(month);
-    console.log(response);
+    console.log("달달달",month);
+    console.log("여기 응답",response);
     const conversationDates = response.data.data.datedConversationList.map((conversation: any) => conversation.date);
     const conversationIds = response.data.data.datedConversationList.map((conversation: any) => conversation.id);
 

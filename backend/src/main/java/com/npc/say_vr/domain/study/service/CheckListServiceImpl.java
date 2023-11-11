@@ -2,6 +2,7 @@ package com.npc.say_vr.domain.study.service;
 
 import com.npc.say_vr.domain.study.constant.CheckListStatus;
 import com.npc.say_vr.domain.study.constant.OptionCheckItem;
+import com.npc.say_vr.domain.study.constant.OptionType;
 import com.npc.say_vr.domain.study.domain.ChecklistItem;
 import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.domain.WeeklySprint;
@@ -11,6 +12,7 @@ import com.npc.say_vr.domain.study.dto.requestDto.UpdateCheckListStatusResquestD
 import com.npc.say_vr.domain.study.repository.CheckListItemRepository.CheckListItemRepository;
 import com.npc.say_vr.domain.study.repository.WeeklySprintRepository.WeeklySprintRepository;
 import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,4 +71,5 @@ public class CheckListServiceImpl implements CheckListService {
     ChecklistItem checklistItem =  checkListItemRepository.findById(checkListId).orElseThrow();
     checklistItem.updateCheckListStatus(CheckListStatus.DELETE);
   }
+
 }

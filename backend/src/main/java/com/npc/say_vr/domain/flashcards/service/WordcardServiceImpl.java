@@ -47,6 +47,7 @@ public class WordcardServiceImpl implements WordcardService {
     @Value("${spring.translate.naver.client.secret}")
     private String naverApiClientSecret;
 
+    @Transactional
     @Override
     public WordUpdateResponseDto createWordcard(Long userId, Long deckId,
         CreateWordcardRequestDto requestDto) {
@@ -74,7 +75,8 @@ public class WordcardServiceImpl implements WordcardService {
                 flashcardDeck.getId(), word.getId(), WordcardStatus.DELETED);
             if (preexist != null) {// 이미 단어장에 존재하는 단어->
                 log.info("redundant, returning preexisting word");
-                return WordUpdateResponseDto.builder().wordcard(preexist).build();
+//                return WordUpdateResponseDto.builder().wordcard(preexist).build();
+                return new WordUpdateResponseDto("이미 단어장에 존재하는 단어입니다");
             } else {
                 log.info("add word to deck");
                 wordcard = Wordcard.builder().word(word).status(WordcardStatus.UNCHECKED)
@@ -84,7 +86,11 @@ public class WordcardServiceImpl implements WordcardService {
             }
         }
         //TODO 개수 바뀔까?
-        personalDeck.updateWordCount(flashcardDeck.getWordcards().size());
+        personalDeck.updateWordCount(Math.toIntExact(
+            flashcardDeck.getWordcards().stream()
+                .filter(wordCard -> wordCard.getStatus() != WordcardStatus.DELETED)
+                .count()
+        ));
         personalDeck = personalDeckRepository.save(personalDeck);
         return WordUpdateResponseDto.builder()
             .wordcard(wordcard)
@@ -148,9 +154,15 @@ public class WordcardServiceImpl implements WordcardService {
     @Override
     public MessageOnlyResponseDto deleteWordcard(Long userId, Long wordcardId) {
         Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
-
+        FlashcardDeck flashcardDeck = wordcard.getFlashcardDeck();
+        PersonalDeck personalDeck = flashcardDeck.getPersonalDeck();
         if (wordcard != null) {
             wordcard.updateStatus(WordcardStatus.DELETED);
+            personalDeck.updateWordCount(Math.toIntExact(
+                flashcardDeck.getWordcards().stream()
+                    .filter(wordCard -> wordCard.getStatus() != WordcardStatus.DELETED)
+                    .count()
+            ));
             wordcardRepository.save(wordcard);
             return new MessageOnlyResponseDto("단어가 단어장에서 삭제되었습니다.");
         }
