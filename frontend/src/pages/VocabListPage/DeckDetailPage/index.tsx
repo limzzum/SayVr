@@ -47,20 +47,7 @@ const DeckDetail: React.FC = () => {
   const location = useLocation();
   const [menu, setMenu] = useState("detail");
   const [deck, setDeck] = useState<DeckDetailResponseDto>();
-  //   {
-  //   id: 0,
-  //   flashcardDeckId: 0,
-  //   flashcardDto: {
-  //     wordcardList: [], // Initialize with an empty array
-  //   },
-  //   name: "",
-  //   nickname: "",
-  //   userId: 0,
-  //   savingProgressStatus: ProgressStatus.DISABLED,
-  //   status: PrivacyStatus.PRIVATE,
-  //   forkCount: 0,
-  //   wordCount: 0,
-  // }
+
   // const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [mode, setMode] = useState("button"); //button add
@@ -70,7 +57,7 @@ const DeckDetail: React.FC = () => {
   });
   const [koForm, setKoForm] = useState("");
   const [enForm, setEnForm] = useState("");
-
+const [saveForm,setSaveForm] = useState<ProgressStatus>(deck?deck.savingProgressStatus:ProgressStatus.ENABLED);
   const [trText, setTrText] = useState("예시");
   const [test, setTest] = useState("예시");
   const [trENGForm, setTrENGForm] = useState<TranslationRequestDto>({
@@ -93,7 +80,10 @@ const DeckDetail: React.FC = () => {
           // console.log(deck);
           setWordList(res.data.data.flashcardDto.wordcardList);
         })
-        .catch((e) => { console.log(e); alert("단어장 정보를 불러오는데 실패했습니다.")});
+        .catch((e) => {
+          console.log(e);
+          alert("단어장 정보를 불러오는데 실패했습니다.");
+        });
     }
   }, [id, menu]);
   useEffect(() => {
@@ -104,7 +94,10 @@ const DeckDetail: React.FC = () => {
           // console.log(deck);
           setWordList(res.data.data.flashcardDto.wordcardList);
         })
-        .catch((e) =>{ console.log(e); alert("단어장 정보를 불러오는데 실패했습니다.")});
+        .catch((e) => {
+          console.log(e);
+          alert("단어장 정보를 불러오는데 실패했습니다.");
+        });
     }
   }, []);
 
@@ -157,7 +150,7 @@ const DeckDetail: React.FC = () => {
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = event.target;
+    const { name, value, checked } = event.target;
 
     if (name === "eng") {
       setWordForm((prevData) => ({
@@ -180,7 +173,10 @@ const DeckDetail: React.FC = () => {
         // console.log(result);
         setTest(result.translatedText);
       })
-      .catch((e) =>{ console.log(e); alert("단어를 번역하는데 실패했습니다.")});
+      .catch((e) => {
+        console.log(e);
+        alert("단어를 번역하는데 실패했습니다.");
+      });
     // if(wordForm.eng===""){
     //   getTranslation(trENGForm).then((res)=>{
 
@@ -211,7 +207,10 @@ const DeckDetail: React.FC = () => {
           // wordList.push(res.data.data.wordcard)
           // navigate(location.pathname);
         })
-        .catch((e) =>{ console.log(e); alert("단어를 추가하는데 실패했습니다.")});
+        .catch((e) => {
+          console.log(e);
+          alert("단어를 추가하는데 실패했습니다.");
+        });
     }
   };
 
@@ -238,6 +237,7 @@ const DeckDetail: React.FC = () => {
               </div>
 
               <div style={{ display: "flex" }}>
+
                 <div>
                   <IconButton
                     icon={<QuizIcon />}
