@@ -1,5 +1,8 @@
 package com.npc.say_vr.domain.game.service;
 
+import com.npc.say_vr.domain.game.dto.GameStatusDto;
+import com.npc.say_vr.global.util.RedisUtil;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,24 +15,31 @@ import org.springframework.stereotype.Component;
 public class GameScheduler {
     private static final String EXCHANGE_NAME = "amq.topic";
     private final RabbitTemplate rabbitTemplate;
-    private final GameService gameService;
+    private final RedisUtil redisUtil;
+
 
     private List<Long> games = new ArrayList<>();
 
     @Scheduled(fixedRate = 1000)
     public void checkGameTimers() {
         for (Long gameId : games){
-            if (gameService.isTimeLimitExceeded(gameId)) {
+            if (isTimeLimitExceeded(gameId)) {
                 rabbitTemplate.convertAndSend(EXCHANGE_NAME, "alarm." + gameId);
             }
         }
     }
 
     public void addGameRoom(Long gameId) {
+        System.out.println("스케줄러 게임 추가됨");
         games.add(gameId);
     }
 
     public void removeGameRoom(Long gameId) {
         games.remove(gameId);
+    }
+
+    private boolean isTimeLimitExceeded(Long gameId) {
+        GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
+        return gameStatusDto.getQuizEndTime().isBefore(LocalDateTime.now());
     }
 }

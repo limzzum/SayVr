@@ -57,6 +57,14 @@ public class GameSocketController {
             return;
         }
 
+        if(socketType.equals(SocketType.CHAT)){
+            System.out.println(gameSocketRequestDto.getMessage());
+                gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
+                    .data(gameSocketRequestDto.getMessage()).build();
+                rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+            return;
+        }
+
         if(socketType.equals(SocketType.QUIZ)){
             String text = gameSocketRequestDto.getMessage();
             boolean isAnswer = false;
@@ -89,6 +97,10 @@ public class GameSocketController {
                 .message(message)
                 .build();
             rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.CHAT)
+                .data(gameSocketRequestDto.getMessage()).build();
+            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+
             return;
         }
 
