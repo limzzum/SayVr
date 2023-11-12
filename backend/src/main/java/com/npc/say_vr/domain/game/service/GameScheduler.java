@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class GameScheduler {
-    private static final String EXCHANGE_NAME = "amq.topic";
+    private static final String EXCHANGE_NAME = "game.exchange";
     private final RabbitTemplate rabbitTemplate;
     private final RedisUtil redisUtil;
 
