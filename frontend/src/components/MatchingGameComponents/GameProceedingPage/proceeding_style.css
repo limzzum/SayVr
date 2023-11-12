@@ -1,3 +1,5 @@
+
+
 .game-proceeding-header-container {
   display: flex;
   justify-content: space-between;
@@ -67,4 +69,49 @@
 }
 
 .question-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 500px;
+  height: 500px;
+}
+
+.question-image {
+  z-index: -1;
+
+}
+
+.question {
+  position: absolute;
+  width:400px;
+  margin-left: 50px;
+  text-align: center;
+  font-size:xxx-large;
+}
+
+.score{
+  font-size: xxx-large;
+}
+
+
+
+.game-timer {
+  background: #ddd;
+  height: 30px;
+  position: relative;
+}
+
+.time-left-bar {
+  height: 100%;
+  background: blue;
+  transition: width 1s linear;
+}
+
+.time-left {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
 }

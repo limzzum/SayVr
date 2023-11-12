@@ -1,8 +1,9 @@
 // api.ts
 import axios, { AxiosResponse } from "axios"
 import { CreateFlashcardsRequestDto, PrivacyStatus } from "../../components/VocabListComponents/CreateNewListModal"
-import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage"
 import { DeckSettingsUpdateRequestDto } from "../../components/VocabListComponents/DeckSettingModal"
+import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage"
+import { AutoCompleteResponseDto, TranslationRequestDto } from "./PapagoAPI"
 const BASE_URL = "http://localhost:8080/api/flashcards"
 
 const axiosInstance = axios.create({
@@ -105,6 +106,9 @@ export const createPersonalDeck = (data?: CreateFlashcardsRequestDto): Promise<A
 export const createForkedDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckCreateResponseDto>>> => {
   return axiosInstance.post(`/deck/fork/${deckId}`)
 }
+export const getTranslation = (data: TranslationRequestDto): Promise<AxiosResponse<ResponseDto<AutoCompleteResponseDto>>> => {
+  return axiosInstance.post("/translate", data);
+};
 
 export const createWordcard = (
   deckId: number,
