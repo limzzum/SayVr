@@ -10,6 +10,7 @@ import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.domain.Game;
 import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.domain.Tier;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
@@ -67,6 +68,8 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public GameWaitingResponseDto registWaitingQueue(Long userId) {
         Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
+        Tier tier = ranking.getTier();
+        Long rank = rankingService.readRank(userId);
         String name = ranking.getTier().getName();
 
         if(redisUtil.hasKey(name)){
@@ -83,7 +86,8 @@ public class GameServiceImpl implements GameService {
             }
 
             redisUtil.delete(name);
-            PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(1L).tierImage("bronze").point(0L).winCnt(0)
+            PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(rank).tierImage(tier.getImage()).point(
+                    (long) ranking.getPoint()).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
             redisUtil.setGameStatusList(gameId,gameStatusDto);
@@ -104,7 +108,8 @@ public class GameServiceImpl implements GameService {
         redisUtil.set(name, String.valueOf(gameId), 30* 1000* 60);
 
         User user = userRepository.findById(userId).orElseThrow();
-        PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(1L).tierImage("bronze").point(0L).winCnt(0)
+        PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(rank).tierImage(tier.getImage()).point(
+                (long) ranking.getPoint()).winCnt(0)
             .profile(user.getProfile()).build();
         GameStatusDto gameStatusDto = GameStatusDto.builder().gameId(gameId).playerA(playerDto).build();
         redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
@@ -227,7 +232,7 @@ public class GameServiceImpl implements GameService {
         Long outUserId = playerOutRequestDto.getOutUserId();
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
         if(gameStatusDto == null){
-            throw new IllegalArgumentException("todo");
+            throw new IllegalArgumentException();
         }
 
         Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
