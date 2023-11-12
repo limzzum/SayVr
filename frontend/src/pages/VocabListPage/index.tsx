@@ -305,26 +305,26 @@ function VocabListPage() {
                     </div>
                   </div>
                 </div>
-                <div className="row">
-                  <Slider
-                    infinite={publicCardTitles?.length >= 3}
-                    ref={sliderPublic}
-                    {...carouselSettings}
-                  >
-                    {publicCardTitles?.map((deck, index) => {
-                      return (
-                        <>
-                          <MyWordCard
-                            type={"public"}
-                            key={"public" + index + deck.id}
-                            addNew={handlePlusButtonClick}
-                            props={deck}
-                          />
-                        </>
-                      );
-                    })}
-                  </Slider>
-                </div>
+              </div>
+              <div className="row">
+                <Slider
+                  infinite={publicCardTitles?.length >= 3}
+                  ref={sliderPublic}
+                  {...carouselSettings}
+                >
+                  {publicCardTitles?.map((deck, index) => {
+                    return (
+                      <>
+                        <MyWordCard
+                          type={"public"}
+                          key={"public" + index + deck.id}
+                          addNew={handlePlusButtonClick}
+                          props={deck}
+                        />
+                      </>
+                    );
+                  })}
+                </Slider>
               </div>
             </div>
             <div className="create-new-list-modal">
