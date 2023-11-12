@@ -51,12 +51,18 @@ const carouselSettings = {
 function VocabListPage() {
   const [showModal, setShowModal] = useState(false);
   const [menu, setMenu] = useState("main");
-  const [personalCardTitles, setPersonalCardTitles] = useState<PersonalDeckTitle[]>([]);
-  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>([]);
+  const [personalCardTitles, setPersonalCardTitles] = useState<
+    PersonalDeckTitle[]
+  >([]);
+  const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>(
+    []
+  );
 
   const sliderPersonal = useRef<Slider | null>(null);
   const sliderPublic = useRef<Slider | null>(null);
-  const [searchCardTitles, setSearchCardTitles] = useState<PersonalDeckTitle[]>([]);
+  const [searchCardTitles, setSearchCardTitles] = useState<PersonalDeckTitle[]>(
+    []
+  );
   const [orderby, setOrderby] = useState("createdAt");
   const [keyword, setKeyword] = useState("");
 
@@ -164,155 +170,155 @@ function VocabListPage() {
       <div className="container mt-5 flex justify-content-center">
         {menu === "main" && (
           <>
-            <div className="vocab-list-container row card-row  align-items-center ">
+            <div className="vocab-list-container row card-row align-items-center justify-content-center">
               <div className="row justify-content-center align-items-center">
-                <div className="col">
-                  <h1>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div style={{ display: "flex", margin: "1rem" }}>
-                        <div
-                          className="title private"
-                          onClick={() => setMenu("private")}
-                        >
-                          내 단어장
-                        </div>
-                        <div>
-                          <AddButton
-                            handleButtonClick={handlePlusButtonClick}
-                            size="50"
-                          />{" "}
-                        </div>
+                <div className="row">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ display: "flex", margin: "1rem" }}>
+                      <div
+                        className="card-title private"
+                        onClick={() => setMenu("private")}
+                      >
+                        <h1>내 단어장 </h1>
                       </div>
-                      <div>
-                        <ArrowLeft
-                          onClick={() => sliderPersonal?.current?.slickPrev()}
-                        />
-                        <ArrowRight
-                          onClick={() => sliderPersonal?.current?.slickNext()}
+                      <div style={{ marginLeft: "1rem" }}>
+                        <AddButton
+                          handleButtonClick={handlePlusButtonClick}
+                          size="50"
                         />
                       </div>
                     </div>
-                  </h1>
+                    <div>
+                      <ArrowLeft
+                        onClick={() => sliderPersonal?.current?.slickPrev()}
+                      />
+                      <ArrowRight
+                        onClick={() => sliderPersonal?.current?.slickNext()}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-              {(personalCardTitles == null ||
-                personalCardTitles.length === 0) && (
-                <>
-                  <MyWordCard type="none" addNew={handlePlusButtonClick} />
-                </>
-              )}
-              <Slider
-                infinite={personalCardTitles.length >= 3}
-                ref={sliderPersonal}
-                {...carouselSettings}
-              >
-                {personalCardTitles?.map((deck, index) => {
-                  return (
-                    <>
-                      <MyWordCard
-                        type={"private"}
-                        key={index + deck.id}
-                        addNew={handlePlusButtonClick}
-                        props={deck}
-                      />
-                    </>
-                  );
-                })}
-              </Slider>
+              <div className="row">
+                {(personalCardTitles == null ||
+                  personalCardTitles.length === 0) && (
+                  <>
+                    <MyWordCard type="none" addNew={handlePlusButtonClick} />
+                  </>
+                )}
+                <Slider
+                  infinite={personalCardTitles.length >= 3}
+                  ref={sliderPersonal}
+                  {...carouselSettings}
+                >
+                  {personalCardTitles?.map((deck, index) => {
+                    return (
+                      <>
+                        <MyWordCard
+                          type={"private"}
+                          key={index + deck.id}
+                          addNew={handlePlusButtonClick}
+                          props={deck}
+                        />
+                      </>
+                    );
+                  })}
+                </Slider>
+              </div>
             </div>
-            <div className="vocab-list-container row card-row  align-items-center ">
+            <div className="vocab-list-container row card-row align-items-center justify-content-center ">
               <div className="row justify-content-center align-items-center">
-                <div className="col">
-                  <h1>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div style={{ display: "flex", margin: "1rem" }}>
-                        <div
-                          className="title private"
-                          onClick={() => {
-                            setSearchCardTitles(publicCardTitles);
-                            setMenu("public");
-                          }}
-                        >
-                          공개 단어장
-                        </div>
-                        <div
-                          className="container-fluid"
-                          style={{ width: "300px" }}
-                        >
-                          <InputGroup className="mb-3">
-                            <DropdownButton
-                              variant="outline-secondary"
-                              title={
-                                orderby === "createdAt"
-                                  ? "최신순"
-                                  : orderby === "forkCount"
-                                  ? "저장순"
-                                  : orderby === "wordCount"
-                                  ? "단어순"
-                                  : "정렬"
-                              }
-                              id="input-group-dropdown-1"
-                            >
-                              <Dropdown.Item
-                                onClick={() => setOrderby("createdAt")}
-                                href="#"
-                              >
-                                최신순
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => setOrderby("forkCount")}
-                                href="#"
-                              >
-                                저장순
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => setOrderby("wordCount")}
-                                href="#"
-                              >
-                                단어순
-                              </Dropdown.Item>
-                            </DropdownButton>
-                            <Form.Control
-                              placeholder="검색"
-                              name="keyword"
-                              onChange={handleInputChange}
-                              value={keyword}
-                              type="search"
-                              aria-label="Text input with dropdown button"
-                            />
-                            <Button
-                              type="submit"
-                              onClick={(e: any) => {
-                                e.preventDefault();  
-                                handleSearch();
-                              }}
-                              className="btn"
-                            >
-                              Search
-                            </Button>
-                          </InputGroup>
-                        </div>
+                <div className="row">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ display: "flex", margin: "1rem" }}>
+                      <div
+                        className="card-title public"
+                        onClick={() => {
+                          setSearchCardTitles(publicCardTitles);
+                          setMenu("public");
+                        }}
+                      >
+                        <h1>공개 단어장 </h1>
                       </div>
-                      <div>
-                        <ArrowLeft
-                          onClick={() => sliderPublic?.current?.slickPrev()}
-                        />
-                        <ArrowRight
-                          onClick={() => sliderPublic?.current?.slickNext()}
-                        />
+                      <div
+                        className="container-fluid"
+                        style={{ width: "20rem", display:"flex", alignItems:"center" }}
+                      >
+                        <InputGroup className="search-bar">
+                          <DropdownButton
+                            variant="outline-secondary"
+                            title={
+                              orderby === "createdAt"
+                                ? "최신순"
+                                : orderby === "forkCount"
+                                ? "저장순"
+                                : orderby === "wordCount"
+                                ? "단어순"
+                                : "정렬"
+                            }
+                            id="input-group-dropdown-1"
+                          >
+                            <Dropdown.Item
+                              onClick={() => setOrderby("createdAt")}
+                              href="#"
+                            >
+                              최신순
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => setOrderby("forkCount")}
+                              href="#"
+                            >
+                              저장순
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => setOrderby("wordCount")}
+                              href="#"
+                            >
+                              단어순
+                            </Dropdown.Item>
+                          </DropdownButton>
+                          <Form.Control
+                            placeholder="검색"
+                            name="keyword"
+                            onChange={handleInputChange}
+                            value={keyword}
+                            type="search"
+                            aria-label="Text input with dropdown button"
+                          />
+                          <Button
+                            type="submit"
+                            onClick={(e: any) => {
+                              e.preventDefault();
+                              handleSearch();
+                            }}
+                            className="btn"
+                          >
+                            Search
+                          </Button>
+                        </InputGroup>
                       </div>
                     </div>
-                  </h1>
+                    <div>
+                      <ArrowLeft
+                        onClick={() => sliderPublic?.current?.slickPrev()}
+                      />
+                      <ArrowRight
+                        onClick={() => sliderPublic?.current?.slickNext()}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className="row">
                   <Slider

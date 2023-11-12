@@ -8,18 +8,15 @@ import {
   WordcardDto,
   createForkedDeck,
   createWordcard,
-  getOneDeck,
+  getOneDeck
 } from "../../../api/VocabListAPI/FlashcardsAPI";
 import AddButton from "../../../components/VocabListComponents/AddButton";
 import { AddLine } from "../../../components/VocabListComponents/AddLine";
-import { PrivacyStatus } from "../../../components/VocabListComponents/CreateNewListModal";
 import DeckSettingsModal from "../../../components/VocabListComponents/DeckSettingModal";
 import IconButton from "../../../components/VocabListComponents/IconButton";
 import ForkIcon from "../../../components/VocabListComponents/Icons/ForkIcon";
 import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon";
-import QuizIcon from "../../../components/VocabListComponents/Icons/QuizIcon";
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon";
-import Speak from "../../../components/VocabListComponents/Speak";
 import { VocabLine } from "../../../components/VocabListComponents/VocabLine";
 import DeckLearn from "../DeckLearnPage";
 
@@ -72,6 +69,7 @@ const DeckDetail: React.FC = () => {
           setDeck(res.data.data);
           // console.log(deck);
           setWordList(res.data.data.flashcardDto.wordcardList);
+
         })
         .catch((e) => {
           console.log(e);
@@ -93,6 +91,8 @@ const DeckDetail: React.FC = () => {
       }
     }
   };
+
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -186,6 +186,7 @@ const DeckDetail: React.FC = () => {
                     onHover
                   ></IconButton>
                 </div> */}
+                
                 <div>
                   <IconButton
                     icon={<LearnIcon />}
@@ -236,6 +237,12 @@ const DeckDetail: React.FC = () => {
                     return (
                       <>
                         <VocabLine
+                          saveMode={
+                            deck
+                              ? deck.savingProgressStatus ===
+                                ProgressStatus.ENABLED
+                              : false
+                          }
                           key={index + "wordcard" + id}
                           props={wordcard}
                         ></VocabLine>
