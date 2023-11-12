@@ -233,7 +233,6 @@ const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
         clearInterval(timer);
         setIsModalOpen(true);
 
-        // 일정 시간 후에 모달을 닫을 수 있도록 설정
         setTimeout(() => {
           setIsModalOpen(false);
           setTimeLeft(timeLimit);
