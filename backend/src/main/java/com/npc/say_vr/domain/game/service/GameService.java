@@ -4,6 +4,7 @@ import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameWaitingResponseDto;
+import java.util.Map;
 
 public interface GameService {
     Long create();
@@ -11,7 +12,7 @@ public interface GameService {
     void gameStart(Long userId);
     boolean checkQuizAnswer(SubmitAnswerRequestDto gameSubmitQuizAnswerRequestDto);
     String getQuizQuestion(String answer);
-    String createQuizAnswer();
+    Map<String, String> createQuizAnswer();
     String updateQuiz(Long gameId);
     boolean isTimeLimitExceeded(Long gameId);
     boolean isEndGame(Long gameId);
