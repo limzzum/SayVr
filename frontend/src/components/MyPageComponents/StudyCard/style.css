@@ -1,0 +1,96 @@
+.studypage-container {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+  }
+  .studypage-inner-container {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+    width: 60vw;
+    height: 30vh;
+  }
+  .btn {
+    width: 5rem;
+  }
+  
+  
+  .study-list-container {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+  }
+  
+  .slick-slide.slick-cloned {
+    /* display: none; */
+  }
+  
+  .study-line {
+    background-color: white;
+    /* border: 1px solid gray; */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 30px auto;
+  }
+  
+  .addBtn:hover {
+    /* border-radius: 50%!important;
+    border-color:transparent;
+    &:active {
+        border-color: transparent;
+      } */
+  }
+  path:hover {
+    fill: cornflowerblue; /* Change the fill color on hover */
+    cursor: pointer; /* Change the cursor to indicate interactivity */
+  }
+  .create-new-list-modal-study {
+  }
+  
+  .icon-button:hover {
+    /* border-radius: 50%!important;
+  border-color:transparent;
+  &:active {
+      border-color: transparent;
+    } */
+    fill: cornflowerblue;
+    cursor: pointer;
+  }
+  
+  .btn {
+    width: 5rem;
+  }
+  
+  .card {
+    /* border-radius: 10px; */
+    /* background: linear-gradient(0deg, #eef5fa 0%, #eef5fa 100%), */
+    /* linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 100%), #82b7f3; */
+    border-radius: 10px;
+    border-color: transparent !important;
+    background: var(--B1, #82b7f3);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) !important;
+  }
+  .studypage-container {
+    width: 80%; /* 전체 컨테이너의 너비를 조절합니다. */
+  }
+  
+  .study-list-container {
+    width: 80%; /* 부모 컨테이너의 너비를 조절합니다. */
+    margin: 30px auto;
+  }
+  
+  /* .slick-slide.slick-cloned 스타일 수정 */
+  .slick-slide.slick-cloned {
+    display: none; /* 클론된 슬라이드를 숨깁니다. */
+  }
+  

@@ -1,15 +1,16 @@
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
 import { getUserData, UserData } from "../../api/MyPageAPI/GetUserData";
+import API_URL from "../../config";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-// import ActivityCalendar from "react-activity-calendar";
-import { ActivityCalendar } from "../../components/MyPageComponents/ActivityCalendar/ilndex";
-import img from "../../assets/MainPageAssets/MainPageImage.jpg";
+import ActiveCalendar from "../../api/MyPageAPI/ActivityCalendar";
 import MyPageBadge from "../../assets/MygradeAssets/MyPageBadge.png";
 import ChangeNicknameModal from "../../components/MyPageComponents/ChangeNicknameModal";
 import ChangeProfileModal from "../../components/MyPageComponents/ChangeProfileModal";
 import MyWordCard from "../../components/MyWordCard";
+import StudyListSection from "../../components/MyPageComponents/StudyCard";
+import VocabListPage from "../../components/MyPageComponents/WordCard";
 import "./style.css";
 
 function MyPage() {
@@ -21,6 +22,8 @@ function MyPage() {
     const fetchData = async () => {
       try {
         const data = await getUserData();
+        // 상대 경로를 절대 경로로 변환
+        data.data.profile = `${API_URL}/${data.data.profile}`;
         setUserData(data);
       } catch (error) {
         console.error("유저 데이터를 불러오는 중 오류 발생:", error);
@@ -76,11 +79,6 @@ function MyPage() {
     console.log("변경된 프로필:", newProfile);
   };
 
-  // const dummyData = [
-  //   { date: "2023-11-01", count: 3, level: 3 as Level },
-  //   { date: "2023-11-02", count: 7, level: 2 as Level },
-  // ];
-
   return (
     <div className="container" style={{ marginTop: "30px" }}>
       <div className="row justify-content-center align-items-center custom-chart-container">
@@ -115,26 +113,20 @@ function MyPage() {
       </div>
       <div className="row justify-content-center custom-chart-container">
         <h3>내 활동</h3>
-        {/* <ActivityCalendar sampleData={dummyData} colorCustomization={yourColorCustomization} showMonth={true} /> */}
-        {/* <ActivityCalendar data={dummyData} /> */}
         <div>
-          <p>잔디</p>
-        
+          <ActiveCalendar />
         </div>
       </div>
       <div className="row card-row custom-chart-container">
         <h3>내 단어장</h3>
-        <Slider {...carouselSettings}>{/* <MyWordCard /> */}</Slider>
-        {/* <MyWordCard/> */}
+        <Slider {...carouselSettings}></Slider>
+        <VocabListPage/>
       </div>
-      <div className="row card-row custom-chart-container">
-        <h3>내 스터디</h3>
-        <Slider {...carouselSettings}>
-          {/* <MyStudyCard /> */}
 
-          {/* 추가적인 카드들 */}
-        </Slider>
-      </div>
+      <h3>내 스터디</h3>
+      <Slider {...carouselSettings} className="row card-row custom-chart-container">
+        <StudyListSection />
+      </Slider>
     </div>
   );
 }

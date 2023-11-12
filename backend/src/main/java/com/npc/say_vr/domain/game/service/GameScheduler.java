@@ -24,7 +24,7 @@ public class GameScheduler {
     public void checkGameTimers() {
         for (Long gameId : games){
             if (isTimeLimitExceeded(gameId)) {
-                rabbitTemplate.convertAndSend(EXCHANGE_NAME, "alarm." + gameId);
+                rabbitTemplate.convertAndSend(EXCHANGE_NAME, "alarm."+gameId,gameId);
             }
         }
     }
@@ -40,6 +40,13 @@ public class GameScheduler {
 
     private boolean isTimeLimitExceeded(Long gameId) {
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
-        return gameStatusDto.getQuizEndTime().isBefore(LocalDateTime.now());
+        if(gameStatusDto.getQuizEndTime() != null){
+            if(gameStatusDto.getQuizEndTime().isBefore(LocalDateTime.now())){
+                gameStatusDto.setQuizEndTime(null);
+                redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
+                return true;
+            }
+        }
+        return false;
     }
 }
