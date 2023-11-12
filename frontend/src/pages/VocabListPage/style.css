@@ -5,9 +5,26 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px;
   margin: 30px auto;
+  align-items:center;
+  justify-content:center;
 }
-.slick-slide.slick-cloned {
-  /* display: none; */
+.vocab-list-title{
+  justify-content:center;
+  align-items:center;
+}
+.list-title-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-title{
+  display:flex;
+  margin:1rem;
+}
+.search-bar{
+  width:20rem!important;
+  display:flex!important;
+  align-items:center!important;
 }
 .vocab-line{
   background-color: white;
@@ -21,7 +38,6 @@
 .checked-button.checked > path{
   fill:rgb(44 179 43)
 }
-
 
 .unchecked-button.unchecked > path{
   fill:rgb(221 21 21)
@@ -51,8 +67,8 @@ border-color:transparent;
 
 .card {
   /* border-radius: 10px; */
-  /* background: linear-gradient(0deg, #eef5fa 0%, #eef5fa 100%), */
-    /* linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 100%), #82b7f3; */
+  /* background: linear-gradient(0deg, #eef5fa 0%, #eef5fa 100%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.2) 100%), #82b7f3; */
     border-radius: 10px;
     border-color:transparent!important;
     background: var(--B1, #82B7F3);

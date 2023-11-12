@@ -170,19 +170,13 @@ function VocabListPage() {
       <div className="container mt-5 flex justify-content-center">
         {menu === "main" && (
           <>
-            <div className="vocab-list-container row card-row align-items-center justify-content-center">
-              <div className="row justify-content-center align-items-center">
+            <div className="vocab-list-container row card-row">
+              <div className="vocab-list-title row">
                 <div className="row">
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div style={{ display: "flex", margin: "1rem" }}>
+                  <div className="list-title-buttons">
+                    <div className="card-title">
                       <div
-                        className="card-title private"
+                        className="card-title-private"
                         onClick={() => setMenu("private")}
                       >
                         <h1>내 단어장 </h1>
@@ -232,19 +226,13 @@ function VocabListPage() {
                 </Slider>
               </div>
             </div>
-            <div className="vocab-list-container row card-row align-items-center justify-content-center ">
-              <div className="row justify-content-center align-items-center">
+            <div className="vocab-list-container row card-row">
+              <div className="vocab-list-title row">
                 <div className="row">
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div style={{ display: "flex", margin: "1rem" }}>
+                  <div className="list-title-buttons">
+                    <div className="card-title">
                       <div
-                        className="card-title public"
+                        className="card-title-public"
                         onClick={() => {
                           setSearchCardTitles(publicCardTitles);
                           setMenu("public");
@@ -252,11 +240,8 @@ function VocabListPage() {
                       >
                         <h1>공개 단어장 </h1>
                       </div>
-                      <div
-                        className="container-fluid"
-                        style={{ width: "20rem", display:"flex", alignItems:"center" }}
-                      >
-                        <InputGroup className="search-bar">
+                      <div className="container-fluid search-bar">
+                        <InputGroup>
                           <DropdownButton
                             variant="outline-secondary"
                             title={
