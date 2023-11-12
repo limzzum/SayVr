@@ -51,6 +51,7 @@ public class GameServiceImpl implements GameService {
     private final RabbitTemplate rabbitTemplate;
     private final GameScheduler gameScheduler;
     private final WordcardService wordcardService;
+    private final RankingService rankingService;
 
     private static final String EXCHANGE_NAME = "amq.topic";
 
@@ -210,7 +211,8 @@ public class GameServiceImpl implements GameService {
         if(playerA.getWinCnt() == playerB.getWinCnt()){
             isDraw = true;
         }
-        // TODO : 랭킹 점수 업데이트
+        rankingService.updateRanking(winnerId, WINNER_POINT);
+        rankingService.updateRanking(loserId, LOSER_POINT);
 
         deleteGameStatus(gameId);
         return GameResultDto.builder().winnerId(winnerId).loserId(loserId).isDraw(isDraw)
@@ -220,7 +222,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameResultDto playerOutGame(PlayerOutRequestDto playerOutRequestDto) {
-        //TODO : 랭킹 점수 업데이트
+
         String gameId = String.valueOf(playerOutRequestDto.getGameId());
         Long outUserId = playerOutRequestDto.getOutUserId();
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
@@ -237,6 +239,8 @@ public class GameServiceImpl implements GameService {
             winnerId = playerB_userId;
             loserId = playerA_userId;
         }
+        rankingService.updateRanking(winnerId, WINNER_POINT);
+        rankingService.updateRanking(loserId, LOSER_POINT);
 
         deleteGameStatus(Long.valueOf(gameId));
 
