@@ -3,15 +3,15 @@ import "./proceeding_style.css";
 import questionImage from "../../../assets/MatchingGamePageAssets/Group 1000004195.png";
 import { sendMsg } from "../../../pages/MatchingGamePage/constants/socket";
 import { publishURL } from "../../../pages/MatchingGamePage/constants/constants";
+import Modal from "react-modal";
 
 import "./Chat.css";
 import { Form, InputGroup } from "react-bootstrap";
 
-
 interface props {
   // player: PlayerProfile;
   // opponent: PlayerProfile;
-  gameId: number,
+  gameId: number;
   chatMessage: string;
   question: string;
 }
@@ -26,14 +26,16 @@ interface PlayerProfile {
   profile: string;
 }
 
-
-
-const GameProceedingBody:React.FC<props> = ({gameId, chatMessage, question}) => {
+const GameProceedingBody: React.FC<props> = ({
+  gameId,
+  chatMessage,
+  question,
+}) => {
   return (
     <div className="game-proceeding-body-container">
       <div>
-      <Question question={question}></Question>
-      <GameTimer timeLimit={30}></GameTimer>
+        <Question question={question}></Question>
+        <GameTimer timeLimit={30}></GameTimer>
       </div>
 
       {/* <Chat></Chat> */}
@@ -43,18 +45,17 @@ const GameProceedingBody:React.FC<props> = ({gameId, chatMessage, question}) => 
 };
 
 interface QuestionProps {
-  question: string
+  question: string;
 }
 
-const Question:React.FC<QuestionProps> = ({question}) => {
+const Question: React.FC<QuestionProps> = ({ question }) => {
   return (
     <div className="question-container">
-      <img className="question-image" src={questionImage}>
-      </img>
+      <img className="question-image" src={questionImage}></img>
       <div className="question">{question}</div>
     </div>
   );
-}
+};
 
 function Chat() {
   const [messages, setMessages] = useState<string[]>([]);
@@ -97,8 +98,6 @@ function Chat() {
 
 export default GameProceedingBody;
 
-
-
 interface Player {
   playerId: string;
   nickname: string;
@@ -111,13 +110,11 @@ interface ChatMessage {
 }
 
 interface TextChattingProps {
-  gameId: number,
-  chatMessage: string
+  gameId: number;
+  chatMessage: string;
 }
 
-const TextChatting: React.FC<TextChattingProps> = ({
- gameId, chatMessage
-}) => {
+const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   const [inputText, setInputText] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
@@ -135,7 +132,6 @@ const TextChatting: React.FC<TextChattingProps> = ({
     }
 
     if (chatMessage) {
-      
       setChatMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -157,7 +153,7 @@ const TextChatting: React.FC<TextChattingProps> = ({
   };
 
   const handleSendMessage = () => {
-    console.log("handle "+ inputText);
+    console.log("handle " + inputText);
     if (inputText.trim() !== "") {
       onSendMessage();
       setInputText("");
@@ -165,10 +161,9 @@ const TextChatting: React.FC<TextChattingProps> = ({
   };
 
   const onSendMessage = () => {
-    console.log("text : "+ inputText)
+    console.log("text : " + inputText);
     const body = { socketType: "QUIZ", message: inputText };
-    sendMsg(publishURL+"." + gameId, body)
-  
+    sendMsg(publishURL + "." + gameId, body);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -193,9 +188,7 @@ const TextChatting: React.FC<TextChattingProps> = ({
                       : "messageContainer otherMessage"
                   }`}
                 >
-                  <div>
-                    {message.playerId === "1" ? "나" : message.sender}
-                  </div>
+                  <div>{message.playerId === "1" ? "나" : message.sender}</div>
                   <div>{message.text}</div>
                 </div>
               ))}
@@ -228,16 +221,23 @@ const TextChatting: React.FC<TextChattingProps> = ({
   );
 };
 
-
-
-
 const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (timeLeft > 0) {
         setTimeLeft((prevTime) => prevTime - 1);
+      } else {
+        clearInterval(timer);
+        setIsModalOpen(true);
+
+        // 일정 시간 후에 모달을 닫을 수 있도록 설정
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setTimeLeft(timeLimit);
+        }, 3000);
       }
     }, 1000);
 
@@ -248,9 +248,19 @@ const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
 
   return (
     <div className="game-timer">
-      <div className="time-left-bar" style={{ width: `${(timeLeft / timeLimit) * 100}%` }}></div>
+      <div
+        className="time-left-bar"
+        style={{ width: `${(timeLeft / timeLimit) * 100}%` }}
+      ></div>
       <div className="time-left">{timeLeft} seconds left</div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Example Modal"
+      >
+        <p>시간이 종료되었습니다.</p>
+        <p>3초 후 다음 라운드가 시작됩니다..</p>
+      </Modal>
     </div>
   );
 };
-
