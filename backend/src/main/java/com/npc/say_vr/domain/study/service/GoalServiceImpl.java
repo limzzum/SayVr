@@ -300,6 +300,42 @@ public class GoalServiceImpl implements GoalService{
             .build();
     }
 
+    // TODO 성능 개선 : goal 삭제된 거 뺴고 들고 오는걸로 수정
+    @Transactional
+    @Override
+    public void createNewMemberCheckListItems(Long userId, Long studyId) {
+        LocalDate today = LocalDate.now();
+
+        WeeklySprint weeklySprint = weeklySprintRepository.findNowSprint(studyId);
+
+        if (!(today.isAfter(weeklySprint.getTargetDate()) && today.isBefore(weeklySprint.getTargetDate().plusDays(6))) &&
+                !today.isEqual(weeklySprint.getTargetDate()) &&
+                !today.isEqual(weeklySprint.getTargetDate().plusDays(6))) {
+            return;
+        }
+
+        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
+
+        List<Goal> goalList = weeklySprint.getGoalList();
+
+        for(Goal goal : goalList) {
+            String description = goal.getDescription();
+            if(!goal.getOptionType().equals(OptionType.ETC)) {
+                description += " (" + 0 + "/" + goal.getCount()+")"; // TODO : 개선하기
+            }
+            ChecklistItem checklistItem = ChecklistItem.builder()
+                    .checkListStatus(CheckListStatus.ONGOING)
+                    .optionCheckItem(OptionCheckItem.STUDYGOAL)
+                    .description(description)
+                    .current_count(0)
+                    .goal(goal)
+                    .studyMember(studyMember)
+                    .weeklySprint(weeklySprint)
+                    .build();
+            checkListItemRepository.save(checklistItem);
+        }
+    }
+
     // TODO : 동적으로 작성하기 => 만약 weeklysprintId가 없다면 가장 최근 값들고오는걸로 repository 가져올 수 있을 것 가틈!
     @Override
     public WeeklySprintDetailResponse readNowWeeklySprint(Long userId, Long studyId) {
