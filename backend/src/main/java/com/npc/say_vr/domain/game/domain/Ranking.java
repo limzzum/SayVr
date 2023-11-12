@@ -39,5 +39,12 @@ public class Ranking {
     @JoinColumn(name = "tier_id")
     private Tier tier;
 
+    public void updatePoint(int point){
+        this.point += point;
+    }
+
+    public void updateTier(Tier tier){
+        this.tier = tier;
+    }
 
 }
