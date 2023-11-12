@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Modal, Button, Form } from "react-bootstrap";
 import API_URL from "../../../config";
 
 interface ChangeProfileModalProps {
@@ -12,17 +12,21 @@ interface ChangeProfileModalProps {
 const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, onProfileChange }) => {
   const [selectedProfile, setSelectedProfile] = useState<File | null>(null);
 
+  useEffect(() => {
+    setSelectedProfile(null);
+  }, [show]);
+
   const handleProfileChange = async () => {
     try {
       if (selectedProfile) {
         const formData = new FormData();
-        formData.append("profileImg", selectedProfile);
+        formData.append("profile", selectedProfile);
 
         await axios({
           method: "put",
           url: `${API_URL}/user/profileimg`,
           headers: {
-            // Authorization: `Bearer ${userToken}`, 
+            Authorization: null, 
             "Content-Type": "multipart/form-data",
           },
           data: formData,

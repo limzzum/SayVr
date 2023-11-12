@@ -28,30 +28,24 @@ public class RabbitMqListener {
 
     private final RabbitTemplate rabbitTemplate;
     private final GameService gameService;
-    private static final String EXCAHGE_NAME = "amq.topic";
+    private static final String EXCHANGE_NAME = "amq.topic";
 
     @RabbitListener(bindings = @QueueBinding(
-        value = @Queue(value = "game.queue", durable = "true"),
-        exchange = @Exchange(value = EXCAHGE_NAME),
+        value = @Queue(value = "alarm.queue", durable = "true"),
+        exchange = @Exchange(value = EXCHANGE_NAME),
         key = "alarm.*"
     ))
-    public void bronze(Message message, Channel channel) throws IOException {
-        //TODO: 알람만 받도록 해야함
-        if(!message.getMessageProperties().getReceivedRoutingKey().equals("alarm.*")){
-            System.out.println("알람 아님");
-            System.out.println(message.toString());
-            return;
-        }
+    public void bronze(Message message, Channel channel) {
+
         byte[] body = message.getBody();
         String gameId = new String(body);
         log.info("{}번 게임방 퀴즈 제한시간 종료 메시지큐 리스너 호출됨 ", gameId);
-
         GameSocketResponseDto gameSocketResponseDto;
         if(gameService.isEndGame(Long.valueOf(gameId))){
             gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
                 .data(gameService.getGameResult(Long.valueOf(gameId)))
                 .build();
-            rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
+            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
             return;
         }
 
@@ -59,7 +53,7 @@ public class RabbitMqListener {
         gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.QUIZ_TIME_OVER)
             .message(quiz)
             .build();
-        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
     }
 
@@ -68,20 +62,24 @@ public class RabbitMqListener {
         log.info("connected");
     }
 
-//    @EventListener
-//    public void connectionListener(SessionDisconnectEvent event){
-//        log.info("disconnected");
-//        Long userId = Long.valueOf(event.getUser().getName());
-//        Long gameId = gameService.findGameIdByUserId(userId);
-//
-//        if(gameId == null){
-//            throw new IllegalArgumentException("todo");
-//        }
-//        GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
-//            .message(PLAYER_OUT_MESSAGE.getMessage())
-//            .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
-//                .outUserId(userId).build()))
-//            .build();
-//        rabbitTemplate.convertAndSend(EXCAHGE_NAME, "game." + gameId, gameSocketResponseDto);
-//    }
+    @EventListener
+    public void connectionListener(SessionDisconnectEvent event){
+        log.info("disconnected");
+        Long userId = Long.valueOf(event.getUser().getName());
+        Long gameId = gameService.findGameIdByUserId(userId);
+
+        if(gameId == null) {
+            throw new IllegalArgumentException();
+        }
+
+            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder()
+                .socketType(SocketType.PLAYER_OUT)
+                .message(PLAYER_OUT_MESSAGE.getMessage())
+                .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
+                    .outUserId(userId).build()))
+                .build();
+            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+
+
+    }
 }

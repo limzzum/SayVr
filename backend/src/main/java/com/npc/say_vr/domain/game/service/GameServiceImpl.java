@@ -198,6 +198,8 @@ public class GameServiceImpl implements GameService {
             isDraw = true;
         }
         // TODO : 랭킹 점수 업데이트
+
+        deleteGameStatus(gameId);
         return GameResultDto.builder().winnerId(winnerId).loserId(loserId).isDraw(isDraw)
             .winnerPoint(WINNER_POINT).loserPoint(LOSER_POINT).drawPoint(DRAW_POINT).build();
 
@@ -205,14 +207,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameResultDto playerOutGame(PlayerOutRequestDto playerOutRequestDto) {
-        //TODO : 레디스 게임 상태 관리 삭제 & 랭킹 점수 업데이트
+        //TODO : 랭킹 점수 업데이트
         String gameId = String.valueOf(playerOutRequestDto.getGameId());
         Long outUserId = playerOutRequestDto.getOutUserId();
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
         if(gameStatusDto == null){
             throw new IllegalArgumentException("todo");
         }
-
 
         Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
         Long playerB_userId = gameStatusDto.getPlayerB().getUserId();
@@ -223,6 +224,8 @@ public class GameServiceImpl implements GameService {
             winnerId = playerB_userId;
             loserId = playerA_userId;
         }
+
+        deleteGameStatus(Long.valueOf(gameId));
 
         return GameResultDto.builder().isDraw(false).winnerId(winnerId).loserId(loserId)
             .winnerPoint(WINNER_POINT).build();
@@ -244,5 +247,11 @@ public class GameServiceImpl implements GameService {
         // TODO : 파파고 api 이용해 한글로 번역 => 질문만들기
         String question = "질문";
         return question;
+    }
+
+    @Override
+    public void deleteGameStatus(Long gameId) {
+        gameScheduler.removeGameRoom(gameId);
+        redisUtil.deleteGameStatusList(String.valueOf(gameId));
     }
 }

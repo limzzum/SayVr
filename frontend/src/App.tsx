@@ -14,7 +14,7 @@ import TeamCOCOPage from "./pages/ShadowingPage/TeamCOCOPage";
 import StudyPage from "./pages/StudyPage";
 import VocabListPage from "./pages/VocabListPage";
 import DeckDetail from "./pages/VocabListPage/DeckDetailPage";
-import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage"
+import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage";
 import StudyDetail from "./pages/StudyPage/StudyDetailPage";
 
 function App() {
@@ -23,10 +23,12 @@ function App() {
       <Route path="/Login" element={<LoginPage />} />
       <Route path="/" element={<MainPage />} />
       <Route path="/MatchingGame" element={<MatchingGameWaitingPage />} />
-      <Route path="/MatchingGame/game" element={<MatchingGameProceedingPage />} />
       <Route path="/My" element={<MyPage />} />
       <Route path="/MyStudyAnalysis" element={<MyStudyAnalysisPage />} />
-      <Route path="/MyStudyAnalysis/Detail" element={<MyStudyAnalysisDetailPage />} />
+      <Route
+        path="/MyStudyAnalysis/Detail"
+        element={<MyStudyAnalysisDetailPage />}
+      />
       <Route path="/Shadowing" element={<ShadowingPage />} />
       <Route path="/Shadowing/BBCPage" element={<BBCPage />} />
       <Route path="/Shadowing/CNNPage" element={<CNNPage />} />
@@ -40,10 +42,8 @@ function App() {
       <Route path="/study/:id" element={<StudyDetail />} />
       <Route path="/VocabList" element={<VocabListPage />} />
       <Route path="/flashcard/:id" element={<DeckDetail />} />
-      
     </Routes>
   );
-  
 }
 
 export default App;
