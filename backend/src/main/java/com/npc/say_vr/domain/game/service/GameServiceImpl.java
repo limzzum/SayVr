@@ -3,6 +3,9 @@ package com.npc.say_vr.domain.game.service;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_START_MESSAGE;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_STATUS_INFO;
 
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordcardDto;
+import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.domain.Game;
@@ -20,7 +23,9 @@ import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.util.RedisUtil;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -45,6 +50,7 @@ public class GameServiceImpl implements GameService {
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
     private final GameScheduler gameScheduler;
+    private final WordcardService wordcardService;
 
     private static final String EXCHANGE_NAME = "amq.topic";
 
@@ -148,20 +154,27 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public String createQuizAnswer() {
-        //TODO : 단어 db에서 정답 가져오기
-        String answer = "answer";
-        return answer;
+    public Map<String, String> createQuizAnswer() {
+        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
+        WordcardDto wordcard = wordUpdateResponseDto.getWordcard();
+
+        Map<String, String> result = new HashMap<>();
+        String answer = wordcard.getEng() != null ? wordcard.getEng() :"answer";
+        String question = wordcard.getKor() != null ? wordcard.getKor() :"질문";
+        result.put("answer", answer);
+        result.put("question", question);
+        return result;
     }
 
     @Override
     public String updateQuiz(Long gameId) {
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
-        String quizAnswer = createQuizAnswer();
-        String quizQuestion = getQuizQuestion(quizAnswer);
+        Map<String, String> quiz = createQuizAnswer();
+        String quizAnswer = quiz.get("answer");
+        String quizQuestion = quiz.get("question");
         gameStatusDto.setQuestion(quizQuestion);
         gameStatusDto.setAnswer(quizAnswer);
-        gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(30));
+        gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(33));
         gameStatusDto.setCurRound(gameStatusDto.getCurRound() + 1);
         redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
         return quizQuestion;
