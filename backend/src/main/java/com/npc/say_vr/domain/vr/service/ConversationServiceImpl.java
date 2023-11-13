@@ -62,10 +62,10 @@ public class ConversationServiceImpl implements ConversationService {
             + "51-75: Makes 1-2 grammatical or lexical errors. Uses a moderate range of vocabulary and sentence structures. Language is generally appropriate for the context.\n"
             + "76-100: Makes no grammatical or lexical errors. Uses a wide range of vocabulary and sentence structures. Language is always appropriate for the context and is used in a sophisticated and nuanced way.\n"
             + "Communicative Effectiveness\n"
-            + "0-25: Unable to convey ideas and feelings clearly, forced and unnatural conversation, no effort to understand AI\n"
-            + "26-50: Sometimes conveys ideas and feelings clearly, somewhat forced and unnatural conversation, some effort to understand AI\n"
-            + "51-75: Generally conveys ideas and feelings clearly, mostly natural and engaging conversation, good effort to understand AI\n"
-            + "76-100: Consistently conveys ideas and feelings clearly, always natural and engaging conversation, strong effort to understand AI\n"
+            + "0-25: Unable to convey ideas and feelings clearly, forced and unnatural conversation, no effort to understand \n"
+            + "26-50: Sometimes conveys ideas and feelings clearly, somewhat forced and unnatural conversation, some effort to understand \n"
+            + "51-75: Generally conveys ideas and feelings clearly, mostly natural and engaging conversation, good effort to understand \n"
+            + "76-100: Consistently conveys ideas and feelings clearly, always natural and engaging conversation, strong effort to understand \n"
             + "Respond in JSON format, the review and situation needs to be in Korean\n"
             + "{\"grammar\":score ,\"context\":score,\"review\":\"short review of the user proficiency, faults and good points, explain why the points are taken off explained in Korean\", \"situation\":\"the conversation summary in one sentence in Korean\"}";
 
