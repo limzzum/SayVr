@@ -68,24 +68,9 @@ function MatchingGameWaitingPage() {
   const [imageUrl, setImageUrl] = useState("");
 
   const [curRound, setCurRound] = useState(1);
-  const [playerA, setPlayerA] = useState<Player>({
-    userId: 0,
-    nickname: "",
-    ranking: 0,
-    tierImage: "",
-    point: 0,
-    winCnt: 0,
-    profile: "",
-  });
-  const [playerB, setPlayerB] = useState<Player>({
-    userId: 0,
-    nickname: "",
-    ranking: 0,
-    tierImage: "",
-    point: 0,
-    winCnt: 0,
-    profile: "",
-  });
+  const [playerA, setPlayerA] = useState<Player>();
+  const [playerB, setPlayerB] = useState<Player>();
+
   const [question, setQuestion] = useState("");
   const [chatMessage, setChatMessage] = useState("");
 
@@ -95,11 +80,18 @@ function MatchingGameWaitingPage() {
     console.log("게임 대기 페이지 socket 응답받음");
     if (response.socketType == SocketType.GAME_START) {
       console.log("게임 매칭");
-      player = response.gameStatusDto!.playerA;
-      opponent = response.gameStatusDto!.playerB;
+      response.gameStatusDto?.playerA.userId == 1
+        ? setPlayerA(response.gameStatusDto!.playerA)
+        : setPlayerA(response.gameStatusDto!.playerB);
+      response.gameStatusDto?.playerB.userId == 1
+        ? setPlayerA(response.gameStatusDto!.playerB)
+        : setPlayerB(response.gameStatusDto!.playerA);
 
-      setPlayerA(player);
-      setPlayerB(opponent);
+      // player = response.gameStatusDto!.playerA;
+      // opponent = response.gameStatusDto!.playerB;
+
+      // setPlayerA(player);
+      // setPlayerB(opponent);
       Socket.sendMsg(publishURL + "." + gameId, messageToSend);
 
       // history("/MatchingGame-game", {
@@ -121,8 +113,9 @@ function MatchingGameWaitingPage() {
       console.log("퀴즈 정보");
       if (response.data.answer) {
         setCurRound(response.gameStatusDto!.curRound);
-        setPlayerA(response.gameStatusDto!.playerA);
-        setPlayerB(response.gameStatusDto!.playerB);
+
+        // setPlayerA(response.gameStatusDto!.playerA);
+        // setPlayerB(response.gameStatusDto!.playerB);
         setQuestion(response.gameStatusDto!.question);
         // let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
         alert("유저 아이디 : " + response.data.userId + " 정답입니다");
@@ -131,15 +124,13 @@ function MatchingGameWaitingPage() {
 
     if (response.socketType == SocketType.PLAYER_OUT) {
       console.log("상대 플레이어 게임 떠남.");
-      alert("상대 플레이어 게임 떠남.");
+      // alert("상대 플레이어 게임 떠남.");
       // private boolean isDraw;
       //   private Long winnerId;
       //   private Long loserId;
       //   private int winnerPoint;
       //   private int loserPoint;
       //   private int drawPoint;
-
-      alert(response.data);
     }
 
     if (response.socketType == SocketType.GAME_INFO) {
@@ -168,6 +159,7 @@ function MatchingGameWaitingPage() {
           console.log("is start : " + response.data.data.gameStart);
           setGameId(response.data.data.gameId);
           setImageUrl(imageURL + response.data.data.profile);
+
           setGameStart(response.data.data.gameStart);
 
           return () => {};
@@ -197,11 +189,12 @@ function MatchingGameWaitingPage() {
   }, [gameId]);
 
   if (gameStart) {
+    setTimeout(() => {}, 10000);
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <GameProceedingHeader
-          player={playerA}
-          opponent={playerB}
+          player={playerA!}
+          opponent={playerB!}
         ></GameProceedingHeader>
         <GameProceedingBody
           gameId={gameId!}
@@ -215,8 +208,13 @@ function MatchingGameWaitingPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Header gameId={gameId} />
-        {imageUrl && <Body image={imageUrl}></Body>}
-        <Footer />
+        <Body
+          image={imageUrl}
+          rankPoint1={100}
+          opponent={playerB?.profile}
+          rankPoint2={200}
+        ></Body>
+        {!gameStart && <Footer />}
       </div>
     );
   }
