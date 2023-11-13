@@ -6,13 +6,13 @@ interface props {
   rankPoint1: number;
   opponent?: string;
   rankPoint2?: number;
+  isMatch: boolean;
 }
-const Body: React.FC<props> = ({ image, rankPoint1, opponent, rankPoint2 }) => {
-  if (opponent == null) {
+const Body: React.FC<props> = ({ image, rankPoint1, opponent, rankPoint2, isMatch }) => {
+  if (!isMatch) {
     return (
       <div className="body-container">
         <div className="profile-container"></div>
-        {/* <div> rankPoint1</div> */}
         <img src={image} alt="profile image" className="profile-image" />
       </div>
     );
