@@ -104,7 +104,7 @@ function CheckListCard({
       return;
     }
 
-    if (!weeklySprintStatus) {
+    if (weeklySprintStatus) {
       return;
     }
 
@@ -223,17 +223,7 @@ function CheckListCard({
               >
                 {task.description}
               </div>
-              {weeklySprintStatus &&
-                checkList.studyMemberId === memberId &&
-                task.optionCheckItem === OptionCheckItem.PERSONAL && (
-                  <div
-                    className="edit"
-                    onClick={() => onEdit(task.checkListId, task.description)}
-                  >
-                    <MdModeEdit />
-                  </div>
-                )}
-              {weeklySprintStatus &&
+              {!weeklySprintStatus &&
                 checkList.studyMemberId === memberId &&
                 task.optionCheckItem === OptionCheckItem.PERSONAL && (
                   <div
@@ -246,20 +236,22 @@ function CheckListCard({
             </div>
           ))}
         </div>
-        {open && weeklySprintStatus && checkList.studyMemberId === memberId && (
-          <div className="insert-form-positioner">
-            <form className="insert-form" onSubmit={onSubmit}>
-              <input
-                autoFocus
-                className="input"
-                onChange={onChange}
-                value={editing.status ? editing.text : value}
-                placeholder="할 일을 입력 후, Enter 를 누르세요"
-              />
-            </form>
-          </div>
-        )}
-        {weeklySprintStatus && checkList.studyMemberId === memberId && (
+        {open &&
+          !weeklySprintStatus &&
+          checkList.studyMemberId === memberId && (
+            <div className="insert-form-positioner">
+              <form className="insert-form" onSubmit={onSubmit}>
+                <input
+                  autoFocus
+                  className="input"
+                  onChange={onChange}
+                  value={editing.status ? editing.text : value}
+                  placeholder="할 일을 입력 후, Enter 를 누르세요"
+                />
+              </form>
+            </div>
+          )}
+        {!weeklySprintStatus && checkList.studyMemberId === memberId && (
           <button
             className={`circle-button ${open ? "open" : ""}`}
             onClick={onToggleForm}

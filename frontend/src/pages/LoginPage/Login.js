@@ -5,69 +5,84 @@ import FacebookLogin from "@greatsumini/react-facebook-login";
 // axios.defaults.withCredentials = true;
 
 function Login() {
-  function facebookLogin(accessToken) {
-    const data = {
-      accessToken: accessToken,
-    };
-
-    const Baseurl = "http://localhost:8080";
-    // const Baseurl = "https://말해vr.site";
+  const userLogin = function () {
+    const form = document.querySelector("#login-form");
+    const formData = new FormData(form);
 
     axios
-      .post(Baseurl + "/api/user/facebookLogin", data)
+      .post("http://localhost/web/auth/login", formData)
       .then((response) => {
-        console.log(response);
-        if (response.data.httpStatus === "OK") {
+        // console.log(response.data.status);
+        if (response.data.status === "success") {
           window.location.href = "/";
-          // 이제 localstorge에 저장하기!
-          alert("페이스북 로그인 성공!");
         } else {
-          alert("페이스북 로그인 실패!");
+          alert("로그인 실패!");
         }
       })
-      .catch((exception) => {
-        alert("페이스북 로그인 오류!");
-        console.log(exception);
+      .catch((error) => {
+        alert("로그인 오류!");
+        console.log(error);
       });
-  }
+  };
 
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault(); // 이벤트의 기본 동작을 막음
+      userLogin();
+    }
+  };
   return (
     <div className="loginB">
       <div className="login-body">
-        <div className="login-other">
-          <FacebookLogin
-            appId="1463287787865536"
-            initParams={{
-              cookie: true,
-              xfbml: true,
-              version: "v16.0",
-            }}
-            scope="email, public_profile"
-            style={{
-              backgroundColor: "#4267b2",
-              color: "#fff",
-              fontSize: "16px",
-              padding: "12px 24px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-            onSuccess={(response) => {
-              console.log("Login Success!");
-              console.log(response);
-              facebookLogin(response.accessToken);
-            }}
-            onFail={(error) => {
-              console.log("Login Failed!");
-              console.log("status: ", error.status);
-            }}
-            onProfileSuccess={(response) => {
-              console.log("Get Profile Success!");
-              console.log("name: ", response);
-              console.log(response);
-            }}
-          />
+        <div className="login-form-img">
+          <img></img>
         </div>
+        <form
+          id="login-form"
+          action="login"
+          method="post"
+          className="login-form"
+        >
+          <h2>로그인</h2>
+          <table>
+            <tr>
+              <th className="email-th">Email</th>
+              <td>
+                <input type="email" className="email" name="email"></input>
+              </td>
+            </tr>
+            <tr>
+              <th className="password-th">password</th>
+              <td>
+                <input
+                  type="password"
+                  className="password"
+                  name="password"
+                  onKeyDown={handleKeyDown}
+                ></input>
+              </td>
+            </tr>
+          </table>
+
+          <div>
+            {/* <input type='checkbox' className='checkbox'>ID 저장</input> */}
+            <button
+              id="btn-login"
+              type="button"
+              className="btn-login"
+              onClick={userLogin}
+            >
+              Login
+            </button>
+          </div>
+
+          <div className="under-line">
+            <p className="line1"></p>
+            <p className="line2">Or</p>
+            <p className="line3"></p>
+          </div>
+          <div className="login-other">{/* <SocialKakao /> */}</div>
+        </form>
       </div>
     </div>
   );
