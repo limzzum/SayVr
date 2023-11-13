@@ -29,10 +29,12 @@ public class UserResponseDto {
         private String tier;
 
         @Builder
-        public UserInfoResponseDto(User user) {
+        public UserInfoResponseDto(User user, Long rank, String tier) {
             this.username = user.getUsername();
             this.nickname = user.getNickname();
             this.profile = user.getProfile();
+            this.ranking = rank;
+            this.tier = tier;
         }
     }
 
