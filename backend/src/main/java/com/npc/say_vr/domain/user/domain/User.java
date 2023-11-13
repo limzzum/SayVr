@@ -36,11 +36,12 @@ public class User extends BaseEntity {
     @Column(name = "user_id")
     private Long id;
 
+
     @Size(min = 2, max = 10)
     @NotNull
     private String username;
 
-    @NotNull
+//    @NotNull
     private String email;
 
     @Size(min = 2, max = 10)

@@ -35,4 +35,9 @@ public class WeeklySprintRepositoryImpl implements WeeklySprintRepository{
   public Long findNowSprintId(Long studyId) {
     return queryDslWeeklySprintRepository.findNowSprintId(studyId);
   }
+
+  @Override
+  public WeeklySprint findNowSprint(Long studyId) {
+    return queryDslWeeklySprintRepository.findNowSprint(studyId);
+  }
 }

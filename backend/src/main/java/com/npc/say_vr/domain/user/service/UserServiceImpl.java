@@ -3,6 +3,9 @@ package com.npc.say_vr.domain.user.service;
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.ALREADY_EXIST_USER;
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.NOT_EXIST_USER;
 
+import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.repository.RankingRepository;
+import com.npc.say_vr.domain.game.service.RankingService;
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
@@ -13,14 +16,8 @@ import com.npc.say_vr.domain.user.exception.UserNotFoundException;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.file.FileStore;
 import com.npc.say_vr.global.util.JwtUtil;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +32,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileStore fileStore;
     private final JwtUtil jwtUtil;
+    private final RankingService rankingService;
+    private final RankingRepository rankingRepository;
+
 
     private Long createUser(User user) {
         if (isExistUser(user.getId())) {
@@ -48,7 +48,10 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponseDto readUser(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException(NOT_EXIST_USER.getMessage()));
-        return UserInfoResponseDto.builder().user(user).build();
+        Long rank = rankingService.readRank(userId);
+        Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
+
+        return UserInfoResponseDto.builder().user(user).rank(rank).tier(ranking.getTier().getImage()).build();
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.npc.say_vr.domain.study.dto.requestDto.CreateStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.JoinStudyRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.StudySliceRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateStudyRequestDto;
+import com.npc.say_vr.domain.study.dto.responseDto.StudyEnterResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyPageDetailResponseDto;
 import com.npc.say_vr.domain.study.service.GoalService;
 import com.npc.say_vr.domain.study.service.StudyDeckService;
@@ -106,10 +107,12 @@ public class StudyApiController {
 
   @PostMapping("/join")
   public ResponseEntity<?> joinStudy(@RequestBody JoinStudyRequestDto joinStudyRequestDto) {
-    Long userId = 2L;
+    Long userId = 4L;
+    StudyEnterResponseDto studyEnterResponseDto = studyService.joinStudy(userId, joinStudyRequestDto.getStudyId());
+    goalService.createNewMemberCheckListItems(userId,joinStudyRequestDto.getStudyId());
     ResponseDto responseDto = ResponseDto.builder()
             .message(STUDY_JOIN_SUCCESS.getMessage())
-            .data(studyService.joinStudy(userId, joinStudyRequestDto.getStudyId()))
+            .data(studyEnterResponseDto)
             .httpStatus(STUDY_JOIN_SUCCESS.getHttpStatus())
             .build();
 
