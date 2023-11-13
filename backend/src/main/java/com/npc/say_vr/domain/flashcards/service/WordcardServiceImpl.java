@@ -194,7 +194,7 @@ public class WordcardServiceImpl implements WordcardService {
                 String[] datalines = line.split(",");
                 try {
                     String kor = datalines[0].replace("\"", "").trim();
-                    String eng = datalines[2].replace("\"", "").trim();
+                    String eng = datalines[1].replace("\"", "").trim();
 
 
                     createWordcards(userId, flashcardId, kor, eng);

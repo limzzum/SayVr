@@ -5,6 +5,8 @@ import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.NOT_EXIST
 
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.domain.user.domain.User;
+import com.npc.say_vr.domain.user.dto.CreateUserRequestDto;
+import com.npc.say_vr.domain.user.dto.LoginUserRequestDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
@@ -68,6 +70,56 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkUserId(String email) {
+        if(userRepository.findByEmail(email).isPresent()){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkNickname(String nickname) {
+        if(userRepository.findByNickname(nickname).isPresent()){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void createUser(CreateUserRequestDto createUserRequestDto) {
+        if(!checkUserId(createUserRequestDto.getEmail())) {
+            // 예외처리
+            return;
+
+        }
+        if(!checkNickname(createUserRequestDto.getNickname())) {
+            // 예외처리
+            return;
+        }
+        User newUser = User.builder()
+            .username(createUserRequestDto.getName())
+            .email(createUserRequestDto.getEmail())
+            .nickname(createUserRequestDto.getNickname())
+//            .profile(imageUrl)
+            .password(createUserRequestDto.getPassword())
+            .userStatus(UserStatus.ACTIVE)
+            .build();
+
+        userRepository.save(newUser);
+    }
+
+    @Override
+    public TokenResponseDto loginUser(LoginUserRequestDto loginUserRequestDto) {
+        // 예외처리
+        User user = userRepository.findByEmailAndPassword(loginUserRequestDto.getEmail(),loginUserRequestDto.getPassword()).orElseThrow();
+
+        return TokenResponseDto.builder()
+            .accessToken(jwtUtil.createJwtToken(user.getId()))
+            .refreshToken(jwtUtil.createRefreshToken(user.getId()))
+            .build();
+    }
+
+    @Override
     public void updateNickname(Long userId, String nickname) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException(NOT_EXIST_USER.getMessage()));
@@ -108,7 +160,7 @@ public class UserServiceImpl implements UserService {
         String url = (String) ((Map) ((Map) result.get("picture")).get("data")).get("url");
         String id = (String) result.get("id");
 
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).get();
 
         if(user == null) {
             String imageUrl = SaveUserProfileUrl(url,id);
