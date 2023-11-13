@@ -1,6 +1,6 @@
 // CreateNewListModal.tsx
 import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap"
+import { Button, Form, Modal } from "react-bootstrap"
 import { createPersonalDeck } from "../../api/VocabListAPI/FlashcardsAPI"
 
 interface CreateNewListModalProps {
@@ -63,21 +63,26 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
       <Modal.Header closeButton>
         <Modal.Title>새 단어장</Modal.Title>
       </Modal.Header>
-      <Modal.Body className='row '>
-        <p>제목</p>
-        <input name='name' type='text' value={flashcardForm.name} placeholder='단어장 제목을 입력해주세요' onChange={handleInputChange} />
-        <div className='row mt-2'>
-          <p className='col-2'>공개</p>
-          <div className='form-check form-switch col-2'>
-            <input
-              className='form-check-input'
-              name='privacyStatus'
-              type='checkbox'
-              checked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
-              id='flexSwitchCheckDefault'
+      <Modal.Body className='row ' style={{ margin: "1rem" }}>
+        <Form.Label htmlFor='title'>제목</Form.Label>
+        <Form.Control
+          type='text'
+          name='name'
+          id='flashcard-title'
+          value={flashcardForm.name}
+          placeholder='단어장 제목을 입력해주세요'
+          onChange={handleInputChange}
+        />
+        <div className='row mt-4'>
+          <div className='col'>
+            <Form.Check
+              type='switch'
+              name='flashcardStatus'
+              id='privacy-status'
+              label='단어장 공개 여부'
               onChange={handleInputChange}
+              defaultChecked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
             />
-            <label className='form-check-label' htmlFor='flexSwitchCheckDefault'></label>
           </div>
         </div>
       </Modal.Body>
