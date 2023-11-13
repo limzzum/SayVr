@@ -161,12 +161,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Map<String, String> createQuizAnswer() {
-        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
-        WordcardDto wordcard = wordUpdateResponseDto.getWordcard();
+//        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
+        WordcardDto wordcard = null; //wordUpdateResponseDto.getWordcard();
 
         Map<String, String> result = new HashMap<>();
-        String answer = wordcard.getEng() != null ? wordcard.getEng() :"answer";
-        String question = wordcard.getKor() != null ? wordcard.getKor() :"질문";
+        String answer = wordcard != null ? wordcard.getEng() :"answer";
+        String question = wordcard != null ? wordcard.getKor() :"질문";
         result.put("answer", answer);
         result.put("question", question);
         return result;
