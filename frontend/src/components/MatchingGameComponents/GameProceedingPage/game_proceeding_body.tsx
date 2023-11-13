@@ -235,11 +235,9 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
       } else {
         clearInterval(timer);
         setIsModalOpen(true);
-        sendMsg(publishURL + "." + gameId);
 
         setTimeout(() => {
           setTimeLeft(timeLimit);
-
           setIsModalOpen(false);
         }, 3000);
       }
