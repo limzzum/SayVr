@@ -2,8 +2,8 @@
   margin-top: 50px;
   border: 1px solid lightgray;
   border-radius: 8px;
-  width: 1300px;
-  height: 530px;
+  width: 1150px;
+  height: 650px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,6 +49,11 @@
   background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
   border: none;
 }
+
+#btn-signUpMove{
+  width: 310px;
+}
+
 
 #btn-login {
   width: 310px;
@@ -118,9 +123,15 @@
 .login-other {
   display: flex;
   flex-direction: column;
-  margin-left: 52px;
+  margin-left: 50px;
+  /* justify-content: center; */
+  /* text-align: center; */
 }
 
 .login-other button {
   margin-bottom: 15px;
+}
+
+.NaverLogin {
+  padding-top: 15px;
 }

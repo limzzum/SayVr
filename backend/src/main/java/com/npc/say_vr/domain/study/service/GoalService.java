@@ -24,6 +24,8 @@ public interface GoalService {
 
     WeeklySprintDetailResponse readGoalAndCheckListItem(Long userId,Long studyId,Long weeklySprintId);
 
+    void createNewMemberCheckListItems(Long userId, Long studyId);
+
     WeeklySprintDetailResponse readNowWeeklySprint(Long userId,Long studyId);
 
     Long findPreviousSprintId(Long studyId, Long weeklySprintId);

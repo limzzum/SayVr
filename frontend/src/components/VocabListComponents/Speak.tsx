@@ -12,7 +12,7 @@ const Speak: React.FC<Props> = ({ word }) => {
   const [text, setText] = useState(word);
 
   const [voice, setVoice] = useState();
-
+//TODO 음성 제공 아예 안 될때 예외처리 !!
   //   useEffect(() => {
 
   //   }, [speech]);
@@ -20,8 +20,8 @@ const Speak: React.FC<Props> = ({ word }) => {
     const speech = new Speech();
     speech.init().then((data: any) => {
       console.log(data);
-      setVoice(data.voices[0].name);
-      speech.setVoice(data.voices[0].name);
+      setVoice(data.voices.length>2?data.voices[2].name:data.voices[0].name);
+      speech.setVoice(data.voices.length>2?data.voices[2].name:data.voices[0].name);
       speech.speak({
         text:text,
         queue:false,

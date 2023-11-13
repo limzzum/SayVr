@@ -1,38 +1,35 @@
 import { FC, useEffect, useState } from "react"
 import { WordcardDto, WordcardStatus, deleteCard, updateWordProgress } from "../../api/VocabListAPI/FlashcardsAPI"
+import "../../pages/VocabListPage/style.css"
 import IconButton from "./IconButton"
-import SoundIcon from "./Icons/SoundIcon"
-import UncheckedIcon from "./Icons/UncheckedIcon"
 import CheckedIcon from "./Icons/CheckedIcon"
 import RemoveIcon from "./Icons/RemoveIcon"
-import "../../pages/VocabListPage/style.css"
+import UncheckedIcon from "./Icons/UncheckedIcon"
 import Speak from "./Speak"
 interface VocabLineProps {
   props: WordcardDto
+  saveMode:boolean,
 }
 
-export const VocabLine: FC<VocabLineProps> = ({ props }) => {
-  const [eng, setEng] = useState(props.eng)
-  const [kor, setKor] = useState(props.kor)
+export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
   const [status, setStatus] = useState(props.wordcardStatus)
   const [checkIcon, setCheckIcon] = useState("checked-button")
   const [uncheckIcon, setUncheckIcon] = useState("unchecked-button")
-  const textToSpeech = () => {
-    if('speechSynthesis' in window){
-      alert("yes")
-    }else{
-      alert("no")
-    }
-    console.log(props?.eng)
-  }
+
   const uncheckWord = () => {
-    updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
+    if(saveMode){
+          updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
       .then((res) => {
         console.log(res.data.data.wordcard)
         props.wordcardStatus = WordcardStatus.UNCHECKED
         setStatus(WordcardStatus.UNCHECKED)
       })
       .catch((e) => console.log(e))
+    }else{
+      props.wordcardStatus = WordcardStatus.UNCHECKED;
+      setStatus(WordcardStatus.UNCHECKED);
+    }
+
   }
   const checkWord = () => {
     updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })

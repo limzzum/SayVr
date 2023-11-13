@@ -3,10 +3,14 @@ package com.npc.say_vr.domain.game.service;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_START_MESSAGE;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_STATUS_INFO;
 
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordcardDto;
+import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.domain.game.constant.GameStatus;
 import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.domain.Game;
 import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.domain.Tier;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
@@ -20,7 +24,9 @@ import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.util.RedisUtil;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -45,6 +51,8 @@ public class GameServiceImpl implements GameService {
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
     private final GameScheduler gameScheduler;
+    private final WordcardService wordcardService;
+    private final RankingService rankingService;
 
     private static final String EXCHANGE_NAME = "amq.topic";
 
@@ -60,6 +68,8 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public GameWaitingResponseDto registWaitingQueue(Long userId) {
         Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
+        Tier tier = ranking.getTier();
+        Long rank = rankingService.readRank(userId);
         String name = ranking.getTier().getName();
 
         if(redisUtil.hasKey(name)){
@@ -76,7 +86,8 @@ public class GameServiceImpl implements GameService {
             }
 
             redisUtil.delete(name);
-            PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(1L).tierImage("bronze").point(0L).winCnt(0)
+            PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(rank).tierImage(tier.getImage()).point(
+                    (long) ranking.getPoint()).winCnt(0)
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
             redisUtil.setGameStatusList(gameId,gameStatusDto);
@@ -97,7 +108,8 @@ public class GameServiceImpl implements GameService {
         redisUtil.set(name, String.valueOf(gameId), 30* 1000* 60);
 
         User user = userRepository.findById(userId).orElseThrow();
-        PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(1L).tierImage("bronze").point(0L).winCnt(0)
+        PlayerDto playerDto = PlayerDto.builder().userId(userId).nickname(user.getNickname()).ranking(rank).tierImage(tier.getImage()).point(
+                (long) ranking.getPoint()).winCnt(0)
             .profile(user.getProfile()).build();
         GameStatusDto gameStatusDto = GameStatusDto.builder().gameId(gameId).playerA(playerDto).build();
         redisUtil.setGameStatusList(String.valueOf(gameId),gameStatusDto);
@@ -148,20 +160,27 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public String createQuizAnswer() {
-        //TODO : 단어 db에서 정답 가져오기
-        String answer = "answer";
-        return answer;
+    public Map<String, String> createQuizAnswer() {
+        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
+        WordcardDto wordcard = wordUpdateResponseDto.getWordcard();
+
+        Map<String, String> result = new HashMap<>();
+        String answer = wordcard.getEng() != null ? wordcard.getEng() :"answer";
+        String question = wordcard.getKor() != null ? wordcard.getKor() :"질문";
+        result.put("answer", answer);
+        result.put("question", question);
+        return result;
     }
 
     @Override
     public String updateQuiz(Long gameId) {
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
-        String quizAnswer = createQuizAnswer();
-        String quizQuestion = getQuizQuestion(quizAnswer);
+        Map<String, String> quiz = createQuizAnswer();
+        String quizAnswer = quiz.get("answer");
+        String quizQuestion = quiz.get("question");
         gameStatusDto.setQuestion(quizQuestion);
         gameStatusDto.setAnswer(quizAnswer);
-        gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(30));
+        gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(33));
         gameStatusDto.setCurRound(gameStatusDto.getCurRound() + 1);
         redisUtil.setGameStatusList(String.valueOf(gameId), gameStatusDto);
         return quizQuestion;
@@ -197,7 +216,8 @@ public class GameServiceImpl implements GameService {
         if(playerA.getWinCnt() == playerB.getWinCnt()){
             isDraw = true;
         }
-        // TODO : 랭킹 점수 업데이트
+        rankingService.updateRanking(winnerId, WINNER_POINT);
+        rankingService.updateRanking(loserId, LOSER_POINT);
 
         deleteGameStatus(gameId);
         return GameResultDto.builder().winnerId(winnerId).loserId(loserId).isDraw(isDraw)
@@ -207,12 +227,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameResultDto playerOutGame(PlayerOutRequestDto playerOutRequestDto) {
-        //TODO : 랭킹 점수 업데이트
+
         String gameId = String.valueOf(playerOutRequestDto.getGameId());
         Long outUserId = playerOutRequestDto.getOutUserId();
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
         if(gameStatusDto == null){
-            throw new IllegalArgumentException("todo");
+            throw new IllegalArgumentException();
         }
 
         Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
@@ -224,6 +244,8 @@ public class GameServiceImpl implements GameService {
             winnerId = playerB_userId;
             loserId = playerA_userId;
         }
+        rankingService.updateRanking(winnerId, WINNER_POINT);
+        rankingService.updateRanking(loserId, LOSER_POINT);
 
         deleteGameStatus(Long.valueOf(gameId));
 

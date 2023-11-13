@@ -3,6 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import {
   createWeeklySprint,
   OptionType,
+  GoalDetailResponseDto,
 } from "../../api/StudyPageAPI/StudyAPI";
 
 // TODO : + 버튼 누를 때 : 목표기간동안은 목표를 설정할 수 없습니다. alert창 띄우기
@@ -10,6 +11,11 @@ interface CreateNewWeeklySprintModalProps {
   showModal: boolean;
   handleClose: () => void;
   studyId: Number;
+  setPreWeeklySprintId: React.Dispatch<React.SetStateAction<number>>;
+  setNextWeeklySprintId: React.Dispatch<React.SetStateAction<number>>;
+  setGoalInfo: React.Dispatch<
+    React.SetStateAction<GoalDetailResponseDto | undefined>
+  >;
 }
 
 export interface CreateGoalRequestDto {
@@ -27,6 +33,9 @@ const CreatWeeklySprintModal: React.FC<CreateNewWeeklySprintModalProps> = ({
   showModal,
   handleClose,
   studyId,
+  setPreWeeklySprintId,
+  setNextWeeklySprintId,
+  setGoalInfo,
 }) => {
   const [weeklySprintFrom, setWeeklySprintForm] =
     useState<CreateWeeklySprintRequestDto>({
@@ -112,6 +121,10 @@ const CreatWeeklySprintModal: React.FC<CreateNewWeeklySprintModalProps> = ({
     createWeeklySprint(studyId, weeklySprintFrom)
       .then((res) => {
         console.log(res.data);
+        setPreWeeklySprintId(res.data.data.preWeeklySprintId);
+        setNextWeeklySprintId(res.data.data.nextWeeklySprintId);
+        setGoalInfo(res.data.data.goalDetailResponseDto);
+
         handleClose();
       })
       .catch((error) => {

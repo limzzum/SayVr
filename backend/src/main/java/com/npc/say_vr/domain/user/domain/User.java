@@ -49,6 +49,9 @@ public class User extends BaseEntity {
 
     private String profile;
 
+    @NotNull
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 

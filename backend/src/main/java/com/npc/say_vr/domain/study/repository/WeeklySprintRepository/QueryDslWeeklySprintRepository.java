@@ -74,4 +74,14 @@ public class QueryDslWeeklySprintRepository {
             .fetchOne();
   }
 
+  public WeeklySprint findNowSprint(Long studyId) {
+    return queryFactory
+            .select(weeklySprint)
+            .from(weeklySprint)
+            .where(weeklySprint.study.id.eq(studyId))
+            .orderBy(weeklySprint.id.desc())
+            .limit(1)
+            .fetchOne();
+  }
+
 }
