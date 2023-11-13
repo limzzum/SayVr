@@ -68,8 +68,26 @@ function MatchingGameWaitingPage() {
   const [imageUrl, setImageUrl] = useState("");
 
   const [curRound, setCurRound] = useState(1);
-  const [playerA, setPlayerA] = useState<Player>();
-  const [playerB, setPlayerB] = useState<Player>();
+  const [playerA, setPlayerA] = useState<Player>({
+    userId: 0,
+    nickname: "",
+    ranking: 0,
+    tierImage: "",
+    point: 0,
+    winCnt: 0,
+    profile: "",
+  });
+
+  const [playerB, setPlayerB] = useState<Player>({
+    userId: 0,
+    nickname: "",
+    ranking: 0,
+    tierImage: "",
+    point: 0,
+    winCnt: 0,
+    profile: "",
+  });
+
 
   const [question, setQuestion] = useState("");
   const [chatMessage, setChatMessage] = useState("");
@@ -160,7 +178,12 @@ function MatchingGameWaitingPage() {
           setGameId(response.data.data.gameId);
           setImageUrl(imageURL + response.data.data.profile);
 
-          setGameStart(response.data.data.gameStart);
+          if(response.data.data.gameStart){
+            startGame().then((response)=>{
+              setGameStart(true);
+
+            })
+          }
 
           return () => {};
         })
@@ -179,17 +202,24 @@ function MatchingGameWaitingPage() {
     if (gameId) {
       console.log("gameId : " + gameId);
       Socket.subscribe(subscribeURL + "." + gameId, socketReceive);
-      if (gameStart) {
-        console.log("axios 게임시작 요청 호출");
-        startGame();
-      }
+      // if (gameStart) {
+      //   console.log("axios 게임시작 요청 호출");
+      //   startGame();
+      // }
     }
 
     return () => {};
   }, [gameId]);
 
   if (gameStart) {
-    setTimeout(() => {}, 10000);
+    setTimeout(()=>{
+      return (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          
+        </div>
+      );
+    }, 3000)
+    
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <GameProceedingHeader
