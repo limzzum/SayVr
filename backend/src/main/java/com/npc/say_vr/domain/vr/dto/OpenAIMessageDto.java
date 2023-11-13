@@ -12,7 +12,9 @@ public class OpenAIMessageDto {
     private String role;
     private String content;
 
-    public String toString(){
-        return "{\"role\": \""+role+"\", \"content\":\""+content+"\"},";
+    public String toString() {
+        return "{\"role\": \"" + role + "\", \"content\":\"" + content + "\"}";
     }
+
+
 }

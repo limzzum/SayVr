@@ -46,8 +46,8 @@ public class ChatController {
 
         ChatRequest request = ChatRequest.builder()
             .model(model)
-            .type("json_object")
-            .openAIMessageDtos(prompt)
+//            .type("json_object")
+            .messages(prompt)
 //                (Arrays.asList(new MessageDto("system",
 //                        "You are a english language tutor who reviews dialogues and rates the grammar and contextual correctness/coherence, each with 100 percent as the full mark. The input will come as an array of messages that has two fields, role and content. You are to only evaluate the proficiency of the user. Taking into consideration of the context the system and assistant provides.."),
 //                    new MessageDto("user", prompt)))

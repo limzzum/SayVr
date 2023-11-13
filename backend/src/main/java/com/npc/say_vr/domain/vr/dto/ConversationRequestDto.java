@@ -1,8 +1,5 @@
 package com.npc.say_vr.domain.vr.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.npc.say_vr.domain.vr.domain.Conversation;
 import com.npc.say_vr.domain.vr.domain.Message;
 import java.io.Serializable;
 import java.util.List;
@@ -30,13 +27,21 @@ public class ConversationRequestDto {
             ).collect(Collectors.toList());
         }
 
+//        public String wholeString() {
+//            return "\"messages\": [" +
+//                messages.stream()
+//                    .map(OpenAIMessageDto::toString)
+//                    .collect(Collectors.joining(",\n")) +
+//                "]";
+////            return messages.stream().map((message)->{return message.toString()}).collect(Collectors.joining("\n"));
+//        }
+
         public String wholeString() {
-            return "\"messages\": [" +
+            return "[" +
                 messages.stream()
                     .map(OpenAIMessageDto::toString)
                     .collect(Collectors.joining(",\n")) +
                 "]";
-//            return messages.stream().map((message)->{return message.toString()}).collect(Collectors.joining("\n"));
         }
 
     }

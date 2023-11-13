@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.vr.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.domain.vr.domain.Conversation;
@@ -53,7 +54,7 @@ public class ConversationServiceImpl implements ConversationService {
     private String apiUrl;
 
     private final String INSTRUCTION =
-        "You are a tutor who reviews dialogues and rates the grammar and contextual correctness, each with 0~100. You are to only evaluate the content of the one marked with the role user.\n"
+        "role: You are a tutor who reviews dialogues and rates the grammar and contextual correctness, each with 0~100. You are to only evaluate the content of the one marked with the role user.\n"
             + "this is the criteria:\n"
             + "Overall Language Use\n"
             + "0-25: Makes more than 5 grammatical or lexical errors. Uses a very limited range of vocabulary and sentence structures. Language is often not appropriate for the context.\n"
@@ -66,7 +67,7 @@ public class ConversationServiceImpl implements ConversationService {
             + "51-75: Generally conveys ideas and feelings clearly, mostly natural and engaging conversation, good effort to understand AI\n"
             + "76-100: Consistently conveys ideas and feelings clearly, always natural and engaging conversation, strong effort to understand AI\n"
             + "Respond in JSON format, the review and situation needs to be in Korean\n"
-            + "{\"grammar\":score ,\"context\":score,\"review\":\"short review of the user proficiency, faults and good points, explain why the points are taken off explained\", \"situation\":\"the conversation summary in one sentence\"}";
+            + "{\"grammar\":score ,\"context\":score,\"review\":\"short review of the user proficiency, faults and good points, explain why the points are taken off explained in Korean\", \"situation\":\"the conversation summary in one sentence in Korean\"}";
 
     //TODO: 예외처리 조회한 값이 존재하지 않을때 , 접근 불가할 때
     @Transactional
@@ -77,7 +78,7 @@ public class ConversationServiceImpl implements ConversationService {
 //        String dtoToString = requestDto.getRawJson();
 //        log.info("data in string:{}",dtoToString);
         //TODO: how to rate the proficiency? and when to add them to the entity
-        List<Message> messageList= requestDto.toMessageList();
+        List<Message> messageList = requestDto.toMessageList();
         Conversation conversation = Conversation.builder()
             .messageList(messageList)
 //            .review("review place holder")
@@ -87,7 +88,7 @@ public class ConversationServiceImpl implements ConversationService {
 //            .situation("테스트 하는 상황")
             .user(user)
             .build();
-        EvaluationDto evaluationDto = new EvaluationDto();
+
         conversation = conversationRepository.save(conversation);
         Conversation finalConversation = conversation;
         List<Message> messages = messageList.stream().map(message -> {
@@ -99,14 +100,22 @@ public class ConversationServiceImpl implements ConversationService {
         conversation.updateMessageList(messages);
         conversation = conversationRepository.save(conversation);
 //TODO @Transactional dirty checking 으로 반복적으로 서로 값을 저장해주는 게 필요없어지는지
-
+//        String chat = requestDto.wholeString();
+        EvaluationDto evaluationDto = evaluateConversation(
+            "messages=[" + requestDto.wholeString() + "]");
+//         evaluateConversation(requestDto.wholeString());
+        conversation.updateConversationContext(Integer.parseInt(evaluationDto.getContext()));
+        conversation.updateConversationGrammar(Integer.parseInt(evaluationDto.getGrammar()));
+        conversation.updateReview(evaluationDto.getReview());
+        conversation.updateSituation(evaluationDto.getSituation());
+        conversation = conversationRepository.save(conversation);
         calculateAndSaveAverageScoresForUser(userId);
         return new ConversationDto(conversation, conversation.getMessageList());
         //TODO: check if the returned dto contains ID
     }
 
     @Override
-    public String evaluateConversation(
+    public EvaluationDto evaluateConversation(
         String chatString) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -114,22 +123,43 @@ public class ConversationServiceImpl implements ConversationService {
 
         ChatRequest request = ChatRequest.builder()
             .model(model)
-            .type("json_object")
-            .openAIMessageDtos(
-                (Arrays.asList(new OpenAIMessageDto("system", INSTRUCTION),
+//            .type("json_object")
+            .messages(
+                (Arrays.asList(
+                    new OpenAIMessageDto("system", INSTRUCTION),
                     new OpenAIMessageDto("user", chatString))))
             .n(1)
             .temperature(0.7)
             .build();
+//        log.info("reques:{}", request);
         HttpEntity<ChatRequest> requestEntity = new HttpEntity<>(request, headers);
 
         ResponseEntity<ChatResponse> responseEntity = restTemplate.postForEntity(apiUrl,
             requestEntity, ChatResponse.class);
         if (responseEntity == null || responseEntity.getBody().getChoices() == null
             || responseEntity.getBody().getChoices().isEmpty()) {
-            return "No response";
+            log.info("null failed");
+            return EvaluationDto.builder().build();
         }
-        return responseEntity.getBody().getChoices().get(0).getOpenAIMessageDto().getContent();
+        String eval = responseEntity.getBody().getChoices().get(0).getOpenAIMessageDto()
+            .getContent();
+        log.info("response: {}", eval);
+
+//        return EvaluationDto.builder().build();
+        return getEval(
+            responseEntity.getBody().getChoices().get(0).getOpenAIMessageDto().getContent());
+    }
+
+    public EvaluationDto getEval(String content) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            EvaluationDto evaluationDto = objectMapper.readValue(content, EvaluationDto.class);
+            return evaluationDto;
+            // Now 'yourObject' is an instance of YourClassType with values from the JSON string.
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return EvaluationDto.builder().build();
     }
 
     public void calculateAndSaveAverageScoresForUser(Long userId) {

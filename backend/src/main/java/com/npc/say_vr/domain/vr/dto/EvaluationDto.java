@@ -10,13 +10,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class EvaluationDto {
-    private int grammarScore;
-    private int contextScore;
+
+    private String grammar;
+    private String context;
     private String review;
     private String situation;
-//public static class EvaluationDto{
-//
-//}
 
 
 }
