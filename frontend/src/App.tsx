@@ -16,6 +16,7 @@ import VocabListPage from "./pages/VocabListPage";
 import DeckDetail from "./pages/VocabListPage/DeckDetailPage";
 import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage";
 import StudyDetail from "./pages/StudyPage/StudyDetailPage";
+import SignPage from "./pages/SignPage";
 import JSConfetti from "js-confetti";
 
 export const conteffi = new JSConfetti();
@@ -45,6 +46,7 @@ function App() {
       <Route path="/study/:id" element={<StudyDetail />} />
       <Route path="/VocabList" element={<VocabListPage />} />
       <Route path="/flashcard/:id" element={<DeckDetail />} />
+      <Route path="/Sign" element={<SignPage />} />
     </Routes>
   );
 }

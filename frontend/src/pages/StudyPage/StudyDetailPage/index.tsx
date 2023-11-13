@@ -183,6 +183,9 @@ const StudyDetail: React.FC = () => {
           showModal={showCreateModal}
           handleClose={handleCreateCloseModal}
           studyId={studyId}
+          setPreWeeklySprintId={setPreWeeklySprintId}
+          setNextWeeklySprintId={setNextWeeklySprintId}
+          setGoalInfo={setGoalInfo}
         />
       </div>
     </div>

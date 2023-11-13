@@ -8,7 +8,10 @@ import {
   CreateCheckListRequestDto,
   UpdateCheckListStatusResquestDto,
 } from "../../components/StudyComponents/CheckListCard";
-
+import {
+  CreateGoalRequestDto,
+  UpdateGoalResquestDto,
+} from "../../components/StudyComponents/WeeklySprintComponent";
 const BASE_URL = "http://localhost:8080/api/study";
 
 const axiosInstance = axios.create({
@@ -80,7 +83,6 @@ export interface StudyDetailResponseDto {
 
 export interface GoalResponseDto {
   goalId: number;
-  targetDate: Date;
   optionType: OptionType;
   count: number;
   description: string;
@@ -210,4 +212,39 @@ export const createCheckListItem = (
   data?: CreateCheckListRequestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
   return axiosInstance.post(`/checkList/${studyId}/${weeklySprintId}`, data);
+};
+
+export const getWeeklySprint = (
+  studyId: Number,
+  weeklySprintId: number
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.get(`/goal/${studyId}/${weeklySprintId}`);
+};
+
+export const createGoal = (
+  studyId: Number,
+  weeklySprintId: Number | undefined,
+  data?: CreateGoalRequestDto
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.post(`/goal/${studyId}/${weeklySprintId}`, data);
+};
+
+export const updateGoal = (
+  studyId: Number,
+  weeklySprintId: Number | undefined,
+  goalId: Number,
+  data?: UpdateGoalResquestDto
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.put(
+    `/goal/${studyId}/${weeklySprintId}/${goalId}`,
+    data
+  );
+};
+
+export const deleteGoal = (
+  studyId: Number,
+  weeklySprintId: Number | undefined,
+  goalId: Number
+): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
+  return axiosInstance.delete(`/goal/${studyId}/${weeklySprintId}/${goalId}`);
 };

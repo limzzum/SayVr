@@ -91,6 +91,6 @@
   
   /* .slick-slide.slick-cloned 스타일 수정 */
   .slick-slide.slick-cloned {
-    display: none; /* 클론된 슬라이드를 숨깁니다. */
+    /* display: none; 클론된 슬라이드를 숨깁니다. */
   }
   

@@ -14,5 +14,7 @@ public interface WeeklySprintRepository {
 
   Long findNowSprintId(Long studyId);
 
+  WeeklySprint findNowSprint(Long studyId);
+
 
 }
