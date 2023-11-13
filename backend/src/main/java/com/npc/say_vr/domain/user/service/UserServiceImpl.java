@@ -3,6 +3,8 @@ package com.npc.say_vr.domain.user.service;
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.ALREADY_EXIST_USER;
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.NOT_EXIST_USER;
 
+import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.repository.RankingRepository;
 import com.npc.say_vr.domain.game.service.RankingService;
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.domain.user.domain.User;
@@ -31,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private final FileStore fileStore;
     private final JwtUtil jwtUtil;
     private final RankingService rankingService;
+    private final RankingRepository rankingRepository;
+
 
     private Long createUser(User user) {
         if (isExistUser(user.getId())) {
@@ -45,8 +49,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException(NOT_EXIST_USER.getMessage()));
         Long rank = rankingService.readRank(userId);
+        Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
 
-        return UserInfoResponseDto.builder().user(user).rank(rank).build();
+        return UserInfoResponseDto.builder().user(user).rank(rank).tier(ranking.getTier().getImage()).build();
     }
 
     @Override
