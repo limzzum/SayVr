@@ -31,14 +31,13 @@ const GameProceedingBody: React.FC<props> = ({
   chatMessage,
   question,
 }) => {
+
   return (
     <div className="game-proceeding-body-container">
       <div>
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
-
-      {/* <Chat></Chat> */}
       <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
     </div>
   );
