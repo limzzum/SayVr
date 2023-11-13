@@ -35,7 +35,7 @@ const GameProceedingBody: React.FC<props> = ({
     <div className="game-proceeding-body-container">
       <div>
         <Question question={question}></Question>
-        <GameTimer timeLimit={30}></GameTimer>
+        <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
 
       {/* <Chat></Chat> */}
@@ -221,7 +221,10 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   );
 };
 
-const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
+const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
+  timeLimit,
+  gameId,
+}) => {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -232,10 +235,12 @@ const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
       } else {
         clearInterval(timer);
         setIsModalOpen(true);
+        sendMsg(publishURL + "." + gameId);
 
         setTimeout(() => {
-          setIsModalOpen(false);
           setTimeLeft(timeLimit);
+
+          setIsModalOpen(false);
         }, 3000);
       }
     }, 1000);
@@ -256,9 +261,10 @@ const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Example Modal"
+        className="Modal"
       >
-        <p>시간이 종료되었습니다.</p>
-        <p>3초 후 다음 라운드가 시작됩니다..</p>
+        <div>시간이 종료되었습니다.</div>
+        <div>잠시 후 다음 라운드가 시작됩니다..</div>
       </Modal>
     </div>
   );
