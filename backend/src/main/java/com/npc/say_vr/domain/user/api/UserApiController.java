@@ -6,7 +6,11 @@ import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_NA
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_PROFILE_UPDATE;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_USER_DELETE;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_ACTIVITY_READ;
-
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_CEHCKNICKNAME_READ;
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_CEHCKEMAIL_READ;
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_USER_CREATE;
+import com.npc.say_vr.domain.user.dto.CreateUserRequestDto;
+import com.npc.say_vr.domain.user.dto.LoginUserRequestDto;
 import com.npc.say_vr.domain.user.service.ActivityService;
 import com.npc.say_vr.domain.user.service.UserService;
 import com.npc.say_vr.global.dto.ResponseDto;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -103,6 +107,40 @@ public class UserApiController {
         return ResponseEntity.ok(ResponseDto.builder()
             .message(LOGIN_SUCCESS.getMessage())
             .data(userService.createFacebookUser(jsonData))
+            .httpStatus(LOGIN_SUCCESS.getStatus()).build());
+    }
+
+    @GetMapping("/idCheck/{email}")
+    public ResponseEntity<?> checkId(@PathVariable String email) {
+        return ResponseEntity.ok(ResponseDto.builder()
+            .message(SUCCESS_CEHCKEMAIL_READ.getMessage())
+                .data(userService.checkUserId(email))
+            .httpStatus(SUCCESS_CEHCKEMAIL_READ.getStatus()).build());
+    }
+
+    @GetMapping("/nicknameCheck/{nickname}")
+    public ResponseEntity<?> checkNickname(@PathVariable String nickname) {
+
+        return ResponseEntity.ok(ResponseDto.builder()
+            .message(SUCCESS_CEHCKNICKNAME_READ.getMessage())
+            .data(userService.checkNickname(nickname))
+            .httpStatus(SUCCESS_CEHCKNICKNAME_READ.getStatus()).build());
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequestDto createUserRequestDto) {
+        userService.createUser(createUserRequestDto);
+        return ResponseEntity.ok(ResponseDto.builder()
+            .message(SUCCESS_USER_CREATE.getMessage())
+            .httpStatus(SUCCESS_USER_CREATE.getStatus()).build());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginUserRequestDto loginUserRequestDto) {
+
+        return ResponseEntity.ok(ResponseDto.builder()
+            .message(LOGIN_SUCCESS.getMessage())
+            .data(userService.loginUser(loginUserRequestDto))
             .httpStatus(LOGIN_SUCCESS.getStatus()).build());
     }
 
