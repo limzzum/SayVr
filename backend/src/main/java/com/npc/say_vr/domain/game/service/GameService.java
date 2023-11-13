@@ -18,6 +18,7 @@ public interface GameService {
     GameResultDto getGameResult(Long gameId);
     GameResultDto playerOutGame(PlayerOutRequestDto playerOutRequestDto);
     Long findGameIdByUserId(Long userId);
+    void deleteGameStatus(Long gameId);
 
 
 }
