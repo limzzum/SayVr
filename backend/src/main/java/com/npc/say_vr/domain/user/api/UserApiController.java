@@ -144,4 +144,13 @@ public class UserApiController {
             .httpStatus(LOGIN_SUCCESS.getStatus()).build());
     }
 
+//    @PostMapping("/logout")
+//    public ResponseEntity<?> logoutUser() {
+//
+//        return ResponseEntity.ok(ResponseDto.builder()
+//                .message(LOGIN_SUCCESS.getMessage())
+//                .data(userService.loginUser(loginUserRequestDto))
+//                .httpStatus(LOGIN_SUCCESS.getStatus()).build());
+//    }
+
 }

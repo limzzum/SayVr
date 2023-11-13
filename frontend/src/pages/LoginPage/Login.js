@@ -1,8 +1,8 @@
 import React from "react";
 import "./Login.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
-import {login} from "../../api/UserPageAPI/UserAPI"
+import { useNavigate } from "react-router-dom";
+import { login } from "../../api/UserPageAPI/UserAPI";
 
 function Login() {
   const navigate = useNavigate();
@@ -10,14 +10,15 @@ function Login() {
   async function userLogin() {
     const form = document.querySelector("#login-form");
     const formData = new FormData(form);
-    
+
     try {
-      const response = await login(formData);  
+      const response = await login(formData);
 
       if (response.data.httpStatus === "OK") {
         console.log(response.data);
+        sessionStorage.setItem("accessToken", response.data.data.accessToken);
         alert("로그인 성공");
-        navigate("/")
+        navigate("/");
       } else {
         alert("로그인 실패!");
       }
@@ -28,7 +29,7 @@ function Login() {
   }
 
   const userSign = function () {
-    navigate("/Sign")
+    navigate("/Sign");
   };
 
   const handleKeyDown = (event) => {
