@@ -55,5 +55,17 @@ public class Conversation extends BaseEntity {
         this.messageList = messageList;
     }
 
+    public void updateConversationGrammar(int score){
+        this.conversationGrammar=score;
+    }
+    public void updateConversationContext(int score){
+        this.conversationContext=score;
+    }
 
+    public void updateReview(String review){
+        this.review = review;
+    }
+    public void updateSituation(String situation){
+        this.situation = situation;
+    }
 }
