@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import API_URL from "../../../config";
+import { tokenState } from "../../../recoil/GoalbalState";
+import { useRecoilValue } from 'recoil';
 
 interface ChangeNicknameModalProps {
   show: boolean;
@@ -11,6 +13,7 @@ interface ChangeNicknameModalProps {
 
 const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide, onNicknameChange }) => {
   const [newNickname, setNewNickname] = useState("");
+  const token = useRecoilValue(tokenState);
 
   useEffect(() => {
     setNewNickname("");
@@ -19,10 +22,12 @@ const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide,
   const handleNicknameChange = async () => {
     try {
       const response = await axios.patch(
-        `${API_URL}/user`,
-        null,
+        `${API_URL}/user?name=${newNickname}`,
+        { name: newNickname },
         {
-          params: { name: newNickname },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
   

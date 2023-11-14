@@ -1,17 +1,22 @@
 import axios from "axios";
 import API_URL from "../../config";
+import { tokenState } from "../../recoil/GoalbalState";
+import { useRecoilValue } from 'recoil';
 
 interface ConversationData {
   date: string;
   id: number;
 }
 
-const GetConversationDates = async (month: number, year: number) => {
+const GetConversationDates = async (month: number, year: number, token: string) => {
   try {
     const response = await axios.get(`${API_URL}/conversation/monthly`, {
       params: {
         year: year,
         month: month,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
 
