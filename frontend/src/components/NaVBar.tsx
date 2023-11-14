@@ -12,6 +12,7 @@ const NavBar: React.FC = () => {
   const logoutToken = async () => {
     await logout();
     localStorage.removeItem('accessToken');
+    localStorage.removeItem("userId");
     setToken('');
 };
 
