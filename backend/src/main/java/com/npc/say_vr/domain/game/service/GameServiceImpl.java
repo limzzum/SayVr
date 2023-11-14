@@ -24,9 +24,7 @@ import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.util.RedisUtil;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -91,12 +89,6 @@ public class GameServiceImpl implements GameService {
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
             redisUtil.setGameStatusList(gameId,gameStatusDto);
-            updateQuiz(Long.valueOf(gameId));
-            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
-                .data(gameStatusDto)
-                .message(GAME_START_MESSAGE.getMessage())
-                .build();
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
             return GameWaitingResponseDto.builder().gameId(Long.valueOf(gameId))
                 .profile(user.getProfile())
@@ -122,13 +114,14 @@ public class GameServiceImpl implements GameService {
     @Override
     public void gameStart(Long userId) {
         Long gameId = findGameIdByUserId(userId);
+        log.info("game start gameId : {}" , gameId);
         updateQuiz(gameId);
         gameScheduler.addGameRoom(gameId);
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
 
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
             .gameStatusDto(gameStatusDto)
-            .message(GAME_STATUS_INFO.getMessage())
+            .message(GAME_START_MESSAGE.getMessage())
             .build();
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
@@ -160,24 +153,22 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Map<String, String> createQuizAnswer() {
-//        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
-        WordcardDto wordcard = null; //wordUpdateResponseDto.getWordcard();
-
-        Map<String, String> result = new HashMap<>();
-        String answer = wordcard != null ? wordcard.getEng() :"answer";
-        String question = wordcard != null ? wordcard.getKor() :"질문";
-        result.put("answer", answer);
-        result.put("question", question);
-        return result;
+    public WordcardDto createQuizAnswer() {
+        try{
+            WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
+            WordcardDto wordcard = wordUpdateResponseDto.getWordcard();
+            return wordcard;
+        }catch (Exception e){
+            return WordcardDto.builder().kor("사과").eng("apple").build();
+        }
     }
 
     @Override
     public String updateQuiz(Long gameId) {
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
-        Map<String, String> quiz = createQuizAnswer();
-        String quizAnswer = quiz.get("answer");
-        String quizQuestion = quiz.get("question");
+        WordcardDto quiz = createQuizAnswer();
+        String quizAnswer = quiz.getEng();
+        String quizQuestion = quiz.getKor();
         gameStatusDto.setQuestion(quizQuestion);
         gameStatusDto.setAnswer(quizAnswer);
         gameStatusDto.setQuizEndTime(LocalDateTime.now().plusSeconds(33));

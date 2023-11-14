@@ -24,6 +24,11 @@ public class FlashcardsResponseDto {
         private String eng;
         private WordcardStatus wordcardStatus;
 
+        @Builder
+        WordcardDto(String kor, String eng){
+            this.kor = kor;
+            this.eng = eng;
+        }
 
         public WordcardDto(Wordcard wordcard) {
             this.id = wordcard.getId();
