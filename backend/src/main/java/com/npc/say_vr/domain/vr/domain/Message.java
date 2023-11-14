@@ -1,6 +1,9 @@
 package com.npc.say_vr.domain.vr.domain;
 
+import com.npc.say_vr.domain.vr.dto.OpenAIMessageDto;
 import com.npc.say_vr.global.entity.BaseEntity;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

@@ -180,3 +180,28 @@
   background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
   border: none;
 }
+
+#btn-checkNickname {
+  cursor: pointer;
+  margin-top: 18px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
+}
+#btn-checkEmail {
+  cursor: pointer;
+  margin-top: 18px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
+}

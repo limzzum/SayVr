@@ -50,6 +50,11 @@
   border: none;
 }
 
+#btn-signUpMove{
+  width: 310px;
+}
+
+
 #btn-login {
   width: 310px;
 }
