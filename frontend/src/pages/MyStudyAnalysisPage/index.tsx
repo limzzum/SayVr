@@ -9,6 +9,8 @@ import AverageScore from "../../assets/MygradeAssets/AverageScore.png";
 import ContextScore from "../../assets/MygradeAssets/ContextScore.png";
 import GrammarScore from "../../assets/MygradeAssets/GrammarScore.png";
 import ProunciationScore from "../../assets/MygradeAssets/PronunciationScore.png";
+import { useRecoilValue } from 'recoil';
+import { tokenState } from "../../recoil/GoalbalState";
 import "./style.css";
 
 type MyCalendarValue = Date | undefined;
@@ -21,11 +23,12 @@ const MyStudyAnalysisPage: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [dateIdMap, setDateIdMap] = useState<Record<string, number[]> | null>(null);
   const navigate = useNavigate();
+  const token = useRecoilValue(tokenState);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const averageScoreResponse = await GetMyAverageScore();
+        const averageScoreResponse = await GetMyAverageScore(token);
         const averageScoresData = averageScoreResponse.data;
         if (averageScoresData && averageScoresData.averageScore) {
           setData(averageScoresData.averageScore);
@@ -45,7 +48,7 @@ const MyStudyAnalysisPage: React.FC = () => {
         if (value) {
           const year = value.getFullYear();
           const month = value.getMonth() + 1;
-          const conversationDatesResponse = await GetConversationDates(month, year);
+          const conversationDatesResponse = await GetConversationDates(month, year, token);
           const conversationDates = conversationDatesResponse.data;
           const conversationIds = conversationDatesResponse.id;
           const dateIdMap = conversationDatesResponse.dateIdMap;
@@ -186,7 +189,7 @@ const MyStudyAnalysisPage: React.FC = () => {
                       style={{ maxWidth: "120px", zIndex: 1 }}
                     />
                   </div>
-                  <div className="text-center position-relative">
+                  {/* <div className="text-center position-relative">
                     <span
                       className="score-text"
                       style={{
@@ -206,7 +209,7 @@ const MyStudyAnalysisPage: React.FC = () => {
                       className="scorebadge"
                       style={{ maxWidth: "120px", zIndex: 1 }}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}

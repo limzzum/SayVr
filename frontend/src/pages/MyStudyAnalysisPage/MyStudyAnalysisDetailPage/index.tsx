@@ -1,10 +1,10 @@
-// MyStudyAnalysisDetailPage.jsx
-
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import GetConversation from "../../../api/MyStudyAnalysisAPI/GetConversation";
 import Translation from "../../../components/MyStudyAnalysisComponents/Translation/Translation";
 import "./style.css";
+import { tokenState } from "../../../recoil/GoalbalState";
+import { useRecoilValue } from 'recoil';
 import GrammarScoreBadge from "../../../assets/MygradeAssets/GrammarScoreBadge.png";
 import ContextScoreBadge from "../../../assets/MygradeAssets/ContextScoreBadge.png";
 
@@ -22,6 +22,7 @@ function MyStudyAnalysisDetailPage() {
   const numberOfIds = formattedId ? formattedId.split(",").length : 0;
   const [selectedItem, setSelectedItem] = useState("Item 1");
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const token = useRecoilValue(tokenState);
   const [conversationData, setConversationData] = useState<{
     messageList: Array<{
       id: number;
@@ -40,7 +41,7 @@ function MyStudyAnalysisDetailPage() {
   useEffect(() => {
     const fetchData = async (clickedId: number) => {
       try {
-        const conversationData = await GetConversation(clickedId);
+        const conversationData = await GetConversation(clickedId, token);
         setConversationData(conversationData);
         setLoading(false);
       } catch (error) {
@@ -67,7 +68,7 @@ function MyStudyAnalysisDetailPage() {
       setLoading(true);
 
       try {
-        const conversationData = await GetConversation(clickedId);
+        const conversationData = await GetConversation(clickedId, token);
 
         console.log("디테일 페이지로 넘겨 받은 데이터", conversationData);
         setConversationData(conversationData);

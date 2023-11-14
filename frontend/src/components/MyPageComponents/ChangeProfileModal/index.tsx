@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import API_URL from "../../../config";
+import { tokenState } from "../../../recoil/GoalbalState";
+import { useRecoilValue } from 'recoil';
 
 interface ChangeProfileModalProps {
   show: boolean;
@@ -11,6 +13,7 @@ interface ChangeProfileModalProps {
 
 const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, onProfileChange }) => {
   const [selectedProfile, setSelectedProfile] = useState<File | null>(null);
+  const token = useRecoilValue(tokenState);
 
   useEffect(() => {
     setSelectedProfile(null);
@@ -26,8 +29,7 @@ const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, o
           method: "put",
           url: `${API_URL}/user/profileimg`,
           headers: {
-            Authorization: null, 
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, 
           },
           data: formData,
         });
