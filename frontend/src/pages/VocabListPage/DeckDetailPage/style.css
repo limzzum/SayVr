@@ -1,0 +1,19 @@
+.title-left{
+    display:flex;
+}
+.page-box{
+    justify-content:center;
+    align-items:center;
+    border-color:transparent;
+}
+.box-width{
+    width:70vw;
+}
+.center-middle{
+    justify-content:center;
+    align-items:center;
+}
+.title-space{
+    display:flex;
+    justify-content:space-between;
+}

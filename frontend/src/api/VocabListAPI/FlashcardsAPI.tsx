@@ -4,15 +4,8 @@ import { CreateFlashcardsRequestDto, PrivacyStatus } from "../../components/Voca
 import { DeckSettingsUpdateRequestDto } from "../../components/VocabListComponents/DeckSettingModal"
 import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage"
 import { AutoCompleteResponseDto, TranslationRequestDto } from "./PapagoAPI"
-const BASE_URL = "http://localhost:8080/api/flashcards"
+import axiosInstance from "../constAPI/axiosInstance"
 
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-})
-//TODO enum -> as const
 export enum ProgressStatus {
   ENABLED = "ENABLED",
   DISABLED = "DISABLED",
@@ -55,7 +48,6 @@ export interface DeckListResponseDto {
 export interface PersonalDeckResponse {
   personalDeckList: PersonalDeckTitle[]
 }
-// id 숫자로 받는지 ? string으로?? bigint로???
 export interface DeckDetailResponseDto extends DeckCreateResponseDto {
   id: number
   name: string
@@ -98,63 +90,68 @@ export interface MessageOnlyResponseDto {
 export interface WordcardUpdateRequestDto {
   wordcardStatus: WordcardStatus
 }
-//res. data[data,message,httpStatus]
-//userId -> header에 있어야,,
+
 export const createPersonalDeck = (data?: CreateFlashcardsRequestDto): Promise<AxiosResponse<ResponseDto<DeckCreateResponseDto>>> => {
-  return axiosInstance.post("/deck", data)
+  return axiosInstance.post("/flashcards/deck", data)
 }
 export const createForkedDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckCreateResponseDto>>> => {
-  return axiosInstance.post(`/deck/fork/${deckId}`)
+  return axiosInstance.post(`/flashcards/deck/fork/${deckId}`)
 }
 export const getTranslation = (data: TranslationRequestDto): Promise<AxiosResponse<ResponseDto<AutoCompleteResponseDto>>> => {
-  return axiosInstance.post("/translate", data);
+  return axiosInstance.post("/flashcards/translate", data);
 };
 
 export const createWordcard = (
   deckId: number,
   data?: CreateWordcardRequestDto
 ): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
-  return axiosInstance.post(`/card/${deckId}`, data)
+  return axiosInstance.post(`/flashcards/card/${deckId}`, data)
 }
 
 export const searchDecks = (data: ReadDeckSearchRequestDto): Promise<AxiosResponse<ResponseDto<DeckListResponseDto>>> => {
-  return axiosInstance.get("/search",{params:data})
+  return axiosInstance.get("/flashcards/search",{params:data})
 }
 export const getPersonalFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
-  return axiosInstance.get("/personal")
+  return axiosInstance.get("/flashcards/personal")
 }
 export const getPublicFlashcards = (): Promise<AxiosResponse<ResponseDto<PersonalDeckResponse>>> => {
-  return axiosInstance.get("/list")
+  return axiosInstance.get("/flashcards/list")
 }
 
 export const getOneDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-  return axiosInstance.get(`/deck/${deckId}`)
+  return axiosInstance.get(`/flashcards/deck/${deckId}`)
 }
+
+export const getTodaySentence = (): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
+  return axiosInstance.get("/flashcards/today")
+}
+
 export const updateDeckSettings = (
   deckId: number,
   data: DeckSettingsUpdateRequestDto
 ): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-  return axiosInstance.put(`/deck/${deckId}`, data)
+  return axiosInstance.put(`/flashcards/deck/${deckId}`, data)
 }
 export const updateProgressSaving = (
   deckId: number,
   data: DeckUpdateRequestDto
 ): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-  return axiosInstance.patch(`/saving/${deckId}`, data)
+  return axiosInstance.patch(`/flashcards/saving/${deckId}`, data)
 }
 export const resetDeckProgress = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
-  return axiosInstance.patch(`/reset-progress/${deckId}`)
+  return axiosInstance.patch(`/flashcards/reset-progress/${deckId}`)
 }
 
 export const updateWordProgress = (
   wordcardId: number,
   data: WordcardUpdateRequestDto
 ): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
-  return axiosInstance.patch(`/progress/${wordcardId}`, data)
+  return axiosInstance.patch(`/flashcards/progress/${wordcardId}`, data)
 }
+
 export const deleteDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
-  return axiosInstance.delete(`/deck/${deckId}`)
+  return axiosInstance.delete(`/flashcards/deck/${deckId}`)
 }
 export const deleteCard = (wordcardId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
-  return axiosInstance.delete(`/card/${wordcardId}`)
+  return axiosInstance.delete(`/flashcards/card/${wordcardId}`)
 }
