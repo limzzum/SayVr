@@ -8,6 +8,9 @@ import Modal from "react-modal";
 import "./Chat.css";
 import { Form, InputGroup } from "react-bootstrap";
 
+import { MouseEventHandler } from 'react';
+import SpeechRecognition, { useSpeechRecognition, ListeningOptions } from 'react-speech-recognition';
+
 interface props {
   // player: PlayerProfile;
   // opponent: PlayerProfile;
@@ -38,7 +41,11 @@ const GameProceedingBody: React.FC<props> = ({
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
+      <div>
       <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
+      <Dictaphone/>
+      </div>
+
     </div>
   );
 };
@@ -266,3 +273,39 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
     </div>
   );
 };
+
+
+
+const Dictaphone = () => {
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
+  const handleStartListening: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.preventDefault();
+    SpeechRecognition.startListening({language : 'en'});
+  };
+
+  const handleStopListening: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.preventDefault();
+    SpeechRecognition.stopListening();
+  };
+
+  return (
+    <div>
+      <p>Microphone: {listening ? 'on' : 'off'}</p>
+      <button onClick={handleStartListening}>Start</button>
+      <button onClick={handleStopListening}>Stop</button>
+      <button onClick={resetTranscript}>Reset</button>
+      <p>{transcript}</p>
+    </div>
+  );
+};
+
