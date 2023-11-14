@@ -66,6 +66,11 @@ interface GameResultDto {
   drawPoint: number;
 }
 
+interface ChatMessageDto {
+  userId : string;
+  message : string;
+}
+
 interface SocketResponseDto<T> {
   socketType: SocketType;
   gameStatusDto?: GameStatus;
@@ -107,7 +112,7 @@ function MatchingGameWaitingPage() {
 
 
   const [question, setQuestion] = useState("");
-  const [chatMessage, setChatMessage] = useState("");
+  const [chatMessage, setChatMessage] = useState<ChatMessageDto>({userId: "1", message:""});
   const [isEndGame, setIsEndGame] = useState(false);  
   const [endMessage, setEndMessage] = useState("");  
 
