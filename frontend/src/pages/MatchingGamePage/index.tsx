@@ -230,8 +230,8 @@ function MatchingGameWaitingPage() {
           setImageUrl(imageURL + response.data.data.profile);
 
           if(response.data.data.gameStart){
-            startGame().then((response)=>{
-              setIsMatch(true);
+            startGame();
+            setIsMatch(true);
               const timer = setTimeout(() => {
                 setGameStart(true);
         
@@ -240,8 +240,6 @@ function MatchingGameWaitingPage() {
               return () => {
                 clearTimeout(timer);
               };
-
-            })
           }
 
           return () => {};
