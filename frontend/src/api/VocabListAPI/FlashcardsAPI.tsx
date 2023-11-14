@@ -121,6 +121,11 @@ export const getPublicFlashcards = (): Promise<AxiosResponse<ResponseDto<Persona
 export const getOneDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<DeckDetailResponseDto>>> => {
   return axiosInstance.get(`/flashcards/deck/${deckId}`)
 }
+
+export const getTodaySentence = (): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
+  return axiosInstance.get("/flashcards/today")
+}
+
 export const updateDeckSettings = (
   deckId: number,
   data: DeckSettingsUpdateRequestDto
@@ -143,6 +148,7 @@ export const updateWordProgress = (
 ): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
   return axiosInstance.patch(`/flashcards/progress/${wordcardId}`, data)
 }
+
 export const deleteDeck = (deckId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
   return axiosInstance.delete(`/flashcards/deck/${deckId}`)
 }
