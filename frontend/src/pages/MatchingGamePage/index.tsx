@@ -138,20 +138,8 @@ function MatchingGameWaitingPage() {
         ? setPlayerA(response.gameStatusDto!.playerB)
         : setPlayerB(response.gameStatusDto!.playerA);
 
-      // player = response.gameStatusDto!.playerA;
-      // opponent = response.gameStatusDto!.playerB;
-
-      // setPlayerA(player);
-      // setPlayerB(opponent);
       Socket.sendMsg(publishURL + "." + gameId, messageToSend);
 
-      // history("/MatchingGame-game", {
-      //   state: {
-      //     playerA: player,
-      //     playerB: opponent,
-      //     gameId: gameId,
-      //   },
-      // });
       setIsMatch(true);
       const timer = setTimeout(() => {
         setGameStart(true);
@@ -172,15 +160,13 @@ function MatchingGameWaitingPage() {
     if (response.socketType == SocketType.QUIZ) {
       console.log("퀴즈 정보");
       if (response.data.answer) {
-        handleClick()
-      };
+        handleClick();
+        let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
+        alert("유저 아이디 : " + username + " 정답입니다");
         setCurRound(response.gameStatusDto!.curRound);
-        
-        // setPlayerA(response.gameStatusDto!.playerA);
-        // setPlayerB(response.gameStatusDto!.playerB);
         setQuestion(response.gameStatusDto!.question);
-        // let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
-        // alert("유저 아이디 : " + response.data.userId + " 정답입니다");
+      };
+     
       }
     
 
@@ -284,6 +270,7 @@ function MatchingGameWaitingPage() {
           gameId={gameId!}
           chatMessage={chatMessage}
           question={question}
+          curRound={curRound}
         />
          <Modal
          isOpen={isEndGame}
