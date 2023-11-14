@@ -27,11 +27,7 @@ export interface CreateWordcardRequestDto {
 }
 // const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const DeckDetail: React.FC = () => {
-  const [tempUser, setTempUser] = useState({
-    name: "유저이름",
-    nickname: "닉네임",
-    id: 2,
-  })
+  const [tempUser, setTempUser] = useState<number>(0);
   const { id } = useParams()
   const [deckId, setDeckId] = useState(Number(id))
   const navigate = useNavigate()
@@ -48,6 +44,14 @@ const DeckDetail: React.FC = () => {
   //     setWordList(props.flashcardDto.wordcardList)
   //   }
   // }, [props])
+  useEffect(() => {
+    const userId = Number(localStorage.getItem("userId"));
+    setTempUser(userId);
+  
+    return () => {
+    }
+  }, [])
+  
   // const
   useEffect(() => {
     if (id) {
@@ -185,7 +189,7 @@ const DeckDetail: React.FC = () => {
                     onHover
                   ></IconButton>
                 </div>
-                {deck && tempUser.id === deck.userId ? (
+                {deck && tempUser === deck.userId ? (
                   <>
                     <div>
                       <IconButton onHover icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>
