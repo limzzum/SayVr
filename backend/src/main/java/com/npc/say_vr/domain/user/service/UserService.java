@@ -6,6 +6,7 @@ import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
@@ -31,6 +32,8 @@ public interface UserService {
     void createUser(CreateUserRequestDto createUserRequestDto);
 
     TokenResponseDto loginUser(LoginUserRequestDto loginUserRequestDto);
+
+    void logoutUser(Long userId, String authorization);
 
     //TODO : 페이스북 로그인
 

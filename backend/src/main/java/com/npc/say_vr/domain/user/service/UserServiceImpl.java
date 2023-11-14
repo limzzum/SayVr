@@ -123,6 +123,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void logoutUser(Long userId, String authorization) {
+         jwtUtil.logout(userId,authorization);
+    }
+
+    @Override
     public void updateNickname(Long userId, String nickname) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException(NOT_EXIST_USER.getMessage()));
