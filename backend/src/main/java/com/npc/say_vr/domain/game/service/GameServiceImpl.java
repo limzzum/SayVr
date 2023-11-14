@@ -161,12 +161,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Map<String, String> createQuizAnswer() {
-        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
-        WordcardDto wordcard = wordUpdateResponseDto.getWordcard();
+//        WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
+        WordcardDto wordcard = null; //wordUpdateResponseDto.getWordcard();
 
         Map<String, String> result = new HashMap<>();
-        String answer = wordcard.getEng() != null ? wordcard.getEng() :"answer";
-        String question = wordcard.getKor() != null ? wordcard.getKor() :"질문";
+        String answer = wordcard != null ? wordcard.getEng() :"answer";
+        String question = wordcard != null ? wordcard.getKor() :"질문";
         result.put("answer", answer);
         result.put("question", question);
         return result;
@@ -235,6 +235,14 @@ public class GameServiceImpl implements GameService {
             throw new IllegalArgumentException();
         }
 
+        if(isWaitingGame(gameStatusDto)){
+            Ranking ranking = rankingRepository.findByUserId(outUserId).orElseThrow();
+            String name = ranking.getTier().getName();
+            redisUtil.deleteGameStatusList(gameId);
+            redisUtil.delete(name);
+            return null;
+        }
+
         Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
         Long playerB_userId = gameStatusDto.getPlayerB().getUserId();
         Long winnerId = playerA_userId;
@@ -251,6 +259,10 @@ public class GameServiceImpl implements GameService {
 
         return GameResultDto.builder().isDraw(false).winnerId(winnerId).loserId(loserId)
             .winnerPoint(WINNER_POINT).build();
+    }
+
+    private static boolean isWaitingGame(GameStatusDto gameStatusDto) {
+        return gameStatusDto.getPlayerA() == null || gameStatusDto.getPlayerB() == null;
     }
 
     @Override

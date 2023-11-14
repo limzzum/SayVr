@@ -1,12 +1,13 @@
-    .scrollspy-example {
-    overflow-y: scroll;
-    height: 500px;
-  }
-  
-  .script-container {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-top: 10px;
-    height: 500px;
-  }
-  
+.scrollspy-example {
+  overflow-y: scroll;
+  height: 500px;
+  margin-bottom: 20px; /* 마진 추가 */
+}
+
+.script-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 10px;
+  height: 500px;
+  margin-top: 50px; /* 마진 추가 */
+}

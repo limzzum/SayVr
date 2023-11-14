@@ -37,23 +37,23 @@ public class RabbitMqListener {
     ))
     public void bronze(Message message, Channel channel) {
 
-        byte[] body = message.getBody();
-        String gameId = new String(body);
-        log.info("{}번 게임방 퀴즈 제한시간 종료 메시지큐 리스너 호출됨 ", gameId);
-        GameSocketResponseDto gameSocketResponseDto;
-        if(gameService.isEndGame(Long.valueOf(gameId))){
-            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
-                .data(gameService.getGameResult(Long.valueOf(gameId)))
-                .build();
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
-            return;
-        }
-
-        String quiz = gameService.updateQuiz(Long.valueOf(gameId));
-        gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.QUIZ_TIME_OVER)
-            .message(quiz)
-            .build();
-        rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+//        byte[] body = message.getBody();
+//        String gameId = new String(body);
+//        log.info("{}번 게임방 퀴즈 제한시간 종료 메시지큐 리스너 호출됨 ", gameId);
+//        GameSocketResponseDto gameSocketResponseDto;
+//        if(gameService.isEndGame(Long.valueOf(gameId))){
+//            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+//                .data(gameService.getGameResult(Long.valueOf(gameId)))
+//                .build();
+//            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+//            return;
+//        }
+//
+//        String quiz = gameService.updateQuiz(Long.valueOf(gameId));
+//        gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.QUIZ_TIME_OVER)
+//            .message(quiz)
+//            .build();
+//        rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
     }
 
@@ -65,20 +65,20 @@ public class RabbitMqListener {
     @EventListener
     public void connectionListener(SessionDisconnectEvent event){
         log.info("disconnected");
-        Long userId = Long.valueOf(event.getUser().getName());
-        Long gameId = gameService.findGameIdByUserId(userId);
-
-        if(gameId == null) {
-            throw new IllegalArgumentException();
-        }
-
-            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder()
-                .socketType(SocketType.PLAYER_OUT)
-                .message(PLAYER_OUT_MESSAGE.getMessage())
-                .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
-                    .outUserId(userId).build()))
-                .build();
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+//        Long userId = Long.valueOf(event.getUser().getName());
+//        Long gameId = gameService.findGameIdByUserId(userId);
+//
+//        if(gameId == null) {
+//            throw new IllegalArgumentException();
+//        }
+//
+//            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder()
+//                .socketType(SocketType.PLAYER_OUT)
+//                .message(PLAYER_OUT_MESSAGE.getMessage())
+//                .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
+//                    .outUserId(userId).build()))
+//                .build();
+//            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
 
     }

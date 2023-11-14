@@ -12,6 +12,7 @@ import com.npc.say_vr.domain.study.service.GoalService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,8 +32,7 @@ public class checkListApiController {
   private final GoalService goalService;
 
   @PostMapping("/{studyId}/{weeklySprintId}")
-  public ResponseEntity<?> createCheckListItem(@PathVariable Long studyId, @PathVariable Long weeklySprintId,@RequestBody CreateCheckListRequestDto createCheckListRequestDto) {
-    Long userId = 1L;
+  public ResponseEntity<?> createCheckListItem(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long weeklySprintId,@RequestBody CreateCheckListRequestDto createCheckListRequestDto) {
     checkListService.createCheckListItem(studyId,weeklySprintId,createCheckListRequestDto);
     ResponseDto responseDto = ResponseDto.builder()
         .message(CHECKLISTITEM_CREATE_SUCCESS.getMessage())
@@ -43,8 +43,7 @@ public class checkListApiController {
   }
 
   @PutMapping("/{studyId}/{weeklySprintId}/{checkListId}")
-  public ResponseEntity<?> updateCheckListItem(@PathVariable Long studyId, @PathVariable Long weeklySprintId,@PathVariable Long checkListId,@RequestBody UpdateCheckListRequestDto updateCheckListRequestDto) {
-    Long userId = 1L;
+  public ResponseEntity<?> updateCheckListItem(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long weeklySprintId,@PathVariable Long checkListId,@RequestBody UpdateCheckListRequestDto updateCheckListRequestDto) {
     checkListService.updateCheckListItem(checkListId,updateCheckListRequestDto);
     ResponseDto responseDto = ResponseDto.builder()
         .message(CHECKLISTITEM_UPDATE_SUCCESS.getMessage())
@@ -55,9 +54,8 @@ public class checkListApiController {
   }
 
   @PatchMapping("/status/{studyId}/{weeklySprintId}/{checkListId}") // TODO : POSTMAN TEST & API 명세서 수정
-  public ResponseEntity<?> updateCheckListItemStatus(@PathVariable Long studyId, @PathVariable Long weeklySprintId, @PathVariable Long checkListId, @RequestBody
+  public ResponseEntity<?> updateCheckListItemStatus(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long weeklySprintId, @PathVariable Long checkListId, @RequestBody
   UpdateCheckListStatusResquestDto updateCheckListStatusResquestDto) {
-    Long userId = 1L;
     checkListService.updateCheckListItemStatus(checkListId,updateCheckListStatusResquestDto);
     ResponseDto responseDto = ResponseDto.builder()
             .message(CHECKLISTITEMSTATUS_UPDATE_SUCCESS.getMessage())
@@ -68,8 +66,7 @@ public class checkListApiController {
   }
 
   @DeleteMapping("/{studyId}/{weeklySprintId}/{checkListId}") // TODO : POSTMAN TEST & API 명세서 수정
-  public ResponseEntity<?> deleteCheckListItem(@PathVariable Long studyId, @PathVariable Long weeklySprintId, @PathVariable Long checkListId) {
-    Long userId = 1L;
+  public ResponseEntity<?> deleteCheckListItem(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long weeklySprintId, @PathVariable Long checkListId) {
     checkListService.deleteCheckListItemStatus(checkListId);
     ResponseDto responseDto = ResponseDto.builder()
             .message(CHECKLISTITEM_DELETE_SUCCESS.getMessage())

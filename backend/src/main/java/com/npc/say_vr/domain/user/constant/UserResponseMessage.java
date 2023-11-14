@@ -2,6 +2,7 @@ package com.npc.say_vr.domain.user.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -17,7 +18,10 @@ public enum UserResponseMessage {
     SUCCESS_PROFILE_UPDATE("프로필 사진이 업데이트 되었습니다.", HttpStatus.ACCEPTED),
     SUCCESS_NAME_UPDATE("닉네임 변경 완료", HttpStatus.ACCEPTED),
     SUCCESS_USER_DELETE("탈퇴가 완료되었습니다", HttpStatus.OK),
-    SUCCESS_ACTIVITY_READ("활동 조회 성공", HttpStatus.OK);
+    SUCCESS_ACTIVITY_READ("활동 조회 성공", HttpStatus.OK),
+    SUCCESS_CEHCKNICKNAME_READ("닉네임 중복 체크 성공",HttpStatus.OK),
+    SUCCESS_CEHCKEMAIL_READ("아이디 중복 체크 성공",HttpStatus.OK),
+    SUCCESS_USER_CREATE("회원가입 성공",HttpStatus.CREATED);
 
 
     private final String message;

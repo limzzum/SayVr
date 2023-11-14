@@ -14,6 +14,7 @@ import com.npc.say_vr.domain.study.service.GoalService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/study/goal")
@@ -35,8 +35,7 @@ public class GoalApiController {
     private final GoalService goalService;
 
     @PostMapping("/{studyId}")
-    public ResponseEntity<?> createWeeklySprint(@PathVariable Long studyId, @RequestBody CreateWeeklySprintRequestDto createWeeklySprintRequestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> createWeeklySprint(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @RequestBody CreateWeeklySprintRequestDto createWeeklySprintRequestDto) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(WEEKLY_CREATE_SUCCESS.getMessage())
                 .data(goalService.createWeeklySprint(userId,studyId, createWeeklySprintRequestDto))
@@ -46,8 +45,7 @@ public class GoalApiController {
     }
 
     @GetMapping("/{studyId}/{weeklySprintId}")
-    public ResponseEntity<?> readWeeklySprint(@PathVariable Long studyId, @PathVariable Long weeklySprintId) {
-        Long userId = 2L;
+    public ResponseEntity<?> readWeeklySprint(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long weeklySprintId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(WEEKLY_READ_SUCCESS.getMessage())
             .data(goalService.readWeeklySprint(userId,studyId,weeklySprintId))
@@ -57,8 +55,7 @@ public class GoalApiController {
     }
 
     @PostMapping("/{studyId}/{weeklySprintId}")
-    public ResponseEntity<?> createGoal(@PathVariable Long studyId, @PathVariable Long weeklySprintId,@RequestBody CreateGoalRequestDto createGoalRequestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> createGoal(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long weeklySprintId,@RequestBody CreateGoalRequestDto createGoalRequestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(GOAL_CREATE_SUCCESS.getMessage())
             .data(goalService.createGoal(userId,studyId,weeklySprintId,createGoalRequestDto))
@@ -68,8 +65,7 @@ public class GoalApiController {
     }
 
     @PutMapping("{studyId}/{weeklySprintId}/{goalId}")
-    public ResponseEntity<?> updateGoal(@PathVariable Long studyId,@PathVariable Long weeklySprintId,@PathVariable Long goalId, @RequestBody UpdateGoalRequestDto updateGoalRequestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> updateGoal(@AuthenticationPrincipal Long userId,@PathVariable Long studyId,@PathVariable Long weeklySprintId,@PathVariable Long goalId, @RequestBody UpdateGoalRequestDto updateGoalRequestDto) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(GOAL_UPDATE_SUCCESS.getMessage())
             .data(goalService.updateGoal(userId,studyId,weeklySprintId,goalId,updateGoalRequestDto))
@@ -79,8 +75,7 @@ public class GoalApiController {
     }
 
     @DeleteMapping("{studyId}/{weeklySprintId}/{goalId}")
-    public ResponseEntity<?> deleteGoal(@PathVariable Long studyId,@PathVariable Long weeklySprintId,@PathVariable Long goalId) {
-        Long userId = 1L;
+    public ResponseEntity<?> deleteGoal(@AuthenticationPrincipal Long userId,@PathVariable Long studyId,@PathVariable Long weeklySprintId,@PathVariable Long goalId) {
         ResponseDto responseDto = ResponseDto.builder()
             .message(GOAL_DELETE_SUCCESS.getMessage())
             .data(goalService.deleteGoal(userId,studyId,weeklySprintId,goalId))
