@@ -3,7 +3,6 @@ package com.npc.say_vr.domain.game.service;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_START_MESSAGE;
 import static com.npc.say_vr.domain.game.constant.GameResponseMessage.GAME_STATUS_INFO;
 
-import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordcardDto;
 import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.domain.game.constant.GameStatus;
@@ -122,6 +121,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void gameStart(Long userId) {
         Long gameId = findGameIdByUserId(userId);
+        log.info("game start gameId : {}" , gameId);
         updateQuiz(gameId);
         gameScheduler.addGameRoom(gameId);
         GameStatusDto gameStatusDto = redisUtil.getGameStatusList(String.valueOf(gameId));
