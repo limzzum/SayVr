@@ -18,7 +18,7 @@ export function ActivityCalendar({ sampleData, colorCustomization, showMonth }: 
   const [currentYear, setCurrentYear] = useState<number>(2023);
   const [dateText, setDayText] = useState<string[]>([]);
   const [showMonthBar, setShowMonthBar] = useState<boolean>(true);
-
+  
   const getDayOfYear = (date: string): number => {
     const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     const year = parseInt(date.substring(0, 4));

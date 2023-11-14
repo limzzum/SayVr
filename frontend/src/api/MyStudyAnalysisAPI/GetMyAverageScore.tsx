@@ -1,12 +1,12 @@
 import axios from "axios";
 import API_URL from "../../config";
 // const GetMyAverageScore = async (token) => {
-const GetMyAverageScore = async () => {
+const GetMyAverageScore = async (token: string) => {
   try {
     const response = await axios.get(`${API_URL}/conversation/score`, {
-      //   headers: {
-      //     Authorization: null,
-      //   },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {

@@ -23,8 +23,6 @@ import "./style.css";
 import JSConfetti from "js-confetti";
 import { conteffi } from "../../App";
 
-
-
 interface receiveMessage {
   socketType: SocketType;
   gameStatus?: GameStatus;
@@ -67,8 +65,8 @@ interface GameResultDto {
 }
 
 interface ChatMessageDto {
-  userId : string;
-  message : string;
+  userId: string;
+  message: string;
 }
 
 interface SocketResponseDto<T> {
@@ -110,19 +108,21 @@ function MatchingGameWaitingPage() {
     profile: "",
   });
 
-
   const [question, setQuestion] = useState("");
-  const [chatMessage, setChatMessage] = useState<ChatMessageDto>({userId: "1", message:""});
-  const [isEndGame, setIsEndGame] = useState(false);  
-  const [endMessage, setEndMessage] = useState("");  
+  const [chatMessage, setChatMessage] = useState<ChatMessageDto>({
+    userId: "1",
+    message: "",
+  });
+  const [isEndGame, setIsEndGame] = useState(false);
+  const [endMessage, setEndMessage] = useState("");
 
   const [gameResult, setGameResult] = useState<GameResultDto>({
-  isDraw: false,
-  winnerId: 0,
-  loserId: 0,
-  winnerPoint: 0,
-  loserPoint: 0,
-  drawPoint: 0
+    isDraw: false,
+    winnerId: 0,
+    loserId: 0,
+    winnerPoint: 0,
+    loserPoint: 0,
+    drawPoint: 0,
   });
 
   const history = useNavigate();
@@ -131,25 +131,25 @@ function MatchingGameWaitingPage() {
     console.log("게임 대기 페이지 socket 응답받음");
     if (response.socketType == SocketType.GAME_START) {
       console.log("게임 매칭");
-      response.gameStatusDto?.playerA.userId == 1
+      response.gameStatusDto!.playerA.userId.toString() ==
+      localStorage.getItem("userId")!
         ? setPlayerA(response.gameStatusDto!.playerA)
         : setPlayerA(response.gameStatusDto!.playerB);
-      response.gameStatusDto?.playerB.userId == 1
-        ? setPlayerA(response.gameStatusDto!.playerB)
-        : setPlayerB(response.gameStatusDto!.playerA);
+      response.gameStatusDto?.playerB.userId.toString() ==
+      localStorage.getItem("userId")!
+        ? setPlayerB(response.gameStatusDto!.playerA)
+        : setPlayerB(response.gameStatusDto!.playerB);
 
       Socket.sendMsg(publishURL + "." + gameId, messageToSend);
 
       setIsMatch(true);
       const timer = setTimeout(() => {
         setGameStart(true);
-
       }, 3000);
 
       return () => {
         clearTimeout(timer);
       };
-
     }
 
     if (response.socketType == SocketType.CHAT) {
@@ -173,10 +173,10 @@ function MatchingGameWaitingPage() {
     if (response.socketType == SocketType.PLAYER_OUT) {
       console.log("상대 플레이어 게임 떠남.");
       console.log(response.socketType);
-      setEndMessage(response.message!)
+      setEndMessage(response.message!);
       setGameResult(response.data);
       setIsEndGame(true);
-      
+
       alert("상대 플레이어 게임 떠남.");
       // private boolean isDraw;
       //   private Long winnerId;
@@ -196,7 +196,7 @@ function MatchingGameWaitingPage() {
 
     if (response.socketType == SocketType.GAME_END) {
       console.log("게임 info");
-      setEndMessage(response.message!)
+      setEndMessage(response.message!);
       setGameResult(response.data);
       setIsEndGame(true);
     }
@@ -220,23 +220,22 @@ function MatchingGameWaitingPage() {
           setGameId(response.data.data.gameId);
           setImageUrl(imageURL + response.data.data.profile);
 
-          if(response.data.data.gameStart){
+          if (response.data.data.gameStart) {
             startGame();
             setIsMatch(true);
-              const timer = setTimeout(() => {
-                setGameStart(true);
-        
-              }, 3000);
-        
-              return () => {
-                clearTimeout(timer);
-              };
+            const timer = setTimeout(() => {
+              setGameStart(true);
+            }, 3000);
+
+            return () => {
+              clearTimeout(timer);
+            };
           }
 
           return () => {};
         })
         .catch((error) => {
-          console.log("wait axios 요청")
+          console.log("wait axios 요청");
         });
     });
 
@@ -259,7 +258,7 @@ function MatchingGameWaitingPage() {
     return () => {};
   }, [gameId]);
 
-  if (gameStart) {    
+  if (gameStart) {
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <GameProceedingHeader
@@ -272,20 +271,27 @@ function MatchingGameWaitingPage() {
           question={question}
           curRound={curRound}
         />
-         <Modal
-         isOpen={isEndGame}
-         onRequestClose={() => {}}
-         contentLabel="Example Modal"
-         className="Modal"
-       >
-        <div>{endMessage}</div>
-         <div>winner : {gameResult.winnerId}</div>
-         <div>loser : {gameResult!.loserId}</div>
-         <div> point : + {gameResult!.winnerId == 1 ? gameResult!.winnerPoint : gameResult!.loserPoint}</div>
-         <div><button onClick={()=>history("/")}>OK</button></div>
-       </Modal>
+        <Modal
+          isOpen={isEndGame}
+          onRequestClose={() => {}}
+          contentLabel="Example Modal"
+          className="Modal"
+        >
+          <div>{endMessage}</div>
+          <div>winner : {gameResult.winnerId}</div>
+          <div>loser : {gameResult!.loserId}</div>
+          <div>
+            {" "}
+            point : +{" "}
+            {gameResult!.winnerId == 1
+              ? gameResult!.winnerPoint
+              : gameResult!.loserPoint}
+          </div>
+          <div>
+            <button onClick={() => history("/")}>OK</button>
+          </div>
+        </Modal>
       </div>
-        
     );
   } else {
     return (
@@ -299,13 +305,10 @@ function MatchingGameWaitingPage() {
           isMatch={isMatch}
         ></Body>
         {!gameStart && <Footer />}
-
       </div>
-      
     );
   }
 }
-
 
 const handleClick = () => {
   conteffi.addConfetti({
@@ -321,6 +324,5 @@ const handleClick = () => {
     confettiNumber: 500,
   });
 };
-
 
 export default MatchingGameWaitingPage;

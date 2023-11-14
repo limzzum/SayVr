@@ -1,18 +1,20 @@
 .todo-list {
   width: 220px;
   height: 320px;
+  height:100%!important;
   background-color: #82b7f3;
 }
 
 .todo-template {
   width: 200px;
-  height: 300px;
+  /* height: 300px; */
+  height:88%;
   position: relative;
   background: white;
   border-radius: 16px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04);
   margin: 0 auto;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
@@ -20,6 +22,7 @@
 }
 
 .todo-header {
+  padding-top:1rem;
   /* padding-top: 108px;
   padding-left: 32px;
   padding-right: 32px;
@@ -28,13 +31,15 @@
 }
 
 .todo-nickName {
-  margin: 0;
+  /* margin:0; */
+  margin-left:1rem;
   font-size: 25px;
   color: #343a40;
 }
 
 .task-left {
   color: #20c997;
+  margin-left:1rem;
   font-size: 18px;
   margin-top: 10px;
   font-weight: bold;
@@ -42,6 +47,7 @@
 
 .todo-listblock {
   flex: 1;
+  padding:1rem;
   /* padding: 30x 32px; */
   /* padding-bottom: 48px; */
   overflow-y: auto;
@@ -91,7 +97,16 @@
 .remove {
   display: none;
 }
-
+.week-goal-inner{
+  background-color:white;
+  border-radius:10px;
+  padding:1rem;
+  margin:1rem;
+  margin-top:1.5rem;
+}
+.week-inner-list{
+  
+}
 .check-circle {
   width: 20px;
   height: 20px;
@@ -163,7 +178,7 @@
 }
 
 .insert-form-goal {
-  background: #f8f9fa;
+  /* background: #f8f9fa; */
   /* padding-left: 32px;
   padding-top: 32px;
   padding-right: 32px; */

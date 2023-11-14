@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_URL from "../../../config";
+import { tokenState } from "../../../recoil/GoalbalState";
+import { useRecoilValue } from 'recoil';
 import { ActivityCalendar } from "activity-calendar-react";
 import "./style.css";
 
 function ActiveCalendarComponent() {
   const [activityData, setActivityData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const token = useRecoilValue(tokenState)
+  
   useEffect(() => {
     const fetchActivityData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/user/active`);
-        console.log(response);
+        console.log("요청은 가나");
+
+        const response = await axios.get(`${API_URL}/user/active`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });        
+        console.log("요청은 가나");
+        console.log("엑티브 캘린더",response);
         setActivityData(response.data.data.activityDtoList);
-        setIsLoading(false); // 데이터 로딩 완료
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching activity data:", error);
-        setIsLoading(false); // 에러 발생 시에도 로딩 완료 처리
+        setIsLoading(false);
       }
     };
 
     fetchActivityData();
-  }, []);
+  }, [token]);
 
   function getColorForActivity(activityCount) {
     console.log(`Activity Count: ${activityCount}`);

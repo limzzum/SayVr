@@ -34,6 +34,9 @@ const ReadStudyInfoModalAndOut: React.FC<ReadStudyInfoModalProps> = ({
   };
 
   const handleSubmit = () => {
+    if(!window.confirm("탈퇴하시겠습니까?")){
+      return;
+    }
     deleteStudyMember(readStudyInfo.studyInfoDto.studyId)
       .then((res) => {
         console.log(res.data);
@@ -54,28 +57,28 @@ const ReadStudyInfoModalAndOut: React.FC<ReadStudyInfoModalProps> = ({
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          <h2>{name}</h2>
+        <Modal.Title >
+          <h2>스터디 {name}</h2>
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body style={{margin:"1rem"}}>
         <div>
-          <h3>스터디 현재인원</h3>
-          <h3>
+          <h3>현재인원</h3>
+          <h4 style={{marginBottom:"1rem"}}>
             {currentPeople} / {maxPeople}
-          </h3>
-          <h3>스터디 설명</h3>
-          <p>{description}</p>
-          <h3>스터디 규칙</h3>
-          <p>{rule}</p>
+          </h4>
+          <h3>설명</h3>
+          <h4 style={{marginBottom:"1rem"}}>{description}</h4>
+          <h3>규칙</h3>
+          <h4 style={{marginBottom:"1rem"}}>{rule}</h4>
         </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           닫기
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          스터디 탈퇴
+        <Button variant="danger" onClick={handleSubmit}>
+        탈퇴
         </Button>
       </Modal.Footer>
     </Modal>

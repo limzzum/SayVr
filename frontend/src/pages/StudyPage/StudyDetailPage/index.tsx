@@ -16,6 +16,7 @@ import ReadStudyInfoModalAndOut from "../../../components/StudyComponents/ReadSt
 import UpdateNewStudyModal from "../../../components/StudyComponents/UpdateNewStudyModal";
 import CreatWeeklySprintModal from "../../../components/StudyComponents/CreatWeeklySprintModal";
 import "../style.css";
+import { Button } from "react-bootstrap";
 
 const StudyDetail: React.FC = () => {
   const { id } = useParams();
@@ -91,51 +92,61 @@ const StudyDetail: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="studypage-container">
-        <div className="row">
-          <div className="col-4">
+      <div className="studypage-container" style={{ width: "70vw" }}>
+        <div className="row study-title">
+          <div
+            className="col study-name"
+            style={{ display: "flex", flexDirection: "row" }}
+          >
             <h1>{studyDetailInfo?.studyInfoDto.name}</h1>
+            <div style={{ marginLeft: "2rem" }}>
+              <Button
+                onClick={handleReadPlusButtonClick}
+                style={{ width: "126px" }}
+                variant="outline-primary"
+              >
+                스터디 정보
+              </Button>
+            </div>
           </div>
-          <div className="col-5">
-            <button onClick={handleReadPlusButtonClick}>
-              <p>스터디 정보</p>
-            </button>
-          </div>
-          <div className="col-2">
+          <div
+            className="col-2 user-name"
+            style={{ display: "flex", flexDirection: "row" }}
+          >
             <p>{studyDetailInfo?.nickName}</p>
+
+            {studyDetailInfo?.studyRole === "LEADER" ? (
+              <>
+                <div className="" style={{ marginLeft: "1rem" }}>
+                  <IconButton
+                    onHover
+                    icon={<SettingsIcon />}
+                    size={55}
+                    handleButtonClick={handleUpdatePlusButtonClick}
+                  ></IconButton>
+                </div>
+              </>
+            ) : (
+              <>{/* <div /> */}</>
+            )}
           </div>
-          {studyDetailInfo?.studyRole === "LEADER" ? (
-            <>
-              <div className="col-1">
-                <IconButton
-                  onHover
-                  icon={<SettingsIcon />}
-                  size={55}
-                  handleButtonClick={handleUpdatePlusButtonClick}
-                ></IconButton>
-              </div>
-            </>
-          ) : (
-            <>{/* <div /> */}</>
-          )}
         </div>
         <div className="row">
-          <h3>{studyDetailInfo?.studyInfoDto.rule}</h3>
+          <h4>🔔{studyDetailInfo?.studyInfoDto.rule}</h4>
           <hr></hr>
         </div>
-        <div className="row justify-content-center align-items-center">
-          <div className="col-2 justify-content-center align-items-center">
-            <p style={{ fontSize: "1.5em" }}>스터디 목표</p>
-          </div>
-          <div className="col">
+        {/* <div className="row justify-content-center align-items-center"> */}
+        <div className="study-goal-title">
+          <h2>스터디 목표</h2>
+          <div style={{ marginLeft: "1rem" }}>
             <AddButton
               handleButtonClick={handleCreatePlusButtonClick}
-              size="50"
-            />{" "}
+              size="45"
+            />
           </div>
         </div>
-        <div className="row ustify-content-center align-items-center">
-          <div className="studypage-inner-container">
+        <div className="row justify-content-center align-items-center">
+          <div className="studypage-inner-container goal-inner" style={{ height:"50vh"}}>
             <WeeklySprintComponent
               studyId={studyId}
               goalInfo={goalInfo}
@@ -148,16 +159,27 @@ const StudyDetail: React.FC = () => {
               studyRole={studyDetailInfo?.studyRole}
             ></WeeklySprintComponent>
           </div>
+        </div>        
+        <div className="study-goal-title">
+          <h2>스터디 단어장</h2>
+          <div style={{ marginLeft: "1rem" }}>
+            <AddButton
+              handleButtonClick={handleCreatePlusButtonClick}
+              size="45"
+            />
+          </div>
         </div>
-        <div className="row ustify-content-center align-items-center">
+        {/* <div className="row ustify-content-center align-items-center">
+
           <div className="col-2">
             <p style={{ fontSize: "1.5em" }}>스터디 단어장</p>
           </div>
           <div className="col">
             <img className="btn" style={{ width: "4em" }} src={PlusBtn} />
           </div>
-        </div>
-        <div className="row card-row justify-content-center align-items-center">
+        </div> */}
+        
+        <div className="row card-row justify-content-center align-items-center"><div className="studypage-inner-container"></div>
           {/* <MyWordCard /> */}
         </div>
       </div>
