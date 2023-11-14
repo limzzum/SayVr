@@ -54,7 +54,5 @@ export const waitingGame = (): Promise<
 };
 
 export const startGame = () => {
-  return axios.create({
-    baseURL: BASE_URL,
-  }).get("/start");
+  return axiosInstance.get("/start");
 };
