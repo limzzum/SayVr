@@ -1,30 +1,6 @@
 // api.ts
-import axios, { AxiosResponse } from "axios";
-import {
-  CreateFlashcardsRequestDto,
-  PrivacyStatus,
-} from "../../components/VocabListComponents/CreateNewListModal";
-import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage";
-import API_URL from '../../config';
-
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-axiosInstance.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers['Authorization'] = 'Bearer ' + token;
-    }
-    return config;
-  },
-  error => {
-    Promise.reject(error)
-});
+import { AxiosResponse } from "axios";
+import axiosInstance from "../constAPI/axiosInstance";
 
 export enum CheckListStatus {
   DELETE = "DELETE",
