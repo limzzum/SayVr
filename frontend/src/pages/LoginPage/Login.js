@@ -1,28 +1,34 @@
 import React from "react";
 import "./Login.css";
 import axios from "axios";
-import FacebookLogin from "@greatsumini/react-facebook-login";
-// axios.defaults.withCredentials = true;
+import { useNavigate } from "react-router-dom"
+import {login} from "../../api/UserPageAPI/UserAPI"
 
 function Login() {
-  const userLogin = function () {
+  const navigate = useNavigate();
+
+  async function userLogin() {
     const form = document.querySelector("#login-form");
     const formData = new FormData(form);
+    
+    try {
+      const response = await login(formData);  
 
-    axios
-      .post("http://localhost/web/auth/login", formData)
-      .then((response) => {
-        // console.log(response.data.status);
-        if (response.data.status === "success") {
-          window.location.href = "/";
-        } else {
-          alert("로그인 실패!");
-        }
-      })
-      .catch((error) => {
-        alert("로그인 오류!");
-        console.log(error);
-      });
+      if (response.data.httpStatus === "OK") {
+        console.log(response.data);
+        alert("로그인 성공");
+        navigate("/")
+      } else {
+        alert("로그인 실패!");
+      }
+    } catch (error) {
+      alert("로그인 오류!");
+      console.log(error);
+    }
+  }
+
+  const userSign = function () {
+    navigate("/Sign")
   };
 
   const handleKeyDown = (event) => {
@@ -31,6 +37,7 @@ function Login() {
       userLogin();
     }
   };
+
   return (
     <div className="loginB">
       <div className="login-body">
@@ -46,13 +53,13 @@ function Login() {
           <h2>로그인</h2>
           <table>
             <tr>
-              <th className="email-th">Email</th>
+              <th className="email-th">아이디</th>
               <td>
-                <input type="email" className="email" name="email"></input>
+                <input type="id" className="email" name="email"></input>
               </td>
             </tr>
             <tr>
-              <th className="password-th">password</th>
+              <th className="password-th">비밀번호</th>
               <td>
                 <input
                   type="password"
@@ -73,6 +80,14 @@ function Login() {
               onClick={userLogin}
             >
               Login
+            </button>
+            <button
+              id="btn-signUpMove"
+              type="button"
+              className="btn-login"
+              onClick={userSign}
+            >
+              회원가입
             </button>
           </div>
 

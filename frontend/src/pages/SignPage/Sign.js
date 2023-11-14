@@ -1,21 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import "./Sign.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import {checkNickname, checkId, signUp} from "../../api/UserPageAPI/UserAPI"
 import { useNavigate } from "react-router-dom";
 
-axios.defaults.withCredentials = true;
 
-//----------------------------------회원가입--------------------------------------------
 function Sign() {
-  const navigate = useNavigate();
 
-  const signUp = function () {
+  const navigate = useNavigate();
+  const [duplicateEmail,setDuplicateEmail] = useState(false);
+  const [duplicateNickname,setDuplicateNickname] = useState(false);
+
+  async function signUpInsert(event) {
+    event.preventDefault();
     const form = document.querySelector("#member-form");
     const formData = new FormData(form);
 
-    // 폼 데이터의 각 필드가 비어있는지 확인
     let isEmpty = false;
     for (const value of formData.values()) {
       if (!value) {
@@ -28,96 +27,89 @@ function Sign() {
       return;
     }
 
-    let json = JSON.stringify(Object.fromEntries(formData));
-    // console.log(json);
-    fetch("http://localhost/web/members", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: json,
-    })
-      .then((response) => {
-        console.log(json);
-        return response.json();
-      })
-      .then((result) => {
-        if (result.status == "success") {
-          alert("회원가입을 축하드립니다!");
-        } else {
-          alert("입력 실패!");
-          console.log(result.data);
-        }
-      })
-      .catch((exception) => {
-        alert("입력 중 오류 발생!");
-        console.log(exception);
-      });
+    if (!duplicateEmail) {
+      alert("아이디 중복 체크를 해주세요.");
+      return;
+    }
 
-    navigate("/Main");
-  };
+    if (!duplicateNickname) {
+      alert("닉네임 중복 체크를 해주세요.");
+      return;
+    }
+
+    try {
+      const response = await signUp(formData);  
+
+      if (response.data.httpStatus === "CREATED") {
+        alert("회원가입을 축하드립니다!");
+        navigate("/login");
+      } else {
+        alert("입력 실패!");
+        console.log(response.data);
+      }
+    } catch (error) {
+      alert("입력 중 오류 발생!");
+      console.log(error);
+    }
+}
 
   //----------------------------------이메일체크--------------------------------------------
-  function checkEmail() {
-    const email = document.querySelector("#f-email").value; //id값이 "f-email"인 입력란의 값을 저장
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]{3,}$/; // 이메일 형식 검사를 위한 정규식
+  function checkEmailLength() {
+    const email = document.querySelector("#f-email").value;
+  
+    if (email.length < 6) {
+      document.querySelector(".email_already").style.display = "none";
+      document.querySelector(".email_ok").style.display = "none";
+      document.querySelector(".email_no").style.display = "inline-block";
+    } else {
+      document.querySelector(".email_no").style.display = "none";
+    }
+  }
 
-    if (!emailRegex.test(email)) {
-      // 이메일 형식이 유효하지 않은 경우
+  
+  async function checkEmailDuplicate() {
+    const email = document.querySelector("#f-email").value;
+
+    if (email.length < 6) {
       document.querySelector(".email_already").style.display = "none";
       document.querySelector(".email_ok").style.display = "none";
       document.querySelector(".email_no").style.display = "inline-block";
       return;
-    } else {
-      fetch("http://localhost/web/members/emailCheck?email=" + email, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((cnt) => {
-          if (cnt == 0) {
-            //cnt가 1이 아니면(=0일 경우) -> 사용 가능한 아이디
-            document.querySelector(".email_ok").style.display = "inline-block";
-            document.querySelector(".email_already").style.display = "none";
-            document.querySelector(".email_no").style.display = "none";
-          } else {
-            // cnt가 1일 경우 -> 이미 존재하는 아이디
-            document.querySelector(".email_already").style.display =
-              "inline-block";
-            document.querySelector(".email_ok").style.display = "none";
-            document.querySelector(".email_no").style.display = "none";
-            alert("아이디를 다시 입력해주세요");
-            document.getElementById("f-email").value = "";
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          alert("에러입니다");
-        });
+    }
+  
+    document.querySelector(".email_no").style.display = "none";
+  
+    try {
+      const response = await checkId(email);
+      const cnt = response.data.data;
+      if (cnt === true) {
+        document.querySelector(".email_ok").style.display = "inline-block";
+        document.querySelector(".email_already").style.display = "none";
+        setDuplicateEmail(true);
+      } else {
+        document.querySelector(".email_already").style.display =
+          "inline-block";
+        document.querySelector(".email_ok").style.display = "none";
+        alert("아이디를 다시 입력해주세요");
+        document.getElementById("f-email").value = "";
+      }
+    } catch (error) {
+      console.error(error);
+      alert("에러입니다");
     }
   }
-
   //----------------------------------비밀번호체크--------------------------------------------
   function checkPW() {
-    var pw = document.getElementsByName("password")[0].value;
-    var num = pw.search(/[0-9]/g);
-    var eng = pw.search(/[a-z]/gi);
-    var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
-
+    var pw = document.getElementById("f-password").value;
+  
     if (pw.length < 6 || pw.length > 18) {
       alert("6자리 ~ 18자리 이내로 입력해주세요.");
       document.getElementById("f-password").value = "";
-      return false;
+      document.querySelector(".password_ok").style.display = "none";
     } else if (pw.search(/\s/) != -1) {
       alert("비밀번호는 공백 없이 입력해주세요.");
       document.getElementById("f-password").value = "";
-      return false;
-    } else if (num < 0 || eng < 0 || spe < 0) {
-      alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
-      document.getElementById("f-password").value = "";
-      return false;
+      document.querySelector(".password_ok").style.display = "none";
     } else {
       document.querySelector(".password_ok").style.display = "inline-block";
       console.log("비밀번호 형식이 맞습니다.");
@@ -144,63 +136,28 @@ function Sign() {
   }
 
   //----------------------------------닉네임체크--------------------------------------------
-  function checkNickname() {
+  
+  async function checkNicknameDuplicate() {
     const nickname = document.querySelector("#f-nickname").value;
-
-    fetch("http://localhost/web/members/nickCheck?nickname=" + nickname, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((cnt) => {
-        if (cnt == 0) {
-          document.querySelector(".nickname_ok").style.display = "inline-block";
-          document.querySelector(".nickname_already").style.display = "none";
-        } else {
-          document.querySelector(".nickname_already").style.display =
-            "inline-block";
-          document.querySelector(".nickname_ok").style.display = "none";
-          alert("닉네임을 다시 입력해주세요");
-          document.getElementById("f-nickname").value = "";
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("에러입니다");
-      });
-  }
-
-  // ---------------------------------휴대폰번호 하이픈 삽입-----------------------------------
-  const [tel, setTel] = useState("");
-
-  const hypenTel = (value) => {
-    const processedValue = value.replace(/[^0-9]/g, "");
-    const telLength = processedValue.length;
-
-    if (telLength < 4) {
-      return processedValue;
-    } else if (telLength < 7) {
-      return `${processedValue.slice(0, 3)}-${processedValue.slice(3)}`;
-    } else if (telLength < 11) {
-      return `${processedValue.slice(0, 3)}-${processedValue.slice(
-        3,
-        6
-      )}-${processedValue.slice(6)}`;
-    } else {
-      return `${processedValue.slice(0, 3)}-${processedValue.slice(
-        3,
-        7
-      )}-${processedValue.slice(7, 11)}`;
+  
+    try {
+      const response = await checkNickname(nickname);
+      const cnt = response.data.data;
+      if (cnt === true) {
+        document.querySelector('.nickname_ok').style.display = 'inline-block';
+        document.querySelector('.nickname_already').style.display = 'none';
+        setDuplicateNickname(true);
+      } else {
+        document.querySelector('.nickname_already').style.display = 'inline-block';
+        document.querySelector('.nickname_ok').style.display = 'none';
+        alert("닉네임을 다시 입력해주세요");
+        document.getElementById('f-nickname').value = '';
+      }
+    } catch (error) {
+      console.error(error);
+      alert("에러입니다");
     }
-  };
-
-  const handleTelChange = (event) => {
-    const value = event.target.value;
-    const processedValue = hypenTel(value);
-    setTel(processedValue);
-  };
+  }
 
   return (
     <div className="signB">
@@ -213,27 +170,37 @@ function Sign() {
           <table className="member-form-table">
             <tbody>
               <tr>
-                <th className="email-th">Email</th>
+                <th className="email-th">아이디</th>
                 <td>
+                  <div>
                   <input
                     id="f-email"
-                    type="email"
+                    type="id"
                     name="email"
                     className="email"
-                    placeholder="email 형식으로 입력해주세요."
-                    onInput={checkEmail}
+                    placeholder="아이디를 6글자 이상 입력해주세요."
+                    onInput={checkEmailLength}
                   />
+                   <button
+              type="button"
+              className="btn btn-primary"
+              id="btn-checkEmail"
+              onClick={checkEmailDuplicate}
+            >
+              아이디 중복 체크
+            </button>
+            </div>
                   <span className="email_ok">사용 가능한 아이디입니다.</span>
                   <span className="email_already">
                     누군가 이 아이디를 사용하고 있어요.
                   </span>
                   <span className="email_no">
-                    올바른 이메일 형식이 아닙니다.
+                    아이디는 6글자 이상 입력해야합니다.
                   </span>
                 </td>
               </tr>
               <tr>
-                <th className="password-th">Password</th>
+                <th className="password-th">비밀번호</th>
                 <td>
                   <input
                     id="f-password"
@@ -249,7 +216,7 @@ function Sign() {
                 </td>
               </tr>
               <tr>
-                <th className="password-th">Confirm Password</th>
+                <th className="password-th">비밀번호 확인</th>
                 <td>
                   <input
                     id="f-password2"
@@ -273,7 +240,7 @@ function Sign() {
                 </td>
               </tr>
               <tr>
-                <th className="nickname-th">NickName</th>
+                <th className="nickname-th">닉네임</th>
                 <td>
                   <input
                     id="f-nickname"
@@ -281,8 +248,15 @@ function Sign() {
                     name="nickname"
                     className="nickname"
                     placeholder="닉네임을 입력해주세요."
-                    onBlur={checkNickname}
                   />
+                  <button
+              type="button"
+              className="btn btn-primary"
+              id="btn-checkNickname"
+              onClick={checkNicknameDuplicate}
+            >
+              닉네임 중복 체크
+            </button>
                   <span className="nickname_ok">사용 가능한 닉네임입니다.</span>
                   <span className="nickname_already">
                     누군가 이 닉네임을 사용하고 있어요.
@@ -297,7 +271,7 @@ function Sign() {
               type="submit"
               className="btn btn-primary"
               id="btn-insert"
-              onClick={signUp}
+              onClick={signUpInsert}
             >
               가입하기
             </button>

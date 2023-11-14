@@ -1,5 +1,7 @@
 package com.npc.say_vr.domain.user.service;
 
+import com.npc.say_vr.domain.user.dto.CreateUserRequestDto;
+import com.npc.say_vr.domain.user.dto.LoginUserRequestDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
@@ -21,6 +23,14 @@ public interface UserService {
     TokenResponseDto createFacebookUser(Map<String, String> jsonData) throws Exception;
 
     String SaveUserProfileUrl(String profileUrl,String id);
+
+    boolean checkUserId(String email);
+
+    boolean checkNickname(String nickname);
+
+    void createUser(CreateUserRequestDto createUserRequestDto);
+
+    TokenResponseDto loginUser(LoginUserRequestDto loginUserRequestDto);
 
     //TODO : 페이스북 로그인
 
