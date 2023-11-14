@@ -42,8 +42,9 @@ public class GameSocketController {
 
 
     @MessageMapping("game.{gameId}")
-    public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId, SimpMessageHeaderAccessor accessor){
-        Long userId = Long.valueOf(accessor.getUser().getName());
+    public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId,SimpMessageHeaderAccessor accessor){
+
+        Long userId = Long.valueOf(accessor.getFirstNativeHeader("userId"));
         log.info("game 웹소켓 메시지 pull");
         SocketType socketType = gameSocketRequestDto.getSocketType();
         GameSocketResponseDto gameSocketResponseDto;
