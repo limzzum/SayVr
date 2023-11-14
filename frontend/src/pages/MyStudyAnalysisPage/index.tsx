@@ -19,6 +19,7 @@ const MyStudyAnalysisPage: React.FC = () => {
   const [conversationIds, setConversationIds] = useState<number[]>([]);
   const [graphData, setGraphData] = useState<ChartData | null>(null);
   const [data, setData] = useState<any>(null);
+  const [dateIdMap, setDateIdMap] = useState<Record<string, number[]> | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const MyStudyAnalysisPage: React.FC = () => {
         const averageScoresData = averageScoreResponse.data;
         if (averageScoresData && averageScoresData.averageScore) {
           setData(averageScoresData.averageScore);
-  
+
           const graphData = {
             averageTotal: averageScoresData.averageScore.averageTotal,
             contextTotal: averageScoresData.averageScore.contextTotal,
@@ -37,7 +38,7 @@ const MyStudyAnalysisPage: React.FC = () => {
             createdAt: averageScoresData.averageScore.createdAt,
             scoreHistory: averageScoresData.scoreHistory,
           };
-  
+
           setGraphData(graphData);
         }
 
@@ -47,8 +48,12 @@ const MyStudyAnalysisPage: React.FC = () => {
           const conversationDatesResponse = await GetConversationDates(month, year);
           const conversationDates = conversationDatesResponse.data;
           const conversationIds = conversationDatesResponse.id;
+          const dateIdMap = conversationDatesResponse.dateIdMap;
+
           setHighlightedDates(conversationDates);
           setConversationIds(conversationIds);
+          setDateIdMap(dateIdMap);
+          console.log("du", dateIdMap);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,10 +68,11 @@ const MyStudyAnalysisPage: React.FC = () => {
     ).padStart(2, "0")}`;
 
     const isHighlightedDate = highlightedDates.includes(formattedDate);
-    if (isHighlightedDate) {
+    if (isHighlightedDate && dateIdMap) {
       console.log("이동 버튼 눌림");
-      console.log()
-      navigate(`/MyStudyAnalysis/Detail?date=${formattedDate}&ids=${conversationIds.join(",")}`);
+      const ids = dateIdMap[formattedDate] || [];
+      console.log("여기가 새로운 아이디들", ids);
+      navigate(`/MyStudyAnalysis/Detail?date=${formattedDate}&ids=${ids.join(",")}`);
     }
   };
 

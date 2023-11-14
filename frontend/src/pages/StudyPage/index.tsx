@@ -210,7 +210,7 @@ function StudyPage() {
                           className="title private"
                           onClick={() => setMenu("public")}
                         >
-                          모든 단어장
+                          모든 스터디
                         </div>{" "}
                         <div
                           className="container-fluid"

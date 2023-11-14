@@ -14,22 +14,22 @@ function ShadowingPage() {
         </div>
         <div className="row justify-content-center align-items-center mt-3">
           <Link to="/Shadowing/BBCPage" className="youtubecard col-2">
-            <button style={{ border: "none", background: "none" }}>
+            <button style={{ border: "none", background: "none", width: "100%", height: "100%" }}>
               <img src={BBC} alt="BBC Logo" style={{ width: "100%", height: "100%" }} />
             </button>
           </Link>
           <Link to="/Shadowing/CNNPage" className="youtubecard col-2">
-            <button style={{ border: "none", background: "none" }}>
+            <button style={{ border: "none", background: "none", width: "100%", height: "100%" }}>
               <img src={CNN} alt="CNN Logo" style={{ width: "100%", height: "100%" }} />
             </button>
           </Link>
           <Link to="/Shadowing/TeamCOCOPage" className="youtubecard col-2">
-            <button style={{ border: "none", background: "none" }}>
+            <button style={{ border: "none", background: "none", width: "100%", height: "100%" }}>
               <img src={TeamCOCO} alt="TeamCOCO Logo" style={{ width: "100%", height: "100%" }} />
             </button>
           </Link>
           <Link to="/Shadowing/TEDPage" className="youtubecard col-2">
-            <button style={{ border: "none", background: "none" }}>
+            <button style={{ border: "none", background: "none", width: "100%", height: "100%" }}>
               <img src={TED} alt="TED Logo" style={{ width: "100%", height: "100%" }} />
             </button>
           </Link>

@@ -1,50 +1,70 @@
 .study-analysis-container {
-    padding: 10px;
-    margin: 30px auto;
-    width: 70vw;
-    height: 190vh;
+  padding: 10px;
+  margin: 30px auto;
+  width: 70vw;
+  height: 190vh;
 }
 
 .scorebadge {
-    width: 85px;
-    height: 110px;
+  width: 85px;
+  height: 110px;
 }
 
 .calendar {
-    width: 700px;
-    height: 400px;
-    background-color: #f1f7fa;
-    border: none;
-    .react-calendar {
-        color: black !important;
-    }
+  width: 700px;
+  height: 400px;
+  background-color: #f1f7fa;
+  border: none;
+  .react-calendar {
+    color: black !important;
+  }
 }
 
 .cal-container {
-    background-color: white;
-    border: 1px solid gray;
-    background-color: #f1f7fa;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin: auto;
-    margin-bottom: 30px;
+  background-color: #f1f7fa;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: auto;
+  margin-bottom: 30px;
 }
 
 .grade-container {
-    background-color: white;
-    border: 1px solid gray;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    margin: auto;
-    margin-bottom: 30px;
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: auto;
+  margin-bottom: 30px;
 }
 
 .highlighted-tile {
-    background-color: #007bff;
-    color: white !important;
-    border-radius: 50%;
-    position: relative;
-    z-index: 1;
+  background-color: #007bff;
+  color: white !important;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+
+.cal-container .react-calendar .react-calendar__tile {
+  color: gray;
+}
+
+.cal-container .react-calendar .react-calendar__tile--active {
+  background-color: #A0C9F6; /* 선택된 날짜 배경색 변경 */
+  color: white; /* 선택된 날짜 텍스트 색상 변경 */
+}
+
+.cal-container .react-calendar .react-calendar__tile--now {
+  background-color: #FFCF9B; /* 현재 날짜 배경색 변경 */
+}
+
+.react-calendar__navigation__label__labelText--from {
+  color: black; /* 년 월 텍스트 색상 변경 */
+}
+
+.cal-container .react-calendar .react-calendar__navigation button {
+  color: black; /* 네비게이션 버튼 텍스트 색상 변경 */
 }

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./Sign.css";
-import {checkNickname, checkId, signUp} from "../../api/UserPageAPI/UserAPI"
+import {checkNickname, checkId, signUp} from "../../api/UserPageAPI/SignUser"
 import { useNavigate } from "react-router-dom";
 
 
@@ -136,10 +136,26 @@ function Sign() {
   }
 
   //----------------------------------닉네임체크--------------------------------------------
-  
-  async function checkNicknameDuplicate() {
+  function checknickNameLength() {
     const nickname = document.querySelector("#f-nickname").value;
   
+    if (nickname.length < 2 || nickname.length > 10) {
+      document.querySelector(".nickname_ok").style.display = "none";
+      document.querySelector(".nickname_already").style.display = "none";
+      document.querySelector(".nickname_size").style.display = "inline-block";
+    } else {
+      document.querySelector(".nickname_size").style.display = "none";
+    }
+  }
+
+  async function checkNicknameDuplicate() {
+    const nickname = document.querySelector("#f-nickname").value;
+    if (nickname.length < 2 || nickname.length > 10) {
+      document.querySelector(".nickname_ok").style.display = "none";
+      document.querySelector(".nickname_already").style.display = "none";
+      document.querySelector(".nickname_size").style.display = "inline-block";
+      return;
+    }
     try {
       const response = await checkNickname(nickname);
       const cnt = response.data.data;
@@ -229,17 +245,6 @@ function Sign() {
                 </td>
               </tr>
               <tr>
-                <th className="name-th">Name</th>
-                <td>
-                  <input
-                    type="name"
-                    name="name"
-                    className="name"
-                    placeholder="이름을 알려주세요."
-                  />
-                </td>
-              </tr>
-              <tr>
                 <th className="nickname-th">닉네임</th>
                 <td>
                   <input
@@ -248,6 +253,7 @@ function Sign() {
                     name="nickname"
                     className="nickname"
                     placeholder="닉네임을 입력해주세요."
+                    onInput={checknickNameLength}
                   />
                   <button
               type="button"
@@ -261,12 +267,13 @@ function Sign() {
                   <span className="nickname_already">
                     누군가 이 닉네임을 사용하고 있어요.
                   </span>
+                  <span className="nickname_size">
+                    닉네임을 2-10글자 사이로 입력해주세요.
+                  </span>
                 </td>
               </tr>
             </tbody>
-          </table>
-
-          <div>
+          </table><div>
             <button
               type="submit"
               className="btn btn-primary"

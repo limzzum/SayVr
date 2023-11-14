@@ -41,6 +41,7 @@ public class Conversation extends BaseEntity {
 //    @OneToOne(fetch = FetchType.LAZY, mappedBy = "conversation")
 //    private Score score;
 
+    @Column(name = "review", length = 1000)
     private String review;
     private String situation;
 
@@ -55,5 +56,19 @@ public class Conversation extends BaseEntity {
         this.messageList = messageList;
     }
 
+    public void updateConversationGrammar(int score) {
+        this.conversationGrammar = score;
+    }
 
+    public void updateConversationContext(int score) {
+        this.conversationContext = score;
+    }
+
+    public void updateReview(String review) {
+        this.review = review;
+    }
+
+    public void updateSituation(String situation) {
+        this.situation = situation;
+    }
 }

@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.user.api;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.LOGIN_SUCCESS;
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.LOGOUT_SUCCESS;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.CREATE_ACCESS_TOKEN;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_GET_USER_INFO;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_NAME_UPDATE;
@@ -16,8 +17,10 @@ import com.npc.say_vr.domain.user.service.UserService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import com.npc.say_vr.global.util.JwtUtil;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -142,6 +145,15 @@ public class UserApiController {
             .message(LOGIN_SUCCESS.getMessage())
             .data(userService.loginUser(loginUserRequestDto))
             .httpStatus(LOGIN_SUCCESS.getStatus()).build());
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(@AuthenticationPrincipal Long userId, HttpServletRequest request) {
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        userService.logoutUser(userId,authorization);
+        return ResponseEntity.ok(ResponseDto.builder()
+                .message(LOGOUT_SUCCESS.getMessage())
+                .httpStatus(LOGOUT_SUCCESS.getStatus()).build());
     }
 
 }

@@ -9,7 +9,7 @@ function BBCPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const playlistId = "PLcetZ6gSk96-ayXj5thbTpbh2vHWpP08o";
+    const playlistId = "PLcetZ6gSk969Tk3cxyIF0_RKRuM60zK9Q";
 
     getPlaylistItems(playlistId)
       .then((response) => {
