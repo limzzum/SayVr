@@ -2,7 +2,7 @@
 import axios, { AxiosResponse } from "axios";
 import { serverURL } from "../../pages/MatchingGamePage/constants/constants";
 
-const BASE_URL = serverURL+"/api/game";
+const BASE_URL = serverURL + "/api/game";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -54,7 +54,5 @@ export const waitingGame = (): Promise<
 };
 
 export const startGame = () => {
-  return axios.create({
-    baseURL: BASE_URL,
-  }).get("/start");
+  return axiosInstance.get("/start");
 };

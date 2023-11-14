@@ -8,14 +8,17 @@ import Modal from "react-modal";
 import "./Chat.css";
 import { Form, InputGroup } from "react-bootstrap";
 
-import { MouseEventHandler } from 'react';
-import SpeechRecognition, { useSpeechRecognition, ListeningOptions } from 'react-speech-recognition';
+import { MouseEventHandler } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+  ListeningOptions,
+} from "react-speech-recognition";
 
 interface props {
   // player: PlayerProfile;
   // opponent: PlayerProfile;
   gameId: number;
-  chatMessage: string;
+  chatMessage: ChatMessage;
   question: string;
 }
 
@@ -34,7 +37,6 @@ const GameProceedingBody: React.FC<props> = ({
   chatMessage,
   question,
 }) => {
-
   return (
     <div className="game-proceeding-body-container">
       <div>
@@ -42,10 +44,9 @@ const GameProceedingBody: React.FC<props> = ({
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
       <div>
-      <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
-      <Dictaphone/>
+        <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
+        <Dictaphone />
       </div>
-
     </div>
   );
 };
@@ -63,45 +64,6 @@ const Question: React.FC<QuestionProps> = ({ question }) => {
   );
 };
 
-function Chat() {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState("");
-  const messageRef = useRef<HTMLDivElement>(null);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (input.trim() !== "") {
-      setMessages([...messages, input]);
-      setInput("");
-      if (messageRef.current) {
-        messageRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
-  return (
-    <div className="chat-container">
-      <div className="messages">
-        {messages.map((message, index) => (
-          <div key={index} className="message">
-            {message}
-          </div>
-        ))}
-        <div ref={messageRef}></div>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-  );
-}
-
 export default GameProceedingBody;
 
 interface Player {
@@ -110,14 +72,13 @@ interface Player {
 }
 
 interface ChatMessage {
-  sender: string;
-  text: string;
-  playerId: string;
+  message: string;
+  userId: string;
 }
 
 interface TextChattingProps {
   gameId: number;
-  chatMessage: string;
+  chatMessage: ChatMessage;
 }
 
 const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
@@ -141,9 +102,8 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
       setChatMessages((prevMessages) => [
         ...prevMessages,
         {
-          sender: "getNickName",
-          text: chatMessage,
-          playerId: "1",
+          message: chatMessage.message,
+          userId: chatMessage.userId,
         },
       ]);
     } else {
@@ -189,13 +149,17 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
                 <div
                   key={index}
                   className={`${
-                    message.playerId === "1"
+                    message.userId === localStorage.getItem("userId")
                       ? "messageContainer userMessage"
                       : "messageContainer otherMessage"
                   }`}
                 >
-                  <div>{message.playerId === "1" ? "나" : message.sender}</div>
-                  <div>{message.text}</div>
+                  <div>
+                    {message.userId === localStorage.getItem("userId")
+                      ? "나"
+                      : "상대방"}
+                  </div>
+                  <div>{message.message}</div>
                 </div>
               ))}
             </div>
@@ -274,23 +238,23 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
   );
 };
 
-
-
 const Dictaphone = () => {
   const {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
+    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
-  const handleStartListening: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const handleStartListening: MouseEventHandler<HTMLButtonElement> = (
+    event
+  ) => {
     event.preventDefault();
-    SpeechRecognition.startListening({language : 'en'});
+    SpeechRecognition.startListening({ language: "en" });
   };
 
   const handleStopListening: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -300,7 +264,7 @@ const Dictaphone = () => {
 
   return (
     <div>
-      <p>Microphone: {listening ? 'on' : 'off'}</p>
+      <p>Microphone: {listening ? "on" : "off"}</p>
       <button onClick={handleStartListening}>Start</button>
       <button onClick={handleStopListening}>Stop</button>
       <button onClick={resetTranscript}>Reset</button>
@@ -308,4 +272,3 @@ const Dictaphone = () => {
     </div>
   );
 };
-
