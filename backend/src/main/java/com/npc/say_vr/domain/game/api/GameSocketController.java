@@ -8,6 +8,7 @@ import com.npc.say_vr.domain.game.constant.SocketType;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.GameSocketRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
+import com.npc.say_vr.domain.game.dto.GameResponseDto.ChatMessageDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameQuizResultDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameSocketResponseDto;
 import com.npc.say_vr.domain.game.dto.GameStatusDto;
@@ -41,8 +42,9 @@ public class GameSocketController {
 
 
     @MessageMapping("game.{gameId}")
-    public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId, SimpMessageHeaderAccessor accessor){
-        Long userId = Long.valueOf(accessor.getUser().getName());
+    public void game(GameSocketRequestDto gameSocketRequestDto, @DestinationVariable String gameId,SimpMessageHeaderAccessor accessor){
+
+        Long userId = Long.valueOf(accessor.getFirstNativeHeader("userId"));
         log.info("game 웹소켓 메시지 pull");
         SocketType socketType = gameSocketRequestDto.getSocketType();
         GameSocketResponseDto gameSocketResponseDto;
@@ -98,7 +100,8 @@ public class GameSocketController {
                 .build();
             rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
             gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.CHAT)
-                .data(gameSocketRequestDto.getMessage()).build();
+                .data(ChatMessageDto.builder().userId(String.valueOf(userId)).message(gameSocketRequestDto.getMessage()).build())
+                .build();
             rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
             return;

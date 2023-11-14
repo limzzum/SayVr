@@ -62,5 +62,13 @@ public class GameResponseDto {
         private boolean isAnswer;
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ChatMessageDto {
+        private String userId;
+        private String message;
+    }
+
 
 }

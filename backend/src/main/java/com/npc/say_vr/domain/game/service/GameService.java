@@ -1,10 +1,10 @@
 package com.npc.say_vr.domain.game.service;
 
+import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordcardDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.PlayerOutRequestDto;
 import com.npc.say_vr.domain.game.dto.GameRequestDto.SubmitAnswerRequestDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameResultDto;
 import com.npc.say_vr.domain.game.dto.GameResponseDto.GameWaitingResponseDto;
-import java.util.Map;
 
 public interface GameService {
     Long create();
@@ -12,7 +12,7 @@ public interface GameService {
     void gameStart(Long userId);
     boolean checkQuizAnswer(SubmitAnswerRequestDto gameSubmitQuizAnswerRequestDto);
     String getQuizQuestion(String answer);
-    Map<String, String> createQuizAnswer();
+    WordcardDto createQuizAnswer();
     String updateQuiz(Long gameId);
     boolean isTimeLimitExceeded(Long gameId);
     boolean isEndGame(Long gameId);
