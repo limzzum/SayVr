@@ -181,7 +181,7 @@ public class ConversationServiceImpl implements ConversationService {
             int averageGrammar = (int) (totalGrammar / numConversations);
             int averageContext = (int) (totalContext / numConversations);
             int averagePronunciation = (int) (totalPronunciation / numConversations);
-            int averageTotal = all / (numConversations * 3);
+            int averageTotal = all / (numConversations * 2);
             Score score = Score.builder()
                 .user(user)
                 .grammarTotal(averageGrammar)
