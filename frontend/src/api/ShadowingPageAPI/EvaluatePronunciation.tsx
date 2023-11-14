@@ -1,6 +1,6 @@
 // api/ShadowingPageAPI/EvaluatePronunciation.ts
 
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
 
 const azureEndpoint = 'https://eastus.api.cognitive.microsoft.com';
 const apiKey = process.env.REACT_APP_AZURE_PRONUNCIATION_API_KEY;

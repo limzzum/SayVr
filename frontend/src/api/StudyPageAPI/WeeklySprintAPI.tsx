@@ -1,19 +1,7 @@
 // api.ts
-import axios, { AxiosResponse } from "axios";
-import {
-  CreateFlashcardsRequestDto,
-  PrivacyStatus,
-} from "../../components/VocabListComponents/CreateNewListModal";
-import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage";
+import { AxiosResponse } from "axios";
+import axiosInstance from "../constAPI/axiosInstance";
 
-const BASE_URL = "http://localhost:8080/api/study";
-
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 export enum CheckListStatus {
   DELETE = "DELETE",
   ONGOING = "ONGOING",
