@@ -8,8 +8,11 @@ import Modal from "react-modal";
 import "./Chat.css";
 import { Form, InputGroup } from "react-bootstrap";
 
-import { MouseEventHandler } from 'react';
-import SpeechRecognition, { useSpeechRecognition, ListeningOptions } from 'react-speech-recognition';
+import { MouseEventHandler } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+  ListeningOptions,
+} from "react-speech-recognition";
 
 interface props {
   // player: PlayerProfile;
@@ -40,11 +43,10 @@ const GameProceedingBody: React.FC<props> = ({
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
-<div>
-      <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
-<Dictaphone/>
+      <div>
+        <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
+        <Dictaphone />
       </div>
-
     </div>
   );
 };
@@ -61,45 +63,6 @@ const Question: React.FC<QuestionProps> = ({ question }) => {
     </div>
   );
 };
-
-function Chat() {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState("");
-  const messageRef = useRef<HTMLDivElement>(null);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (input.trim() !== "") {
-      setMessages([...messages, input]);
-      setInput("");
-      if (messageRef.current) {
-        messageRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
-  return (
-    <div className="chat-container">
-      <div className="messages">
-        {messages.map((message, index) => (
-          <div key={index} className="message">
-            {message}
-          </div>
-        ))}
-        <div ref={messageRef}></div>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-  );
-}
 
 export default GameProceedingBody;
 
@@ -191,7 +154,11 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
                       : "messageContainer otherMessage"
                   }`}
                 >
-                  <div>{message.userId === localStorage.getItem("userId") ? "나" : "상대방"}</div>
+                  <div>
+                    {message.userId === localStorage.getItem("userId")
+                      ? "나"
+                      : "상대방"}
+                  </div>
                   <div>{message.message}</div>
                 </div>
               ))}
@@ -240,8 +207,8 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
         setIsModalOpen(true);
 
         setTimeout(() => {
-                    setTimeLeft(timeLimit);
-setIsModalOpen(false);
+          setTimeLeft(timeLimit);
+          setIsModalOpen(false);
         }, 3000);
       }
     }, 1000);
@@ -262,7 +229,7 @@ setIsModalOpen(false);
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Example Modal"
-className="Modal"
+        className="Modal"
       >
         <div>시간이 종료되었습니다.</div>
         <div>잠시 후 다음 라운드가 시작됩니다..</div>
@@ -271,23 +238,23 @@ className="Modal"
   );
 };
 
-
-
 const Dictaphone = () => {
   const {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
+    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
-  const handleStartListening: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const handleStartListening: MouseEventHandler<HTMLButtonElement> = (
+    event
+  ) => {
     event.preventDefault();
-    SpeechRecognition.startListening({language : 'en'});
+    SpeechRecognition.startListening({ language: "en" });
   };
 
   const handleStopListening: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -297,7 +264,7 @@ const Dictaphone = () => {
 
   return (
     <div>
-      <p>Microphone: {listening ? 'on' : 'off'}</p>
+      <p>Microphone: {listening ? "on" : "off"}</p>
       <button onClick={handleStartListening}>Start</button>
       <button onClick={handleStopListening}>Stop</button>
       <button onClick={resetTranscript}>Reset</button>
@@ -305,4 +272,3 @@ const Dictaphone = () => {
     </div>
   );
 };
-
