@@ -58,10 +58,15 @@ const Profile: React.FC<PlayerProfile> = ({
         className="game-proceeding-profile-image"
       ></img>
       <div className="profile-info">
-        <div>{nickname}</div>
-        <div>
-          {ranking} {tierImage}
+        <div className="profile-info-text">
+          <div>{nickname}</div>
+           <div style={{width: "100px"}}>랭킹 : {ranking}  </div>
         </div>
+
+        <div>
+        <img width={"100px"} height={"100px"} src={imageURL+tierImage}></img>
+        </div>
+        
       </div>
     </div>
   );

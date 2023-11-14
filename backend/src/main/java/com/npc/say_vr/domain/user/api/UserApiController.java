@@ -1,5 +1,6 @@
 package com.npc.say_vr.domain.user.api;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.LOGIN_SUCCESS;
+import static com.npc.say_vr.domain.user.constant.UserResponseMessage.LOGOUT_SUCCESS;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.CREATE_ACCESS_TOKEN;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_GET_USER_INFO;
 import static com.npc.say_vr.domain.user.constant.UserResponseMessage.SUCCESS_NAME_UPDATE;
@@ -151,8 +152,8 @@ public class UserApiController {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         userService.logoutUser(userId,authorization);
         return ResponseEntity.ok(ResponseDto.builder()
-                .message(LOGIN_SUCCESS.getMessage())
-                .httpStatus(LOGIN_SUCCESS.getStatus()).build());
+                .message(LOGOUT_SUCCESS.getMessage())
+                .httpStatus(LOGOUT_SUCCESS.getStatus()).build());
     }
 
 }

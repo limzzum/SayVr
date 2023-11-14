@@ -154,6 +154,16 @@
   display: none;
 }
 
+.nickname_size {
+  color: #ff0080;
+  display: none;
+}
+
+.name_size {
+  color: #ff0080;
+  display: none;
+}
+
 .tel {
   width: 300px;
   height: 40px;
