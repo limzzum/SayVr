@@ -286,10 +286,13 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
   return (
     <div
       className="weeklySprint-container"
-      style={{ display: "flex", flexDirection: "row", height: "100vh" }}
+      style={{ display: "flex", flexDirection: "row", height: "100%" }}
     >
-      <div style={{ flex: 1 }}>
-        <div>
+      <div className="week-goal-list" style={{ flex: 1 }}>
+        <div className="week-goal-inner">
+          <div className="week-inner-list">
+
+          
           <p>
             기간 :
             {preWeeklySprintId && (
@@ -324,7 +327,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
                 style={{ cursor: "pointer" }}
               />
             )}
-          </p>
+          </p></div>
           {goalInfo?.goalDtoList.map((goal) => (
             <div key={goal.goalId}>
               <div
@@ -421,8 +424,9 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
           )}
         </div>
       </div>
-      <div style={{ flex: 2 }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="checklist-container-div" style={{ flex: 2 }}>
+        <div className="checklist-container-inner"
+         style={{ display: "flex", alignItems: "center", height:"100%" }}>
           <ArrowLeft onClick={handlePrevClick} />
           {goalInfo?.memberCheckListResponseDtoList
             .slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage)
