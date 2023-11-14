@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import MainPage from "./pages/MainPage";
 import MatchingGameWaitingPage from "./pages/MatchingGamePage";
-import MatchingGameProceedingPage from "./pages/MatchingGamePage/MatchingGameProceedingPage";
+// import MatchingGameProceedingPage from "./pages/MatchingGamePage/MatchingGameProceedingPage";
 import MyPage from "./pages/MyPage";
 import MyStudyAnalysisPage from "./pages/MyStudyAnalysisPage";
 import ShadowingPage from "./pages/ShadowingPage";
@@ -17,6 +17,9 @@ import DeckDetail from "./pages/VocabListPage/DeckDetailPage";
 import MyStudyAnalysisDetailPage from "./pages/MyStudyAnalysisPage/MyStudyAnalysisDetailPage";
 import StudyDetail from "./pages/StudyPage/StudyDetailPage";
 import SignPage from "./pages/SignPage";
+import JSConfetti from "js-confetti";
+
+export const conteffi = new JSConfetti();
 
 function App() {
   return (
