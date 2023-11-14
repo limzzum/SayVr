@@ -84,7 +84,7 @@ public class RedisUtil {
                 int i = Integer.parseInt(key);
                 GameStatusDto gameStatusDto = (GameStatusDto) redisGameStatusTemplate.opsForValue().get(key);
                 gameStatusDtos.add(gameStatusDto);
-            }catch (NumberFormatException numberFormatException){
+            }catch (Exception exception){
 
             }
         }
