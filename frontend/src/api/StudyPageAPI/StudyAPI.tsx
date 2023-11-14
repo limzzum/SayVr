@@ -180,7 +180,7 @@ export const getOneStudy = (
 export const deleteStudyMember = (
   studyId: number
 ): Promise<AxiosResponse<ResponseDto<any>>> => {
-  return axiosInstance.delete(`/quit/${studyId}`);
+  return axiosInstance.delete(`/member/${studyId}`);
 };
 
 export const updateStudy = (
