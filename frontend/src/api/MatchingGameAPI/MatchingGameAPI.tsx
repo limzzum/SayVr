@@ -11,6 +11,20 @@ const axiosInstance = axios.create({
   },
 });
 
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    const newConfig = config;
+    if (token) {
+      newConfig.headers.Authorization = `Bearer ${token}`;
+    }
+    return newConfig;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export enum SocketType {
   GAME_START = "GAME_START",
   GAME_INFO = "GAME_INFO",
