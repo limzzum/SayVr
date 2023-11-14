@@ -2,6 +2,7 @@ package com.npc.say_vr.domain.user.service;
 
 import com.npc.say_vr.domain.user.dto.CreateUserRequestDto;
 import com.npc.say_vr.domain.user.dto.LoginUserRequestDto;
+import com.npc.say_vr.domain.user.dto.LoginUserResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
@@ -31,7 +32,7 @@ public interface UserService {
 
     void createUser(CreateUserRequestDto createUserRequestDto);
 
-    TokenResponseDto loginUser(LoginUserRequestDto loginUserRequestDto);
+    LoginUserResponseDto loginUser(LoginUserRequestDto loginUserRequestDto);
 
     void logoutUser(Long userId, String authorization);
 

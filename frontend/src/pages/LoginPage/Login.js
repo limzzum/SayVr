@@ -18,7 +18,8 @@ function Login() {
 
       if (response.data.httpStatus === "OK") {
         console.log(response.data);
-        localStorage.setItem("accessToken", response.data.data.accessToken);
+        localStorage.setItem("accessToken", response.data.data.tokenResponseDto.accessToken);
+        localStorage.setItem("userId",response.data.data.userId);
         setToken(localStorage.getItem("accessToken"));
         alert("로그인 성공");
         navigate("/");
