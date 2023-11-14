@@ -16,12 +16,7 @@ import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,15 +112,16 @@ public class WordcardServiceImpl implements WordcardService {
             "source=" + requestDto.getSource() + "&target=" + requestDto.getTarget() + "&text="
                 + requestDto.getText();
         List<Word> dbList = new ArrayList<>();
-        if(requestDto.getSource().equals("en")){
+        if (requestDto.getSource().equals("en")) {
             dbList = wordRepository.findByEnglishIgnoreCase(requestDto.getText());
 
         } else if (requestDto.getSource().equals("ko")) {
             dbList = wordRepository.findByKoreanIgnoreCase(requestDto.getText());
         }
-        String result="초기값";
+        String result = "초기값";
         HttpEntity<String> entity = new HttpEntity<>(postParams, headers);
-        ResponseEntity<TranslationResponseDto> response = restTemplate.postForEntity(apiUrl, entity, TranslationResponseDto.class);
+        ResponseEntity<TranslationResponseDto> response = restTemplate.postForEntity(apiUrl, entity,
+            TranslationResponseDto.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             result = response.getBody().getMessage().getResult().getTranslatedText();
         } else {
@@ -138,15 +134,31 @@ public class WordcardServiceImpl implements WordcardService {
     //TODO 서버 실행시 단어셋 DB 저장 시킬것
     @Override
     public WordUpdateResponseDto readTodaySentence() {
-        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(5L, LocalDate.now().toEpochDay());
+        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(5L,
+            LocalDate.now().toEpochDay());
 //        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(5L, 18930L);
 
-        Wordcard sentence = wordcardRepository.findById(wordcardId).orElse(Wordcard.builder().word(wordRepository.findById(3488L).orElseThrow()).build());
+        Wordcard sentence = wordcardRepository.findById(wordcardId)
+            .orElse(Wordcard.builder().word(wordRepository.findById(3488L).orElseThrow()).build());
         //TODO 없을 때 예외처리
 //        String errorMessage ="UNAVAILABLE";
 
         return WordUpdateResponseDto.builder()
             .wordcard(sentence)
+            .build();
+    }
+
+    @Override
+    public WordUpdateResponseDto readRandomWord() {
+        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(2L);
+
+        Wordcard random = wordcardRepository.findById(wordcardId)
+            .orElse(Wordcard.builder().word(wordRepository.findById(3488L).orElseThrow()).build());
+        //TODO 없을 때 예외처리
+//        String errorMessage ="UNAVAILABLE";
+
+        return WordUpdateResponseDto.builder()
+            .wordcard(random)
             .build();
     }
 
@@ -197,7 +209,8 @@ public class WordcardServiceImpl implements WordcardService {
     // TODO : 성능 개선 & 비동기적 처리 & 예외처리
     @Transactional
     @Override
-    public void createWordList(Long userId, Long flashcardId, BufferedReader br) throws IOException {
+    public void createWordList(Long userId, Long flashcardId, BufferedReader br)
+        throws IOException {
         String line;
         if ((line = br.readLine()) != null) {
             while ((line = br.readLine()) != null) {
@@ -205,7 +218,6 @@ public class WordcardServiceImpl implements WordcardService {
                 try {
                     String kor = datalines[0].replace("\"", "").trim();
                     String eng = datalines[1].replace("\"", "").trim();
-
 
                     createWordcards(userId, flashcardId, kor, eng);
                 } catch (NumberFormatException e) {
@@ -215,6 +227,7 @@ public class WordcardServiceImpl implements WordcardService {
             br.close();
         }
     }
+
     @Transactional
     @Override
     public void createWordcards(Long userId, Long deckId, String kor, String eng) {
@@ -230,15 +243,15 @@ public class WordcardServiceImpl implements WordcardService {
         if (word == null) {
             log.info("when word is null, create new");
             newWord = Word.builder()
-                        .english(eng)
-                        .korean(kor)
-                        .build();
+                .english(eng)
+                .korean(kor)
+                .build();
             newWord = wordRepository.save(newWord);
             wordcard = Wordcard.builder()
-                        .flashcardDeck(flashcardDeck)
-                        .status(WordcardStatus.UNCHECKED)
-                        .word(newWord)
-                        .build();
+                .flashcardDeck(flashcardDeck)
+                .status(WordcardStatus.UNCHECKED)
+                .word(newWord)
+                .build();
             wordcard = wordcardRepository.save(wordcard);
 
         } else {
@@ -259,7 +272,7 @@ public class WordcardServiceImpl implements WordcardService {
             }
         }
         int count = personalDeck.getWordCount();
-        personalDeck.updateWordCount(count+1);
+        personalDeck.updateWordCount(count + 1);
         personalDeckRepository.save(personalDeck);
     }
 
