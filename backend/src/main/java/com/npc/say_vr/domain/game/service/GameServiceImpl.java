@@ -235,6 +235,14 @@ public class GameServiceImpl implements GameService {
             throw new IllegalArgumentException();
         }
 
+        if(isWaitingGame(gameStatusDto)){
+            Ranking ranking = rankingRepository.findByUserId(outUserId).orElseThrow();
+            String name = ranking.getTier().getName();
+            redisUtil.deleteGameStatusList(gameId);
+            redisUtil.delete(name);
+            return null;
+        }
+
         Long playerA_userId = gameStatusDto.getPlayerA().getUserId();
         Long playerB_userId = gameStatusDto.getPlayerB().getUserId();
         Long winnerId = playerA_userId;
@@ -251,6 +259,10 @@ public class GameServiceImpl implements GameService {
 
         return GameResultDto.builder().isDraw(false).winnerId(winnerId).loserId(loserId)
             .winnerPoint(WINNER_POINT).build();
+    }
+
+    private static boolean isWaitingGame(GameStatusDto gameStatusDto) {
+        return gameStatusDto.getPlayerA() == null || gameStatusDto.getPlayerB() == null;
     }
 
     @Override
