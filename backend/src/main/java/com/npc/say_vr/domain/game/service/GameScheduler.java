@@ -31,7 +31,7 @@ public class GameScheduler {
 
     public void addGameRoom(Long gameId) {
         System.out.println("스케줄러 게임 추가됨");
-        games.add(gameId);
+//        games.add(gameId);
     }
 
     public void removeGameRoom(Long gameId) {

@@ -1,10 +1,13 @@
 package com.npc.say_vr.domain.vr.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.domain.vr.domain.Conversation;
 import com.npc.say_vr.domain.vr.domain.Message;
 import com.npc.say_vr.domain.vr.domain.Score;
+import com.npc.say_vr.domain.vr.dto.ChatRequest;
+import com.npc.say_vr.domain.vr.dto.ChatResponseDto.ChatResponse;
 import com.npc.say_vr.domain.vr.dto.ConversationRequestDto.CreateConversationRequestDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationDatedListDto;
@@ -13,15 +16,24 @@ import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationInfoResp
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ConversationListResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ProficiencyInfoResponseDto;
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ScoreDto;
+import com.npc.say_vr.domain.vr.dto.EvaluationDto;
+import com.npc.say_vr.domain.vr.dto.OpenAIMessageDto;
 import com.npc.say_vr.domain.vr.repository.ConversationRepository;
 import com.npc.say_vr.domain.vr.repository.MessageRepository;
 import com.npc.say_vr.domain.vr.repository.ScoreRepository;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
@@ -33,31 +45,121 @@ public class ConversationServiceImpl implements ConversationService {
     private final UserRepository userRepository;
     private final ScoreRepository scoreRepository;
     private final MessageRepository messageRepository;
+    private final RestTemplate restTemplate;
+    @Value("${spring.evaluate.openai.secret}")
+    private String secret;
+    @Value("${spring.evaluate.openai.model}")
+    private String model;
+    @Value("${spring.evaluate.url}")
+    private String apiUrl;
+
+    private final String INSTRUCTION =
+        "role: You are a tutor who reviews dialogues and rates the grammar and contextual correctness, each with 0~100. You are to only evaluate the content of the one marked with the role user.\n"
+            + "this is the criteria:\n"
+            + "Overall Language Use\n"
+            + "0-25: Makes more than 5 grammatical or lexical errors. Uses a very limited range of vocabulary and sentence structures. Language is often not appropriate for the context.\n"
+            + "26-50: Makes 3-5 grammatical or lexical errors. Uses a limited range of vocabulary and sentence structures. Language is sometimes not appropriate for the context.\n"
+            + "51-75: Makes 1-2 grammatical or lexical errors. Uses a moderate range of vocabulary and sentence structures. Language is generally appropriate for the context.\n"
+            + "76-100: Makes no grammatical or lexical errors. Uses a wide range of vocabulary and sentence structures. Language is always appropriate for the context and is used in a sophisticated and nuanced way.\n"
+            + "Communicative Effectiveness\n"
+            + "0-25: Unable to convey ideas and feelings clearly, forced and unnatural conversation, no effort to understand \n"
+            + "26-50: Sometimes conveys ideas and feelings clearly, somewhat forced and unnatural conversation, some effort to understand \n"
+            + "51-75: Generally conveys ideas and feelings clearly, mostly natural and engaging conversation, good effort to understand \n"
+            + "76-100: Consistently conveys ideas and feelings clearly, always natural and engaging conversation, strong effort to understand \n"
+            + "Respond in JSON format, the review and situation needs to be in Korean\n"
+            + "{\"grammar\":score ,\"context\":score,\"review\":\"short review of the user proficiency, faults and good points, explain why the points are taken off explained in Korean\", \"situation\":\"the conversation summary in one sentence in Korean\"}";
 
     //TODO: 예외처리 조회한 값이 존재하지 않을때 , 접근 불가할 때
     @Transactional
     @Override
     public ConversationDto createConversation(Long userId,
-        CreateConversationRequestDto createConversationRequestDto) {
+        CreateConversationRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow();
+//        String dtoToString = requestDto.getRawJson();
+//        log.info("data in string:{}",dtoToString);
         //TODO: how to rate the proficiency? and when to add them to the entity
+        List<Message> messageList = requestDto.toMessageList();
         Conversation conversation = Conversation.builder()
-            .messageList(createConversationRequestDto.getMessages())
-            .review("review place holder")
-            .conversationContext(100)
-            .conversationGrammar(50)
-            .conversationPronunciation(75)
-            .situation("테스트 하는 상황")
+            .messageList(messageList)
+//            .review("review place holder")
+//            .conversationContext(100)
+//            .conversationGrammar(50)
+//            .conversationPronunciation(75)
+//            .situation("테스트 하는 상황")
             .user(user)
             .build();
+
         conversation = conversationRepository.save(conversation);
-        List<Message> messages = createConversationRequestDto.addConversation(conversation);
+        Conversation finalConversation = conversation;
+        List<Message> messages = messageList.stream().map(message -> {
+                message.updateConversation(finalConversation);
+                return message;
+            }
+        ).collect(Collectors.toList());
         messageRepository.saveAll(messages);
         conversation.updateMessageList(messages);
+        conversation = conversationRepository.save(conversation);
+//TODO @Transactional dirty checking 으로 반복적으로 서로 값을 저장해주는 게 필요없어지는지
+//        String chat = requestDto.wholeString();
+        EvaluationDto evaluationDto = evaluateConversation(
+            "messages=[" + requestDto.wholeString() + "]");
+//         evaluateConversation(requestDto.wholeString());
+        conversation.updateConversationContext(Integer.parseInt(evaluationDto.getContext()));
+        conversation.updateConversationGrammar(Integer.parseInt(evaluationDto.getGrammar()));
+        conversation.updateReview(evaluationDto.getReview());
+        conversation.updateSituation(evaluationDto.getSituation());
         conversation = conversationRepository.save(conversation);
         calculateAndSaveAverageScoresForUser(userId);
         return new ConversationDto(conversation, conversation.getMessageList());
         //TODO: check if the returned dto contains ID
+    }
+
+    @Override
+    public EvaluationDto evaluateConversation(
+        String chatString) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + secret);
+
+        ChatRequest request = ChatRequest.builder()
+            .model(model)
+//            .type("json_object")
+            .messages(
+                (Arrays.asList(
+                    new OpenAIMessageDto("system", INSTRUCTION),
+                    new OpenAIMessageDto("user", chatString))))
+            .n(1)
+            .temperature(0.7)
+            .build();
+//        log.info("reques:{}", request);
+        HttpEntity<ChatRequest> requestEntity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<ChatResponse> responseEntity = restTemplate.postForEntity(apiUrl,
+            requestEntity, ChatResponse.class);
+        if (responseEntity == null || responseEntity.getBody().getChoices() == null
+            || responseEntity.getBody().getChoices().isEmpty()) {
+            log.info("null failed");
+            return EvaluationDto.builder().build();
+        }
+        String eval = responseEntity.getBody().getChoices().get(0).getOpenAIMessageDto()
+            .getContent();
+        log.info("response: {}", eval);
+
+//        return EvaluationDto.builder().build();
+        return getEval(
+            responseEntity.getBody().getChoices().get(0).getOpenAIMessageDto().getContent());
+    }
+
+    public EvaluationDto getEval(String content) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            EvaluationDto evaluationDto = objectMapper.readValue(content, EvaluationDto.class);
+            return evaluationDto;
+            // Now 'yourObject' is an instance of YourClassType with values from the JSON string.
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return EvaluationDto.builder().build();
     }
 
     public void calculateAndSaveAverageScoresForUser(Long userId) {
@@ -91,6 +193,7 @@ public class ConversationServiceImpl implements ConversationService {
             scoreRepository.save(score);
         }
     }
+
 
     @Override
     public ProficiencyInfoResponseDto readProficiency(Long userId) {
@@ -131,8 +234,9 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ConversationDatedListDto readMonthlyConversationList(Long userId, int year, int month) {
-        List<Conversation> conversationList = conversationRepository.findByUserIdAndYearAndMonth(userId, year,
-           month);
+        List<Conversation> conversationList = conversationRepository.findByUserIdAndYearAndMonth(
+            userId, year,
+            month);
         return new ConversationDatedListDto(conversationList);
     }
 

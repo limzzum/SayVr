@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import YouTube, { YouTubeProps } from "react-youtube";
 import axios, { AxiosRequestConfig } from "axios";
 import getScript, { ScriptItem } from "../../../api/ShadowingPageAPI/GetScriptAPI";
-import evaluatePronunciation from "../../../api/ShadowingPageAPI/EvaluatePronunciation"; // 추가된 부분
 import "./style.css";
 
 const endpoint = "https://api.cognitive.microsofttranslator.com";
@@ -21,7 +20,6 @@ function ShadowingDetailPage() {
   const [displayedScript, setDisplayedScript] = useState<string>("");
   const [translatedText, setTranslatedText] = useState<string>("");
   const playerRef = useRef<ExtendedYouTube | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     event.target.pauseVideo();
@@ -31,17 +29,34 @@ function ShadowingDetailPage() {
   const onPlayerStateChange: YouTubeProps["onStateChange"] = (event) => {
     if (playerRef.current) {
       const player = playerRef.current;
-
+  
+      // 기존 인터벌 정리
+      let intervalId: NodeJS.Timeout | null = null;
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+  
       const updateScript = async () => {
         const currentTime = player.getCurrentTime();
+        const playerState = player.getPlayerState();
+        console.log("Player State:", playerState);
+  
         if (currentTime !== undefined) {
           displayScript(currentTime);
         }
       };
-
-      const intervalId = setInterval(updateScript, 1000);
-
-      const clearUpdateInterval = () => clearInterval(intervalId);
+  
+      // 새로운 인터벌 시작
+      intervalId = setInterval(updateScript, 2000);
+  
+      const clearUpdateInterval = () => {
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+      };
+  
       if (
         player.getPlayerState() === window.YT.PlayerState.PAUSED ||
         player.getPlayerState() === window.YT.PlayerState.ENDED
@@ -50,30 +65,34 @@ function ShadowingDetailPage() {
       }
     }
   };
+  
 
   const displayScript = async (currentTime: number) => {
     const currentScript = script?.find(
       (item) => currentTime >= item.start && currentTime <= item.start + item.duration
     );
 
-    if (currentScript) {
+    if (currentScript && currentScript.text !== displayedScript) {
+      console.log("currentScript.text 둘이 다르면 이걸로 갱신할거임", currentScript.text)
       setDisplayedScript(currentScript.text);
+      console.log("displayedScript", displayedScript)
 
-      // 새로운 문장이고 번역된 문장과 다를 경우에만 번역 요청
-      if (currentScript.text !== displayedScript) {
-        // 번역 요청
-        const translatedText = await translate(currentScript.text);
+      // 번역 요청
+      const translatedText = await translate(currentScript.text);
 
-        // 번역 결과 표시
-        setTranslatedText(translatedText);
+      // 번역 결과 표시
+      setTranslatedText(translatedText);
 
-        // 자동으로 번역하기 버튼 누르기
-        translateButtonHandler(currentScript.text);
-      }
+      // 자동으로 번역하기 버튼 누르기
+      translateButtonHandler(currentScript.text);
     } else {
-      setDisplayedScript("");
+      // setDisplayedScript("");
+      return
     }
   };
+  
+
+  
 
   const translate = async (text: string) => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
@@ -100,20 +119,6 @@ function ShadowingDetailPage() {
     }
   };
 
-  // 발음 평가 함수 추가
-  const evaluatePronunciationHandler = async () => {
-    // 예제 오디오 데이터 (실제 데이터로 교체 필요)
-    const audioBase64 = 'BASE64_ENCODED_AUDIO_DATA';
-    
-    // 발음 평가 호출
-    const evaluationResult = await evaluatePronunciation(audioBase64);
-    
-    if (evaluationResult) {
-      console.log('Pronunciation evaluation result:', evaluationResult);
-      // 여기에 발음 평가 결과를 활용하는 로직 추가
-    }
-  };
-
   // 자동으로 번역하기 버튼을 누르는 함수
   const translateButtonHandler = async (text: string) => {
     // 여기에서 번역 함수 호출 또는 번역 기능 구현
@@ -131,7 +136,6 @@ function ShadowingDetailPage() {
         console.error("Error fetching script:", error);
       }
     };
-
     fetchScript();
   }, [videoId]);
 
@@ -166,9 +170,6 @@ function ShadowingDetailPage() {
           </div>
           <div className="button-container">
             <button onClick={() => translateButtonHandler(displayedScript)}>번역하기</button>
-            
-            {/* 발음 평가 버튼 */}
-            <button onClick={evaluatePronunciationHandler}>발음 평가</button>
           </div>
         </div>
       )}
