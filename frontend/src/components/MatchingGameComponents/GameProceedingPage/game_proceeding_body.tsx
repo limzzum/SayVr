@@ -17,6 +17,7 @@ interface props {
   gameId: number;
   chatMessage: ChatMessage;
   question: string;
+  curRound: number;
 }
 
 interface PlayerProfile {
@@ -33,10 +34,12 @@ const GameProceedingBody: React.FC<props> = ({
   gameId,
   chatMessage,
   question,
+  curRound
 }) => {
   return (
     <div className="game-proceeding-body-container">
       <div>
+        <div>{curRound}</div>
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
