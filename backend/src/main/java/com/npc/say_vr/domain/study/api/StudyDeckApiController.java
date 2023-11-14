@@ -14,6 +14,7 @@ import com.npc.say_vr.domain.study.service.StudyDeckService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +33,7 @@ public class StudyDeckApiController {
     private final StudyDeckService studyDeckService;
 
     @PostMapping("/{studyId}")
-    public ResponseEntity<?> createStudyDeck(@PathVariable Long studyId, @RequestBody CreateStudytDeckRequestDto createStudytDeckRequestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> createStudyDeck(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @RequestBody CreateStudytDeckRequestDto createStudytDeckRequestDto) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECK_CREATE_SUCCESS.getMessage())
                 .data(studyDeckService.createStudyDeck(userId,studyId,createStudytDeckRequestDto))
@@ -44,8 +44,7 @@ public class StudyDeckApiController {
     }
 
     @GetMapping("/{studyId}")
-    public ResponseEntity<?> readStudyDeckList(@PathVariable Long studyId) {
-        Long userId = 1L;
+    public ResponseEntity<?> readStudyDeckList(@AuthenticationPrincipal Long userId,@PathVariable Long studyId) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECK_READ_SUCCESS.getMessage())
                 .data(studyDeckService.readStudyDeckList(userId,studyId))
@@ -55,8 +54,7 @@ public class StudyDeckApiController {
         return ResponseEntity.ok(responseDto);
     }
     @PatchMapping("/{studyId}")
-    public ResponseEntity<?> updateStudyDeck(@PathVariable Long studyId, @RequestBody UpdateStudyDeckRequestDto updateStudyDeckRequestDto) {
-        Long userId = 1L;
+    public ResponseEntity<?> updateStudyDeck(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @RequestBody UpdateStudyDeckRequestDto updateStudyDeckRequestDto) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECK_UPDATE_SUCCESS.getMessage())
                 .data(studyDeckService.updateStudyDeck(userId,studyId,updateStudyDeckRequestDto))
@@ -67,8 +65,7 @@ public class StudyDeckApiController {
     }
 
     @DeleteMapping("/{studyId}/{studyDeckId}")
-    public ResponseEntity<?> updateStudyDeck(@PathVariable Long studyId, @PathVariable Long studyDeckId) {
-        Long userId = 1L;
+    public ResponseEntity<?> updateStudyDeck(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECK_DELETE_SUCCESS.getMessage())
                 .data(studyDeckService.deleteStudyDeck(userId,studyId,studyDeckId))
@@ -79,8 +76,7 @@ public class StudyDeckApiController {
     }
 
     @GetMapping("/{studyId}/{studyDeckId}")
-    public ResponseEntity<?> readStudyDeckDetail(@PathVariable Long studyId,@PathVariable Long studyDeckId) {
-        Long userId = 1L;
+    public ResponseEntity<?> readStudyDeckDetail(@AuthenticationPrincipal Long userId,@PathVariable Long studyId,@PathVariable Long studyDeckId) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECKDETAIL_READ_SUCCESS.getMessage())
                 .data(studyDeckService.readStudyDeckDetail(userId,studyId,studyDeckId))
@@ -91,9 +87,8 @@ public class StudyDeckApiController {
     }
 
     @PostMapping("/{studyId}/{studyDeckId}")
-    public ResponseEntity<?> createCard(@PathVariable Long studyId, @PathVariable Long studyDeckId, @RequestBody
+    public ResponseEntity<?> createCard(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId, @RequestBody
                                         CreateWordcardRequestDto createWordcardRequestDto) {
-        Long userId = 1L;
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYWORDCARD_CREATE_SUCCESS.getMessage())
                 .data(studyDeckService.createWordcard(userId,studyId,studyDeckId,createWordcardRequestDto))
@@ -104,8 +99,7 @@ public class StudyDeckApiController {
     }
 
     @DeleteMapping("/{studyId}/{studyDeckId}/{wordcardId}")
-    public ResponseEntity<?> createCard(@PathVariable Long studyId, @PathVariable Long studyDeckId, @PathVariable Long wordcardId) {
-        Long userId = 1L;
+    public ResponseEntity<?> createCard(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId, @PathVariable Long wordcardId) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYWORDCARD_DELETE_SUCCESS.getMessage())
                 .data(studyDeckService.deleteWordcard(studyId,studyDeckId,wordcardId))
