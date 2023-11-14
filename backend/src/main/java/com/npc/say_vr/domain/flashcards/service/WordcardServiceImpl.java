@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -137,7 +138,16 @@ public class WordcardServiceImpl implements WordcardService {
     //TODO 서버 실행시 단어셋 DB 저장 시킬것
     @Override
     public WordUpdateResponseDto readTodaySentence() {
-        return WordUpdateResponseDto.builder().build();
+        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(5L, LocalDate.now().toEpochDay());
+//        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(5L, 18930L);
+
+        Wordcard sentence = wordcardRepository.findById(wordcardId).orElse(Wordcard.builder().word(wordRepository.findById(3488L).orElseThrow()).build());
+        //TODO 없을 때 예외처리
+//        String errorMessage ="UNAVAILABLE";
+
+        return WordUpdateResponseDto.builder()
+            .wordcard(sentence)
+            .build();
     }
 
     //TODO 무슨 용도 였는지 잊음, 단어 자체를 수정할 일은 없음,, 수정버튼이 없어
