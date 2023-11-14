@@ -14,12 +14,9 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsRequestDto.WordcardUpdateR
 import com.npc.say_vr.domain.flashcards.service.WordcardService;
 import com.npc.say_vr.global.dto.ResponseDto;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Paths;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +57,16 @@ public class WordcardApiController {
             .message(SUCCESS_READ_TODAY_SENTENCE.getMessage())
             .httpStatus(SUCCESS_READ_TODAY_SENTENCE.getHttpStatus())
             .data(wordcardService.readTodaySentence())
+            .build();
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<?> readRandomWord() {
+        ResponseDto responseDto = ResponseDto.builder()
+            .message(SUCCESS_READ_TODAY_SENTENCE.getMessage())
+            .httpStatus(SUCCESS_READ_TODAY_SENTENCE.getHttpStatus())
+            .data(wordcardService.readRandomWord())
             .build();
         return ResponseEntity.ok(responseDto);
     }
@@ -125,9 +131,11 @@ public class WordcardApiController {
     }
 
     @PostMapping("/csvWords/{flashcardId}")
-    public ResponseEntity<?> insertUserData(@AuthenticationPrincipal Long userId, @PathVariable Long flashcardId, @RequestPart(required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<?> insertUserData(@AuthenticationPrincipal Long userId,
+        @PathVariable Long flashcardId, @RequestPart(required = false) MultipartFile file)
+        throws IOException {
 
-        if(file != null) {
+        if (file != null) {
             InputStream is = file.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
@@ -136,9 +144,9 @@ public class WordcardApiController {
         }
 
         ResponseDto responseDto = ResponseDto.builder()
-                .message(SUCCESS_READ_WORD.getMessage())
-                .httpStatus(SUCCESS_READ_WORD.getHttpStatus())
-                .build();
+            .message(SUCCESS_READ_WORD.getMessage())
+            .httpStatus(SUCCESS_READ_WORD.getHttpStatus())
+            .build();
         return ResponseEntity.ok(responseDto);
     }
 
