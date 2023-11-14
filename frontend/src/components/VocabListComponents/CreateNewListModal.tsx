@@ -88,7 +88,7 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
       </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={handleClose}>
-          닫기
+          취소
         </Button>
         <Button variant='primary' onClick={handleSubmit}>
           생성

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum UserResponseMessage {
     LOGIN_SUCCESS("로그인 성공", HttpStatus.OK),
     LOGIN_FAIL("로그인 실패", HttpStatus.BAD_REQUEST),
+    LOGOUT_SUCCESS("로그인 성공", HttpStatus.OK),
     ACCESS_TOKEN_EXPIRED("토큰 만료됨", HttpStatus.NETWORK_AUTHENTICATION_REQUIRED),
     CREATE_ACCESS_TOKEN("새로운 토큰이 발급되었습니다", HttpStatus.CREATED),
     SUCCESS_GET_USER_INFO("유저 정보 조회 성공", HttpStatus.OK),

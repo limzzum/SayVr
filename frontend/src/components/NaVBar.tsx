@@ -1,19 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect} from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { RecoilRoot, useRecoilState } from "recoil";
 import { tokenState } from "../recoil/GoalbalState";
 import { logout } from "../api/UserPageAPI/UserAPI";
+import { useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   const [token, setToken] = useRecoilState(tokenState);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const localToken = localStorage.getItem('accessToken');
+    if(localToken) {
+      setToken(localToken);
+    }
+  }, []);
 
   const logoutToken = async () => {
     await logout();
     localStorage.removeItem('accessToken');
     localStorage.removeItem("userId");
     setToken('');
+    navigate("/");
 };
 
   return (
