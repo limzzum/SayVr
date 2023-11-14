@@ -148,8 +148,6 @@ public class UserApiController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser(@AuthenticationPrincipal Long userId, HttpServletRequest request) {
-        System.out.println("테스트으으으으으으으으으으트트트트ㅡ트ㅡ트트트트");
-        System.out.println(userId);
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         userService.logoutUser(userId,authorization);
         return ResponseEntity.ok(ResponseDto.builder()
