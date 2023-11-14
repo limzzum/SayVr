@@ -2,23 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { RecoilRoot, useRecoilState } from "recoil";
+import { tokenState } from "../recoil/GoalbalState";
+import { logout } from "../api/UserPageAPI/UserAPI";
 
 const NavBar: React.FC = () => {
-  const [isLogged, setIsLogged] = useState(false);
+  const [token, setToken] = useRecoilState(tokenState);
 
-  useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
-    setIsLogged(accessToken !== null);
-  });
-
-  const handleLogout = () => {
-    // accessToken 삭제
-    sessionStorage.removeItem("accessToken");
-    // 로그인 상태 업데이트
-    setIsLogged(false);
-  };
+  const logoutToken = async () => {
+    await logout();
+    localStorage.removeItem('accessToken');
+    setToken('');
+};
 
   return (
+    <RecoilRoot>
     <Navbar bg="light" expand="lg">
       <Container>
         <Navbar.Brand as={Link} to="/">
@@ -42,7 +40,7 @@ const NavBar: React.FC = () => {
             <Link className="nav-link me-4" to="/MatchingGame">
               매칭게임
             </Link>
-            {isLogged ? (
+            {token ? (
               <>
                 <Link className="nav-link me-4" to="/My">
                   마이페이지
@@ -51,7 +49,7 @@ const NavBar: React.FC = () => {
                   variant="outline-dark"
                   className="btn-block d-flex justify-content-center"
                   style={{ whiteSpace: "nowrap" }}
-                  onClick={handleLogout}
+                  onClick={logoutToken}
                 >
                   로그아웃
                 </Button>
@@ -65,6 +63,7 @@ const NavBar: React.FC = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+    </RecoilRoot>
   );
 };
 

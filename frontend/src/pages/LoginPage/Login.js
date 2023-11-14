@@ -1,11 +1,13 @@
 import React from "react";
 import "./Login.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/UserPageAPI/UserAPI";
+import { useRecoilState } from "recoil";
+import { tokenState } from "../../recoil/GoalbalState";
 
 function Login() {
   const navigate = useNavigate();
+  const [token, setToken] = useRecoilState(tokenState);
 
   async function userLogin() {
     const form = document.querySelector("#login-form");
@@ -16,7 +18,8 @@ function Login() {
 
       if (response.data.httpStatus === "OK") {
         console.log(response.data);
-        sessionStorage.setItem("accessToken", response.data.data.accessToken);
+        localStorage.setItem("accessToken", response.data.data.accessToken);
+        setToken(localStorage.getItem("accessToken"));
         alert("로그인 성공");
         navigate("/");
       } else {

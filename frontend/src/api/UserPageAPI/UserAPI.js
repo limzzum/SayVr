@@ -8,6 +8,18 @@ const axiosInstance = Axios.create({
     }
   });
 
+  axiosInstance.interceptors.request.use(
+    config => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token;
+      }
+      return config;
+    },
+    error => {
+      Promise.reject(error)
+  });
+
   export const checkId = async (email) => {
     const response = await axiosInstance.get(`/idCheck/${email}`);
     return response;
@@ -24,5 +36,10 @@ const axiosInstance = Axios.create({
   
   export const login = async (formData) => {
     const response = await axiosInstance.post("/login",formData);
+    return response;
+  };
+
+  export const logout = async () => {
+    const response = await axiosInstance.post("/logout");
     return response;
   };
