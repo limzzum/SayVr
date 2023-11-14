@@ -66,7 +66,7 @@ public class ConversationServiceImpl implements ConversationService {
             + "26-50: Sometimes conveys ideas and feelings clearly, somewhat forced and unnatural conversation, some effort to understand \n"
             + "51-75: Generally conveys ideas and feelings clearly, mostly natural and engaging conversation, good effort to understand \n"
             + "76-100: Consistently conveys ideas and feelings clearly, always natural and engaging conversation, strong effort to understand \n"
-            + "Respond in JSON format, the review and situation needs to be in Korean\n"
+            + "Response must be in JSON format, the review and situation needs to be in Korean\n"
             + "{\"grammar\":score ,\"context\":score,\"review\":\"short review of the user proficiency, faults and good points, explain why the points are taken off explained in Korean\", \"situation\":\"the conversation summary in one sentence in Korean\"}";
 
     //TODO: 예외처리 조회한 값이 존재하지 않을때 , 접근 불가할 때
@@ -129,7 +129,7 @@ public class ConversationServiceImpl implements ConversationService {
                     new OpenAIMessageDto("system", INSTRUCTION),
                     new OpenAIMessageDto("user", chatString))))
             .n(1)
-            .temperature(0.7)
+            .temperature(1.3)
             .build();
 //        log.info("reques:{}", request);
         HttpEntity<ChatRequest> requestEntity = new HttpEntity<>(request, headers);
