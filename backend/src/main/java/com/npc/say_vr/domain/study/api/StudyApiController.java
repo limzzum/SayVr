@@ -115,7 +115,7 @@ public class StudyApiController {
     return ResponseEntity.ok(responseDto);
   }
 
-  @DeleteMapping("/quit/{studyId}")
+  @DeleteMapping("/member/{studyId}")
   public ResponseEntity<?> deleteStudyMember(@AuthenticationPrincipal Long userId,@PathVariable Long studyId) {
     studyService.deleteStudyMember(userId,studyId);
     ResponseDto responseDto = ResponseDto.builder()
