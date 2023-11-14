@@ -181,6 +181,7 @@ function MatchingGameWaitingPage() {
 
     if (response.socketType == SocketType.PLAYER_OUT) {
       console.log("상대 플레이어 게임 떠남.");
+      console.log(response.socketType);
       setEndMessage(response.message!)
       setGameResult(response.data);
       setIsEndGame(true);
