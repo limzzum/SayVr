@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
+import { RecoilRoot } from "recoil";
 import NavBar from "./components/NaVBar";
 import Modal from "react-modal";
 
@@ -12,7 +13,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <BrowserRouter>
+  <RecoilRoot>
     <NavBar />
     <App />
+    </RecoilRoot>
   </BrowserRouter>
 );

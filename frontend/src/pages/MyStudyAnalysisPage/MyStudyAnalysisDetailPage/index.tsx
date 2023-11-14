@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import GetConversation from "../../../api/MyStudyAnalysisAPI/GetConversation";
 import Translation from "../../../components/MyStudyAnalysisComponents/Translation/Translation";
 import "./style.css";
+import { Carousel } from "react-bootstrap";
 
 declare global {
   interface Window {
@@ -155,7 +156,7 @@ function MyStudyAnalysisDetailPage() {
             ))}
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-4 script-container-div">
           <div className="script-container">{conversationData?.review}</div>
         </div>
       </div>

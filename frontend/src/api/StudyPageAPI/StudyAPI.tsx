@@ -1,5 +1,5 @@
 // api.ts
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { CreateStudyRequestDto } from "../../components/StudyComponents/CreatNewStudyModal";
 import { JoinStudyRequestDto } from "../../components/StudyComponents/ReadStudyInfoModal";
 import { UpdateStudyRequestDto } from "../../components/StudyComponents/UpdateNewStudyModal";
@@ -12,14 +12,10 @@ import {
   CreateGoalRequestDto,
   UpdateGoalResquestDto,
 } from "../../components/StudyComponents/WeeklySprintComponent";
-const BASE_URL = "http://localhost:8080/api/study";
 
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import axiosInstance from "../constAPI/axiosInstance";
+
+
 export enum CheckListStatus {
   DELETE = "DELETE",
   ONGOING = "ONGOING",
@@ -141,47 +137,47 @@ export interface StudyPageDetailResponseDto {
 export const createStudy = (
   data?: CreateStudyRequestDto
 ): Promise<AxiosResponse<ResponseDto<StudyEnterResponseDto>>> => {
-  return axiosInstance.post("", data);
+  return axiosInstance.post("/study", data);
 };
 export const joinStudy = (
   data?: JoinStudyRequestDto
 ): Promise<AxiosResponse<ResponseDto<StudyEnterResponseDto>>> => {
-  return axiosInstance.post("/join", data);
+  return axiosInstance.post("/study/join", data);
 };
 export const getStudyMineList = (): Promise<
   AxiosResponse<ResponseDto<StudyMineListResponseDto>>
 > => {
-  return axiosInstance.get("/mine");
+  return axiosInstance.get("/study/mine");
 };
 export const getStudyList = (): Promise<
   AxiosResponse<ResponseDto<StudyListResponseDto>>
 > => {
-  return axiosInstance.get("/list");
+  return axiosInstance.get("/study/list");
 };
 export const getOneStudy = (
   studyId: number
 ): Promise<AxiosResponse<ResponseDto<StudyPageDetailResponseDto>>> => {
-  return axiosInstance.get(`/${studyId}`);
+  return axiosInstance.get(`/study/${studyId}`);
 };
 
 export const deleteStudyMember = (
   studyId: number
 ): Promise<AxiosResponse<ResponseDto<any>>> => {
-  return axiosInstance.delete(`/quit/${studyId}`);
+  return axiosInstance.delete(`/study/member/${studyId}`);
 };
 
 export const updateStudy = (
   studyId: number | undefined,
   data?: UpdateStudyRequestDto
 ): Promise<AxiosResponse<ResponseDto<StudyDetailResponseDto>>> => {
-  return axiosInstance.put(`/${studyId}`, data);
+  return axiosInstance.put(`/study/${studyId}`, data);
 };
 
 export const createWeeklySprint = (
   studyId: Number,
   data?: CreateWeeklySprintRequestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.post(`/goal/${studyId}`, data);
+  return axiosInstance.post(`/study/goal/${studyId}`, data);
 };
 
 export const updateCheckListItemStatus = (
@@ -191,7 +187,7 @@ export const updateCheckListItemStatus = (
   data?: UpdateCheckListStatusResquestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
   return axiosInstance.patch(
-    `/checkList/status/${studyId}/${weeklySprintId}/${checkListId}`,
+    `/study/checkList/status/${studyId}/${weeklySprintId}/${checkListId}`,
     data
   );
 };
@@ -202,7 +198,7 @@ export const deleteCheckListItem = (
   checkListId: number
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
   return axiosInstance.delete(
-    `/checkList/${studyId}/${weeklySprintId}/${checkListId}`
+    `/study/checkList/${studyId}/${weeklySprintId}/${checkListId}`
   );
 };
 
@@ -211,14 +207,14 @@ export const createCheckListItem = (
   weeklySprintId: number,
   data?: CreateCheckListRequestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.post(`/checkList/${studyId}/${weeklySprintId}`, data);
+  return axiosInstance.post(`/study/checkList/${studyId}/${weeklySprintId}`, data);
 };
 
 export const getWeeklySprint = (
   studyId: Number,
   weeklySprintId: number
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.get(`/goal/${studyId}/${weeklySprintId}`);
+  return axiosInstance.get(`/study/goal/${studyId}/${weeklySprintId}`);
 };
 
 export const createGoal = (
@@ -226,7 +222,7 @@ export const createGoal = (
   weeklySprintId: Number | undefined,
   data?: CreateGoalRequestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.post(`/goal/${studyId}/${weeklySprintId}`, data);
+  return axiosInstance.post(`/study/goal/${studyId}/${weeklySprintId}`, data);
 };
 
 export const updateGoal = (
@@ -236,7 +232,7 @@ export const updateGoal = (
   data?: UpdateGoalResquestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
   return axiosInstance.put(
-    `/goal/${studyId}/${weeklySprintId}/${goalId}`,
+    `/study/goal/${studyId}/${weeklySprintId}/${goalId}`,
     data
   );
 };
@@ -246,5 +242,5 @@ export const deleteGoal = (
   weeklySprintId: Number | undefined,
   goalId: Number
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.delete(`/goal/${studyId}/${weeklySprintId}/${goalId}`);
+  return axiosInstance.delete(`/study/goal/${studyId}/${weeklySprintId}/${goalId}`);
 };
