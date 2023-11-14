@@ -8,6 +8,9 @@ import Modal from "react-modal";
 import "./Chat.css";
 import { Form, InputGroup } from "react-bootstrap";
 
+import { MouseEventHandler } from 'react';
+import SpeechRecognition, { useSpeechRecognition, ListeningOptions } from 'react-speech-recognition';
+
 interface props {
   // player: PlayerProfile;
   // opponent: PlayerProfile;
@@ -31,15 +34,18 @@ const GameProceedingBody: React.FC<props> = ({
   chatMessage,
   question,
 }) => {
+
   return (
     <div className="game-proceeding-body-container">
       <div>
         <Question question={question}></Question>
-        <GameTimer timeLimit={30}></GameTimer>
+        <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
+      </div>
+      <div>
+      <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
+      <Dictaphone/>
       </div>
 
-      {/* <Chat></Chat> */}
-      <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
     </div>
   );
 };
@@ -221,7 +227,10 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   );
 };
 
-const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
+const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
+  timeLimit,
+  gameId,
+}) => {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -234,8 +243,8 @@ const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
         setIsModalOpen(true);
 
         setTimeout(() => {
-          setIsModalOpen(false);
           setTimeLeft(timeLimit);
+          setIsModalOpen(false);
         }, 3000);
       }
     }, 1000);
@@ -256,10 +265,47 @@ const GameTimer: React.FC<{ timeLimit: number }> = ({ timeLimit }) => {
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Example Modal"
+        className="Modal"
       >
-        <p>시간이 종료되었습니다.</p>
-        <p>3초 후 다음 라운드가 시작됩니다..</p>
+        <div>시간이 종료되었습니다.</div>
+        <div>잠시 후 다음 라운드가 시작됩니다..</div>
       </Modal>
     </div>
   );
 };
+
+
+
+const Dictaphone = () => {
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
+  const handleStartListening: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.preventDefault();
+    SpeechRecognition.startListening({language : 'en'});
+  };
+
+  const handleStopListening: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.preventDefault();
+    SpeechRecognition.stopListening();
+  };
+
+  return (
+    <div>
+      <p>Microphone: {listening ? 'on' : 'off'}</p>
+      <button onClick={handleStartListening}>Start</button>
+      <button onClick={handleStopListening}>Stop</button>
+      <button onClick={resetTranscript}>Reset</button>
+      <p>{transcript}</p>
+    </div>
+  );
+};
+

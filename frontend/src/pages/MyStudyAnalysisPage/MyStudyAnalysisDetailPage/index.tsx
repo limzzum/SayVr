@@ -1,9 +1,12 @@
+// MyStudyAnalysisDetailPage.jsx
+
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import GetConversation from "../../../api/MyStudyAnalysisAPI/GetConversation";
 import Translation from "../../../components/MyStudyAnalysisComponents/Translation/Translation";
 import "./style.css";
-import { Carousel } from "react-bootstrap";
+import GrammarScoreBadge from "../../../assets/MygradeAssets/GrammarScoreBadge.png";
+import ContextScoreBadge from "../../../assets/MygradeAssets/ContextScoreBadge.png";
 
 declare global {
   interface Window {
@@ -124,14 +127,49 @@ function MyStudyAnalysisDetailPage() {
     if (messageList.length === 0) {
       return <div>No messages found.</div>;
     }
-    return messageList.map((message, index) => (
-      <div key={index}>
-        <p>{message.grammar}</p>
-        <p>{message.context}</p>
-        <p>{message.pronunciation}</p>
-        <p>{message.content}</p>
+
+    return (
+      <div className="message-container">
+        <h2>Script</h2>
+        {messageList.map((message, index) => (
+          <div
+            key={index}
+            className={`message-bubble ${message.role === "user" ? "user-message" : "other-message"}`}
+            style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start" }}
+          >
+            {message.role === "user" && (
+              <div className="message-info row justify-content-end position-relative">
+                <div className="col-auto" style={{ backgroundColor: "transparent", position: "relative" }}>
+                  <span style={{
+                    color: "black",
+                    position: "absolute",
+                    top: "37%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    fontSize: "15px"
+                  }}>{message.grammar}</span>
+                  <img src={GrammarScoreBadge} alt="GrammarScoreBadge" style={{ maxWidth: "60px", zIndex: 1 }} />
+                </div>
+                <div className="col-auto" style={{ backgroundColor: "transparent", position: "relative" }}>
+                  <span style={{
+                    color: "black",
+                    position: "absolute",
+                    top: "37%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    fontSize: "15px"
+                  }}>{message.context}</span>
+                  <img src={ContextScoreBadge} alt="ContextScoreBadge" style={{ maxWidth: "60px", zIndex: 1 }} />
+                </div>
+              </div>
+            )}
+            <div className="message-content">
+              <p>{message.content}</p>
+            </div>
+          </div>
+        ))}
       </div>
-    ));
+    );
   };
 
   return (
@@ -150,14 +188,17 @@ function MyStudyAnalysisDetailPage() {
           >
             {Array.from({ length: numberOfIds }, (_, index) => (
               <div key={index} style={{ display: selectedItem === `Item ${index + 1}` ? "block" : "none" }}>
-                <h4 id={`list-item-${index + 1}`}>{index + 1}</h4>
                 {formattedId && generateMessageContent(conversationData?.messageList || [])}
               </div>
             ))}
           </div>
         </div>
         <div className="col-md-4 script-container-div">
-          <div className="script-container">{conversationData?.review}</div>
+          <div className="script-container">
+            <h1>Review</h1>
+            <br />
+            <div className="review-container">{conversationData?.review}</div>
+          </div>
         </div>
       </div>
       <div>

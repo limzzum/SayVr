@@ -1,7 +1,7 @@
 import React from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../api/UserPageAPI/UserAPI";
+import { login } from "../../api/UserPageAPI/SignUser";
 import { useRecoilState } from "recoil";
 import { tokenState } from "../../recoil/GoalbalState";
 
@@ -15,6 +15,12 @@ function Login() {
 
     try {
       const response = await login(formData);
+      // if(localStorage.getItem("accessToken")) {
+      //   localStorage.removeItem('accessToken');
+      // }
+      // if(localStorage.getItem("userId")) {
+      //   localStorage.removeItem('userId');
+      // }
 
       if (response.data.httpStatus === "OK") {
         console.log(response.data);

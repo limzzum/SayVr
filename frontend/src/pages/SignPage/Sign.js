@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./Sign.css";
-import {checkNickname, checkId, signUp} from "../../api/UserPageAPI/UserAPI"
+import {checkNickname, checkId, signUp} from "../../api/UserPageAPI/SignUser"
 import { useNavigate } from "react-router-dom";
 
 
