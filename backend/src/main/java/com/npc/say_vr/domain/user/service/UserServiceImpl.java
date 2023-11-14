@@ -4,7 +4,9 @@ import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.ALREADY_E
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.NOT_EXIST_USER;
 
 import com.npc.say_vr.domain.game.domain.Ranking;
+import com.npc.say_vr.domain.game.domain.Tier;
 import com.npc.say_vr.domain.game.repository.RankingRepository;
+import com.npc.say_vr.domain.game.repository.TierRepository;
 import com.npc.say_vr.domain.game.service.RankingService;
 import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.domain.user.domain.User;
@@ -37,6 +39,9 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
     private final RankingService rankingService;
     private final RankingRepository rankingRepository;
+    private final TierRepository tierRepository;
+
+    private static int CREATE_USER_POINT = 0;
 
 
     private Long createUser(User user) {
@@ -100,16 +105,29 @@ public class UserServiceImpl implements UserService {
             // 예외처리
             return;
         }
+        // TODO : 예외처리
+        Tier tier = tierRepository.findById(1L).orElseThrow();
+
         User newUser = User.builder()
-            .username(createUserRequestDto.getName())
+            .username(createUserRequestDto.getNickname())
             .email(createUserRequestDto.getEmail())
             .nickname(createUserRequestDto.getNickname())
+            // TODO : 프로필 사진 넣기
 //            .profile(imageUrl)
             .password(createUserRequestDto.getPassword())
             .userStatus(UserStatus.ACTIVE)
             .build();
 
         userRepository.save(newUser);
+
+        Ranking ranking = Ranking.builder()
+            .point(CREATE_USER_POINT)
+            .tier(tier)
+            .user(newUser)
+            .build();
+
+        rankingRepository.save(ranking);
+
     }
 
     @Override
