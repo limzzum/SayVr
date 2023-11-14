@@ -12,9 +12,8 @@ import {
   CreateGoalRequestDto,
   UpdateGoalResquestDto,
 } from "../../components/StudyComponents/WeeklySprintComponent";
-
+import { CreateFlashcardsRequestDto } from "../../components/StudyComponents/CreateStudyWordModal";
 import axiosInstance from "../constAPI/axiosInstance";
-
 
 export enum CheckListStatus {
   DELETE = "DELETE",
@@ -116,7 +115,7 @@ export interface WeeklySprintDetailResponse {
 export interface StudyDeckInfo {
   studyDeckId: number;
   name: string;
-  falshcardDeckId: number;
+  flashcardDeckId: number;
   wordCount: number;
 }
 
@@ -132,6 +131,13 @@ export interface StudyPageDetailResponseDto {
   studyDetailResponseDto: StudyDetailResponseDto;
   weeklySprintDetailResponse: WeeklySprintDetailResponse;
   studyDeckDetailResponseDto: StudyDeckDetailResponseDto;
+}
+
+export interface StudyDeckCreateResponseDto {
+  studyDeckId: number;
+  name: string;
+  flashcardDeckId: number;
+  wordCount: number;
 }
 
 export const createStudy = (
@@ -207,7 +213,10 @@ export const createCheckListItem = (
   weeklySprintId: number,
   data?: CreateCheckListRequestDto
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.post(`/study/checkList/${studyId}/${weeklySprintId}`, data);
+  return axiosInstance.post(
+    `/study/checkList/${studyId}/${weeklySprintId}`,
+    data
+  );
 };
 
 export const getWeeklySprint = (
@@ -242,5 +251,20 @@ export const deleteGoal = (
   weeklySprintId: Number | undefined,
   goalId: Number
 ): Promise<AxiosResponse<ResponseDto<WeeklySprintDetailResponse>>> => {
-  return axiosInstance.delete(`/study/goal/${studyId}/${weeklySprintId}/${goalId}`);
+  return axiosInstance.delete(
+    `/study/goal/${studyId}/${weeklySprintId}/${goalId}`
+  );
+};
+
+export const createStudyDeck = (
+  studyId: Number,
+  data?: CreateFlashcardsRequestDto
+): Promise<AxiosResponse<ResponseDto<StudyDeckCreateResponseDto>>> => {
+  return axiosInstance.post(`/study/wordlist/${studyId}`, data);
+};
+
+export const getStudyDeckList = (
+  studyId: Number
+): Promise<AxiosResponse<ResponseDto<StudyDeckDetailResponseDto>>> => {
+  return axiosInstance.get(`/study/wordlist/${studyId}`);
 };
