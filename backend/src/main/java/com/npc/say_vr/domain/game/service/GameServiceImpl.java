@@ -89,12 +89,6 @@ public class GameServiceImpl implements GameService {
                 .profile(user.getProfile()).build();
             gameStatusDto.setPlayerB(playerDto);
             redisUtil.setGameStatusList(gameId,gameStatusDto);
-            updateQuiz(Long.valueOf(gameId));
-            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
-                .data(gameStatusDto)
-                .message(GAME_START_MESSAGE.getMessage())
-                .build();
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
             return GameWaitingResponseDto.builder().gameId(Long.valueOf(gameId))
                 .profile(user.getProfile())
@@ -127,7 +121,7 @@ public class GameServiceImpl implements GameService {
 
         GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_START)
             .gameStatusDto(gameStatusDto)
-            .message(GAME_STATUS_INFO.getMessage())
+            .message(GAME_START_MESSAGE.getMessage())
             .build();
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
