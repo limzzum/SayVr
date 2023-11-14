@@ -11,27 +11,41 @@ import ChangeProfileModal from "../../components/MyPageComponents/ChangeProfileM
 import MyWordCard from "../../components/MyWordCard";
 import StudyListSection from "../../components/MyPageComponents/StudyCard";
 import VocabListPage from "../../components/MyPageComponents/WordCard";
+import { tokenState } from "../../recoil/GoalbalState";
+import { useRecoilValue } from 'recoil';
 import "./style.css";
 
 function MyPage() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isChangeNicknameModalOpen, setIsChangeNicknameModalOpen] = useState(false);
   const [isChangeProfileModalOpen, setIsChangeProfileModalOpen] = useState(false);
+  const token = useRecoilValue(tokenState);
 
   useEffect(() => {
+    let isMounted = true;
+  
     const fetchData = async () => {
       try {
-        const data = await getUserData();
-        // 상대 경로를 절대 경로로 변환
+        console.log("토큰 제대로 전달 되는지",token)
+        const data = await getUserData(token);
+        console.log("토큰 제대로 전달 되는지",token)
         data.data.profile = `${API_URL}/${data.data.profile}`;
-        setUserData(data);
+        console.log("받아온 데이터", data);
+  
+        if (isMounted) {
+          setUserData(data);
+        }
       } catch (error) {
         console.error("유저 데이터를 불러오는 중 오류 발생:", error);
       }
     };
-
+  
     fetchData();
-  }, []);
+  
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
 
   const carouselSettings = {
     dots: true,
@@ -120,7 +134,7 @@ function MyPage() {
       <div className="row card-row custom-chart-container">
         <h3>내 단어장</h3>
         <Slider {...carouselSettings}></Slider>
-        <VocabListPage/>
+        <VocabListPage />
       </div>
 
       <h3>내 스터디</h3>
