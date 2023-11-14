@@ -15,7 +15,7 @@ interface props {
   // player: PlayerProfile;
   // opponent: PlayerProfile;
   gameId: number;
-  chatMessage: string;
+  chatMessage: ChatMessage;
   question: string;
 }
 
@@ -34,16 +34,15 @@ const GameProceedingBody: React.FC<props> = ({
   chatMessage,
   question,
 }) => {
-
   return (
     <div className="game-proceeding-body-container">
       <div>
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
-      <div>
+<div>
       <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
-      <Dictaphone/>
+<Dictaphone/>
       </div>
 
     </div>
@@ -110,14 +109,13 @@ interface Player {
 }
 
 interface ChatMessage {
-  sender: string;
-  text: string;
-  playerId: string;
+  message: string;
+  userId: string;
 }
 
 interface TextChattingProps {
   gameId: number;
-  chatMessage: string;
+  chatMessage: ChatMessage;
 }
 
 const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
@@ -141,9 +139,8 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
       setChatMessages((prevMessages) => [
         ...prevMessages,
         {
-          sender: "getNickName",
-          text: chatMessage,
-          playerId: "1",
+          message: chatMessage.message,
+          userId: chatMessage.userId,
         },
       ]);
     } else {
@@ -189,13 +186,13 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
                 <div
                   key={index}
                   className={`${
-                    message.playerId === "1"
+                    message.userId === localStorage.getItem("userId")
                       ? "messageContainer userMessage"
                       : "messageContainer otherMessage"
                   }`}
                 >
-                  <div>{message.playerId === "1" ? "나" : message.sender}</div>
-                  <div>{message.text}</div>
+                  <div>{message.userId === localStorage.getItem("userId") ? "나" : "상대방"}</div>
+                  <div>{message.message}</div>
                 </div>
               ))}
             </div>
@@ -243,8 +240,8 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
         setIsModalOpen(true);
 
         setTimeout(() => {
-          setTimeLeft(timeLimit);
-          setIsModalOpen(false);
+                    setTimeLeft(timeLimit);
+setIsModalOpen(false);
         }, 3000);
       }
     }, 1000);
@@ -265,7 +262,7 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Example Modal"
-        className="Modal"
+className="Modal"
       >
         <div>시간이 종료되었습니다.</div>
         <div>잠시 후 다음 라운드가 시작됩니다..</div>
