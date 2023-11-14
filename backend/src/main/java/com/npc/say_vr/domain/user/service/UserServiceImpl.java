@@ -10,6 +10,7 @@ import com.npc.say_vr.domain.user.constant.UserStatus;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.dto.CreateUserRequestDto;
 import com.npc.say_vr.domain.user.dto.LoginUserRequestDto;
+import com.npc.say_vr.domain.user.dto.LoginUserResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
@@ -112,14 +113,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenResponseDto loginUser(LoginUserRequestDto loginUserRequestDto) {
+    public LoginUserResponseDto loginUser(LoginUserRequestDto loginUserRequestDto) {
         // 예외처리
         User user = userRepository.findByEmailAndPassword(loginUserRequestDto.getEmail(),loginUserRequestDto.getPassword()).orElseThrow();
 
-        return TokenResponseDto.builder()
-            .accessToken(jwtUtil.createJwtToken(user.getId()))
-            .refreshToken(jwtUtil.createRefreshToken(user.getId()))
-            .build();
+        TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
+                                        .accessToken(jwtUtil.createJwtToken(user.getId()))
+                                        .refreshToken(jwtUtil.createRefreshToken(user.getId()))
+                                        .build();
+        return LoginUserResponseDto.builder().userId(user.getId()).tokenResponseDto(tokenResponseDto).build();
+    }
+
+    @Override
+    public void logoutUser(Long userId, String authorization) {
+         jwtUtil.logout(userId,authorization);
     }
 
     @Override
