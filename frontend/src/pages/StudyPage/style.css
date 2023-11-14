@@ -3,11 +3,30 @@
   border: 1px solid gray;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding: 50px;
+  /* padding: 5rem; */
+  
   margin: 30px auto;
 }
+.study-name{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 70%
+}
+.user-name{
+display: flex;
+flex-direction: row;
+align-items: baseline;
+}
+.study-goal-title{
+  display: flex;
+  flex-direction: row;
+  margin-top:1rem;
+  margin-bottom: 1rem;
+}
 .studypage-inner-container {
-  background-color: white;
+  /* background-color: white; */
   border: 1px solid gray;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -16,9 +35,12 @@
   width: 60vw;
   height: 30vh;
 }
-.btn {
-  width: 5rem;
+.goal-inner{
+  background-color: #82b7f3;
 }
+/* .btn {
+  width: 5rem;
+} */
 
 .study-list-container {
   background-color: white;
@@ -29,9 +51,6 @@
   margin: 30px auto;
 }
 
-.slick-slide.slick-cloned {
-  /* display: none; */
-}
 
 .study-line {
   background-color: white;
@@ -42,13 +61,6 @@
   margin: 30px auto;
 }
 
-.addBtn:hover {
-  /* border-radius: 50%!important;
-  border-color:transparent;
-  &:active {
-      border-color: transparent;
-    } */
-}
 path:hover {
   fill: cornflowerblue; /* Change the fill color on hover */
   cursor: pointer; /* Change the cursor to indicate interactivity */
@@ -66,9 +78,9 @@ border-color:transparent;
   cursor: pointer;
 }
 
-.btn {
+/* .btn {
   width: 5rem;
-}
+} */
 
 .card {
   /* border-radius: 10px; */
