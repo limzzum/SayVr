@@ -65,20 +65,20 @@ public class RabbitMqListener {
     @EventListener
     public void connectionListener(SessionDisconnectEvent event){
         log.info("disconnected");
-        Long userId = Long.valueOf(event.getUser().getName());
-        Long gameId = gameService.findGameIdByUserId(userId);
-
-        if(gameId == null) {
-            throw new IllegalArgumentException();
-        }
-
-            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder()
-                .socketType(SocketType.PLAYER_OUT)
-                .message(PLAYER_OUT_MESSAGE.getMessage())
-                .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
-                    .outUserId(userId).build()))
-                .build();
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+//        Long userId = Long.valueOf(event.getUser().getName());
+//        Long gameId = gameService.findGameIdByUserId(userId);
+//
+//        if(gameId == null) {
+//            throw new IllegalArgumentException();
+//        }
+//
+//            GameSocketResponseDto gameSocketResponseDto = GameSocketResponseDto.builder()
+//                .socketType(SocketType.PLAYER_OUT)
+//                .message(PLAYER_OUT_MESSAGE.getMessage())
+//                .data(gameService.playerOutGame(PlayerOutRequestDto.builder().gameId(gameId)
+//                    .outUserId(userId).build()))
+//                .build();
+//            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
 
     }
