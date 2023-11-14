@@ -22,9 +22,13 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
 
   const [orderby, setOrderby] = useState(searchParameter.sortBy)
   const [keyword, setKeyword] = useState(searchParameter.keyword)
-  const [latestId, setLatestId] = useState(searchParameter.sortBy==="createdAt"?searchResult[searchResult.length - 1].id:searchResult.reduce((minId, deck) => {
-    return Math.min(minId, deck.id)
-  }, searchResult[0].id))
+  const [latestId, setLatestId] = useState(
+    searchParameter.sortBy === "createdAt"
+      ? searchResult[searchResult.length - 1].id
+      : searchResult.reduce((minId, deck) => {
+          return Math.min(minId, deck.id)
+        }, searchResult[0].id)
+  )
 
   const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>(searchResult ? searchResult : [])
   // const [params, setParams] = useState<ReadDeckSearchRequestDto>(searchParameter);
@@ -43,7 +47,7 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
       keyword: keyword,
     })
     console.log(searchParams)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderby, keyword, latestId])
 
   useEffect(() => {
@@ -82,17 +86,17 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
             console.error("Error fetching decks", error)
           })
           .finally(() => {
-            if(latestId===publicCardTitles[publicCardTitles.length-1].id){
+            if (latestId === publicCardTitles[publicCardTitles.length - 1].id) {
               setLoading(false)
-            }else{
-                 setTimeout(() => setLoading(false), 3000)
+            } else {
+              setTimeout(() => setLoading(false), 3000)
             }
-         
+
             // setLoading(false);
           })
       }, 2000)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
 
   const handleLoad = () => {
@@ -112,8 +116,8 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
     return () => {
       window.removeEventListener("scroll", onScroll)
     }
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -180,91 +184,83 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
   return (
     <>
       <div className='container mt-5 flex justify-content-center'>
-        <div className='vocab-list-container row card-row  align-items-center '>
-          <div className='row justify-content-center align-items-center'>
-            <div className='col'>
-              <h1>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div style={{ display: "flex", margin: "1rem" }}>
-                    <div>
-                      <BackArrow />
-                    </div>
-                    <div className='title' style={{ display: "inline-flex" }}>
-                      {category === "public" && (
-                        <>
-                          <div>공개 단어장</div>
+        <div className='vocab-list-container row card-row'>
+          <div className='vocab-list-title row'>
+            <div className='row justify-content-center align-items-center'>
+              <div className='list-title-buttons'>
+                <div className='card-title'>
+                  <div>
+                    <BackArrow />
+                  </div>
 
-                          <div className='container-fluid' style={{ width: "300px" }}>
-                            <InputGroup className='mb-3'>
-                              <DropdownButton
-                                variant='outline-secondary'
-                                title={
-                                  orderby === "createdAt"
-                                    ? "최신순"
-                                    : orderby === "forkCount"
-                                    ? "저장순"
-                                    : orderby === "wordCount"
-                                    ? "단어순"
-                                    : "정렬"
-                                }
-                                id='input-group-dropdown-1'
-                              >
-                                <Dropdown.Item onClick={() => setOrderby("createdAt")} href='#'>
-                                  최신순
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={() => setOrderby("forkCount")} href='#'>
-                                  저장순
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={() => setOrderby("wordCount")} href='#'>
-                                  단어순
-                                </Dropdown.Item>
-                              </DropdownButton>
-                              <Form.Control
-                                placeholder='검색'
-                                name='keyword'
-                                onChange={handleInputChange}
-                                value={keyword}
-                                type='search'
-                                aria-label='Text input with dropdown button'
-                              />
-                              <Button
-                                type='submit'
-                                onClick={(e: any) => {
-                                  e.preventDefault()
-                                  handleSearch()
-                                }}
-                                className='btn'
-                              >
-                                Search
-                              </Button>
-                            </InputGroup>
-                          </div>
-                        </>
-                      )}
-                    </div>
+                  <div>
+                    <h1>공개 단어장 </h1>
+                  </div>
+
+                  <div className='container-fluid search-bar' style={{ width: "300px" }}>
+                    <InputGroup>
+                      <DropdownButton
+                        variant='outline-secondary'
+                        title={
+                          orderby === "createdAt"
+                            ? "최신순"
+                            : orderby === "forkCount"
+                            ? "저장순"
+                            : orderby === "wordCount"
+                            ? "단어순"
+                            : "정렬"
+                        }
+                        id='input-group-dropdown-1'
+                      >
+                        <Dropdown.Item onClick={() => setOrderby("createdAt")} href='#'>
+                          최신순
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setOrderby("forkCount")} href='#'>
+                          저장순
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setOrderby("wordCount")} href='#'>
+                          단어순
+                        </Dropdown.Item>
+                      </DropdownButton>
+                      <Form.Control
+                        placeholder='검색'
+                        name='keyword'
+                        onChange={handleInputChange}
+                        value={keyword}
+                        type='search'
+                        aria-label='Text input with dropdown button'
+                      />
+                      <Button
+                        type='submit'
+                        onClick={(e: any) => {
+                          e.preventDefault()
+                          handleSearch()
+                        }}
+                        className='btn'
+                      >
+                        Search
+                      </Button>
+                    </InputGroup>
                   </div>
                 </div>
-              </h1>
+              </div>
             </div>
           </div>
-          {(publicCardTitles == null || publicCardTitles.length === 0) && (
-            <>
-              <MyWordCard type='none' addNew={handlePlusButtonClick} />
-            </>
-          )}
-          {publicCardTitles?.map((deck, index) => {
-            return (
+          <div className='row card-row'>
+            {(publicCardTitles == null || publicCardTitles.length === 0) && (
               <>
-                <MyWordCard type='public' key={index + deck.id + "search"} addNew={handlePlusButtonClick} props={deck} />
+                <MyWordCard type='none' addNew={handlePlusButtonClick} />
               </>
-            )
-          })}{" "}
-          {loading && <Spinner animation='border' variant='primary' />}
+            )}
+            {publicCardTitles?.map((deck, index) => {
+              return (
+                <>
+                  <MyWordCard type='public' key={index + deck.id + "search"} addNew={handlePlusButtonClick} props={deck} />
+                </>
+              )
+            })}{" "}
+            {loading && <Spinner animation='border' variant='primary' />}
+          </div>
         </div>
         <div className='create-new-list-modal'>
           <CreateNewListModal showModal={showModal} handleClose={handleCloseModal} goToDetail={goToDetail} />

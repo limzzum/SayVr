@@ -228,7 +228,7 @@ function VocabListPage() {
             </div>
             <div className="vocab-list-container row card-row">
               <div className="vocab-list-title row">
-                <div className="row">
+                <div className="row justify-content-center">
                   <div className="list-title-buttons">
                     <div className="card-title">
                       <div
@@ -306,7 +306,7 @@ function VocabListPage() {
                   </div>
                 </div>
               </div>
-              <div className="row">
+              <div className="row justify-content-center">
                 <Slider
                   infinite={publicCardTitles?.length >= 3}
                   ref={sliderPublic}
