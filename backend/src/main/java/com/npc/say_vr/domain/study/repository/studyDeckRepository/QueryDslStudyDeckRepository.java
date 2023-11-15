@@ -54,8 +54,8 @@ public class QueryDslStudyDeckRepository  {
         return queryFactory
                 .select(new QWordcardDto(
                         wordcard.id,
-                        wordcard.word.english,
                         wordcard.word.korean,
+                        wordcard.word.english,
                         wordcard.status))
                 .from(wordcard)
                 .where(wordcard.flashcardDeck.id.eq(flashcardDeckId),

@@ -10,6 +10,7 @@ import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
 import com.npc.say_vr.domain.study.domain.Study;
 import com.npc.say_vr.domain.study.domain.StudyDeck;
+import com.npc.say_vr.domain.study.domain.StudyMember;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateStudytDeckRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.CreateWordcardRequestDto;
 import com.npc.say_vr.domain.study.dto.requestDto.UpdateStudyDeckRequestDto;
@@ -21,6 +22,7 @@ import com.npc.say_vr.domain.study.dto.responseDto.WordUpdateResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.WordcardDto;
 import com.npc.say_vr.domain.study.repository.flashcardDeckRepostiory.FlashcardDeckRepostiory;
 import com.npc.say_vr.domain.study.repository.studyDeckRepository.StudyDeckRepository;
+import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
 import com.npc.say_vr.domain.study.repository.studyRepository.StudyRepository;
 import com.npc.say_vr.global.constant.Status;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class StudyDeckServiceImpl implements StudyDeckService{
     private final WordRepository wordRepository;
     // TODO : 종원언니꺼 가져온거니까 나중에 내 도메인에도 만들어야함
     private final WordcardRepository wordcardRepository;
+    private final StudyMemberRepository studyMemberRepository;
     @Transactional
     @Override
     public StudyDeckInfo createStudyDeck(Long userId, Long studyId, CreateStudytDeckRequestDto createStudytDeckRequestDto) {
@@ -63,19 +66,18 @@ public class StudyDeckServiceImpl implements StudyDeckService{
 
     @Transactional
     @Override
-    public StudyDeckInfo updateStudyDeck(Long userId, Long studyId, UpdateStudyDeckRequestDto updateStudyDeckRequestDto) {
+    public void updateStudyDeck(Long userId, Long studyId, UpdateStudyDeckRequestDto updateStudyDeckRequestDto) {
         // TODO : 예외처리
         StudyDeck studyDeck = studyDeckRepository.findById(updateStudyDeckRequestDto.getStudyDeckId()).orElseThrow();
         studyDeck.updateName(updateStudyDeckRequestDto.getName());
-        return new StudyDeckInfo(studyDeck);
     }
 
     @Transactional
     @Override
-    public StudyDeckInfo deleteStudyDeck(Long userId, Long studyId, Long studyDeckId) {
+    public MessageOnlyResponseDto deleteStudyDeck(Long userId, Long studyId, Long studyDeckId) {
         StudyDeck studyDeck = studyDeckRepository.findById(studyDeckId).orElseThrow();
         studyDeck.updateStatus(Status.DELETE);
-        return new StudyDeckInfo(studyDeck);
+        return new MessageOnlyResponseDto("단어장이 삭제되었습니다");
     }
 
     @Override
@@ -85,14 +87,17 @@ public class StudyDeckServiceImpl implements StudyDeckService{
         FlashcardDto flashcardDto = FlashcardDto.builder()
                 .wordcardList(studyDeckRepository.findWordcardsByFlashcardDeckId(studyDeckOneDetailResponseDto.getFlashcardDeckId()))
                 .build();
-        studyDeckOneDetailResponseDto.updateFlashcardDto(flashcardDto);
+        // TODO : 예외처리
+        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyIdOnlyStudyMember(userId, studyId).orElseThrow();
+        studyDeckOneDetailResponseDto.updateFlashcardDto(flashcardDto,studyMember.getStudyRole());
         return studyDeckOneDetailResponseDto;
     }
 
     @Transactional
     @Override
     public WordUpdateResponseDto createWordcard(Long userId, Long studyId, Long studyDeckId, CreateWordcardRequestDto createWordcardRequestDto) {
-        FlashcardDeck flashcardDeck = flashcardDeckRepostiory.findByStudyDeckId(studyDeckId);
+        StudyDeck studyDeck = studyDeckRepository.findById(studyDeckId).orElseThrow();
+        FlashcardDeck flashcardDeck = studyDeck.getFlashcardDeck();
         // TODO : DEVELOP 하기
         Word word = wordRepository.findByEnglishAndKorean(createWordcardRequestDto.getEng(), createWordcardRequestDto.getKor());
         Word newWord;
@@ -111,10 +116,10 @@ public class StudyDeckServiceImpl implements StudyDeckService{
             //단어장에 이미 있는지 확인하기
             Wordcard preexist = wordcardRepository.findByFlashcardDeck_IdAndWord_IdAndStatusIsNot(
                     flashcardDeck.getId(), word.getId(), WordcardStatus.DELETED);
-            WordcardDto wordcardDto = new WordcardDto(preexist);
             if (preexist != null) {// 이미 단어장에 존재하는 단어->
                 log.info("redundant, returning preexisting word");
-                return WordUpdateResponseDto.builder().wordcard(wordcardDto).build();
+//                return WordUpdateResponseDto.builder().wordcard(wordcardDto).build();
+                return WordUpdateResponseDto.builder().errorMessage("이미 단어장에 존재하는 단어입니다").build();
             } else {
                 log.info("add word to deck");
                 wordcard = Wordcard.builder().word(word).status(WordcardStatus.UNCHECKED)
@@ -124,7 +129,11 @@ public class StudyDeckServiceImpl implements StudyDeckService{
             }
         }
         WordcardDto wordcardDto = new WordcardDto(wordcard);
-        flashcardDeck.getStudyDeck().updateWordCount(flashcardDeck.getWordcards().size());
+        studyDeck.updateWordCount(Math.toIntExact(
+            flashcardDeck.getWordcards().stream()
+                .filter(wordCard -> wordCard.getStatus() != WordcardStatus.DELETED)
+                .count()
+        ));
         return WordUpdateResponseDto.builder()
                 .wordcard(wordcardDto)
                 .build();
