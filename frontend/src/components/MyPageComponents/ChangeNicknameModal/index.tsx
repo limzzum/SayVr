@@ -14,13 +14,20 @@ interface ChangeNicknameModalProps {
 const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide, onNicknameChange }) => {
   const [newNickname, setNewNickname] = useState("");
   const token = useRecoilValue(tokenState);
+  const [nicknameError, setNicknameError] = useState("");
+
 
   useEffect(() => {
     setNewNickname("");
+    setNicknameError("");
   }, [show]);
 
   const handleNicknameChange = async () => {
     try {
+      if (newNickname.length < 2 || newNickname.length > 10) {
+        setNicknameError("닉네임은 2글자 이상 10글자 이하로 입력해주세요.");
+        return;
+      }
       const response = await axios.patch(
         `${API_URL}/user?name=${newNickname}`,
         { name: newNickname },
@@ -45,7 +52,6 @@ const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide,
       alert("닉네임 변경 중 오류가 발생했습니다.");
     }
   };
-  
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -59,8 +65,15 @@ const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide,
             type="text"
             placeholder="새로운 닉네임을 입력하세요."
             value={newNickname}
-            onChange={(e) => setNewNickname(e.target.value)}
+            onChange={(e) => {
+              setNewNickname(e.target.value);
+              setNicknameError("");
+            }}
+            isInvalid={nicknameError !== ""}
           />
+          <Form.Control.Feedback type="invalid">
+            {nicknameError}
+          </Form.Control.Feedback>
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>
