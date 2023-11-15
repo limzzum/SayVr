@@ -24,8 +24,9 @@ const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, o
       if (selectedProfile) {
         const formData = new FormData();
         formData.append("profile", selectedProfile);
-
-        await axios({
+  
+        // Axios 요청 결과를 변수에 저장
+        const response = await axios({
           method: "put",
           url: `${API_URL}/user/profileimg`,
           headers: {
@@ -33,8 +34,12 @@ const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, o
           },
           data: formData,
         });
-
+  
+        // 서버 응답을 콘솔에 출력
+        console.log("서버 응답:", response);
+  
         onProfileChange(selectedProfile);
+        alert("프로필 사진 변경이 완료되었습니다.");
         onHide();
       } else {
         alert("프로필 사진을 선택하세요.");

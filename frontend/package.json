@@ -35,6 +35,7 @@
     "react-speech-recognition": "^3.10.0",
     "react-youtube": "^10.1.0",
     "recoil": "^0.7.7",
+    "recorder-js": "^1.0.7",
     "slick-carousel": "^1.8.1",
     "sockjs-client": "^1.6.1",
     "speak-tts": "^2.0.8",
