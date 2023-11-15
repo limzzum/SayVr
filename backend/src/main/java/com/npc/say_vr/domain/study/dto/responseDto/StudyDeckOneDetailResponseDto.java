@@ -1,6 +1,7 @@
 package com.npc.say_vr.domain.study.dto.responseDto;
 
 
+import com.npc.say_vr.domain.study.constant.StudyRole;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class StudyDeckOneDetailResponseDto {
     private Long flashcardDeckId;
     private FlashcardDto flashcardDto;
     private int wordCount;
+    private StudyRole studyRole;
 
     @QueryProjection
     public StudyDeckOneDetailResponseDto(Long id, String name, Long flashcardDeckId,int wordCount) {
@@ -29,7 +31,8 @@ public class StudyDeckOneDetailResponseDto {
         this.wordCount = wordCount;
     }
 
-    public void updateFlashcardDto(FlashcardDto flashcardDto) {
+    public void updateFlashcardDto(FlashcardDto flashcardDto,StudyRole studyRole) {
         this.flashcardDto = flashcardDto;
+        this.studyRole = studyRole;
     }
 }
