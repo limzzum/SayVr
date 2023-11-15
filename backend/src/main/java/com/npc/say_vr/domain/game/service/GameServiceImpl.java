@@ -155,7 +155,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public WordcardDto createQuizAnswer() {
         try{
-            WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readTodaySentence();
+            WordUpdateResponseDto wordUpdateResponseDto = wordcardService.readRandomWord();
             WordcardDto wordcard = wordUpdateResponseDto.getWordcard();
             return wordcard;
         }catch (Exception e){

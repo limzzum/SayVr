@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import YouTube, { YouTubeProps } from "react-youtube";
 import axios, { AxiosRequestConfig } from "axios";
 import getScript, { ScriptItem } from "../../../api/ShadowingPageAPI/GetScriptAPI";
+import evaluatePronunciation from "../../../api/ShadowingPageAPI/EvaluatePronunciation";
 import "./style.css";
 
 const endpoint = "https://api.cognitive.microsofttranslator.com";
@@ -11,6 +12,7 @@ const azureLocation = "eastus";
 interface ExtendedYouTube extends YouTube {
   getCurrentTime(): number;
   getPlayerState(): number;
+  pauseVideo(): void;
 }
 
 function ShadowingDetailPage() {
@@ -20,6 +22,9 @@ function ShadowingDetailPage() {
   const [displayedScript, setDisplayedScript] = useState<string>("");
   const [translatedText, setTranslatedText] = useState<string>("");
   const playerRef = useRef<ExtendedYouTube | null>(null);
+  const [prevDisplayedScript, setPrevDisplayedScript] = useState<string>("");
+  const [intervalId, setIntervalId] = useState<number | null>(null);
+  const previousStartRef = useRef<number | null>(null);
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     event.target.pauseVideo();
@@ -29,34 +34,35 @@ function ShadowingDetailPage() {
   const onPlayerStateChange: YouTubeProps["onStateChange"] = (event) => {
     if (playerRef.current) {
       const player = playerRef.current;
-  
+
       // 기존 인터벌 정리
-      let intervalId: NodeJS.Timeout | null = null;
       if (intervalId !== null) {
         clearInterval(intervalId);
-        intervalId = null;
+        setIntervalId(null);
       }
-  
+
       const updateScript = async () => {
         const currentTime = player.getCurrentTime();
         const playerState = player.getPlayerState();
         console.log("Player State:", playerState);
-  
-        if (currentTime !== undefined) {
+
+        if (playerState !== 2 || currentTime !== undefined) {
+          // Player state가 2(재생 중)이 아닌 경우에만 실행
           displayScript(currentTime);
         }
       };
-  
+
       // 새로운 인터벌 시작
-      intervalId = setInterval(updateScript, 2000);
-  
+      const newIntervalId = setInterval(updateScript, 1500) as unknown as number;
+      setIntervalId(newIntervalId);
+
       const clearUpdateInterval = () => {
         if (intervalId !== null) {
           clearInterval(intervalId);
-          intervalId = null;
+          setIntervalId(null);
         }
       };
-  
+
       if (
         player.getPlayerState() === window.YT.PlayerState.PAUSED ||
         player.getPlayerState() === window.YT.PlayerState.ENDED
@@ -65,35 +71,38 @@ function ShadowingDetailPage() {
       }
     }
   };
-  
 
   const displayScript = async (currentTime: number) => {
-    const currentScript = script?.find(
-      (item) => currentTime >= item.start && currentTime <= item.start + item.duration
-    );
+    if (playerRef.current) {
+      const player = playerRef.current;
+      const currentScript = script?.find(
+        (item) => currentTime >= item.start && currentTime <= item.start + item.duration
+      );
 
-    if (currentScript && currentScript.text !== displayedScript) {
-      console.log("currentScript.text 둘이 다르면 이걸로 갱신할거임", currentScript.text)
-      setDisplayedScript(currentScript.text);
-      console.log("displayedScript", displayedScript)
+      if (currentScript && currentScript.start !== previousStartRef.current) {
+        console.log("현재 대본이 이전 대본과 다를 때 갱신합니다.", currentScript.text);
+        previousStartRef.current = currentScript.start;
 
-      // 번역 요청
-      const translatedText = await translate(currentScript.text);
+        setPrevDisplayedScript(currentScript.text);
+        setDisplayedScript(currentScript.text);
 
-      // 번역 결과 표시
-      setTranslatedText(translatedText);
+        // 번역 요청
+        const translatedText = await translate(currentScript.text);
 
-      // 자동으로 번역하기 버튼 누르기
-      translateButtonHandler(currentScript.text);
-    } else {
-      // setDisplayedScript("");
-      return
+        // 번역 결과 표시
+        setTranslatedText(translatedText);
+
+        // 자동으로 번역하기 버튼 누르기
+        translateButtonHandler(currentScript.text);
+      } else {
+        // 대본이 변경되지 않았을 때 추가 작업이 필요하면 여기에 작성하세요.
+        return;
+      }
     }
   };
-  
 
-  
-
+  //=================================================================================
+  // 번역 요청 보내는 부분
   const translate = async (text: string) => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
 
@@ -124,7 +133,38 @@ function ShadowingDetailPage() {
     // 여기에서 번역 함수 호출 또는 번역 기능 구현
     await translate(text);
   };
+  // 쉐도잉 기능
+  const onShadowingButtonClick = async () => {
+    if (playerRef.current) {
+      // 영상을 일시 정지
+      playerRef.current.pauseVideo();
 
+      // 쉐도잉 기능 수행 또는 추가 작업 수행
+      // 여기에 쉐도잉 기능을 구현하면 됩니다.
+
+      // 발음 평가 실행
+      if (displayedScript) {
+        const audioBase64 = "BASE64_AUDIO_DATA_HERE"; // 오디오 데이터를 Base64로 인코딩한 문자열
+        const locale = 'en-US'; // 로캘 설정
+
+        try {
+          const pronunciationResult = await evaluatePronunciation(audioBase64, locale);
+
+          if (pronunciationResult) {
+            // 발음 평가 결과 출력 또는 추가 작업 수행
+            console.log("Pronunciation Evaluation Result:", pronunciationResult);
+          } else {
+            // 발음 평가 결과가 없는 경우 또는 오류가 발생한 경우
+            console.error("Pronunciation Evaluation Failed.");
+          }
+        } catch (error) {
+          console.error("Error in evaluatePronunciation:", error);
+        }
+      }
+    }
+  };
+
+  // 스크립트 가져오기
   useEffect(() => {
     const fetchScript = async () => {
       try {
@@ -170,6 +210,9 @@ function ShadowingDetailPage() {
           </div>
           <div className="button-container">
             <button onClick={() => translateButtonHandler(displayedScript)}>번역하기</button>
+            <button className="marginLeftButton" onClick={onShadowingButtonClick}>
+              쉐도잉
+            </button>
           </div>
         </div>
       )}
