@@ -212,7 +212,7 @@ function MyPage() {
           <div className='' style={{ marginLeft: "0" }}>
             <div className='list-title-buttons' style={{ marginLeft: "0" }}>
               <div className='card-title' style={{ marginLeft: "0" }}>
-                <div className='card-title-private' style={{ marginLeft: "0" }} onClick={() => navigate("/VocabList")}>
+                <div className='card-title-private clickable' style={{ marginLeft: "0" }} onClick={() => navigate("/VocabList")}>
                   <h3>내 단어장 </h3>
                 </div>
               </div>
@@ -223,7 +223,7 @@ function MyPage() {
             </div>
           </div>
         </div>
-        <div className='row'>
+        <div className='row clickable-cards'>
           {(personalCardTitles == null || personalCardTitles.length === 0) && <></>}
           <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
             {personalCardTitles?.map((deck, index) => {
@@ -241,7 +241,7 @@ function MyPage() {
           <div className='' style={{ marginLeft: "0" }}>
             <div className='list-title-buttons' style={{ marginLeft: "0" }}>
               <div className='card-title' style={{ marginLeft: "0" }}>
-                <div className='card-title-private' style={{ marginLeft: "0" }} onClick={() => navigate("/StudyList")}>
+                <div className='card-title-private clickable' style={{ marginLeft: "0" }} onClick={() => navigate("/StudyList")}>
                   <h3>내 스터디 </h3>
                 </div>
               </div>
@@ -252,7 +252,7 @@ function MyPage() {
             </div>
           </div>
         </div>
-        <div className='row'>
+        <div className='row clickable-cards'>
         {(studyMineList == null || studyMineList.length === 0) && (
               <>
                 <MyStudyCard addNew={()=>navigate("/StudyList")} />
