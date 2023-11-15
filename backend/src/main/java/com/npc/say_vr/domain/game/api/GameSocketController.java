@@ -107,6 +107,33 @@ public class GameSocketController {
             return;
         }
 
+        if(socketType.equals(SocketType.QUIZ_TIME_OVER)){
+
+            if(gameService.isEndGame(Long.valueOf(gameId))){
+                gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+                    .data(gameService.getGameResult(Long.valueOf(gameId)))
+                    .build();
+                rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+                activityService.saveActicity(userId, OptionType.GAME);
+                goalService.updateCheckListOption(userId,OptionType.GAME);
+                return;
+            }
+
+            GameStatusDto gameStatusDto = redisUtil.getGameStatusList(gameId);
+            if(gameStatusDto.getPlayerA().getUserId() == userId){
+                gameService.updateQuiz(Long.valueOf(gameId));
+                gameStatusDto = redisUtil.getGameStatusList(gameId);
+            }
+
+            gameSocketResponseDto = GameSocketResponseDto.builder().socketType(socketType)
+                .gameStatusDto(gameStatusDto)
+                .build();
+            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+
+            return;
+        }
+
+
 
         if(socketType.equals(SocketType.PLAYER_OUT)){
             gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)

@@ -1,30 +1,19 @@
 import { StudyInfoDto } from "../../api/StudyPageAPI/StudyAPI"
 import AddButton from "./AddButton"
-
+import "../wordcard.css"
+import { BsPerson } from "react-icons/bs"
 interface StudyCardProps {
   addNew: () => void
   readStudy: () => void
   props?: StudyInfoDto
-  setReadStudyInfo : (info: StudyInfoDto) => void
+  setReadStudyInfo: (info: StudyInfoDto) => void
 }
-function MyStudyCard({ addNew,readStudy,setReadStudyInfo, props }: StudyCardProps) {
-
+function MyStudyCard({ addNew, readStudy, setReadStudyInfo, props }: StudyCardProps) {
   if (!props) {
     return (
       <>
-        <div
-          className='card'
-          style={{
-            display: "flex",
-            width: "24rem",
-            backgroundColor: "#82B7F3",
-            marginRight: "20px",
-            marginBottom: "20px",
-            height: "230px",
-          }}
-          onClick={addNew}
-        >
-          <div className='card-body' style={{ justifyContent: "center" }}>
+        <div className='emtpy-title-card' onClick={addNew}>
+          <div className='empty-add-button' style={{ justifyContent: "center" }}>
             <AddButton handleButtonClick={addNew} size='50' />
           </div>
         </div>
@@ -34,25 +23,23 @@ function MyStudyCard({ addNew,readStudy,setReadStudyInfo, props }: StudyCardProp
   const { maxPeople, currentPeople, name, studyId } = props
   return (
     <div
-      className='card'
-      style={{ width: "24rem", backgroundColor: "#82B7F3", marginRight: "20px", marginBottom: "20px", height: "230px" }}
+      className='deck-title-card'
       onClick={() => {
-        readStudy();
-        setReadStudyInfo(props);
+        readStudy()
+        setReadStudyInfo(props)
       }}
     >
-      <div className='card-body'>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div>
+      <div className='title-card-body'>
+        <div style={{ display: "flex"}}>
+        <div className='subtitle-name'>
             <h2 className='card-title'>{name && props ? name : ""}</h2>
           </div>
-          <div>
-            <h3 className='card-subtitle mb-2 text-muted' style={{ textAlign: "right" }}>
-              {currentPeople}/{maxPeople}
-            </h3>
-          </div>
         </div>
-        <h3>ID:{studyId}</h3>
+        <div className='card-subtitle mb-2 text-muted'style={{ marginLeft:"1rem",textAlign: "left",alignItems:"baseline",display:"flex" }}>
+          <h3>
+          <BsPerson />{currentPeople}/{maxPeople}
+          </h3>
+        </div>
       </div>
     </div>
   )

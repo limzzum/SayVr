@@ -117,6 +117,7 @@ function MatchingGameWaitingPage() {
   const [isEndGame, setIsEndGame] = useState(false);
   const [endMessage, setEndMessage] = useState("");
 
+
   const [gameResult, setGameResult] = useState<GameResultDto>({
     isDraw: false,
     winnerId: 0,
@@ -163,7 +164,6 @@ function MatchingGameWaitingPage() {
       if (response.data.answer) {
         handleClick();
         let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
-        alert("유저 아이디 : " + username + " 정답입니다");
         setCurRound(response.gameStatusDto!.curRound);
         setQuestion(response.gameStatusDto!.question);
         response.gameStatusDto!.playerA.userId.toString() ==
@@ -187,12 +187,7 @@ function MatchingGameWaitingPage() {
       setIsEndGame(true);
 
       alert("상대 플레이어 게임 떠남.");
-      // private boolean isDraw;
-      //   private Long winnerId;
-      //   private Long loserId;
-      //   private int winnerPoint;
-      //   private int loserPoint;
-      //   private int drawPoint;
+
     }
 
     if (response.socketType == SocketType.GAME_INFO) {
@@ -200,6 +195,13 @@ function MatchingGameWaitingPage() {
       setCurRound(response.gameStatusDto!.curRound);
       setQuestion(response.gameStatusDto!.question);
     }
+
+    if (response.socketType == SocketType.QUIZ_TIME_OVER) {
+      console.log("퀴즈 타임 오버 문제 업데이트")
+      setCurRound(response.gameStatusDto!.curRound);
+      setQuestion(response.gameStatusDto!.question);
+    }
+
 
     if (response.socketType == SocketType.GAME_END) {
       console.log("게임 info");
@@ -294,8 +296,16 @@ function MatchingGameWaitingPage() {
           className="Modal"
         >
           <div>{endMessage}</div>
-          <div>winner : {gameResult.winnerId}</div>
-          <div>loser : {gameResult!.loserId}</div>
+          {gameResult.isDraw ? 
+            <div>무승부</div>
+            :
+            <div>
+              <div>winner : {gameResult.winnerId}</div>
+              <div>loser : {gameResult!.loserId}</div>
+              </div>
+            
+            }
+
           <div>
             {" "}
             point : +{" "}
