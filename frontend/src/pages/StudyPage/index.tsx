@@ -145,7 +145,7 @@ function StudyPage() {
                 <div className='col'>
                   <div className='list-title-buttons'>
                     <div className='card-title'>
-                      <div className='card-title-private' onClick={() => setMenu("private")}>
+                      <div className='card-title-private clickable' onClick={() => setMenu("private")}>
                         <h1>내 스터디 </h1>
                       </div>
                       <div style={{ marginLeft: "1rem" }}>
@@ -159,7 +159,7 @@ function StudyPage() {
                   </div>
                 </div>
               </div>
-              <div className='row'>
+              <div className='row clickable-cards'>
                 {(studyMineList == null || studyMineList.length === 0) && (
                   <>
                     <MyStudyCard addNew={handleCreatePlusButtonClick} />
@@ -182,7 +182,7 @@ function StudyPage() {
                   <div className='list-title-buttons'>
                     <div className='card-title'>
                       <div
-                        className='card-title-public'
+                        className='card-title-public clickable'
                         onClick={() => {
                           setMenu("public")
                         }}
@@ -219,7 +219,7 @@ function StudyPage() {
                   </div>
                 </div>
               </div>
-              <div className='row'>
+              <div className='row clickable-cards'>
                 {(allStudyList == null || allStudyList.length === 0) && (
                   <>
                     <div className='emtpy-title-card' onClick={handleCreatePlusButtonClick}>
