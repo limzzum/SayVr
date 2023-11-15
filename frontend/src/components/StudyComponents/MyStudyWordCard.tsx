@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { StudyDeckInfo } from "../../api/StudyPageAPI/StudyAPI";
 import AddButton from "../../components/StudyComponents/AddButton";
+
 import "./style.css";
 interface MyWordCardProps {
   addNew: () => void;
   props?: StudyDeckInfo;
+  studyId : Number
 }
-function MyStudyWordCard({ addNew, props }: MyWordCardProps) {
+function MyStudyWordCard({ addNew, props,studyId }: MyWordCardProps) {
   const navigate = useNavigate();
 
   if (!props) {
@@ -22,7 +24,7 @@ function MyStudyWordCard({ addNew, props }: MyWordCardProps) {
   }
   const { wordCount, name, studyDeckId } = props;
   const handleNavigation = (id: number) => {
-    navigate(`/studycard/${id}`);
+    navigate(`/studycard/${studyId}/${id}`);
   };
   return (
     <div
