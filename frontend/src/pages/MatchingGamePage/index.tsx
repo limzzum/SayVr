@@ -56,7 +56,7 @@ interface Player {
 }
 
 interface GameResultDto {
-  isDraw: boolean;
+  draw: boolean;
   winnerId: number;
   loserId: number;
   winnerPoint: number;
@@ -110,6 +110,8 @@ function MatchingGameWaitingPage() {
   });
 
   const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  // const [gameStatus, setGameStatus] = useState<GameStatus>();
   const [chatMessage, setChatMessage] = useState<ChatMessageDto>({
     userId: "1",
     message: "",
@@ -119,7 +121,7 @@ function MatchingGameWaitingPage() {
 
 
   const [gameResult, setGameResult] = useState<GameResultDto>({
-    isDraw: false,
+    draw: false,
     winnerId: 0,
     loserId: 0,
     winnerPoint: 0,
@@ -166,6 +168,7 @@ function MatchingGameWaitingPage() {
         let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
         setCurRound(response.gameStatusDto!.curRound);
         setQuestion(response.gameStatusDto!.question);
+        setAnswer(response.gameStatusDto!.answer);
         response.gameStatusDto!.playerA.userId.toString() ==
       localStorage.getItem("userId")!
         ? setPlayerA(response.gameStatusDto!.playerA)
@@ -194,12 +197,14 @@ function MatchingGameWaitingPage() {
       console.log("게임 info");
       setCurRound(response.gameStatusDto!.curRound);
       setQuestion(response.gameStatusDto!.question);
+      setAnswer(response.gameStatusDto!.answer);
     }
 
     if (response.socketType == SocketType.QUIZ_TIME_OVER) {
       console.log("퀴즈 타임 오버 문제 업데이트")
       setCurRound(response.gameStatusDto!.curRound);
       setQuestion(response.gameStatusDto!.question);
+      setAnswer(response.gameStatusDto!.answer);
     }
 
 
@@ -288,6 +293,7 @@ function MatchingGameWaitingPage() {
           chatMessage={chatMessage}
           question={question}
           curRound={curRound}
+          answer={answer}
         />
         <Modal
           isOpen={isEndGame}
@@ -296,7 +302,7 @@ function MatchingGameWaitingPage() {
           className="Modal"
         >
           <div>{endMessage}</div>
-          {gameResult.isDraw ? 
+          {gameResult.draw ? 
             <div>무승부</div>
             :
             <div>
@@ -309,7 +315,11 @@ function MatchingGameWaitingPage() {
           <div>
             {" "}
             point : +{" "}
-            {gameResult!.winnerId.toString() == localStorage.getItem("userId")
+            {
+            gameResult.draw ? 
+            gameResult!.drawPoint
+            :
+            gameResult!.winnerId.toString() == localStorage.getItem("userId")
               ? gameResult!.winnerPoint
               : gameResult!.loserPoint}
           </div>
