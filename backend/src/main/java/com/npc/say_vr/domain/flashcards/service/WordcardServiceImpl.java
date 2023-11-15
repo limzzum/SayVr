@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -172,7 +173,13 @@ public class WordcardServiceImpl implements WordcardService {
     @Override
     public WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId,
         WordcardUpdateRequestDto requestDto) {
-        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+            Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+        Long ownerId = wordcard.getFlashcardDeck().getPersonalDeck().getUser().getId();
+        //TODO: 주인이 아닌 사람이 적용했을 때 프론트만 적용되는지?
+        if(!Objects.equals(ownerId, userId)){
+            return WordUpdateResponseDto.builder().wordcard(wordcard).build();
+        }
+
         //TODO: enum 값 잘못 올 때
         wordcard.updateStatus(requestDto.toEnum());
         wordcard = wordcardRepository.save(wordcard);
