@@ -2,61 +2,41 @@ import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BsChevronLeft } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  DeckDetailResponseDto,
-  ProgressStatus,
-  WordcardDto,
-  createForkedDeck,
-  createWordcard,
-  getOneDeck,
-} from "../../../api/VocabListAPI/FlashcardsAPI";
+import {WordcardDto,StudyRole, getOneStudyDeck,StudyDeckOneDetailResponseDto,createStudyWordcard} from "../../../api/StudyPageAPI/StudyAPI"
 import AddButton from "../../../components/StudyComponents/AddButton";
 import { AddLine } from "../../../components/VocabListComponents/AddLine";
-import DeckSettingsModal from "../../../components/VocabListComponents/DeckSettingModal";
+import StudyDeckSettingsModal from "../../../components/StudyComponents/StudyDeckSettingModal";
 import IconButton from "../../../components/VocabListComponents/IconButton";
-import ForkIcon from "../../../components/VocabListComponents/Icons/ForkIcon";
-import LearnIcon from "../../../components/VocabListComponents/Icons/LearnIcon";
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon";
-import { VocabLine } from "../../../components/VocabListComponents/VocabLine";
-// import DeckLearn from "../DeckLearnPage";
+import { StudyVocabLine } from "../../../components/StudyComponents/StudyVocabLine";
 import "./style.css";
+import {CreateWordcardRequestDto} from "../../VocabListPage/DeckDetailPage"
+// export interface CreateWordcardRequestDto {
+//   kor: string;
+//   eng: string;
+// }
 
-export interface CreateWordcardRequestDto {
-  kor: string;
-  eng: string;
-}
-// const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const StudyDeckDetail: React.FC = () => {
-  const [tempUser, setTempUser] = useState<number>(0);
-  const { id } = useParams();
+  // const [tempUser, setTempUser] = useState<number>(0);
+  const [userStudyRole, setUserStudyRole] = useState<StudyRole>();
+  const { studyid, id } = useParams();
   const [deckId, setDeckId] = useState(Number(id));
+  const [studyId, setStudyId] = useState(Number(studyid));
   const navigate = useNavigate();
-  const location = useLocation();
-  const [deck, setDeck] = useState<DeckDetailResponseDto>();
+  const [mode, setMode] = useState("button")
+  const [deck, setDeck] = useState<StudyDeckOneDetailResponseDto>();
 
   // const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [mode, setMode] = useState("button"); //button add
   const [wordList, setWordList] = useState<WordcardDto[]>([]);
-  // useEffect(() => {
-  //   if (props && props.flashcardDto) {
-  //     setWordList(props.flashcardDto.wordcardList)
-  //   }
-  // }, [props])
-  useEffect(() => {
-    const userId = Number(localStorage.getItem("userId"));
-    setTempUser(userId);
+ 
 
-    return () => {};
-  }, []);
-
-  // const
   useEffect(() => {
     if (id) {
-      getOneDeck(deckId)
+      getOneStudyDeck(studyId,deckId)
         .then((res) => {
           setDeck(res.data.data);
-          // console.log(deck);
+          setUserStudyRole(res.data.data.studyRole);
           setWordList(res.data.data.flashcardDto.wordcardList);
         })
         .catch((e) => {
@@ -65,40 +45,14 @@ const StudyDeckDetail: React.FC = () => {
         });
     }
   }, [id]);
-  useEffect(() => {
-    if (id) {
-      getOneDeck(deckId)
-        .then((res) => {
-          setDeck(res.data.data);
-          // console.log(deck);
-          setWordList(res.data.data.flashcardDto.wordcardList);
-        })
-        .catch((e) => {
-          console.log(e);
-          alert("단어장 정보를 불러오는데 실패했습니다.");
-        });
-    }
-  }, []);
 
   const handleSettingsClick = () => {
     setShowModal(true);
   };
-  const handleForkClick = () => {
-    if (deck && deck !== null) {
-      let message = `단어장 '${deck.name}'을/를 복사하겠습니까?`;
-      if (window.confirm(message)) {
-        createForkedDeck(deck.id).then((res) => {
-          navigate(`/flashcard/${res.data.data.id}`);
-        });
-      }
-    }
-  };
+
 
   const handleCloseModal = () => {
     setShowModal(false);
-  };
-  const refreshDeckInfo = () => {
-    navigate(`/flashcard/${deckId}`);
   };
   const handleBack = () => {
     navigate(-1);
@@ -130,7 +84,7 @@ const StudyDeckDetail: React.FC = () => {
   }
   const addWord = (wordForm: CreateWordcardRequestDto) => {
     if (id) {
-      createWordcard(deckId, wordForm)
+      createStudyWordcard(studyId, deckId, wordForm)
         .then((res) => {
           const response = res.data.data;
           // console.log(response);
@@ -140,9 +94,6 @@ const StudyDeckDetail: React.FC = () => {
           } else {
             alert(response.errorMessage);
           }
-
-          // wordList.push(res.data.data.wordcard)
-          // navigate(location.pathname);
         })
         .catch((e) => {
           console.log(e);
@@ -163,31 +114,7 @@ const StudyDeckDetail: React.FC = () => {
               </div>
 
               <div style={{ display: "flex" }}>
-                {/* <div>
-                  <IconButton
-                    icon={<QuizIcon />}
-                    size={55}
-                    handleButtonClick={() => {
-                      // navigate(-1);
-                      // changeView("main")
-                      setMenu("quiz")
-                    }}
-                    onHover
-                  ></IconButton>
-                </div> */}
-
-                <div>
-                  <IconButton
-                    icon={<LearnIcon />}
-                    size={55}
-                    handleButtonClick={() => {
-                      // console.log("learn");
-                      // setMenu("learn");
-                    }}
-                    onHover
-                  ></IconButton>
-                </div>
-                {deck && tempUser === deck.userId ? (
+                {deck && userStudyRole === StudyRole.LEADER ? (
                   <>
                     <div>
                       <IconButton
@@ -201,12 +128,6 @@ const StudyDeckDetail: React.FC = () => {
                 ) : (
                   <>
                     <div>
-                      <IconButton
-                        onHover
-                        icon={<ForkIcon />}
-                        size={55}
-                        handleButtonClick={handleForkClick}
-                      ></IconButton>
                     </div>
                   </>
                 )}
@@ -224,16 +145,12 @@ const StudyDeckDetail: React.FC = () => {
                   {wordList?.map((wordcard, index) => {
                     return (
                       <>
-                        <VocabLine
-                          saveMode={
-                            deck
-                              ? deck.savingProgressStatus ===
-                                ProgressStatus.ENABLED
-                              : false
-                          }
+                        <StudyVocabLine
                           key={index + "wordcard" + id}
                           props={wordcard}
-                        ></VocabLine>
+                          studyId={studyId}
+                          deckId={deckId}
+                        ></StudyVocabLine>
                       </>
                     );
                   })}
@@ -255,12 +172,13 @@ const StudyDeckDetail: React.FC = () => {
           </div>
           <div className="create-new-list-modal">
             {deck && (
-              <DeckSettingsModal
+              <StudyDeckSettingsModal
                 showModal={showModal}
                 handleClose={handleCloseModal}
                 id={deckId}
                 info={deck}
                 handleRefresh={setDeck}
+                studyId={studyId}
               />
             )}
           </div>

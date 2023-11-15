@@ -55,9 +55,11 @@ public class StudyDeckApiController {
     }
     @PatchMapping("/{studyId}")
     public ResponseEntity<?> updateStudyDeck(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @RequestBody UpdateStudyDeckRequestDto updateStudyDeckRequestDto) {
+        studyDeckService.updateStudyDeck(userId,studyId,updateStudyDeckRequestDto);
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECK_UPDATE_SUCCESS.getMessage())
-                .data(studyDeckService.updateStudyDeck(userId,studyId,updateStudyDeckRequestDto))
+                .data(studyDeckService.readStudyDeckDetail(userId,studyId,
+                    updateStudyDeckRequestDto.getStudyDeckId()))
                 .httpStatus(STUDYDECK_UPDATE_SUCCESS.getHttpStatus())
                 .build();
 
@@ -65,7 +67,7 @@ public class StudyDeckApiController {
     }
 
     @DeleteMapping("/{studyId}/{studyDeckId}")
-    public ResponseEntity<?> updateStudyDeck(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId) {
+    public ResponseEntity<?> deleteStudyDeck(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYDECK_DELETE_SUCCESS.getMessage())
                 .data(studyDeckService.deleteStudyDeck(userId,studyId,studyDeckId))
@@ -99,7 +101,7 @@ public class StudyDeckApiController {
     }
 
     @DeleteMapping("/{studyId}/{studyDeckId}/{wordcardId}")
-    public ResponseEntity<?> createCard(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId, @PathVariable Long wordcardId) {
+    public ResponseEntity<?> deleteWordcard(@AuthenticationPrincipal Long userId,@PathVariable Long studyId, @PathVariable Long studyDeckId, @PathVariable Long wordcardId) {
         ResponseDto responseDto = ResponseDto.builder()
                 .message(STUDYWORDCARD_DELETE_SUCCESS.getMessage())
                 .data(studyDeckService.deleteWordcard(studyId,studyDeckId,wordcardId))

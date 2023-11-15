@@ -14,6 +14,8 @@ import {
 } from "../../components/StudyComponents/WeeklySprintComponent";
 import { CreateFlashcardsRequestDto } from "../../components/StudyComponents/CreateStudyWordModal";
 import axiosInstance from "../constAPI/axiosInstance";
+import { CreateWordcardRequestDto } from "../../pages/VocabListPage/DeckDetailPage"
+import {DeckSettingsUpdateRequestDto} from "../../components/StudyComponents/StudyDeckSettingModal"
 
 export enum CheckListStatus {
   DELETE = "DELETE",
@@ -123,6 +125,33 @@ export interface StudyDeckDetailResponseDto {
   studyDeckInfoList: StudyDeckInfo[];
 }
 
+export enum WordcardStatus {
+  UNCHECKED = "UNCHECKED",
+  CHECKED = "CHECKED",
+  DELETED ="DELETED"
+}
+
+export interface WordcardDto {
+  id: number
+  kor: string
+  eng: string
+  wordcardStatus: WordcardStatus
+}
+
+export interface FlashcardDto {
+  wordcardList: WordcardDto[]
+}
+
+export interface StudyDeckOneDetailResponseDto {
+  id: number
+  name : string
+  flashcardDeckId : number
+  flashcardDto: FlashcardDto
+  wordCount? : number
+  studyRole : StudyRole
+
+}
+
 export interface StudyEnterResponseDto {
   studyId: number;
 }
@@ -139,6 +168,16 @@ export interface StudyDeckCreateResponseDto {
   flashcardDeckId: number;
   wordCount: number;
 }
+
+export interface MessageOnlyResponseDto {
+  message: string
+}
+
+export interface WordUpdateResponseDto {
+  wordcard: WordcardDto,
+  errorMessage?:string,
+}
+
 
 export const createStudy = (
   data?: CreateStudyRequestDto
@@ -268,3 +307,35 @@ export const getStudyDeckList = (
 ): Promise<AxiosResponse<ResponseDto<StudyDeckDetailResponseDto>>> => {
   return axiosInstance.get(`/study/wordlist/${studyId}`);
 };
+
+export const getOneStudyDeck = (
+  studyId: Number,
+  studyDeckId : Number,
+): Promise<AxiosResponse<ResponseDto<StudyDeckOneDetailResponseDto>>> => {
+  return axiosInstance.get(`/study/wordlist/${studyId}/${studyDeckId}`);
+};
+
+export const deleteStudyCard = (studyId: Number,
+  studyDeckId : Number, wordcardId: number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
+  return axiosInstance.delete(`/study/wordlist/${studyId}/${studyDeckId}/${wordcardId}`)
+}
+
+export const createStudyWordcard = (
+  studyId: Number,
+  studyDeckId : Number,
+  data?: CreateWordcardRequestDto
+): Promise<AxiosResponse<ResponseDto<WordUpdateResponseDto>>> => {
+  return axiosInstance.post(`/study/wordlist/${studyId}/${studyDeckId}`, data)
+}
+
+export const deleteStudyDeck = (studyId: Number,
+  studyDeckId : Number): Promise<AxiosResponse<ResponseDto<MessageOnlyResponseDto>>> => {
+  return axiosInstance.delete(`/study/wordlist/${studyId}/${studyDeckId}`)
+}
+
+export const updateStudyDeckSettings = (
+  studyId: Number,
+  data: DeckSettingsUpdateRequestDto
+): Promise<AxiosResponse<ResponseDto<StudyDeckOneDetailResponseDto>>> => {
+  return axiosInstance.patch(`/study/wordlist/${studyId}`, data)
+}

@@ -31,12 +31,12 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
         ...prevData,
         [name]: value,
       }))
-    } else if (type === "checkbox") {
+    } else if (name === "flashcardStatus") {
       // Handle checkbox input changes
       const newPrivacyStatus = checked ? PrivacyStatus.PUBLIC : PrivacyStatus.PRIVATE
       setFlashcardForm((prevData) => ({
         ...prevData,
-        [name]: newPrivacyStatus,
+       privacyStatus: newPrivacyStatus,
       }))
     }
   }
@@ -46,6 +46,7 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
       alert("제목을 입력해주세요")
       return
     } else {
+      console.log(flashcardForm);
       createPersonalDeck(flashcardForm)
         .then((res) => {
           // navigate()
@@ -81,9 +82,10 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
               id='privacy-status'
               label='단어장 공개 여부'
               onChange={handleInputChange}
-              defaultChecked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
+              checked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
             />
           </div>
+          <h1>{flashcardForm.privacyStatus}</h1>
         </div>
       </Modal.Body>
       <Modal.Footer>
