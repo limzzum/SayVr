@@ -21,6 +21,8 @@ import CreateNewListModal from "../../components/VocabListComponents/CreateNewLi
 import DeckListPage from "./DeckListPage";
 import PrivateList from "./DeckListPage/PrivateList";
 import "./style.css";
+import { useRecoilValue } from "recoil";
+import { tokenState } from "../../recoil/GoalbalState";
 
 interface ArrowProps {
   onClick: () => void;
@@ -49,6 +51,7 @@ const carouselSettings = {
 };
 
 function VocabListPage() {
+  const token = useRecoilValue(tokenState);
   const [showModal, setShowModal] = useState(false);
   const [menu, setMenu] = useState("main");
   const [personalCardTitles, setPersonalCardTitles] = useState<
@@ -106,6 +109,10 @@ function VocabListPage() {
     );
   };
   useEffect(() => {
+    if(token===''){
+      alert("잘못된 접근입니다. 로그인해주세요.")
+      return;
+    }
     getPersonalFlashcards()
       .then((res) => {
         let show: PersonalDeckTitle[] = res.data.data.personalDeckList;
