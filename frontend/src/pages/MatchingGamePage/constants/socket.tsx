@@ -34,8 +34,8 @@ export const disconnect = () => {
   }
 };
 
-export const sendMsg = (destination: any, body = {}) => {
-  if (stompClient && stompClient.connected) {
+export const sendMsg = (destination: any, body = {}) => { 
+  if (stompClient && stompClient.connected) { 
     stompClient.send(
       destination,
       { userId: localStorage.getItem("userId") },
@@ -45,8 +45,9 @@ export const sendMsg = (destination: any, body = {}) => {
 };
 
 export const subscribe = (destination: string, callback: any) => {
+
   if (stompClient && stompClient.connected) {
-    console.log("subscribe const 호출됨");
+    console.log("subscribe const 호출됨")
     return stompClient.subscribe(destination, (message: Frame) => {
       let parsedBody;
       try {
@@ -59,44 +60,41 @@ export const subscribe = (destination: string, callback: any) => {
   }
 };
 
+
 export enum SocketType {
-  GAME_INFO = "GAME_INFO",
-  GAME_END = "GAME_END",
-  CHAT = "CHAT",
-  QUIZ = "QUIZ",
-  QUIZ_TIME_OVER = "QUIZ_TIME_OVER",
-  PLAYER_OUT = "PLAYER_OUT",
-}
+    GAME_INFO = "GAME_INFO",
+    GAME_END = "GAME_END",
+    CHAT = "CHAT",
+    QUIZ = "QUIZ",
+    QUIZ_TIME_OVER = "QUIZ_TIME_OVER",
+    PLAYER_OUT = "PLAYER_OUT",
+  }
 
-export interface GameStatus {
-  gameId: number;
-  curRound: number;
-  playerA: Player;
-  playerB: Player;
-  question: string;
-  answer: string;
-}
+  export interface GameStatus {
+    gameId : number,
+    curRound : number,
+    playerA : Player,
+    playerB : Player,
+    question : string,
+    answer : string
+  }
 
-export interface Player {
-  userId: number;
-  ranking: number;
-  point: number;
-  winCnt: number;
-  profile: string;
-}
+  export interface Player {
+    userId : number,
+    ranking : number,
+    point : number,
+    winCnt : number,
+    profile : string
+    
+  }
 
-export interface SocketResponseDto<T> {
-  socketType: SocketType;
-  gameStatus: GameStatus;
-  data: T;
-  message: string;
-}
+  
+  export interface SocketResponseDto<T> {
+    socketType : SocketType,
+    gameStatus : GameStatus,
+    data: T,
+    message: string;
+  }
 
-const apiStomtModule = {
-  connect,
-  disconnect,
-  sendMsg,
-  subscribe,
-  SocketResponseDto() {},
-};
+const apiStomtModule= { connect, disconnect, sendMsg, subscribe, SocketResponseDto(){} };
 export default apiStomtModule;

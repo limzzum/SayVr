@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "react-bootstrap"
 import Slider from "react-slick"
-import { DeckDetailResponseDto, WordcardDto, WordcardStatus, getOneDeck, resetDeckProgress } from "../../../api/VocabListAPI/FlashcardsAPI"
+import { DeckDetailResponseDto, ProgressStatus, WordcardDto, WordcardStatus, getOneDeck, resetDeckProgress } from "../../../api/VocabListAPI/FlashcardsAPI"
 import Wordcard from "../../../components/VocabListComponents/Wordcard"
 import "../../../components/VocabListComponents/style.css"
 interface DeckDetailProps {
@@ -95,7 +95,7 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh
               wordList
                 ?.filter((wordcard) => wordcard.wordcardStatus === WordcardStatus.UNCHECKED)
                 .map((wordcard, index) => (
-                  <Wordcard props={wordcard} key={index} next={() => slider?.current?.slickNext()} />
+                  <Wordcard isSaved={props.savingProgressStatus===ProgressStatus.ENABLED} props={wordcard} key={index} next={() => slider?.current?.slickNext()} />
                 ))}
             {!wordList.every((wordcard) => wordcard.wordcardStatus === WordcardStatus.CHECKED) && (
               <div className='card wordcard'>

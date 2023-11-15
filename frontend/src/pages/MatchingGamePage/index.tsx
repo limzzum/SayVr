@@ -82,6 +82,7 @@ let gameId: number;
 
 function MatchingGameWaitingPage() {
   const [gameId, setGameId] = useState<number | null>(null);
+  let oldgameId = 0;
   const [gameStart, setGameStart] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
 
@@ -116,6 +117,7 @@ function MatchingGameWaitingPage() {
   const [isEndGame, setIsEndGame] = useState(false);
   const [endMessage, setEndMessage] = useState("");
 
+
   const [gameResult, setGameResult] = useState<GameResultDto>({
     isDraw: false,
     winnerId: 0,
@@ -140,20 +142,8 @@ function MatchingGameWaitingPage() {
         ? setPlayerB(response.gameStatusDto!.playerA)
         : setPlayerB(response.gameStatusDto!.playerB);
 
-      // player = response.gameStatusDto!.playerA;
-      // opponent = response.gameStatusDto!.playerB;
-
-      // setPlayerA(player);
-      // setPlayerB(opponent);
       Socket.sendMsg(publishURL + "." + gameId, messageToSend);
 
-      // history("/MatchingGame-game", {
-      //   state: {
-      //     playerA: player,
-      //     playerB: opponent,
-      //     gameId: gameId,
-      //   },
-      // });
       setIsMatch(true);
       const timer = setTimeout(() => {
         setGameStart(true);
@@ -173,15 +163,21 @@ function MatchingGameWaitingPage() {
       console.log("퀴즈 정보");
       if (response.data.answer) {
         handleClick();
+        let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
+        setCurRound(response.gameStatusDto!.curRound);
+        setQuestion(response.gameStatusDto!.question);
+        response.gameStatusDto!.playerA.userId.toString() ==
+      localStorage.getItem("userId")!
+        ? setPlayerA(response.gameStatusDto!.playerA)
+        : setPlayerA(response.gameStatusDto!.playerB);
+      response.gameStatusDto?.playerB.userId.toString() ==
+      localStorage.getItem("userId")!
+        ? setPlayerB(response.gameStatusDto!.playerA)
+        : setPlayerB(response.gameStatusDto!.playerB);
+      };
+     
       }
-      setCurRound(response.gameStatusDto!.curRound);
-
-      // setPlayerA(response.gameStatusDto!.playerA);
-      // setPlayerB(response.gameStatusDto!.playerB);
-      setQuestion(response.gameStatusDto!.question);
-      // let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
-      // alert("유저 아이디 : " + response.data.userId + " 정답입니다");
-    }
+    
 
     if (response.socketType == SocketType.PLAYER_OUT) {
       console.log("상대 플레이어 게임 떠남.");
@@ -191,21 +187,21 @@ function MatchingGameWaitingPage() {
       setIsEndGame(true);
 
       alert("상대 플레이어 게임 떠남.");
-      // private boolean isDraw;
-      //   private Long winnerId;
-      //   private Long loserId;
-      //   private int winnerPoint;
-      //   private int loserPoint;
-      //   private int drawPoint;
+
     }
 
     if (response.socketType == SocketType.GAME_INFO) {
       console.log("게임 info");
       setCurRound(response.gameStatusDto!.curRound);
-      setPlayerA(response.gameStatusDto!.playerA);
-      setPlayerB(response.gameStatusDto!.playerB);
       setQuestion(response.gameStatusDto!.question);
     }
+
+    if (response.socketType == SocketType.QUIZ_TIME_OVER) {
+      console.log("퀴즈 타임 오버 문제 업데이트")
+      setCurRound(response.gameStatusDto!.curRound);
+      setQuestion(response.gameStatusDto!.question);
+    }
+
 
     if (response.socketType == SocketType.GAME_END) {
       console.log("게임 info");
@@ -231,6 +227,9 @@ function MatchingGameWaitingPage() {
           console.log(response);
           console.log("is start : " + response.data.data.gameStart);
           setGameId(response.data.data.gameId);
+          oldgameId = response.data.data.gameId;
+          console.log("set 게임 아이디 : "+ gameId);
+
           setImageUrl(imageURL + response.data.data.profile);
 
           if (response.data.data.gameStart) {
@@ -253,6 +252,12 @@ function MatchingGameWaitingPage() {
     });
 
     return () => {
+      console.log("게임 아이디 : "+ oldgameId);
+      console.log("state gameId "+ gameId)
+      Socket.sendMsg(publishURL + "." + oldgameId, {
+        socketType: SocketType.PLAYER_OUT,
+        message: "out",
+      });
       Socket.disconnect();
       console.log("페이지 이동 , socket disconnect");
     };
@@ -282,6 +287,7 @@ function MatchingGameWaitingPage() {
           gameId={gameId!}
           chatMessage={chatMessage}
           question={question}
+          curRound={curRound}
         />
         <Modal
           isOpen={isEndGame}
@@ -290,12 +296,20 @@ function MatchingGameWaitingPage() {
           className="Modal"
         >
           <div>{endMessage}</div>
-          <div>winner : {gameResult.winnerId}</div>
-          <div>loser : {gameResult!.loserId}</div>
+          {gameResult.isDraw ? 
+            <div>무승부</div>
+            :
+            <div>
+              <div>winner : {gameResult.winnerId}</div>
+              <div>loser : {gameResult!.loserId}</div>
+              </div>
+            
+            }
+
           <div>
             {" "}
             point : +{" "}
-            {gameResult!.winnerId == 1
+            {gameResult!.winnerId.toString() == localStorage.getItem("userId")
               ? gameResult!.winnerPoint
               : gameResult!.loserPoint}
           </div>

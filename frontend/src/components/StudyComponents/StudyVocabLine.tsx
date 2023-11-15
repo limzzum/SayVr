@@ -1,48 +1,35 @@
 import { FC, useEffect, useState } from "react"
-import { WordcardDto, WordcardStatus, deleteCard, updateWordProgress } from "../../api/VocabListAPI/FlashcardsAPI"
+import { WordcardDto, WordcardStatus, deleteStudyCard } from "../../api/StudyPageAPI/StudyAPI"
 import "../../pages/VocabListPage/style.css"
-import IconButton from "./IconButton"
-import CheckedIcon from "./Icons/CheckedIcon"
-import RemoveIcon from "./Icons/RemoveIcon"
-import UncheckedIcon from "./Icons/UncheckedIcon"
-import Speak from "./Speak"
+import IconButton from "../VocabListComponents/IconButton"
+import CheckedIcon from "../VocabListComponents/Icons/CheckedIcon"
+import RemoveIcon from "../VocabListComponents/Icons/RemoveIcon"
+import UncheckedIcon from "../VocabListComponents/Icons/UncheckedIcon"
+import Speak from "../VocabListComponents/Speak"
+
 interface VocabLineProps {
-  props: WordcardDto
-  saveMode: boolean
+  props: WordcardDto,
+  studyId : Number,
+  deckId : Number
 }
 
-export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
+export const StudyVocabLine: FC<VocabLineProps> = ({ props,studyId,deckId}) => {
   const [status, setStatus] = useState(props.wordcardStatus)
   const [checkIcon, setCheckIcon] = useState("checked-button")
   const [uncheckIcon, setUncheckIcon] = useState("unchecked-button")
 
   const uncheckWord = () => {
-    if (saveMode) {
-      updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
-        .then((res) => {
-          console.log(res.data.data.wordcard)
-          props.wordcardStatus = WordcardStatus.UNCHECKED
-          setStatus(WordcardStatus.UNCHECKED)
-        })
-        .catch((e) => console.log(e))
-    } else {
-      props.wordcardStatus = WordcardStatus.UNCHECKED
-      setStatus(WordcardStatus.UNCHECKED)
-    }
+      props.wordcardStatus = WordcardStatus.UNCHECKED;
+      setStatus(WordcardStatus.UNCHECKED);
   }
+
   const checkWord = () => {
-    if (saveMode) {
-      updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
-        .then((res) => {
-          setStatus(WordcardStatus.CHECKED)
-          props.wordcardStatus = WordcardStatus.CHECKED
-        })
-        .catch((e) => console.log(e))
-    }
+        setStatus(WordcardStatus.CHECKED)
+        props.wordcardStatus = WordcardStatus.CHECKED
   }
-  // const checkWord = () => {}
+
   const removeWord = () => {
-    deleteCard(props.id).then((res) => {
+    deleteStudyCard(studyId,deckId,props.id).then((res) => {
       let message = res.data.data.message
       console.log(res.data.data.message)
       if (message === "단어가 단어장에서 삭제되었습니다.") {
@@ -64,12 +51,11 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
       {status !== WordcardStatus.DELETED && (
         <>
           <div className='vocab-line'>
-            <div>{saveMode}</div>
+            <div></div>
             <div></div>
             <div className='flex row' style={{ display: "flex" }}>
               <div className='col'>
                 <Speak word={props.eng} />
-                {/* <IconButton icon={<SoundIcon />} size={37} handleButtonClick={textToSpeech} /> */}
               </div>
               <div className='col'> {props?.eng}</div>
               <div className='col' style={{ display: "flex", justifyContent: "end" }}>

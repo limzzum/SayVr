@@ -66,15 +66,9 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({
       const newSavingStatus = checked
         ? ProgressStatus.ENABLED
         : ProgressStatus.DISABLED;
-      setSaving(newSavingStatus);
-    }
-  };
-  const changeMode = (mode: string) => {
-    setMode(mode);
-  };
-  const handleToggle = () => {
-    console.log(saving);
-    updateProgressSaving(id, saveForm)
+        console.log("handle toggle value")
+        console.log(newSavingStatus)
+        updateProgressSaving(id, {savingProgressStatus:newSavingStatus})
       .then((res) => {
         console.log(res);
         handleRefresh(res.data.data);
@@ -83,7 +77,26 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({
         console.log(e);
         alert("모드 변경에 실패했습니다.");
       });
+      setSaving(newSavingStatus);
+    }
   };
+  const changeMode = (mode: string) => {
+    setMode(mode);
+  };
+
+  // const handleToggle = () => {
+  //   console.log(saving);
+  //   updateProgressSaving(id, saveForm)
+  //     .then((res) => {
+  //       console.log(res);
+  //       handleRefresh(res.data.data);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //       alert("모드 변경에 실패했습니다.");
+  //     });
+  // };
+
   const handleReset = () => {
     resetDeckProgress(id).then((res) => {
       handleRefresh(res.data.data);
@@ -210,7 +223,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({
                   defaultChecked={
                     saveForm.savingProgressStatus === ProgressStatus.ENABLED
                   }
-                  onClick={handleToggle}
+                  // onClick={handleToggle}
                 />
                 {/* <div
                   style={{

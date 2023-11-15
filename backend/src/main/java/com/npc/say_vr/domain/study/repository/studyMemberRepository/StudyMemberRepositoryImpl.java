@@ -20,6 +20,11 @@ public class StudyMemberRepositoryImpl implements StudyMemberRepository{
   }
 
   @Override
+  public Optional<StudyMember> findByUserIdAndStudyIdOnlyStudyMember(Long userId, Long studyId) {
+    return jpaStudyMemberRepository.findByUserIdAndStudyId(userId,studyId);
+  }
+
+  @Override
   public StudyMember save(StudyMember studyMember) {
     return jpaStudyMemberRepository.save(studyMember);
   }

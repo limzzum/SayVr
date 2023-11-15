@@ -13,39 +13,31 @@ import SpeechRecognition, {
   useSpeechRecognition,
   ListeningOptions,
 } from "react-speech-recognition";
+import { SocketType } from "../../../api/MatchingGameAPI/MatchingGameAPI";
 
 interface props {
-  // player: PlayerProfile;
-  // opponent: PlayerProfile;
   gameId: number;
   chatMessage: ChatMessage;
   question: string;
-}
-
-interface PlayerProfile {
-  userId?: number;
-  nickname: string;
-  ranking: number;
-  tierImage: string;
-  point?: number;
-  winCnt?: number;
-  profile: string;
+  curRound: number;
 }
 
 const GameProceedingBody: React.FC<props> = ({
   gameId,
   chatMessage,
   question,
+  curRound
 }) => {
   return (
     <div className="game-proceeding-body-container">
       <div>
+        <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px', }}>Round {curRound}</div>
         <Question question={question}></Question>
-        <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
+        <GameTimer curRound={curRound} gameId={gameId}></GameTimer>
       </div>
       <div>
         <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
-        <Dictaphone />
+        <Dictaphone gameId={gameId} />
       </div>
     </div>
   );
@@ -154,11 +146,12 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
                       : "messageContainer otherMessage"
                   }`}
                 >
+                  {(message.message != "") &&
                   <div>
                     {message.userId === localStorage.getItem("userId")
                       ? "나"
                       : "상대방"}
-                  </div>
+                  </div>}
                   <div>{message.message}</div>
                 </div>
               ))}
@@ -191,12 +184,16 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   );
 };
 
-const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
-  timeLimit,
+const GameTimer: React.FC<{ curRound: number; gameId: number }> = ({
+  curRound,
   gameId,
 }) => {
-  const [timeLeft, setTimeLeft] = useState(timeLimit);
+  const [timeLeft, setTimeLeft] = useState(30);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(()=>{
+    setTimeLeft(30);
+  },[curRound])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -207,7 +204,8 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
         setIsModalOpen(true);
 
         setTimeout(() => {
-          setTimeLeft(timeLimit);
+          const body = { socketType: SocketType.QUIZ_TIME_OVER, message: "" };
+          sendMsg(publishURL + "." + gameId, body);
           setIsModalOpen(false);
         }, 3000);
       }
@@ -222,7 +220,7 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
     <div className="game-timer">
       <div
         className="time-left-bar"
-        style={{ width: `${(timeLeft / timeLimit) * 100}%` }}
+        style={{ width: `${(timeLeft / 30) * 100}%` }}
       ></div>
       <div className="time-left">{timeLeft} seconds left</div>
       <Modal
@@ -238,13 +236,20 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
   );
 };
 
-const Dictaphone = () => {
+const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
   const {
     transcript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  useEffect(() => {
+    if(transcript!=""){
+    const body = { socketType: "QUIZ", message: transcript };
+    sendMsg(publishURL + "." + gameId, body);
+    }
+  }, [transcript]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -261,6 +266,8 @@ const Dictaphone = () => {
     event.preventDefault();
     SpeechRecognition.stopListening();
   };
+
+
 
   return (
     <div>

@@ -118,7 +118,7 @@ const StudyDetail: React.FC = () => {
 
   const navigate = useNavigate();
   const goToDetail = async (id: number) => {
-    navigate(`/studycard/${id}`);
+    navigate(`/studycard/${studyId}/${id}`);
   };
 
   const ArrowLeft = (props: ArrowProps) => {
@@ -284,7 +284,7 @@ const StudyDetail: React.FC = () => {
             <div className="row">
               {(studyCardTitles == null || studyCardTitles.length === 0) && (
                 <>
-                  <MyStudyWordCard addNew={handleCreateWordListButtonClick} />
+                  <MyStudyWordCard addNew={handleCreateWordListButtonClick} studyId={studyId}/>
                 </>
               )}
               <Slider
@@ -299,6 +299,7 @@ const StudyDetail: React.FC = () => {
                         key={index + deck.studyDeckId}
                         addNew={handleCreateWordListButtonClick}
                         props={deck}
+                        studyId={studyId}
                       />
                     </>
                   );

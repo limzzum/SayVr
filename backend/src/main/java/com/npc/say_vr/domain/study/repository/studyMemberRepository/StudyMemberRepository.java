@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface StudyMemberRepository {
   StudyMember findByUserIdAndStudyId(Long userId, Long studyId);
 
+  Optional<StudyMember> findByUserIdAndStudyIdOnlyStudyMember(Long userId, Long studyId);
+
   StudyMember save(StudyMember studyMember);
 
   Optional<StudyMember> findById(Long studyMemberId);
