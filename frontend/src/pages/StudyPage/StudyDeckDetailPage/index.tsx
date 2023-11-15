@@ -64,7 +64,7 @@ const StudyDeckDetail: React.FC = () => {
           alert("단어장 정보를 불러오는데 실패했습니다.");
         });
     }
-  }, [id, menu]);
+  }, [id]);
   useEffect(() => {
     if (id) {
       getOneDeck(deckId)
@@ -182,7 +182,7 @@ const StudyDeckDetail: React.FC = () => {
                     size={55}
                     handleButtonClick={() => {
                       // console.log("learn");
-                      setMenu("learn");
+                      // setMenu("learn");
                     }}
                     onHover
                   ></IconButton>
@@ -212,7 +212,6 @@ const StudyDeckDetail: React.FC = () => {
                 )}
               </div>
             </div>
-            {menu === "detail" && (
               <>
                 <div
                   style={{
@@ -253,7 +252,6 @@ const StudyDeckDetail: React.FC = () => {
                   </div>
                 </div>
               </>
-            )}
           </div>
           <div className="create-new-list-modal">
             {deck && (
@@ -268,20 +266,6 @@ const StudyDeckDetail: React.FC = () => {
           </div>
         </div>
       </div>
-      {menu === "learn" && (
-        <>
-          {/* <DeckLearn
-            handleRefresh={setDeck}
-            changeView={setMenu}
-            props={deck}
-          /> */}
-        </>
-      )}
-      {/* {menu === "quiz" && (
-        <>
-          <Speak word='yes' />
-        </>
-      )} */}
     </>
   );
 };
