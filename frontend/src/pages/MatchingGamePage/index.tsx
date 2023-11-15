@@ -166,6 +166,14 @@ function MatchingGameWaitingPage() {
         alert("유저 아이디 : " + username + " 정답입니다");
         setCurRound(response.gameStatusDto!.curRound);
         setQuestion(response.gameStatusDto!.question);
+        response.gameStatusDto!.playerA.userId.toString() ==
+      localStorage.getItem("userId")!
+        ? setPlayerA(response.gameStatusDto!.playerA)
+        : setPlayerA(response.gameStatusDto!.playerB);
+      response.gameStatusDto?.playerB.userId.toString() ==
+      localStorage.getItem("userId")!
+        ? setPlayerB(response.gameStatusDto!.playerA)
+        : setPlayerB(response.gameStatusDto!.playerB);
       };
      
       }
@@ -291,7 +299,7 @@ function MatchingGameWaitingPage() {
           <div>
             {" "}
             point : +{" "}
-            {gameResult!.winnerId == 1
+            {gameResult!.winnerId.toString() == localStorage.getItem("userId")
               ? gameResult!.winnerPoint
               : gameResult!.loserPoint}
           </div>
