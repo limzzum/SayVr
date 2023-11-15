@@ -37,7 +37,7 @@ public class JwtUtil {
     }
 
     public String createJwtToken(Long userId) {
-        return create(userId, expireMin);
+        return create(userId, expireMin * 60);
     }
 
     public TokenResponseDto reCreateJwtToken(String refreshToken) {
@@ -66,6 +66,7 @@ public class JwtUtil {
             throw new RuntimeException("만료시간은 0이상");
         }
 
+        Long exp = (long) expTime * 60;
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         byte[] secretKeyBytes = DatatypeConverter.parseBase64Binary(secretKey);
         Key signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
@@ -75,7 +76,7 @@ public class JwtUtil {
         return Jwts.builder()
             .setClaims(claims)
             .signWith(signingKey, signatureAlgorithm)
-            .setExpiration(new Date(System.currentTimeMillis() + expTime))
+            .setExpiration(new Date(System.currentTimeMillis() + exp))
             .compact();
     }
 
