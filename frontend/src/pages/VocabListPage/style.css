@@ -46,6 +46,13 @@
 .button:hover{
   cursor:pointer;
 }
+.clickable:hover{
+  cursor:pointer;
+}
+.clickable-card .deck-title-card:hover{
+  cursor:pointer;
+}
+
 .icon-button:hover  {
   /* border-radius: 50%!important;
 border-color:transparent;
