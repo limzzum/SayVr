@@ -50,7 +50,12 @@ align-items: baseline;
   padding: 10px;
   margin: 30px auto;
 }
-
+.clickable:hover{
+cursor:pointer;
+}
+.clickable-cards .deck-title-card:hover{
+  cursor:pointer;
+}
 
 .study-line {
   background-color: white;

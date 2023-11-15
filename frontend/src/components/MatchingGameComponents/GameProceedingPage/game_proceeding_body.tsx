@@ -20,20 +20,22 @@ interface props {
   chatMessage: ChatMessage;
   question: string;
   curRound: number;
+  answer: string;
 }
 
 const GameProceedingBody: React.FC<props> = ({
   gameId,
   chatMessage,
   question,
-  curRound
+  curRound,
+  answer
 }) => {
   return (
     <div className="game-proceeding-body-container">
       <div>
         <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px', }}>Round {curRound}</div>
         <Question question={question}></Question>
-        <GameTimer curRound={curRound} gameId={gameId}></GameTimer>
+        <GameTimer curRound={curRound} gameId={gameId} answer={answer}></GameTimer>
       </div>
       <div>
         <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
@@ -184,9 +186,10 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   );
 };
 
-const GameTimer: React.FC<{ curRound: number; gameId: number }> = ({
+const GameTimer: React.FC<{ curRound: number; gameId: number; answer: string }> = ({
   curRound,
   gameId,
+  answer
 }) => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -229,6 +232,7 @@ const GameTimer: React.FC<{ curRound: number; gameId: number }> = ({
         contentLabel="Example Modal"
         className="Modal"
       >
+        <div> 정답 : {answer} </div>
         <div>시간이 종료되었습니다.</div>
         <div>잠시 후 다음 라운드가 시작됩니다..</div>
       </Modal>

@@ -85,7 +85,6 @@ const CreateNewListModal: React.FC<CreateNewListModalProps> = ({ showModal, hand
               checked={flashcardForm.privacyStatus === PrivacyStatus.PUBLIC}
             />
           </div>
-          <h1>{flashcardForm.privacyStatus}</h1>
         </div>
       </Modal.Body>
       <Modal.Footer>

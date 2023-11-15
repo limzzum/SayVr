@@ -46,7 +46,6 @@
   /* flex-direction: column; */
   width: 80px;
   height: 80px;
-  z-index: 1;
 }
 
 .profile-info-text {
@@ -57,7 +56,6 @@
   padding-left: 15px;
   /* justify-content: space-around; */
   width: 150px;
-  z-index: 1;
 }
 
 .exit-button {

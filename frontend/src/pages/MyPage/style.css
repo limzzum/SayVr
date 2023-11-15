@@ -8,6 +8,13 @@
     margin-right: 30px;
 }
 
+.clickable:hover{
+    cursor:pointer;
+}
+.clickable .clickable-cards:hover{
+    cursor:pointer;
+}
+
 .custom-chart-container {
     background-color: white;
     border: 1px solid gray;
