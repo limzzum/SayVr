@@ -3,11 +3,13 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/UserPageAPI/SignUser";
 import { useRecoilState } from "recoil";
-import { tokenState } from "../../recoil/GoalbalState";
+import { loggedIdState, tokenState } from "../../recoil/GoalbalState";
 
 function Login() {
   const navigate = useNavigate();
   const [token, setToken] = useRecoilState(tokenState);
+  const [loggedId, setLoggedId] = useRecoilState(loggedIdState);
+
 
   async function userLogin() {
     const form = document.querySelector("#login-form");
@@ -27,6 +29,7 @@ function Login() {
         localStorage.setItem("accessToken", response.data.data.tokenResponseDto.accessToken);
         localStorage.setItem("userId",response.data.data.userId);
         setToken(localStorage.getItem("accessToken"));
+        setLoggedId(response.data.data.userId);
         alert("로그인 성공");
         navigate("/");
       } else {
