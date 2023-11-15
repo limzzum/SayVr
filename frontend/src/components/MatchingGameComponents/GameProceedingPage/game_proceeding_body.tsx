@@ -13,6 +13,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
   ListeningOptions,
 } from "react-speech-recognition";
+import { SocketType } from "../../../api/MatchingGameAPI/MatchingGameAPI";
 
 interface props {
   gameId: number;
@@ -32,7 +33,7 @@ const GameProceedingBody: React.FC<props> = ({
       <div>
         <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px', }}>Round {curRound}</div>
         <Question question={question}></Question>
-        <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
+        <GameTimer curRound={curRound} gameId={gameId}></GameTimer>
       </div>
       <div>
         <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
@@ -183,12 +184,16 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   );
 };
 
-const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
-  timeLimit,
+const GameTimer: React.FC<{ curRound: number; gameId: number }> = ({
+  curRound,
   gameId,
 }) => {
-  const [timeLeft, setTimeLeft] = useState(timeLimit);
+  const [timeLeft, setTimeLeft] = useState(30);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(()=>{
+    setTimeLeft(30);
+  },[curRound])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -199,7 +204,8 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
         setIsModalOpen(true);
 
         setTimeout(() => {
-          setTimeLeft(timeLimit);
+          const body = { socketType: SocketType.QUIZ_TIME_OVER, message: "" };
+          sendMsg(publishURL + "." + gameId, body);
           setIsModalOpen(false);
         }, 3000);
       }
@@ -214,7 +220,7 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
     <div className="game-timer">
       <div
         className="time-left-bar"
-        style={{ width: `${(timeLeft / timeLimit) * 100}%` }}
+        style={{ width: `${(timeLeft / 30) * 100}%` }}
       ></div>
       <div className="time-left">{timeLeft} seconds left</div>
       <Modal
