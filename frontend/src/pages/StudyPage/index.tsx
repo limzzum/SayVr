@@ -220,7 +220,7 @@ function StudyPage() {
                 </div>
               </div>
               <div className='row'>
-                {(studyMineList == null || studyMineList.length === 0) && (
+                {(allStudyList == null || allStudyList.length === 0) && (
                   <>
                     <div className='emtpy-title-card' onClick={handleCreatePlusButtonClick}>
                       <div className='empty-add-button' style={{ justifyContent: "center" }}>
