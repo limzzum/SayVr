@@ -62,7 +62,6 @@ const StudyDeckDetail: React.FC = () => {
         .catch((e) => {
           console.log(e);
           alert("단어장 정보를 불러오는데 실패했습니다.");
-          navigate("/VocabList")
         });
     }
   }, [id]);
