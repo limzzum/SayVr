@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import PlusBtn from "../../../assets/Etc/PlusBtn.png";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import Slider from "react-slick";
 import IconButton from "../../../components/StudyComponents/IconButton";
 import SettingsIcon from "../../../components/StudyComponents/SettingsIcon";
 import WeeklySprintComponent from "../../../components/StudyComponents/WeeklySprintComponent";
-import MyWordCard from "../../../components/MyWordCard";
+import MyStudyWordCard from "../../../components/StudyComponents/MyStudyWordCard";
 import {
   StudyDetailResponseDto,
   GoalDetailResponseDto,
   StudyDeckDetailResponseDto,
   getOneStudy,
+  getStudyDeckList,
+  StudyDeckInfo,
 } from "../../../api/StudyPageAPI/StudyAPI";
 import AddButton from "../../../components/StudyComponents/AddButton";
 import ReadStudyInfoModalAndOut from "../../../components/StudyComponents/ReadStudyInfoModalAndOut";
@@ -17,6 +20,33 @@ import UpdateNewStudyModal from "../../../components/StudyComponents/UpdateNewSt
 import CreatWeeklySprintModal from "../../../components/StudyComponents/CreatWeeklySprintModal";
 import "../style.css";
 import { Button } from "react-bootstrap";
+import CreateStudyWordModal from "../../../components/StudyComponents/CreateStudyWordModal";
+
+interface ArrowProps {
+  onClick: () => void;
+}
+const carouselSettings = {
+  dots: false,
+  // infinite: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 3,
+  arrows: false,
+  responsive: [
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+      },
+    },
+  ],
+};
 
 const StudyDetail: React.FC = () => {
   const { id } = useParams();
@@ -31,6 +61,17 @@ const StudyDetail: React.FC = () => {
   const [showReadModal, setShowReadModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showCreateModal, setCreateModal] = useState(false);
+  const [showCreateWordModal, setCreateWordModal] = useState(false);
+  const [studyCardTitles, setStudyCardTitles] = useState<StudyDeckInfo[]>([]);
+  const sliderPersonal = useRef<Slider | null>(null);
+
+  // const searchParams: ReadDeckSearchRequestDto = {
+  //   lastId: 1000,
+  //   pageSize: 9,
+  //   sortBy: orderby,
+  //   keyword: keyword,
+  // };
+
   const handleReadPlusButtonClick = () => {
     setShowReadModal(true);
   };
@@ -66,6 +107,66 @@ const StudyDetail: React.FC = () => {
   const handleCreateCloseModal = () => {
     setCreateModal(false);
   };
+
+  const handleCreateWordListButtonClick = () => {
+    setCreateWordModal(true);
+  };
+
+  const handleCreateWordListCloseModal = () => {
+    setCreateWordModal(false);
+  };
+
+  const navigate = useNavigate();
+  const goToDetail = async (id: number) => {
+    navigate(`/studycard/${id}`);
+  };
+
+  const ArrowLeft = (props: ArrowProps) => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "transparent",
+            color: "black",
+            backgroundColor: "transparent",
+          }}
+          onClick={props.onClick}
+        >
+          <BsArrowLeft />
+        </Button>
+      </>
+    );
+  };
+  const ArrowRight = (props: ArrowProps) => {
+    return (
+      <>
+        <Button
+          style={{
+            borderColor: "transparent",
+            color: "black",
+            backgroundColor: "transparent",
+          }}
+          onClick={props.onClick}
+        >
+          <BsArrowRight />
+        </Button>
+      </>
+    );
+  };
+
+  useEffect(() => {
+    getStudyDeckList(studyId)
+      .then((res) => {
+        let show: StudyDeckInfo[] = res.data.data.studyDeckInfoList;
+        setStudyCardTitles(show);
+        console.log(show);
+      })
+      .catch((error) => {
+        console.error("Error fetching studyDeckList", error);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -146,7 +247,10 @@ const StudyDetail: React.FC = () => {
           </div>
         </div>
         <div className="row justify-content-center align-items-center">
-          <div className="studypage-inner-container goal-inner" style={{ height:"50vh"}}>
+          <div
+            className="studypage-inner-container goal-inner"
+            style={{ height: "50vh" }}
+          >
             <WeeklySprintComponent
               studyId={studyId}
               goalInfo={goalInfo}
@@ -159,28 +263,49 @@ const StudyDetail: React.FC = () => {
               studyRole={studyDetailInfo?.studyRole}
             ></WeeklySprintComponent>
           </div>
-        </div>        
+        </div>
         <div className="study-goal-title">
           <h2>스터디 단어장</h2>
           <div style={{ marginLeft: "1rem" }}>
             <AddButton
-              handleButtonClick={handleCreatePlusButtonClick}
+              handleButtonClick={handleCreateWordListButtonClick}
               size="45"
             />
           </div>
         </div>
-        {/* <div className="row ustify-content-center align-items-center">
-
-          <div className="col-2">
-            <p style={{ fontSize: "1.5em" }}>스터디 단어장</p>
+        <div className="row card-row justify-content-center align-items-center">
+          <div className="studypage-inner-container">
+            <div>
+              <ArrowLeft onClick={() => sliderPersonal?.current?.slickPrev()} />
+              <ArrowRight
+                onClick={() => sliderPersonal?.current?.slickNext()}
+              />
+            </div>
+            <div className="row">
+              {(studyCardTitles == null || studyCardTitles.length === 0) && (
+                <>
+                  <MyStudyWordCard addNew={handleCreateWordListButtonClick} />
+                </>
+              )}
+              <Slider
+                infinite={studyCardTitles.length >= 3}
+                ref={sliderPersonal}
+                {...carouselSettings}
+              >
+                {studyCardTitles?.map((deck, index) => {
+                  return (
+                    <>
+                      <MyStudyWordCard
+                        key={index + deck.studyDeckId}
+                        addNew={handleCreateWordListButtonClick}
+                        props={deck}
+                      />
+                    </>
+                  );
+                })}
+              </Slider>
+            </div>
           </div>
-          <div className="col">
-            <img className="btn" style={{ width: "4em" }} src={PlusBtn} />
-          </div>
-        </div> */}
-        
-        <div className="row card-row justify-content-center align-items-center"><div className="studypage-inner-container"></div>
-          {/* <MyWordCard /> */}
         </div>
       </div>
       <div className="create-new-list-modal">
@@ -208,6 +333,14 @@ const StudyDetail: React.FC = () => {
           setPreWeeklySprintId={setPreWeeklySprintId}
           setNextWeeklySprintId={setNextWeeklySprintId}
           setGoalInfo={setGoalInfo}
+        />
+      </div>
+      <div className="create-new-list-modal">
+        <CreateStudyWordModal
+          showModal={showCreateWordModal}
+          handleClose={handleCreateWordListCloseModal}
+          studyId={studyId}
+          goToDetail={goToDetail}
         />
       </div>
     </div>
