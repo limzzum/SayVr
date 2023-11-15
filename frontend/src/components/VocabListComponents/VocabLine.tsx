@@ -8,7 +8,7 @@ import UncheckedIcon from "./Icons/UncheckedIcon"
 import Speak from "./Speak"
 interface VocabLineProps {
   props: WordcardDto
-  saveMode:boolean,
+  saveMode: boolean
 }
 
 export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
@@ -17,27 +17,28 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
   const [uncheckIcon, setUncheckIcon] = useState("unchecked-button")
 
   const uncheckWord = () => {
-    if(saveMode){
-          updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
-      .then((res) => {
-        console.log(res.data.data.wordcard)
-        props.wordcardStatus = WordcardStatus.UNCHECKED
-        setStatus(WordcardStatus.UNCHECKED)
-      })
-      .catch((e) => console.log(e))
-    }else{
-      props.wordcardStatus = WordcardStatus.UNCHECKED;
-      setStatus(WordcardStatus.UNCHECKED);
+    if (saveMode) {
+      updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
+        .then((res) => {
+          console.log(res.data.data.wordcard)
+          props.wordcardStatus = WordcardStatus.UNCHECKED
+          setStatus(WordcardStatus.UNCHECKED)
+        })
+        .catch((e) => console.log(e))
+    } else {
+      props.wordcardStatus = WordcardStatus.UNCHECKED
+      setStatus(WordcardStatus.UNCHECKED)
     }
-
   }
   const checkWord = () => {
-    updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
-      .then((res) => {
-        setStatus(WordcardStatus.CHECKED)
-        props.wordcardStatus = WordcardStatus.CHECKED
-      })
-      .catch((e) => console.log(e))
+    if (saveMode) {
+      updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
+        .then((res) => {
+          setStatus(WordcardStatus.CHECKED)
+          props.wordcardStatus = WordcardStatus.CHECKED
+        })
+        .catch((e) => console.log(e))
+    }
   }
   // const checkWord = () => {}
   const removeWord = () => {
@@ -63,7 +64,7 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
       {status !== WordcardStatus.DELETED && (
         <>
           <div className='vocab-line'>
-            <div></div>
+            <div>{saveMode}</div>
             <div></div>
             <div className='flex row' style={{ display: "flex" }}>
               <div className='col'>
