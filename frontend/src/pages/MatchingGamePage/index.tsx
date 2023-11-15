@@ -56,7 +56,7 @@ interface Player {
 }
 
 interface GameResultDto {
-  isDraw: boolean;
+  draw: boolean;
   winnerId: number;
   loserId: number;
   winnerPoint: number;
@@ -119,7 +119,7 @@ function MatchingGameWaitingPage() {
 
 
   const [gameResult, setGameResult] = useState<GameResultDto>({
-    isDraw: false,
+    draw: false,
     winnerId: 0,
     loserId: 0,
     winnerPoint: 0,
@@ -296,7 +296,7 @@ function MatchingGameWaitingPage() {
           className="Modal"
         >
           <div>{endMessage}</div>
-          {gameResult.isDraw ? 
+          {gameResult.draw ? 
             <div>무승부</div>
             :
             <div>
@@ -309,7 +309,11 @@ function MatchingGameWaitingPage() {
           <div>
             {" "}
             point : +{" "}
-            {gameResult!.winnerId.toString() == localStorage.getItem("userId")
+            {
+            gameResult.draw ? 
+            gameResult!.drawPoint
+            :
+            gameResult!.winnerId.toString() == localStorage.getItem("userId")
               ? gameResult!.winnerPoint
               : gameResult!.loserPoint}
           </div>
