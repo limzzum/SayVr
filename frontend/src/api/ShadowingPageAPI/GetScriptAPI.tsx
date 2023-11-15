@@ -4,6 +4,7 @@ export interface ScriptItem {
   text: string;
   start: number;
   duration: number;
+  index: number;
 }
 
 const getScript = async (videoId: string): Promise<ScriptItem[]> => {
