@@ -111,7 +111,7 @@ function VocabListPage() {
   useEffect(() => {
     if(token===''){
       alert("잘못된 접근입니다. 로그인해주세요.")
-      navigate("/Sign")
+      navigate("/Login")
       return;
     }
     getPersonalFlashcards()
