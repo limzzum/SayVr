@@ -74,3 +74,7 @@ span {
   font-size: 20px;
   color: white;
 }
+
+.marginLeftButton {
+  margin-left: 15px;
+}
