@@ -42,7 +42,7 @@ const GameProceedingBody: React.FC<props> = ({
   return (
     <div className="game-proceeding-body-container">
       <div>
-        <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px'}}>Round {curRound}</div>
+        <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px', }}>Round {curRound}</div>
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
