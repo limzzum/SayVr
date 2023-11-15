@@ -82,6 +82,7 @@ let gameId: number;
 
 function MatchingGameWaitingPage() {
   const [gameId, setGameId] = useState<number | null>(null);
+  let oldgameId = 0;
   const [gameStart, setGameStart] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
 
@@ -189,8 +190,6 @@ function MatchingGameWaitingPage() {
     if (response.socketType == SocketType.GAME_INFO) {
       console.log("게임 info");
       setCurRound(response.gameStatusDto!.curRound);
-      setPlayerA(response.gameStatusDto!.playerA);
-      setPlayerB(response.gameStatusDto!.playerB);
       setQuestion(response.gameStatusDto!.question);
     }
 
@@ -218,6 +217,9 @@ function MatchingGameWaitingPage() {
           console.log(response);
           console.log("is start : " + response.data.data.gameStart);
           setGameId(response.data.data.gameId);
+          oldgameId = response.data.data.gameId;
+          console.log("set 게임 아이디 : "+ gameId);
+
           setImageUrl(imageURL + response.data.data.profile);
 
           if (response.data.data.gameStart) {
@@ -240,6 +242,12 @@ function MatchingGameWaitingPage() {
     });
 
     return () => {
+      console.log("게임 아이디 : "+ oldgameId);
+      console.log("state gameId "+ gameId)
+      Socket.sendMsg(publishURL + "." + oldgameId, {
+        socketType: SocketType.PLAYER_OUT,
+        message: "out",
+      });
       Socket.disconnect();
       console.log("페이지 이동 , socket disconnect");
     };
