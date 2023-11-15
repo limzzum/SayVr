@@ -45,7 +45,7 @@ function App() {
       />
       <Route path="/StudyList" element={<StudyPage />} />
       <Route path="/study/:id" element={<StudyDetail />} />
-      <Route path="/studycard/:id" element={<StudyDeckDetail />} />
+      <Route path="/studycard/:studyid/:id" element={<StudyDeckDetail />} />
       <Route path="/VocabList" element={<VocabListPage />} />
       <Route path="/flashcard/:id" element={<DeckDetail />} />
       <Route path="/Sign" element={<SignPage />} />

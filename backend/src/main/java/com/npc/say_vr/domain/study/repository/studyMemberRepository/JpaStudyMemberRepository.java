@@ -10,4 +10,6 @@ public interface JpaStudyMemberRepository extends JpaRepository<StudyMember, Lon
 
     List<StudyMember> findByStudyIdAndStatus(Long studyId,Status status);
 
+    Optional<StudyMember> findByUserIdAndStudyId(Long userId,Long studyId);
+
 }

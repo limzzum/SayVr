@@ -1,6 +1,5 @@
 package com.npc.say_vr.domain.study.dto.responseDto;
 
-import com.npc.say_vr.domain.flashcards.domain.Wordcard;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class WordUpdateResponseDto {
+public class MessageOnlyResponseDto {
 
-   WordcardDto wordcard;
-   String errorMessage;
+  private String message;
+
 }

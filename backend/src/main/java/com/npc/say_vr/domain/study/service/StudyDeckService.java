@@ -15,9 +15,9 @@ public interface StudyDeckService {
 
     StudyDeckDetailResponseDto readStudyDeckList(Long userId, Long studyId);
 
-    StudyDeckInfo updateStudyDeck(Long userId, Long studyId, UpdateStudyDeckRequestDto updateStudyDeckRequestDto);
+    void updateStudyDeck(Long userId, Long studyId, UpdateStudyDeckRequestDto updateStudyDeckRequestDto);
 
-    StudyDeckInfo deleteStudyDeck(Long userId, Long studyId, Long studyDeckId);
+    MessageOnlyResponseDto deleteStudyDeck(Long userId, Long studyId, Long studyDeckId);
 
     StudyDeckOneDetailResponseDto readStudyDeckDetail(Long userId, Long studyId, Long studyDeckId);
 
