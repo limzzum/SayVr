@@ -37,7 +37,7 @@ public class JwtUtil {
     }
 
     public String createJwtToken(Long userId) {
-        return create(userId, expireMin * 60);
+        return create(userId, expireMin);
     }
 
     public TokenResponseDto reCreateJwtToken(String refreshToken) {
