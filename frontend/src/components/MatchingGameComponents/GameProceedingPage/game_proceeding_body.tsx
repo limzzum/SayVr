@@ -238,8 +238,6 @@ const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
   } = useSpeechRecognition();
 
   useEffect(() => {
-    console.log("음성 입력됨");
-    console.log(transcript);
     const body = { socketType: "QUIZ", message: transcript };
     sendMsg(publishURL + "." + gameId, body);
   }, [transcript]);
