@@ -161,11 +161,21 @@ function MyPage() {
   }
 
   const handleNicknameChange = (newNickname: string) => {
-    console.log("변경된 닉네임:", newNickname)
+    try {
+      console.log("변경된 닉네임:", newNickname)
+      window.location.reload();
+    } catch (error) {
+      console.error("닉네임 변경 중 오류 발생:", error);
+    }
   }
 
   const handleProfileChange = (newProfile: File) => {
-    console.log("변경된 프로필:", newProfile)
+    try {
+      console.log("변경된 프로필:", newProfile)
+      window.location.reload();
+    } catch (error) {
+      console.error("프로필 변경 중 오류 발생:", error);
+    }
   }
 
   return (

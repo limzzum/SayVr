@@ -1,8 +1,6 @@
 /* style.css */
 
 .apexcharts-legend-marker {
-    background: red !important; /* 원하는 색상으로 변경 */
-    color: red !important; /* 원하는 색상으로 변경 */
     height: 12px !important;
     width: 12px !important;
     left: 0px !important;

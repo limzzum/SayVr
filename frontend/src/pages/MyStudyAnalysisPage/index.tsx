@@ -8,7 +8,6 @@ import ChartComponent, { ChartData } from "../../components/MyStudyAnalysisCompo
 import AverageScore from "../../assets/MygradeAssets/AverageScore.png";
 import ContextScore from "../../assets/MygradeAssets/ContextScore.png";
 import GrammarScore from "../../assets/MygradeAssets/GrammarScore.png";
-import ProunciationScore from "../../assets/MygradeAssets/PronunciationScore.png";
 import { useRecoilValue } from 'recoil';
 import { tokenState } from "../../recoil/GoalbalState";
 import "./style.css";
@@ -189,27 +188,6 @@ const MyStudyAnalysisPage: React.FC = () => {
                       style={{ maxWidth: "120px", zIndex: 1 }}
                     />
                   </div>
-                  {/* <div className="text-center position-relative">
-                    <span
-                      className="score-text"
-                      style={{
-                        color: "black",
-                        position: "absolute",
-                        zIndex: 2,
-                        top: "55%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                      }}
-                    >
-                      {data.pronunciationTotal}
-                    </span>
-                    <img
-                      src={ProunciationScore}
-                      alt="badgeimg"
-                      className="scorebadge"
-                      style={{ maxWidth: "120px", zIndex: 1 }}
-                    />
-                  </div> */}
                 </div>
               </div>
             )}
