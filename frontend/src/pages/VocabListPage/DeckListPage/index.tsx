@@ -22,19 +22,13 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
 
   const [orderby, setOrderby] = useState(searchParameter.sortBy)
   const [keyword, setKeyword] = useState(searchParameter.keyword)
-  const [latestId, setLatestId] = useState(
-    searchParameter.sortBy === "createdAt"
-      ? searchResult[searchResult.length - 1].id
-      : searchResult.reduce((minId, deck) => {
-          return Math.min(minId, deck.id)
-        }, searchResult[0].id)
-  )
+  const [latestId, setLatestId] = useState(searchResult[searchResult.length - 1].id)
 
   const [publicCardTitles, setPublicCardTitles] = useState<PersonalDeckTitle[]>(searchResult ? searchResult : [])
   // const [params, setParams] = useState<ReadDeckSearchRequestDto>(searchParameter);
   const [searchParams, setSearchParams] = useState<ReadDeckSearchRequestDto>({
     lastId: latestId,
-    pageSize: 3,
+    pageSize: 9,
     sortBy: orderby,
     keyword: keyword,
   })
@@ -42,7 +36,7 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
   useEffect(() => {
     setSearchParams({
       lastId: latestId,
-      pageSize: 3,
+      pageSize: 9,
       sortBy: orderby,
       keyword: keyword,
     })
@@ -64,21 +58,14 @@ const DeckListPage: React.FC<DeckListProps> = ({ category, changeView, searchRes
               setHasMore(false)
             } else {
               if (newDecks[newDecks.length - 1].id === latestId) {
-                // setHasMore(false)
+                console.log("받은 응답 마지막 값이 현재 저장된값이랑 같음")
+                setHasMore(false)
               } else {
                 console.log("new last id :" + newDecks[newDecks.length - 1].id + " , old id: " + latestId)
-                if (searchParams.sortBy === "createdAt") {
-                  setLatestId((prevLastId) => {
-                    const newId = newDecks[newDecks.length - 1].id
-                    return newId
-                  })
-                } else {
-                  const smallestId = newDecks.reduce((minId, deck) => {
-                    return Math.max(minId, deck.id)
-                  }, newDecks[0].id)
-                  setLatestId(smallestId)
-                }
-                setPublicCardTitles((prevDecks) => [...prevDecks, ...newDecks])
+                //변경 부분 중복 거르고 적용함
+                const filteredNewDecks = newDecks.filter((deck) => !publicCardTitles.some((prevDeck) => prevDeck.id === deck.id))
+                setLatestId(filteredNewDecks[filteredNewDecks.length - 1].id)
+                setPublicCardTitles((prevDecks) => [...prevDecks, ...filteredNewDecks])
               }
             }
           })

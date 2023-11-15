@@ -15,37 +15,28 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 
 interface props {
-  // player: PlayerProfile;
-  // opponent: PlayerProfile;
   gameId: number;
   chatMessage: ChatMessage;
   question: string;
-}
-
-interface PlayerProfile {
-  userId?: number;
-  nickname: string;
-  ranking: number;
-  tierImage: string;
-  point?: number;
-  winCnt?: number;
-  profile: string;
+  curRound: number;
 }
 
 const GameProceedingBody: React.FC<props> = ({
   gameId,
   chatMessage,
   question,
+  curRound
 }) => {
   return (
     <div className="game-proceeding-body-container">
       <div>
+        <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px', }}>Round {curRound}</div>
         <Question question={question}></Question>
         <GameTimer timeLimit={30} gameId={gameId}></GameTimer>
       </div>
       <div>
         <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
-        <Dictaphone />
+        <Dictaphone gameId={gameId} />
       </div>
     </div>
   );
@@ -238,13 +229,18 @@ const GameTimer: React.FC<{ timeLimit: number; gameId: number }> = ({
   );
 };
 
-const Dictaphone = () => {
+const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
   const {
     transcript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  useEffect(() => {
+    const body = { socketType: "QUIZ", message: transcript };
+    sendMsg(publishURL + "." + gameId, body);
+  }, [transcript]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -261,6 +257,8 @@ const Dictaphone = () => {
     event.preventDefault();
     SpeechRecognition.stopListening();
   };
+
+
 
   return (
     <div>
