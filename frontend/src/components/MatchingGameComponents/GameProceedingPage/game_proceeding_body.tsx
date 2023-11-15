@@ -145,11 +145,12 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
                       : "messageContainer otherMessage"
                   }`}
                 >
+                  {(message.message != "") &&
                   <div>
                     {message.userId === localStorage.getItem("userId")
                       ? "나"
                       : "상대방"}
-                  </div>
+                  </div>}
                   <div>{message.message}</div>
                 </div>
               ))}
@@ -238,8 +239,10 @@ const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
   } = useSpeechRecognition();
 
   useEffect(() => {
+    if(transcript!=""){
     const body = { socketType: "QUIZ", message: transcript };
     sendMsg(publishURL + "." + gameId, body);
+    }
   }, [transcript]);
 
   if (!browserSupportsSpeechRecognition) {
