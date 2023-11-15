@@ -182,7 +182,7 @@ public class WordcardServiceImpl implements WordcardService {
             return WordUpdateResponseDto.builder().wordcard(wordcard).build();
         }
         if(personalDeck.getSavingProgressStatus().equals(SavingProgressStatus.DISABLED)){
-
+            return WordUpdateResponseDto.builder().wordcard(wordcard).build();
         }
         //TODO: enum 값 잘못 올 때
         wordcard.updateStatus(requestDto.toEnum());
