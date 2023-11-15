@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button } from "react-bootstrap"
+import { Alert, Button } from "react-bootstrap"
 import { BsChevronLeft } from "react-icons/bs"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import {
@@ -27,7 +27,7 @@ export interface CreateWordcardRequestDto {
 }
 // const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const DeckDetail: React.FC = () => {
-  const [tempUser, setTempUser] = useState<number>(0);
+  const [loginUser, setLoginUser] = useState<number>(0)
   const { id } = useParams()
   const [deckId, setDeckId] = useState(Number(id))
   const navigate = useNavigate()
@@ -45,20 +45,20 @@ const DeckDetail: React.FC = () => {
   //   }
   // }, [props])
   useEffect(() => {
-    const userId = Number(localStorage.getItem("userId"));
-    setTempUser(userId);
-  
-    return () => {
-    }
+    const userId = Number(localStorage.getItem("userId"))
+    setLoginUser(userId)
+
+    return () => {}
   }, [])
-  
+
   // const
   useEffect(() => {
     if (id) {
       getOneDeck(deckId)
         .then((res) => {
           setDeck(res.data.data)
-          // console.log(deck);
+          console.log("메뉴 변경시 다시 가져온 정보")
+          console.log(deck)
           setWordList(res.data.data.flashcardDto.wordcardList)
         })
         .catch((e) => {
@@ -102,8 +102,18 @@ const DeckDetail: React.FC = () => {
   const refreshDeckInfo = () => {
     navigate(`/flashcard/${deckId}`)
   }
+  const refreshDeck = () => {
+    navigate(`/flashcard/${deckId}`)
+  }
   const handleBack = () => {
     navigate(-1)
+  }
+  const goToLearn = () => {
+    if (wordList.length > 0) {
+      setMenu("learn")
+    } else {
+      alert("학습모드를 위해 단어가 하나 이상 존재해야 합니다")
+    }
   }
   const BackArrow = () => {
     return (
@@ -177,19 +187,25 @@ const DeckDetail: React.FC = () => {
                     onHover
                   ></IconButton>
                 </div> */}
-
-                <div>
+                {menu === "learn" && deck?.savingProgressStatus === ProgressStatus.DISABLED && (
+                  <div style={{ marginRight: "1rem" }}>
+                    <Alert variant='warning' dismissible>
+                      학습 기록이 저장되지 않습니다.
+                    </Alert>
+                  </div>
+                )}
+                <div style={{ marginRight: "1rem" }}>
                   <IconButton
                     icon={<LearnIcon />}
                     size={55}
                     handleButtonClick={() => {
                       // console.log("learn");
-                      setMenu("learn")
+                      goToLearn()
                     }}
                     onHover
                   ></IconButton>
                 </div>
-                {deck && tempUser === deck.userId ? (
+                {deck && loginUser === deck.userId ? (
                   <>
                     <div>
                       <IconButton onHover icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>

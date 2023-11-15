@@ -10,8 +10,9 @@ import "./style.css"
 interface WordcardProps {
   props: WordcardDto
   next: () => void
+  isSaved:boolean
 }
-const Wordcard: FC<WordcardProps> = ({ props, next }) => {
+const Wordcard: FC<WordcardProps> = ({ props, next,isSaved }) => {
   const navigate = useNavigate()
   const location = useLocation()
   // if (!props) {
@@ -26,22 +27,28 @@ const Wordcard: FC<WordcardProps> = ({ props, next }) => {
   useEffect(() => {}, [])
 
   const uncheck = () => {
+    if(isSaved){
     updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
       .then((res) => {
         setStatus(WordcardStatus.UNCHECKED)
-        props.wordcardStatus = WordcardStatus.UNCHECKED
-
-        next()
+        
       })
       .catch((e) => console.log(e))
+    }else{
+      props.wordcardStatus = WordcardStatus.UNCHECKED
+    }
+    next()
   }
   const check = () => {
-    updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
+    if(isSaved){
+      updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
       .then(() => {
-        next()
+        
         props.wordcardStatus = WordcardStatus.CHECKED
       })
       .catch((e) => console.log(e))
+    }
+    next()
   }
   const handleOut = () => {
     // changeView("detail");
