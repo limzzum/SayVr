@@ -88,6 +88,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
             .user(user)
             .name(deckToFork.getName())
             .status(FlashcardStatus.FORKED)
+            .savingProgressStatus(SavingProgressStatus.ENABLED)
             .wordCount(toCopy.size())
             .build();
         personalDeck = personalDeckRepository.save(personalDeck);
