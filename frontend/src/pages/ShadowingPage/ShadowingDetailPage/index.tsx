@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import YouTube, { YouTubeProps } from "react-youtube";
 import axios, { AxiosRequestConfig } from "axios";
 import getScript, { ScriptItem } from "../../../api/ShadowingPageAPI/GetScriptAPI";
-import evaluatePronunciation from "../../../api/ShadowingPageAPI/EvaluatePronunciation";
+import RecorderModule from "../../../api/ShadowingPageAPI/SpeechAPI";
 import "./style.css";
 
 const endpoint = "https://api.cognitive.microsofttranslator.com";
@@ -25,6 +25,34 @@ function ShadowingDetailPage() {
   const [prevDisplayedScript, setPrevDisplayedScript] = useState<string>("");
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const previousStartRef = useRef<number | null>(null);
+
+
+
+
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+
+  const onRecordingStart = () => {
+    console.log("Recording started!");
+  };
+
+  const onRecordingStop = (blob: Blob) => {
+    setAudioBlob(blob);
+    console.log("Recording stopped!");
+    // 여기에서 녹음 파일을 서버로 전송하거나 추가 작업 수행
+  };
+
+  // 일단은 영상을 멈추는 기능만 추가 되어 있음
+  const onShadowingButtonClick = async () => {
+    if (playerRef.current) {
+      playerRef.current.pauseVideo();
+    }
+  };
+
+
+
+
+
+  
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     event.target.pauseVideo();
@@ -133,36 +161,6 @@ function ShadowingDetailPage() {
     // 여기에서 번역 함수 호출 또는 번역 기능 구현
     await translate(text);
   };
-  // 쉐도잉 기능
-  const onShadowingButtonClick = async () => {
-    if (playerRef.current) {
-      // 영상을 일시 정지
-      playerRef.current.pauseVideo();
-
-      // 쉐도잉 기능 수행 또는 추가 작업 수행
-      // 여기에 쉐도잉 기능을 구현하면 됩니다.
-
-      // 발음 평가 실행
-      if (displayedScript) {
-        const audioBase64 = "BASE64_AUDIO_DATA_HERE"; // 오디오 데이터를 Base64로 인코딩한 문자열
-        const locale = 'en-US'; // 로캘 설정
-
-        try {
-          const pronunciationResult = await evaluatePronunciation(audioBase64, locale);
-
-          if (pronunciationResult) {
-            // 발음 평가 결과 출력 또는 추가 작업 수행
-            console.log("Pronunciation Evaluation Result:", pronunciationResult);
-          } else {
-            // 발음 평가 결과가 없는 경우 또는 오류가 발생한 경우
-            console.error("Pronunciation Evaluation Failed.");
-          }
-        } catch (error) {
-          console.error("Error in evaluatePronunciation:", error);
-        }
-      }
-    }
-  };
 
   // 스크립트 가져오기
   useEffect(() => {
@@ -214,6 +212,7 @@ function ShadowingDetailPage() {
               쉐도잉
             </button>
           </div>
+          <RecorderModule onRecordingStart={onRecordingStart} onRecordingStop={onRecordingStop} />
         </div>
       )}
     </div>

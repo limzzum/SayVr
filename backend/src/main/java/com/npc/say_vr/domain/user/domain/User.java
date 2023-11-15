@@ -63,6 +63,7 @@ public class User extends BaseEntity {
 
     public void updateName(String username) {
         this.username = username;
+        this.nickname = username;
     }
 
     public void updateProfile(String profile) {
