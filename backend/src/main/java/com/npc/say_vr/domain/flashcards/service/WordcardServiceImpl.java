@@ -150,7 +150,7 @@ public class WordcardServiceImpl implements WordcardService {
 
     @Override
     public WordUpdateResponseDto readRandomWord() {
-        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(2L);
+        Long wordcardId = wordcardRepository.findRandomWordcardIdByDeckId(1L);
 
         Wordcard random = wordcardRepository.findById(wordcardId)
             .orElse(Wordcard.builder().word(wordRepository.findById(3488L).orElseThrow()).build());
