@@ -33,7 +33,7 @@ align-items: baseline;
   padding: 10px;
   margin: 30px auto;
   width: 60vw;
-  height: 30vh;
+  /* height: 30vh; */
 }
 .goal-inner{
   background-color: #82b7f3;
@@ -41,6 +41,9 @@ align-items: baseline;
 /* .btn {
   width: 5rem;
 } */
+.clickable:hover{
+ cursor:pointer;
+}
 
 .study-list-container {
   background-color: white;

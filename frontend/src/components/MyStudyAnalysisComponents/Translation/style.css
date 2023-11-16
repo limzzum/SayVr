@@ -59,3 +59,17 @@
     margin: 0;
   }
 }
+
+.btn {
+  margin-left: 15px;
+  width: 150px;
+}
+
+.clickable-item {
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}

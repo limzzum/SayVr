@@ -19,7 +19,7 @@ import StudyDetail from "./pages/StudyPage/StudyDetailPage";
 import SignPage from "./pages/SignPage";
 import JSConfetti from "js-confetti";
 import StudyDeckDetail from "./pages/StudyPage/StudyDeckDetailPage";
-
+import "./index.css"
 export const conteffi = new JSConfetti();
 
 function App() {

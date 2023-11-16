@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  socketURL,
   subscribeURL,
-  serverURL,
   imageURL,
   publishURL,
 } from "./constants/constants";
@@ -20,7 +18,6 @@ import GameProceedingHeader from "../../components/MatchingGameComponents/GamePr
 import GameProceedingBody from "../../components/MatchingGameComponents/GameProceedingPage/game_proceeding_body";
 import Modal from "react-modal";
 import "./style.css";
-import JSConfetti from "js-confetti";
 import { conteffi } from "../../App";
 
 interface receiveMessage {
@@ -111,7 +108,7 @@ function MatchingGameWaitingPage() {
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  // const [gameStatus, setGameStatus] = useState<GameStatus>();
+  const [gameStatus, setGameStatus] = useState<GameStatus>();
   const [chatMessage, setChatMessage] = useState<ChatMessageDto>({
     userId: "1",
     message: "",
@@ -145,6 +142,8 @@ function MatchingGameWaitingPage() {
         : setPlayerB(response.gameStatusDto!.playerB);
 
       Socket.sendMsg(publishURL + "." + gameId, messageToSend);
+      localStorage.setItem("gameStatus", JSON.stringify(response.gameStatusDto));
+      setGameStatus(response.gameStatusDto);
 
       setIsMatch(true);
       const timer = setTimeout(() => {
@@ -198,6 +197,8 @@ function MatchingGameWaitingPage() {
       setCurRound(response.gameStatusDto!.curRound);
       setQuestion(response.gameStatusDto!.question);
       setAnswer(response.gameStatusDto!.answer);
+      localStorage.setItem("gameStatus", JSON.stringify(response.gameStatusDto));
+      setGameStatus(response.gameStatusDto);
     }
 
     if (response.socketType == SocketType.QUIZ_TIME_OVER) {
@@ -209,7 +210,7 @@ function MatchingGameWaitingPage() {
 
 
     if (response.socketType == SocketType.GAME_END) {
-      console.log("게임 info");
+      console.log("게임 end");
       setEndMessage(response.message!);
       setGameResult(response.data);
       setIsEndGame(true);
@@ -225,12 +226,23 @@ function MatchingGameWaitingPage() {
   };
 
   useEffect(() => {
+    console.log("localstorage : "+localStorage.getItem("gameStatus"));
+   
     Socket.connect().then(() => {
+       if(localStorage.getItem("gameStatus") != null){
+      console.log("not null");
+      setGameStatus(JSON.parse(localStorage.getItem("gameStatus")!));
+      setGameId(JSON.parse(localStorage.getItem("gameStatus")!).gameId)
+      setGameStart(true);
+    }else{
+      console.log("else")
       console.log("connect");
       waitingGame()
         .then((response) => {
+          
           console.log(response);
           console.log("is start : " + response.data.data.gameStart);
+
           setGameId(response.data.data.gameId);
           oldgameId = response.data.data.gameId;
           console.log("set 게임 아이디 : "+ gameId);
@@ -239,21 +251,24 @@ function MatchingGameWaitingPage() {
 
           if (response.data.data.gameStart) {
             startGame();
-            setIsMatch(true);
-            const timer = setTimeout(() => {
-              setGameStart(true);
-            }, 3000);
+            // setIsMatch(true);
+            // const timer = setTimeout(() => {
+            //   setGameStart(true);
+            // }, 3000);
 
-            return () => {
-              clearTimeout(timer);
-            };
+            // return () => {
+            //   clearTimeout(timer);
+            // };
           }
 
           return () => {};
-        })
+        }
+        
+        )
         .catch((error) => {
           console.log("wait axios 요청");
         });
+    }
     });
 
     return () => {
@@ -265,6 +280,7 @@ function MatchingGameWaitingPage() {
       });
       Socket.disconnect();
       console.log("페이지 이동 , socket disconnect");
+      localStorage.removeItem("gameStatus");
     };
   }, []);
 
@@ -285,15 +301,15 @@ function MatchingGameWaitingPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <GameProceedingHeader
-          player={playerA!}
-          opponent={playerB!}
+          player={gameStatus!.playerA!}
+          opponent={gameStatus!.playerB!}
         ></GameProceedingHeader>
         <GameProceedingBody
-          gameId={gameId!}
+          gameId={gameStatus!.gameId!}
           chatMessage={chatMessage}
-          question={question}
-          curRound={curRound}
-          answer={answer}
+          question={gameStatus!.question}
+          curRound={gameStatus!.curRound}
+          answer={gameStatus!.answer}
         />
         <Modal
           isOpen={isEndGame}
