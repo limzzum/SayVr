@@ -289,7 +289,7 @@
 </details>
 
 ## 시스템 아키텍처
-
+![말해Vr아키텍처](./exec/image/말해vr아키텍처.png)
 
 ## 🗃️기획 및 설계 산출물
 - [📝 기능 명세서](https://infrequent-attraction-ca6.notion.site/98b6503f14df47b3a6ec0b11058f408c)
