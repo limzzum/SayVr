@@ -27,7 +27,7 @@
 
 > AR 및 VR 시장 2027년까지 25.3% 성장 전망
 
-## 주요 기능
+## 💡주요 기능
 
 ---
 
@@ -89,10 +89,15 @@
         <br/>
 
 
-## 서비스 화면
+## 🎮🌐서비스 화면
 
 
-## 개발 환경
+## 💻개발 환경
+
+### VR
+
+- Unreal Engine 5.2.1
+- Meta XR SDK
 
 ### Frontend
 
@@ -108,7 +113,7 @@
   - Java OpenJDK 17
   - Spring Boot 2.7.17
     - Spring Data JPA 2.7.17
-    - Spring Security 2.7.17'
+    - Spring Security 2.7.17
     - JUnit 5.8.2
     - Lombok 1.18.26
     - Websocket 2.3.4
@@ -338,7 +343,7 @@
 ```
 </details>
 
-## 시스템 아키텍처
+## 🏗️시스템 아키텍처
 ![말해Vr아키텍처](./exec/image/말해vr아키텍처.png)
 
 ## 🗃️기획 및 설계 산출물
