@@ -189,7 +189,42 @@
     │      ├─📂 DeckLearnPage
     │      └─📂 DeckListPage
     └─📂 recoil
+```
+</details>
 
+
+<details><summary> 📂 VR</summary>
+<!-- 📂 VR -->
+
+```
+├─📂 TalkVR
+│  ├─📂 Component
+│  ├─📂 UI
+│  │  ├─📂 Menu
+│  │  ├─📂 ConversationList
+│  │  ├─📂 ConversationDetail
+│  │  └─📂 ConversationOngoing
+│  ├─📂 Player
+│  │  ├─📂 Pawn
+│  │  └─📂 Controller
+│  ├─📂 NPC
+│  │  ├─📂 AI
+│  │  └─📂 Crowd
+│  ├─📂 Input
+│  │  ├─📂 IMC
+│  │  └─📂 IA
+│  └─📂 Maps
+│      ├─📂 MyRoom
+│      └─📂 Venice
+└─📂 Asset
+    ├─📂 Venice
+    │  ├─📂 Texture
+    │  ├─📂 Mesh
+    │  └─📂 Actor
+    └─📂 MyRoom
+        ├─📂 Texture
+        ├─📂 Mesh
+        └─📂 Actor
 
 ```
 </details>
