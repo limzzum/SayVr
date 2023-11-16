@@ -138,7 +138,7 @@
 ### Frontend
 
 - Node JS 18.16.1
-- React 9.5.1
+- React 18.2.0
 - Recoil 0.7.7
 - Typescript 5.2.2
 - Sockjs 0.3.35
