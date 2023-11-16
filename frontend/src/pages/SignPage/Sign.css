@@ -1,32 +1,33 @@
 .member-body {
-	margin-top: 50px;
 	border: 1px solid lightgray;
 	border-radius: 8px;
-	width: 1150px;
-	height: 850px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: row;
-	margin-left: 400px;
-	box-shadow: 5px 5px 15px 2px;
+	padding: 80px 60px;
 }
 
 .signB {
-	padding-bottom: 50px;
+	height: 85vh;
+	padding: 100px 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	border-bottom: 1px solid lightgray;
 }
 
+/* 
 .member-form-img {
 	width: 550px;
 	height: 500px;
 	margin-right: 80px;
 	display: flex;
 	justify-content: center;
-}
+} 
+*/
 
 .member-form {
-	margin-bottom: 250px;
 	width: 300px;
 	height: 500px;
 	display: flex;
@@ -68,6 +69,7 @@
 	height: 40px;
 	border-radius: 7px;
 	border-color: rgb(19, 79, 190);
+	padding-left: 5px;
 }
 
 .email-th {
@@ -80,16 +82,19 @@
 .email_ok {
 	color: #008000;
 	display: none;
+	font-size: 16px;
 }
 
 .email_already {
 	color: #6a82fb;
 	display: none;
+	font-size: 16px;
 }
 
 .email_no {
 	color: #ff0080;
 	display: none;
+	font-size: 16px;
 }
 
 .password {
@@ -97,6 +102,7 @@
 	height: 40px;
 	border-radius: 7px;
 	border-color: rgb(19, 79, 190);
+	padding-left: 5px;
 }
 
 .password-th {
@@ -121,13 +127,7 @@
 	height: 40px;
 	border-radius: 7px;
 	border-color: rgb(19, 79, 190);
-}
-
-.name-th {
-	color: rgb(19, 79, 190);
-	margin-left: 8px;
-	font-size: 12px;
-	font-weight: 200;
+	padding-left: 5px;
 }
 
 .nickname {
@@ -135,13 +135,14 @@
 	height: 40px;
 	border-radius: 7px;
 	border-color: rgb(19, 79, 190);
+	padding-left: 5px;
 }
 
 .nickname-th {
 	color: rgb(19, 79, 190);
-	margin-left: 8px;
+	margin-left: 4px;
 	font-size: 12px;
-	font-weight: 200;
+	font-weight: 500;
 }
 
 .nickname_ok {
@@ -180,7 +181,7 @@
 
 #btn-insert {
 	cursor: pointer;
-	margin-top: 18px;
+	margin: 18px 0px 0px 0px;
 	width: 300px;
 	height: 40px;
 	border-radius: 7px;
@@ -193,7 +194,7 @@
 
 #btn-checkNickname {
 	cursor: pointer;
-	margin-top: 18px;
+	margin: 18px 0px 0px 0px;
 	width: 300px;
 	height: 40px;
 	border-radius: 7px;
@@ -205,7 +206,7 @@
 }
 #btn-checkEmail {
 	cursor: pointer;
-	margin-top: 18px;
+	margin: 18px 0px 0px 0px;
 	width: 300px;
 	height: 40px;
 	border-radius: 7px;
