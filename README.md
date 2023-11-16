@@ -96,7 +96,7 @@
 
 -   My Room에서 AI들과 대화할 수 있는 장소로 이동할 수 있습니다.
 
-<img width="100%" src="./exec/image/문.gif"/>
+<img width="80%" src="./exec/image/문.gif"/>
 
 <br>
 
