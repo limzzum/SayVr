@@ -3,7 +3,7 @@
 
 ### 📜 contents
  1. [프로젝트 설명](https://lab.ssafy.com/s09-final/S09P31A501/-/blob/develop/README.md#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%84%A4%EB%AA%85)
- 2. [주요 기능]
+ 2. [주요 기능](https://lab.ssafy.com/s09-final/S09P31A501/-/blob/develop/README.md#%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5)
  3. [서비스 화면]
  4. [개발 환경]
  5. [프로젝트 파일 구조](https://lab.ssafy.com/s09-final/S09P31A501/-/blob/develop/README.md#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8C%8C%EC%9D%BC-%EA%B5%AC%EC%A1%B0)
