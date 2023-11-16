@@ -92,11 +92,19 @@
 ## 🎮🌐서비스 화면
 ---
 
-### VR - 문
+### VR - My Room
 
--   My Room에서 AI들과 대화할 수 있는 장소로 이동할 수 있습니다.
+-   My Room에서 문을 열어 AI들과 대화할 수 있는 맵으로 이동할 수 있습니다.
 
-<img width="80%" src="./exec/image/문.gif"/>
+<img width="60%" src="./exec/image/문.gif"/>
+
+<br>
+
+### VR - 맵
+
+-   사용자들이 실제 NPC(AI)들과 상호작용하며 실제와 같은 환경에서 대화를 실습할 수 있습니다.
+
+<img width="60%" src="./exec/image/맵과크라우드.gif"/>
 
 <br>
 
