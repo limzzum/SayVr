@@ -90,7 +90,8 @@ function MyPage() {
   }, [])
 
   const carouselSettings = {
-    dots: true,
+    dots: false,
+    arrows:false,
     // infinite: true,
     speed: 500,
     slidesToShow: 3,
