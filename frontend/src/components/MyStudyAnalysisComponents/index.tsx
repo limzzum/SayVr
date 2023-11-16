@@ -6,7 +6,6 @@ import "./style.css";
 interface ScoreHistory {
   grammarTotal: number;
   contextTotal: number;
-  pronunciationTotal: number;
   averageTotal: number;
   createdAt: string;
 }
@@ -15,7 +14,6 @@ export interface ChartData {
   averageTotal: number;
   contextTotal: number;
   grammarTotal: number;
-  pronunciationTotal: number;
   createdAt: string;
   scoreHistory: ScoreHistory[];
 }
@@ -54,30 +52,31 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data }) => {
     xaxis: {
       categories: data?.scoreHistory?.map((item: ScoreHistory) => item.createdAt) || [],
     },
+    legend: {
+      markers: {
+        fillColors: ["gray", "#FDD66C", "#85E3C7",], // 각 시리즈에 대한 도트 색상 지정
+      },
+    },
   });
 
   useEffect(() => {
     if (data && data.scoreHistory) {
       const seriesData = [
         {
-          name: "Grammar Total",
-          data: data.scoreHistory.map((item: ScoreHistory) => item.grammarTotal),
+          name: "Average Total",
+          data: data.scoreHistory.map((item: ScoreHistory) => item.averageTotal),
         },
         {
           name: "Context Total",
           data: data.scoreHistory.map((item: ScoreHistory) => item.contextTotal),
         },
         {
-          name: "Pronunciation Total",
-          data: data.scoreHistory.map((item: ScoreHistory) => item.pronunciationTotal),
-        },
-        {
-          name: "Average Total",
-          data: data.scoreHistory.map((item: ScoreHistory) => item.averageTotal),
+          name: "Grammar Total",
+          data: data.scoreHistory.map((item: ScoreHistory) => item.grammarTotal),
         },
       ];
 
-      const colors = ["#0000ff", "#00ff00", "#ffff00", "#ff0000"];
+      const colors = ["gray", "#FDD66C", "#85E3C7",];
       setChartData((prevChartData) => ({
         ...prevChartData,
         series: seriesData,

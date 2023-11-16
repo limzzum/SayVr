@@ -6,18 +6,23 @@ import CheckedIcon from "./Icons/CheckedIcon"
 import RemoveIcon from "./Icons/RemoveIcon"
 import UncheckedIcon from "./Icons/UncheckedIcon"
 import Speak from "./Speak"
+import { useRecoilValue } from "recoil"
+import { loggedIdState } from "../../recoil/GoalbalState"
 interface VocabLineProps {
   props: WordcardDto
   saveMode: boolean
+  userId: number
 }
 
-export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
+export const VocabLine: FC<VocabLineProps> = ({ props, saveMode, userId }) => {
+  const loggedUserId = Number(useRecoilValue(loggedIdState))
+  const [ownerId, setOwnerId] = useState(userId)
   const [status, setStatus] = useState(props.wordcardStatus)
   const [checkIcon, setCheckIcon] = useState("checked-button")
   const [uncheckIcon, setUncheckIcon] = useState("unchecked-button")
 
   const uncheckWord = () => {
-    if (saveMode) {
+    if (saveMode && ownerId === loggedUserId) {
       updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
         .then((res) => {
           console.log(res.data.data.wordcard)
@@ -31,7 +36,7 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
     }
   }
   const checkWord = () => {
-    if (saveMode) {
+    if (saveMode && ownerId === loggedUserId) {
       updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
         .then((res) => {
           setStatus(WordcardStatus.CHECKED)
@@ -42,15 +47,19 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode }) => {
   }
   // const checkWord = () => {}
   const removeWord = () => {
-    deleteCard(props.id).then((res) => {
-      let message = res.data.data.message
-      console.log(res.data.data.message)
-      if (message === "단어가 단어장에서 삭제되었습니다.") {
-        setStatus(WordcardStatus.DELETED)
-      } else {
-        alert("단어를 삭제할수 없습니다")
-      }
-    })
+    if (ownerId === loggedUserId) {
+      deleteCard(props.id).then((res) => {
+        let message = res.data.data.message
+        console.log(res.data.data.message)
+        if (message === "단어가 단어장에서 삭제되었습니다.") {
+          setStatus(WordcardStatus.DELETED)
+        } else {
+          alert("단어를 삭제할수 없습니다")
+        }
+      })
+    }else{
+      alert("단어장의 주인이 아니면 단어를 삭제할 수 없습니다")
+    }
   }
   useEffect(() => {
     setUncheckIcon(`unchecked-button ${status === WordcardStatus.UNCHECKED ? "unchecked" : ""}`)

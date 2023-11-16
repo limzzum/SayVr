@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Alert, Button } from "react-bootstrap"
+import { Alert, Button, Toast } from "react-bootstrap"
 import { BsChevronLeft } from "react-icons/bs"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import {
@@ -20,6 +20,8 @@ import SettingsIcon from "../../../components/VocabListComponents/Icons/Settings
 import { VocabLine } from "../../../components/VocabListComponents/VocabLine"
 import DeckLearn from "../DeckLearnPage"
 import "./style.css"
+import { useRecoilValue } from "recoil"
+import { loggedIdState } from "../../../recoil/GoalbalState"
 
 export interface CreateWordcardRequestDto {
   kor: string
@@ -28,12 +30,15 @@ export interface CreateWordcardRequestDto {
 // const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const DeckDetail: React.FC = () => {
   const [loginUser, setLoginUser] = useState<number>(0)
+  const loggedUserId = Number(useRecoilValue(loggedIdState))
   const { id } = useParams()
   const [deckId, setDeckId] = useState(Number(id))
   const navigate = useNavigate()
   const location = useLocation()
   const [menu, setMenu] = useState("detail")
   const [deck, setDeck] = useState<DeckDetailResponseDto>()
+  const [show, setShow] = useState(false)
+  // const [show,setShow]=useState(false);
 
   // const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false)
@@ -45,10 +50,8 @@ const DeckDetail: React.FC = () => {
   //   }
   // }, [props])
   useEffect(() => {
-    const userId = Number(localStorage.getItem("userId"))
-    setLoginUser(userId)
-
-    return () => {}
+    setLoginUser(loggedUserId)
+    // return () => {}
   }, [])
 
   // const
@@ -173,7 +176,6 @@ const DeckDetail: React.FC = () => {
                 <BackArrow />
                 <h1>{deck?.name}</h1>
               </div>
-
               <div style={{ display: "flex" }}>
                 {/* <div>
                   <IconButton
@@ -237,12 +239,31 @@ const DeckDetail: React.FC = () => {
                           saveMode={deck ? deck.savingProgressStatus === ProgressStatus.ENABLED : false}
                           key={index + "wordcard" + id}
                           props={wordcard}
+                          userId={deck ? deck.userId : 1}
                         ></VocabLine>
                       </>
                     )
                   })}
                   <div className='vocab-line'>
-                    {mode === "button" && <AddButton handleButtonClick={() => setMode("add")} size='45' />}
+                    {mode === "button" && (
+                      <div style={{ display: "flex" }}>
+                        <AddButton
+                          handleButtonClick={() => {
+                            if (loginUser === deck?.userId) {
+                              setMode("add")
+                            } else {
+                              setShow(true)
+                            }
+                          }}
+                          size='45'
+                        />{" "}
+                        <Toast onClose={() => setShow(false)} show={show} delay={3000} as="div" style={{width:"100%"}} autohide >
+                          <Toast.Body>
+                            단어장의 주인이 아니면 단어를 추가할 수 없습니다. 단어장을 퍼가면 단어를 추가할 수 있습니다.
+                          </Toast.Body>
+                        </Toast>
+                      </div>
+                    )}
                     {mode === "add" && (
                       <>
                         <AddLine addWord={addWord} />
