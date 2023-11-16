@@ -48,7 +48,7 @@ function MyPage() {
         console.log("토큰 제대로 전달 되는지", token)
         const data = await getUserData(token)
         console.log("토큰 제대로 전달 되는지", token)
-        data.data.profile = `${API_URL}/${data.data.profile}`
+        data.data.profile = `https://말해vr.site/profiles/${data.data.profile}`
         console.log("받아온 데이터", data)
 
         if (isMounted) {
