@@ -237,7 +237,7 @@
 - [🗞️ API 명세서](https://infrequent-attraction-ca6.notion.site/API-a83b368c239f4db1a12b91c81e00e811?pvs=4)
 - [🎨 와이어프레임](https://www.figma.com/file/yBIEwfiSadBuUsuk45q1uq/A501?type=design&node-id=0%3A1&mode=design&t=F6tclqYa0DnB3OxV-1)
 
-<details><summary>ERD
+<details><summary> 🧱 ERD
 </summary>
 ![말해VrERD](./exec/image/말해VrERD.png)
 </details>
