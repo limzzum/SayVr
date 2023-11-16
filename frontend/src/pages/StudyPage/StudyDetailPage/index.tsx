@@ -264,23 +264,26 @@ const StudyDetail: React.FC = () => {
             ></WeeklySprintComponent>
           </div>
         </div>
-        <div className="study-goal-title">
+        <div className="study-goal-title" style={{justifyContent:"space-between", display:"flex", flexDirection:"row"}}>
+          <div style={{display:"flex",flexDirection:"row"}}>
           <h2>스터디 단어장</h2>
           <div style={{ marginLeft: "1rem" }}>
             <AddButton
               handleButtonClick={handleCreateWordListButtonClick}
               size="45"
             />
+          </div>       
           </div>
-        </div>
-        <div className="row card-row justify-content-center align-items-center">
-          <div className="studypage-inner-container">
-            <div>
+          <div>
               <ArrowLeft onClick={() => sliderPersonal?.current?.slickPrev()} />
               <ArrowRight
                 onClick={() => sliderPersonal?.current?.slickNext()}
               />
             </div>
+        </div>
+        <div className="row card-row justify-content-center align-items-center">
+          <div className="studypage-inner-container">
+     
             <div className="row">
               {(studyCardTitles == null || studyCardTitles.length === 0) && (
                 <>
