@@ -4,9 +4,9 @@ import GetConversation from "../../../api/MyStudyAnalysisAPI/GetConversation";
 import Translation from "../../../components/MyStudyAnalysisComponents/Translation/Translation";
 import "./style.css";
 import { tokenState } from "../../../recoil/GoalbalState";
-import { useRecoilValue } from 'recoil';
-import GrammarScoreBadge from "../../../assets/MygradeAssets/GrammarScoreBadge.png";
-import ContextScoreBadge from "../../../assets/MygradeAssets/ContextScoreBadge.png";
+import { useRecoilValue } from "recoil";
+import GrammarScore from "../../../assets/MygradeAssets/GrammarScore.png";
+import ContextScore from "../../../assets/MygradeAssets/ContextScore.png";
 
 declare global {
   interface Window {
@@ -33,6 +33,8 @@ function MyStudyAnalysisDetailPage() {
       context: number;
       pronunciation: number;
     }>;
+    conversationContext: number;
+    conversationGrammar: number;
     review?: string;
   } | null>(null);
 
@@ -42,6 +44,7 @@ function MyStudyAnalysisDetailPage() {
     const fetchData = async (clickedId: number) => {
       try {
         const conversationData = await GetConversation(clickedId, token);
+        console.log("넘겨 받아온 데이터", conversationData);
         setConversationData(conversationData);
         setLoading(false);
       } catch (error) {
@@ -72,8 +75,8 @@ function MyStudyAnalysisDetailPage() {
 
         console.log("디테일 페이지로 넘겨 받은 데이터", conversationData);
         setConversationData(conversationData);
-        console.log(conversationData.review);
-        console.log(conversationData.data.review);
+        console.log(".review", conversationData.review);
+        console.log(".data.review", conversationData.data.review);
       } catch (error) {
         console.error("Error handling conversation:", error);
       } finally {
@@ -132,43 +135,19 @@ function MyStudyAnalysisDetailPage() {
     return (
       <div className="message-container">
         <h2>Script</h2>
-        {messageList.map((message, index) => (
-          <div
-            key={index}
-            className={`message-bubble ${message.role === "user" ? "user-message" : "other-message"}`}
-            style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start" }}
-          >
-            {message.role === "user" && (
-              <div className="message-info row justify-content-end position-relative">
-                <div className="col-auto" style={{ backgroundColor: "transparent", position: "relative" }}>
-                  <span style={{
-                    color: "black",
-                    position: "absolute",
-                    top: "37%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    fontSize: "15px"
-                  }}>{message.grammar}</span>
-                  <img src={GrammarScoreBadge} alt="GrammarScoreBadge" style={{ maxWidth: "60px", zIndex: 1 }} />
-                </div>
-                <div className="col-auto" style={{ backgroundColor: "transparent", position: "relative" }}>
-                  <span style={{
-                    color: "black",
-                    position: "absolute",
-                    top: "37%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    fontSize: "15px"
-                  }}>{message.context}</span>
-                  <img src={ContextScoreBadge} alt="ContextScoreBadge" style={{ maxWidth: "60px", zIndex: 1 }} />
-                </div>
+        {messageList
+          .filter((message) => message.role !== "system")
+          .map((message, index) => (
+            <div
+              key={index}
+              className={`message-bubble ${message.role === "user" ? "user-message" : "other-message"}`}
+              style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start" }}
+            >
+              <div className="message-content">
+                <p>{message.content}</p>
               </div>
-            )}
-            <div className="message-content">
-              <p>{message.content}</p>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     );
   };
@@ -196,7 +175,43 @@ function MyStudyAnalysisDetailPage() {
         </div>
         <div className="col-md-4 script-container-div">
           <div className="script-container">
-            <h1>Review</h1>
+            <div className="row position-relative">
+              <div className="row  position-relative">
+              <div className="col-6">
+                <h1>Review</h1>
+              </div>
+                <div className="col-auto end" style={{ backgroundColor: "transparent", position: "relative" }}>
+                  <span
+                    style={{
+                      color: "black",
+                      position: "absolute",
+                      top: "58%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      fontSize: "15px",
+                    }}
+                  >
+                    {conversationData?.conversationGrammar}
+                  </span>
+                  <img src={GrammarScore} alt="GrammarScoreBadge" style={{ maxWidth: "100px", zIndex: 1 }} />
+                </div>
+                <div className="col-auto end" style={{ backgroundColor: "transparent", position: "relative" }}>
+                  <span
+                    style={{
+                      color: "black",
+                      position: "absolute",
+                      top: "58%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      fontSize: "15px",
+                    }}
+                  >
+                    {conversationData?.conversationContext}
+                  </span>
+                  <img src={ContextScore} alt="ContextScoreBadge" style={{ maxWidth: "100px", zIndex: 1 }} />
+                </div>
+              </div>
+            </div>
             <br />
             <div className="review-container">{conversationData?.review}</div>
           </div>

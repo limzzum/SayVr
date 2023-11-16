@@ -1,4 +1,3 @@
-// api.ts
 import axios, { AxiosResponse } from "axios"
 import { CreateFlashcardsRequestDto, PrivacyStatus } from "../../components/VocabListComponents/CreateNewListModal"
 import { DeckSettingsUpdateRequestDto } from "../../components/VocabListComponents/DeckSettingModal"
