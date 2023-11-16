@@ -2,6 +2,7 @@ import Slider from "react-slick"
 import { useEffect, useRef, useState } from "react"
 import { getUserData, UserData } from "../../api/MyPageAPI/GetUserData"
 import API_URL from "../../config"
+import {SERVCER_URL} from "../../config"
 import "slick-carousel/slick/slick-theme.css"
 import "slick-carousel/slick/slick.css"
 import ActiveCalendar from "../../api/MyPageAPI/ActivityCalendar"
@@ -48,7 +49,7 @@ function MyPage() {
         console.log("토큰 제대로 전달 되는지", token)
         const data = await getUserData(token)
         console.log("토큰 제대로 전달 되는지", token)
-        data.data.profile = `https://말해vr.site/profiles/${data.data.profile}`
+        data.data.profile = data.data.profile == null? `${SERVCER_URL}/profiles/default.png` : `${SERVCER_URL}/profiles/${data.data.profile}`
         console.log("받아온 데이터", data)
 
         if (isMounted) {
