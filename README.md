@@ -94,6 +94,56 @@
 
 ## 개발 환경
 
+### Frontend
+
+- Node JS 18.16.1
+- React 9.5.1
+- Recoil 0.7.7
+- Typescript 5.2.2
+- Sockjs 0.3.35
+
+### Backend
+
+- Java
+  - Java OpenJDK 17
+  - Spring Boot 2.7.17
+    - Spring Data JPA 2.7.17
+    - Spring Security 2.7.17'
+    - JUnit 5.8.2
+    - Lombok 1.18.26
+    - Websocket 2.3.4
+    - Querydsl 5.0.0
+  - Gradle 7.6
+
+
+### Server
+
+- Ubuntu 20.04 LTS
+- Nginx 1.18.0
+- Docker 24.0.5
+- Docker Compose 1.27.4
+- Jenkins 2.401.3
+- RabbitMq 3.12.7
+
+### Database
+
+- Mariadb 11.1.2
+- Redis 7.2.1
+
+### UI / UX
+
+- Figma
+
+### IDE
+
+- Visual Studio Code
+- IntelliJ IDEA
+
+### 형상 / 이슈관리
+
+- Gitlab
+- Jira
+
 
 ## 📦프로젝트 파일 구조
 
