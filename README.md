@@ -363,7 +363,7 @@
 |[김종원](https://lab.ssafy.com/jkjongwon)|BE, FE|
 |[최지원](https://lab.ssafy.com/wldnjs9515)|BE_LEADER, BE, FE|
 |[신석철](https://lab.ssafy.com/scshin97)|FE_LEADER, FE|
-|[박한샘](https://lab.ssafy.com/phsaem98)|VR|
-|[이정준](https://lab.ssafy.com/jjyoyo83)|VR|
+|[박한샘](https://lab.ssafy.com/phsaem98)|VR, UNREAL|
+|[이정준](https://lab.ssafy.com/jjyoyo83)|VR, UNREAL|
 
 
