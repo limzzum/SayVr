@@ -177,6 +177,7 @@
 
 ### IDE
 
+- Visual Studio
 - Visual Studio Code
 - IntelliJ IDEA
 
