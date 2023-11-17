@@ -252,7 +252,9 @@
     - Websocket 2.3.4
     - Querydsl 5.0.0
   - Gradle 7.6
-- fastAPI 
+- Python
+  - Python 3.11
+  - fastAPI 0.97.0
 
 ### Server
 
