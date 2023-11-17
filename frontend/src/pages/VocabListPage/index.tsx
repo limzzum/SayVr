@@ -20,7 +20,7 @@ const carouselSettings = {
   dots: false,
   // infinite: true,
   speed: 500,
-  slidesToShow: 3,
+  // slidesToShow: 3,
   slidesToScroll: 3,
   arrows: false,
   responsive: [
@@ -184,19 +184,21 @@ function VocabListPage() {
                 </div>
               </div>
               <div className='row clickable-card'>
-                {(personalCardTitles == null || personalCardTitles.length === 0) && (
-                  <>
-                    <MyWordCard type='none' addNew={handlePlusButtonClick} />
-                  </>
-                )}
-                <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
-                  {personalCardTitles?.map((deck, index) => {
+                <Slider infinite={personalCardTitles.length >= 3} slidesToShow={personalCardTitles.length>=2?3:1} ref={sliderPersonal} {...carouselSettings}>
+  
+                {personalCardTitles?.map((deck, index) => {
                     return (
                       <>
                         <MyWordCard type={"private"} key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
                       </>
                     )
                   })}
+                {(personalCardTitles == null || personalCardTitles.length < 3) && (
+                    <MyWordCard type='none' addNew={handlePlusButtonClick} />
+                )}
+                { personalCardTitles.length ===1 &&
+                      <MyWordCard type='none' addNew={handlePlusButtonClick} />
+                }
                 </Slider>
               </div>
             </div>
@@ -269,13 +271,15 @@ function VocabListPage() {
                   </div>
                 </div>
               </div>
-              <div className='row justify-content-center clickable-card'>
-                {(publicCardTitles == null || publicCardTitles.length === 0) && (
-                  <>
+              <div className='row justify-content-center clickable-card'>  
+                <Slider infinite={publicCardTitles?.length >= 3} slidesToShow={publicCardTitles.length>=2?3:1} ref={sliderPublic} {...carouselSettings}>
+                  {(publicCardTitles == null || publicCardTitles.length < 3) && (
+                      <MyWordCard type='none' addNew={handlePlusButtonClick} />
+                  )}
+                  {
+                    publicCardTitles.length === 1 &&
                     <MyWordCard type='none' addNew={handlePlusButtonClick} />
-                  </>
-                )}
-                <Slider infinite={publicCardTitles?.length >= 3} ref={sliderPublic} {...carouselSettings}>
+                  }
                   {publicCardTitles?.map((deck, index) => {
                     return (
                       <>
