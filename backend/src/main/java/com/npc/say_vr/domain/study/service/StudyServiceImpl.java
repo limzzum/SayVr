@@ -203,7 +203,7 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public StudyListResponseDto readStudyKeyWord(Long userId, StudySliceRequestDto studySliceRequestDto) {
         return StudyListResponseDto.builder()
-                .studyInfoDtoList(studyRepository.findByKeyword(studySliceRequestDto.getStudyId(),studySliceRequestDto.getSize(),studySliceRequestDto.getKeyword()))
+                .studyInfoDtoList(studyRepository.findByKeyword(studySliceRequestDto.getLastId(),studySliceRequestDto.getSize(),studySliceRequestDto.getKeyword()))
                 .build();
     }
 
