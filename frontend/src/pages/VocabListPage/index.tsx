@@ -63,11 +63,12 @@ function VocabListPage() {
     return (
       <>
         <Button
-          style={{
-            borderColor: "transparent",
-            color: "black",
-            backgroundColor: "transparent",
-          }}
+        style={{
+          borderColor: "transparent",
+          color: "black",
+          backgroundColor: "transparent",
+          width:"4rem"
+        }}
           onClick={props.onClick}
         >
           <BsArrowLeft />
@@ -79,11 +80,12 @@ function VocabListPage() {
     return (
       <>
         <Button
-          style={{
-            borderColor: "transparent",
-            color: "black",
-            backgroundColor: "transparent",
-          }}
+        style={{
+          borderColor: "transparent",
+          color: "black",
+          backgroundColor: "transparent",
+          width:"4rem"
+        }}
           onClick={props.onClick}
         >
           <BsArrowRight />

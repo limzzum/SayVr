@@ -59,6 +59,7 @@ function StudyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -75,6 +76,7 @@ function StudyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
