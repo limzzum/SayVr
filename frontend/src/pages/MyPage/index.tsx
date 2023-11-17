@@ -238,7 +238,7 @@ function MyPage() {
           </div>
         </div>
         <div className='row clickable-cards'>
-          {(personalCardTitles == null || personalCardTitles.length === 0) && <></>}
+          
           <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
             {personalCardTitles?.map((deck, index) => {
               return (
@@ -247,6 +247,9 @@ function MyPage() {
                 </>
               )
             })}
+            {(personalCardTitles == null || personalCardTitles.length <3) && <>
+            <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} /></>}
+            {personalCardTitles.length===1 && <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} />}
           </Slider>
         </div>
       </div>
@@ -267,11 +270,7 @@ function MyPage() {
           </div>
         </div>
         <div className='row clickable-cards'>
-        {(studyMineList == null || studyMineList.length === 0) && (
-              <>
-                <MyStudyCard addNew={()=>navigate("/StudyList")} />
-              </>
-            )}
+
           <Slider infinite={studyMineList.length >= 3} ref={sliderMine} {...carouselSettings}>
             {studyMineList?.map((study, index) => {
               return (
@@ -280,6 +279,12 @@ function MyPage() {
                 </>
               )
             })}
+            {(studyMineList == null || studyMineList.length < 3) && (
+              <>
+                <MyStudyCard addNew={()=>navigate("/StudyList")} />
+              </>
+            )}
+            { studyMineList.length===1 && <MyStudyCard addNew={()=>navigate("/StudyList")} />}
           </Slider>
         </div>
       </div>

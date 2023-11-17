@@ -6,10 +6,10 @@
   padding: 10px;
   margin: 30px auto;
   align-items:center;
-  justify-content:center;
+  /* justify-content:center; */
 }
 .vocab-list-title{
-  justify-content:center;
+  /* justify-content:center; */
   align-items:center;
   margin-bottom:1rem;
 }
