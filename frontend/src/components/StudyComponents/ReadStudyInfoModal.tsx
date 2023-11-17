@@ -12,7 +12,9 @@ interface ReadStudyInfoModalProps {
 export interface JoinStudyRequestDto {
   studyId: number;
 }
-
+// todo : 가입하기 -> 가입이 완료되었습니다.팝업창 띄워주기
+// todo : 가입하기 -> 이미 가입한 회원입니다. 팝업창 띄워주기
+// todo : (위와 같이 둘다 진행 될 경우 ) 상세페이지 이동
 const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
   showModal,
   handleClose,
@@ -31,7 +33,7 @@ const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
     joinStudy(requestData)
       .then((res) => {
         console.log(res.data);
-        if(res.data.httpStatus === "CREATED") {
+        if (res.data.httpStatus === "CREATED") {
           handleClose();
           goToDetail(res.data.data.studyId);
         }
@@ -67,10 +69,7 @@ const ReadStudyInfoModal: React.FC<ReadStudyInfoModalProps> = ({
         <Button variant="secondary" onClick={handleClose}>
           닫기
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleSubmit}
-        >
+        <Button variant="primary" onClick={handleSubmit}>
           스터디 가입
         </Button>
       </Modal.Footer>

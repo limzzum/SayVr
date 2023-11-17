@@ -1,19 +1,26 @@
-import { useEffect, useRef, useState } from "react"
-import { StudyInfoDto, getStudyList, getStudyMineList } from "../../api/StudyPageAPI/StudyAPI"
-import MyStudyCard from "../../components/StudyComponents/MyStudyCard"
-import AllStudyCard from "../../components/StudyComponents/AllStudyCard"
-import AddButton from "../../components/StudyComponents/AddButton"
-import CreateNewStudyModal from "../../components/StudyComponents/CreatNewStudyModal"
-import ReadStudyInfoModal from "../../components/StudyComponents/ReadStudyInfoModal"
+import { useEffect, useRef, useState } from "react";
+import {
+  StudyInfoDto,
+  getStudyList,
+  getStudyMineList,
+  StudySliceRequestDto,
+  getStudyListKeyWord,
+} from "../../api/StudyPageAPI/StudyAPI";
+import MyStudyCard from "../../components/StudyComponents/MyStudyCard";
+import AllStudyCard from "../../components/StudyComponents/AllStudyCard";
+import AddButton from "../../components/StudyComponents/AddButton";
+import CreateNewStudyModal from "../../components/StudyComponents/CreatNewStudyModal";
+import ReadStudyInfoModal from "../../components/StudyComponents/ReadStudyInfoModal";
 // import StudyDetail from "./StudyDetailPage";
-import { useNavigate } from "react-router-dom"
-import { Button, Form, InputGroup } from "react-bootstrap"
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs"
-import Slider from "react-slick"
-import "./style.css"
+import { useNavigate } from "react-router-dom";
+import { Button, Form, InputGroup } from "react-bootstrap";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import Slider from "react-slick";
+import "./style.css";
+import StudyListPage from "./StudyListPage";
 
 interface ArrowProps {
-  onClick: () => void
+  onClick: () => void;
 }
 const carouselSettings = {
   dots: false,
@@ -36,21 +43,28 @@ const carouselSettings = {
       },
     },
   ],
-}
+};
 
 function StudyPage() {
-  const navigate = useNavigate()
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showReadModal, setShowReadModal] = useState(false)
-  const [menu, setMenu] = useState("main")
+  const navigate = useNavigate();
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showReadModal, setShowReadModal] = useState(false);
+  const [menu, setMenu] = useState("main");
   // const [selectedDeck, setSelectedDeck] = useState<DeckDetailResponseDto>();
-  const [studyMineList, setStudyMineList] = useState<StudyInfoDto[]>([])
-  const [allStudyList, setAllStudyList] = useState<StudyInfoDto[]>([])
-  const sliderMine = useRef<Slider | null>(null)
-  const sliderAll = useRef<Slider | null>(null)
-  const [readStudyInfo, setReadStudyInfo] = useState<StudyInfoDto>()
+  const [studyMineList, setStudyMineList] = useState<StudyInfoDto[]>([]);
+  const [allStudyList, setAllStudyList] = useState<StudyInfoDto[]>([]);
+  const sliderMine = useRef<Slider | null>(null);
+  const sliderAll = useRef<Slider | null>(null);
+  const [readStudyInfo, setReadStudyInfo] = useState<StudyInfoDto>();
+  const [searchStudyInfos, setSearchStudyInfos] = useState<StudyInfoDto[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-  const [searchKeyword, setSearchKeyword] = useState("")
+  const searchParams: StudySliceRequestDto = {
+    lastId: 1000,
+    size: 9,
+    keyword: searchKeyword,
+  };
+
   const ArrowLeft = (props: ArrowProps) => {
     return (
       <>
@@ -65,8 +79,8 @@ function StudyPage() {
           <BsArrowLeft />
         </Button>
       </>
-    )
-  }
+    );
+  };
   const ArrowRight = (props: ArrowProps) => {
     return (
       <>
@@ -81,50 +95,62 @@ function StudyPage() {
           <BsArrowRight />
         </Button>
       </>
-    )
-  }
+    );
+  };
   useEffect(() => {
     getStudyMineList()
       .then((res) => {
-        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList
-        setStudyMineList(show)
-        console.log("내 스터디 리스트 : " + show)
+        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
+        setStudyMineList(show);
+        console.log("내 스터디 리스트 : " + show);
       })
       .catch((error) => {
         // TODO : 에러 메시지
-        console.error("Error fetching getStudyMineList", error)
-      })
+        console.error("Error fetching getStudyMineList", error);
+      });
     getStudyList()
       .then((res) => {
-        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList
-        setAllStudyList(show)
-        console.log("전체 스터디 리스트 : " + show)
+        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
+        setAllStudyList(show);
+        console.log("전체 스터디 리스트 : " + show);
       })
       .catch((error) => {
-        console.error("Error fetching getStudyList", error)
-      })
-  }, [])
+        console.error("Error fetching getStudyList", error);
+      });
+  }, []);
 
-  const handleSearch = () => {}
+  const handleSearch = async () => {
+    getStudyListKeyWord(searchParams).then((res) => {
+      let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
+      setSearchStudyInfos(show);
+      console.log(show);
+      setMenu("public");
+    });
+  };
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
-    setSearchKeyword(value)
-  }
+    const { value } = event.target;
+    setSearchKeyword(value);
+  };
   const handleCreatePlusButtonClick = () => {
-    setShowCreateModal(true)
-  }
+    setShowCreateModal(true);
+  };
+
+  const goToList = (where: string) => {
+    setMenu(where);
+  };
 
   const handleCreateCloseModal = () => {
-    setShowCreateModal(false)
-  }
+    setShowCreateModal(false);
+  };
 
   const handleReadPlusButtonClick = () => {
-    setShowReadModal(true)
-  }
+    setShowReadModal(true);
+  };
 
   const handleReadCloseModal = () => {
-    setShowReadModal(false)
-  }
+    setShowReadModal(false);
+  };
 
   // const goToDetail = (createdDeck: DeckResponse) => {
   //   setSelectedDeck(createdDeck)
@@ -132,80 +158,98 @@ function StudyPage() {
   // }
 
   const goToDetail = async (id: number) => {
-    navigate(`/study/${id}`)
-  }
+    navigate(`/study/${id}`);
+  };
 
   return (
     <>
-      <div className='container mt-5 flex justify-content-center'>
+      <div className="container mt-5 flex justify-content-center">
         {menu === "main" && (
           <>
-            <div className='vocab-list-container row card-row  align-items-center '>
-              <div className='mb-3 row justify-content-center align-items-center'>
-                <div className='col'>
-                  <div className='list-title-buttons'>
-                    <div className='card-title'>
-                      <div className='card-title-private clickable' onClick={() => setMenu("private")}>
+            <div className="vocab-list-container row card-row  align-items-center ">
+              <div className="mb-3 row justify-content-center align-items-center">
+                <div className="col">
+                  <div className="list-title-buttons">
+                    <div className="card-title">
+                      <div
+                        className="card-title-private clickable"
+                        onClick={() => setMenu("private")}
+                      >
                         <h1>내 스터디 </h1>
                       </div>
                       <div style={{ marginLeft: "1rem" }}>
-                        <AddButton handleButtonClick={handleCreatePlusButtonClick} size='50' />
+                        <AddButton
+                          handleButtonClick={handleCreatePlusButtonClick}
+                          size="50"
+                        />
                       </div>
                     </div>
                     <div>
-                      <ArrowLeft onClick={() => sliderMine?.current?.slickPrev()} />
-                      <ArrowRight onClick={() => sliderMine?.current?.slickNext()} />
+                      <ArrowLeft
+                        onClick={() => sliderMine?.current?.slickPrev()}
+                      />
+                      <ArrowRight
+                        onClick={() => sliderMine?.current?.slickNext()}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className='row clickable-cards'>
+              <div className="row clickable-cards">
                 {(studyMineList == null || studyMineList.length === 0) && (
                   <>
                     <MyStudyCard addNew={handleCreatePlusButtonClick} />
                   </>
                 )}
-                <Slider infinite={studyMineList.length >= 3} ref={sliderMine} {...carouselSettings}>
+                <Slider
+                  infinite={studyMineList.length >= 3}
+                  ref={sliderMine}
+                  {...carouselSettings}
+                >
                   {studyMineList?.map((study, index) => {
                     return (
                       <>
-                        <MyStudyCard key={index + study.studyId} addNew={handleCreatePlusButtonClick} props={study} />
+                        <MyStudyCard
+                          key={index + study.studyId}
+                          addNew={handleCreatePlusButtonClick}
+                          props={study}
+                        />
                       </>
-                    )
+                    );
                   })}
                 </Slider>
               </div>
             </div>
-            <div className='vocab-list-container row card-row  align-items-center '>
-              <div className='mb-3 row justify-content-center align-items-center'>
-                <div className='col'>
-                  <div className='list-title-buttons'>
-                    <div className='card-title'>
+            <div className="vocab-list-container row card-row  align-items-center ">
+              <div className="mb-3 row justify-content-center align-items-center">
+                <div className="col">
+                  <div className="list-title-buttons">
+                    <div className="card-title">
                       <div
-                        className='card-title-public clickable'
+                        className="card-title-public clickable"
                         onClick={() => {
-                          setMenu("public")
+                          setMenu("public");
                         }}
                       >
                         <h1>모든 스터디 </h1>
                       </div>
-                      <div className='container-fluid search-bar'>
+                      <div className="container-fluid search-bar">
                         <InputGroup>
                           <Form.Control
-                            placeholder='검색'
-                            name='keyword'
+                            placeholder="검색"
+                            name="keyword"
                             onChange={handleInputChange}
                             value={searchKeyword}
-                            type='search'
-                            aria-label='study-search'
+                            type="search"
+                            aria-label="study-search"
                           />
                           <Button
-                            type='submit'
+                            type="submit"
                             onClick={(e: any) => {
-                              e.preventDefault()
-                              handleSearch()
+                              e.preventDefault();
+                              handleSearch();
                             }}
-                            className='btn'
+                            className="btn"
                           >
                             Search
                           </Button>
@@ -213,23 +257,40 @@ function StudyPage() {
                       </div>
                     </div>
                     <div>
-                      <ArrowLeft onClick={() => sliderAll?.current?.slickPrev()} />
-                      <ArrowRight onClick={() => sliderAll?.current?.slickNext()} />
+                      <ArrowLeft
+                        onClick={() => sliderAll?.current?.slickPrev()}
+                      />
+                      <ArrowRight
+                        onClick={() => sliderAll?.current?.slickNext()}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className='row clickable-cards'>
+              <div className="row clickable-cards">
                 {(allStudyList == null || allStudyList.length === 0) && (
                   <>
-                    <div className='emtpy-title-card' onClick={handleCreatePlusButtonClick}>
-                      <div className='empty-add-button' style={{ justifyContent: "center" }}>
-                        <AddButton handleButtonClick={handleCreatePlusButtonClick} size='50' />
+                    <div
+                      className="emtpy-title-card"
+                      onClick={handleCreatePlusButtonClick}
+                    >
+                      <div
+                        className="empty-add-button"
+                        style={{ justifyContent: "center" }}
+                      >
+                        <AddButton
+                          handleButtonClick={handleCreatePlusButtonClick}
+                          size="50"
+                        />
                       </div>
                     </div>
                   </>
                 )}
-                <Slider infinite={allStudyList?.length >= 3} ref={sliderAll} {...carouselSettings}>
+                <Slider
+                  infinite={allStudyList?.length >= 3}
+                  ref={sliderAll}
+                  {...carouselSettings}
+                >
                   {allStudyList?.map((study, index) => {
                     return (
                       <>
@@ -241,15 +302,19 @@ function StudyPage() {
                           props={study}
                         />
                       </>
-                    )
+                    );
                   })}
                 </Slider>
               </div>
             </div>
-            <div className='create-new-list-modal'>
-              <CreateNewStudyModal showModal={showCreateModal} handleClose={handleCreateCloseModal} goToDetail={goToDetail} />
+            <div className="create-new-list-modal">
+              <CreateNewStudyModal
+                showModal={showCreateModal}
+                handleClose={handleCreateCloseModal}
+                goToDetail={goToDetail}
+              />
             </div>
-            <div className='create-new-list-modal'>
+            <div className="create-new-list-modal">
               <ReadStudyInfoModal
                 showModal={showReadModal}
                 handleClose={handleReadCloseModal}
@@ -259,29 +324,18 @@ function StudyPage() {
             </div>
           </>
         )}
-        {/* {menu === "detail" && (
-          <>
-            <DeckDetail props={selectedDeck} changeView={setMenu} />
-          </>
-        )}
-        {menu === "learn" && (
-          <>
-            <DeckLearn changeView={setMenu} props={selectedDeck} />
-          </>
-        )}
-        {menu === "quiz" && <></>}
         {menu === "public" && (
           <>
-            <DeckListPage changeView={goToList} category="public" />
+            <StudyListPage
+              type="public"
+              changeView={goToList}
+              searchResult={searchStudyInfos}
+              searchParameter={searchParams}
+            />
           </>
         )}
-        {menu === "private" && (
-          <>
-            <DeckListPage changeView={goToList} category="private" />
-          </>
-        )} */}
       </div>
     </>
-  )
+  );
 }
-export default StudyPage
+export default StudyPage;
