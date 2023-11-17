@@ -100,7 +100,7 @@ const DeckLearn: React.FC<DeckDetailProps> = ({ props, changeView, handleRefresh
             {!wordList.every((wordcard) => wordcard.wordcardStatus === WordcardStatus.CHECKED) && (
               <div className='card wordcard'>
                 <div className='words english-row'>
-                  <h1>단어를 모두 학습하셨습니다. 다시 처음으로 돌아갈까요?</h1>
+                  <h1>단어를 모두 학습하셨습니다.<br/>다시 처음으로 돌아갈까요?</h1>
                   <Button
                     size='sm'
                     style={{ width: "150px" }}
