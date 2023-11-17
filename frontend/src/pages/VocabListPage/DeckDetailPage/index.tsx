@@ -29,8 +29,8 @@ export interface CreateWordcardRequestDto {
 }
 // const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const DeckDetail: React.FC = () => {
-  const [loginUser, setLoginUser] = useState<number>(0)
-  const loggedUserId = Number(useRecoilValue(loggedIdState))
+  // const [loginUser, setLoginUser] = useState<number>(Number(useRecoilValue(loggedIdState)))
+  const loggedUserId = localStorage.getItem("userId")?Number(localStorage.getItem("userId")):0;
   const { id } = useParams()
   const [deckId, setDeckId] = useState(Number(id))
   const navigate = useNavigate()
@@ -49,10 +49,9 @@ const DeckDetail: React.FC = () => {
   //     setWordList(props.flashcardDto.wordcardList)
   //   }
   // }, [props])
-  useEffect(() => {
-    setLoginUser(loggedUserId)
-    // return () => {}
-  }, [])
+  // useEffect(() => {
+
+  // }, [])
 
   // const
   useEffect(() => {
@@ -69,8 +68,12 @@ const DeckDetail: React.FC = () => {
           alert("단어장 정보를 불러오는데 실패했습니다.")
         })
     }
-  }, [id, menu])
+  }, [id, setMenu])
   useEffect(() => {
+    console.log(loggedUserId)
+    // setLoginUser(loggedUserId)
+    // console.log("set user id"+ loggedUserId)
+    // return () => {}
     if (id) {
       getOneDeck(deckId)
         .then((res) => {
@@ -175,6 +178,7 @@ const DeckDetail: React.FC = () => {
               <div className='title-left'>
                 <BackArrow />
                 <h1>{deck?.name}</h1>
+                {/* <h1>test 단어장 주인: {deck?.userId} 로그인 유저 recoil:{loggedUserId}, </h1> */}
               </div>
               <div style={{ display: "flex" }}>
                 {/* <div>
@@ -207,7 +211,7 @@ const DeckDetail: React.FC = () => {
                     onHover
                   ></IconButton>
                 </div>
-                {deck && loginUser === deck.userId ? (
+                {deck && loggedUserId === deck.userId ? (
                   <>
                     <div>
                       <IconButton onHover icon={<SettingsIcon />} size={55} handleButtonClick={handleSettingsClick}></IconButton>
@@ -249,7 +253,7 @@ const DeckDetail: React.FC = () => {
                       <div style={{ display: "flex" }}>
                         <AddButton
                           handleButtonClick={() => {
-                            if (loginUser === deck?.userId) {
+                            if (loggedUserId === deck?.userId) {
                               setMode("add")
                             } else {
                               setShow(true)

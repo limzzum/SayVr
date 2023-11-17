@@ -7,5 +7,5 @@ export const tokenState = atom({
 
 export const loggedIdState = atom({
     key: 'loggedIdState',
-    default: '',
+    default: 0,
 });
