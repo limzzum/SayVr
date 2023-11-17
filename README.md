@@ -91,6 +91,8 @@
 
 ## 🎮🌐서비스 화면
 ---
+![figma](https://www.figma.com/file/yBIEwfiSadBuUsuk45q1uq/A501?type=design&node-id=91-1652&mode=design&t=WpK3YEnHqmp9kcvi-0)
+![image.png](./image.png)
 
 ### VR - My Room
 
