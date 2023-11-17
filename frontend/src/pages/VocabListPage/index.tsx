@@ -250,7 +250,7 @@ function VocabListPage() {
                               e.preventDefault()
                               handleSearch()
                             }}
-                            className='btn'
+                            className='search-btn'
                           >
                             Search
                           </Button>

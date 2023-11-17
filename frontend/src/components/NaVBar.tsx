@@ -58,7 +58,7 @@ const NavBar: React.FC = () => {
                 </Link>
                 <Button
                   variant="outline-dark"
-                  className="btn-block d-flex justify-content-center"
+                  className="btn-block d-flex justify-content-center log-btn"
                   style={{ whiteSpace: "nowrap" }}
                   onClick={logoutToken}
                 >
