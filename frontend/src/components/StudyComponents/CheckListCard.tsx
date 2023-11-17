@@ -197,6 +197,7 @@ function CheckListCard({
           <div className="task-left">할 일 {undoneTasks.length}개 남음</div>
         </div>
         <div className="todo-listblock">
+          <div className="todo-scroll" style={{maxHeight:"100%",overflowY:"scroll"}}>
           {checkList.checkListItemDtoList.map((task) => (
             <div className="todo-item-block" key={task.checkListId}>
               <div
@@ -235,6 +236,7 @@ function CheckListCard({
                 )}
             </div>
           ))}
+          </div>
         </div>
         {open &&
           !weeklySprintStatus &&

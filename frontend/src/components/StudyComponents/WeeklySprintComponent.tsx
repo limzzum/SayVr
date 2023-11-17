@@ -279,7 +279,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
               {nextWeeklySprintId && <IoIosArrowForward onClick={handleNextDate} style={{ cursor: "pointer" }} />}
             </p></>: <p>목표를 추가하세요.</p>}
           </div>
-          <div className="to-scroll" style={{maxHeight:"25vh",overflowY:"scroll"}} >
+          <div className="to-scroll" style={{maxHeight:"80%",overflowY:"scroll"}} >
           {goalInfo?.goalDtoList.map((goal) => (
             <div key={goal.goalId}>
               <div
