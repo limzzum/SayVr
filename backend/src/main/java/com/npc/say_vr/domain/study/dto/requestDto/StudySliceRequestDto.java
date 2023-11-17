@@ -12,7 +12,7 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 public class StudySliceRequestDto {
     @Nullable
-    Long studyId;
+    Long lastId;
     String keyword;
     Integer size;
 }
