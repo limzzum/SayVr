@@ -63,11 +63,12 @@ function VocabListPage() {
     return (
       <>
         <Button
-          style={{
-            borderColor: "transparent",
-            color: "black",
-            backgroundColor: "transparent",
-          }}
+        style={{
+          borderColor: "transparent",
+          color: "black",
+          backgroundColor: "transparent",
+          width:"4rem"
+        }}
           onClick={props.onClick}
         >
           <BsArrowLeft />
@@ -79,11 +80,12 @@ function VocabListPage() {
     return (
       <>
         <Button
-          style={{
-            borderColor: "transparent",
-            color: "black",
-            backgroundColor: "transparent",
-          }}
+        style={{
+          borderColor: "transparent",
+          color: "black",
+          backgroundColor: "transparent",
+          width:"4rem"
+        }}
           onClick={props.onClick}
         >
           <BsArrowRight />
@@ -163,7 +165,8 @@ function VocabListPage() {
           <>
             <div className='vocab-list-container row card-row'>
               <div className='vocab-list-title row'>
-                <div className='row'>
+              <div className='col'>
+              {/* <div className='row justify-content-center'> */}
                   <div className='list-title-buttons'>
                     <div className='card-title'>
                       <div className='card-title-private clickable' onClick={() => setMenu("private")}>
@@ -199,7 +202,9 @@ function VocabListPage() {
             </div>
             <div className='vocab-list-container row card-row'>
               <div className='vocab-list-title row'>
-                <div className='row justify-content-center'>
+              <div className='col'>
+              {/* <div className='row justify-content-center'> */}
+                  
                   <div className='list-title-buttons'>
                     <div className='card-title'>
                       <div
@@ -250,7 +255,7 @@ function VocabListPage() {
                               e.preventDefault()
                               handleSearch()
                             }}
-                            className='btn'
+                            className='search-btn'
                           >
                             Search
                           </Button>

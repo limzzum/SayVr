@@ -73,6 +73,7 @@ const StudyListSection: React.FC = () => {
           borderColor: "transparent",
           color: "black",
           backgroundColor: "transparent",
+          width:"2rem"
         }}
         onClick={props.onClick}
       >

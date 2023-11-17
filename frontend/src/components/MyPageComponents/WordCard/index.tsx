@@ -67,6 +67,7 @@ function VocabListPage() {
           borderColor: "transparent",
           color: "black",
           backgroundColor: "transparent",
+          width:"5rem"
         }}
         onClick={props.onClick}
       >
@@ -82,6 +83,7 @@ function VocabListPage() {
           borderColor: "transparent",
           color: "black",
           backgroundColor: "transparent",
+          width:"5rem"
         }}
         onClick={props.onClick}
       >

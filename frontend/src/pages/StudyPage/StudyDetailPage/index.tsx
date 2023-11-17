@@ -129,6 +129,7 @@ const StudyDetail: React.FC = () => {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -145,6 +146,7 @@ const StudyDetail: React.FC = () => {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >

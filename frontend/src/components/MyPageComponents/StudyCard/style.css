@@ -16,9 +16,9 @@
     width: 60vw;
     height: 30vh;
   }
-  .btn {
+  /* .btn {
     width: 5rem;
-  }
+  } */
   
   
   .study-list-container {
@@ -67,10 +67,10 @@
     cursor: pointer;
   }
   
-  .btn {
+  /* .btn {
     width: 5rem;
   }
-  
+   */
   .card {
     /* border-radius: 10px; */
     /* background: linear-gradient(0deg, #eef5fa 0%, #eef5fa 100%), */

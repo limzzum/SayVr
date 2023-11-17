@@ -120,6 +120,7 @@ function MyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -137,6 +138,7 @@ function MyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >

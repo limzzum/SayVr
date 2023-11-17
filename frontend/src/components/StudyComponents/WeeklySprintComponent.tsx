@@ -228,6 +228,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           className="clickable"
           onClick={props.onClick}
@@ -248,6 +249,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           className="clickable"
           onClick={props.onClick}
