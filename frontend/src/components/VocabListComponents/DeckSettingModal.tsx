@@ -120,6 +120,7 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
           console.error("Error updating deck", error)
           alert("단어장 정보를 수정하는데 실패했습니다.")
         })
+        navigate(0)
     }
   }
   useEffect(() => {
