@@ -15,6 +15,8 @@ import GameProceedingBody from "../../components/MatchingGameComponents/GameProc
 import Modal from "react-modal";
 import "./style.css";
 import { conteffi } from "../../App";
+import smileResult from "../../assets/MatchingGamePageAssets/fa-regular_smile.png";
+import sadResult from "../../assets/MatchingGamePageAssets/gg_smile-sad.png";
 
 interface receiveMessage {
   socketType: SocketType;
@@ -209,7 +211,7 @@ function MatchingGameWaitingPage() {
       setEndMessage(response.message!);
       setGameResult(response.data);
       setIsEndGame(true);
-      localStorage.removeItem("gameStatus");
+      // localStorage.removeItem("gameStatus");
     }
 
     console.log("socket 구독 receive");
@@ -312,21 +314,35 @@ function MatchingGameWaitingPage() {
           isOpen={isEndGame}
           onRequestClose={() => {}}
           contentLabel="Example Modal"
-          className="Modal"
+          className="game_result_modal"
         >
           <div>{endMessage}</div>
           {gameResult.draw ? (
             <div>무승부</div>
+          ) : gameResult.winnerId.toString() ==
+            localStorage.getItem("userId") ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <img src={smileResult}></img>
+              <div style={{ fontSize: "xxx-large", margin: "auto 50px" }}>
+                Winner
+              </div>
+            </div>
           ) : (
-            <div>
-              <div>winner : {gameResult.winnerId}</div>
-              <div>loser : {gameResult!.loserId}</div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <img src={sadResult}></img>
+              <div style={{ fontSize: "xxx-large", margin: "auto 50px" }}>
+                Loser
+              </div>
             </div>
           )}
+          <div style={{ height: "30px" }}></div>
 
-          <div>
-            {" "}
-            point : +{" "}
+          <div
+            style={{
+              fontSize: "xxx-large",
+            }}
+          >
+            포인트 : +{" "}
             {gameResult.draw
               ? gameResult!.drawPoint
               : gameResult!.winnerId.toString() ==
@@ -334,6 +350,7 @@ function MatchingGameWaitingPage() {
               ? gameResult!.winnerPoint
               : gameResult!.loserPoint}
           </div>
+          <div style={{ height: "30px" }}></div>
           <div>
             <button onClick={() => history("/")}>OK</button>
           </div>
