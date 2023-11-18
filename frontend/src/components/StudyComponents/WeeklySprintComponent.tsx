@@ -228,6 +228,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           className="clickable"
           onClick={props.onClick}
@@ -248,6 +249,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           className="clickable"
           onClick={props.onClick}
@@ -260,9 +262,10 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
 
   return (
     <div className='weeklySprint-container' style={{ display: "flex", flexDirection: "row", height: "100%" }}>
-      <div className='week-goal-list' style={{ flex: "0 0 auto", width: "31%" }}>
+      <div className='week-goal-list' style={{ flex: "0 0 auto", width: "31%"}}>
         <div className='week-goal-inner'>
           <div className='week-inner-list'>
+            {goalInfo ?<>
             <p>
               기간 :{preWeeklySprintId && <IoIosArrowBack onClick={handlePrevDate} style={{ cursor: "pointer" }} />}
               {goalInfo
@@ -274,8 +277,9 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
                   }.${new Date(new Date(goalInfo.targetDate).setDate(new Date(goalInfo.targetDate).getDate() + 6)).getDate()}`
                 : ""}
               {nextWeeklySprintId && <IoIosArrowForward onClick={handleNextDate} style={{ cursor: "pointer" }} />}
-            </p>
+            </p></>: <p>목표를 추가하세요.</p>}
           </div>
+          <div className="to-scroll" style={{maxHeight:"80%",overflowY:"scroll"}} >
           {goalInfo?.goalDtoList.map((goal) => (
             <div key={goal.goalId}>
               <div
@@ -325,7 +329,7 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
                 </div>
               )}
             </div>
-          ))}
+          ))}</div>
           {open && !weeklySprintStatus && studyRole === StudyRole.LEADER && (
             <div className='insert-form-positioner-goal'>
               <form className='insert-form-goal' onSubmit={onSubmit}>
@@ -364,10 +368,13 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
               <MdAdd />
             </button>
           )}
+          
         </div>
       </div>
       <div className='checklist-container-div' style={{ width:"69%" ,flex: 2 }}>
         <div className='checklist-container-inner' style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          {
+            goalInfo && <>
           <ArrowLeft onClick={handlePrevClick} />
           {goalInfo?.memberCheckListResponseDtoList.slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage).map((checkList) => (
             <CheckListCard
@@ -381,7 +388,8 @@ const WeeklySprintComponent: React.FC<WeeklySprintComponentProps> = ({
               setNextWeeklySprintId={setNextWeeklySprintId}
             ></CheckListCard>
           ))}
-          <ArrowRight onClick={handleNextClick} />
+          <ArrowRight onClick={handleNextClick} /></>
+          }
         </div>
       </div>
     </div>

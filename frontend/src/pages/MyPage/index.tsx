@@ -2,6 +2,7 @@ import Slider from "react-slick"
 import { useEffect, useRef, useState } from "react"
 import { getUserData, UserData } from "../../api/MyPageAPI/GetUserData"
 import API_URL from "../../config"
+import {SERVCER_URL} from "../../config"
 import "slick-carousel/slick/slick-theme.css"
 import "slick-carousel/slick/slick.css"
 import ActiveCalendar from "../../api/MyPageAPI/ActivityCalendar"
@@ -48,7 +49,7 @@ function MyPage() {
         console.log("토큰 제대로 전달 되는지", token)
         const data = await getUserData(token)
         console.log("토큰 제대로 전달 되는지", token)
-        data.data.profile = `https://말해vr.site/profiles/default/${data.data.profile}`
+        data.data.profile = data.data.profile == null? `${SERVCER_URL}/profiles/default.png` : `${SERVCER_URL}/profiles/${data.data.profile}`
         console.log("받아온 데이터", data)
 
         if (isMounted) {
@@ -119,6 +120,7 @@ function MyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -136,6 +138,7 @@ function MyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -235,7 +238,7 @@ function MyPage() {
           </div>
         </div>
         <div className='row clickable-cards'>
-          {(personalCardTitles == null || personalCardTitles.length === 0) && <></>}
+          
           <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
             {personalCardTitles?.map((deck, index) => {
               return (
@@ -244,6 +247,9 @@ function MyPage() {
                 </>
               )
             })}
+            {(personalCardTitles == null || personalCardTitles.length <3) && <>
+            <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} /></>}
+            {personalCardTitles.length===1 && <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} />}
           </Slider>
         </div>
       </div>
@@ -264,11 +270,7 @@ function MyPage() {
           </div>
         </div>
         <div className='row clickable-cards'>
-        {(studyMineList == null || studyMineList.length === 0) && (
-              <>
-                <MyStudyCard addNew={()=>navigate("/StudyList")} />
-              </>
-            )}
+
           <Slider infinite={studyMineList.length >= 3} ref={sliderMine} {...carouselSettings}>
             {studyMineList?.map((study, index) => {
               return (
@@ -277,6 +279,12 @@ function MyPage() {
                 </>
               )
             })}
+            {(studyMineList == null || studyMineList.length < 3) && (
+              <>
+                <MyStudyCard addNew={()=>navigate("/StudyList")} />
+              </>
+            )}
+            { studyMineList.length===1 && <MyStudyCard addNew={()=>navigate("/StudyList")} />}
           </Slider>
         </div>
       </div>

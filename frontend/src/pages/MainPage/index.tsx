@@ -20,7 +20,7 @@ const [today,setToday]= useState<WordcardDto>({id:0,kor:"천천히 준비하세�
   
     return (
       <div>
-        <img src={MainPageImg} alt="VrImg" style={{ width: '100vw', height: '75vh', objectFit: 'cover' }}/>
+        <img src={MainPageImg} alt="VrImg" style={{ width: '100%', height: '75vh', objectFit: 'cover' }}/>
         <p className="englishword">{today.eng}</p>
         <p className="koreanword">{today.kor}</p>
       </div>

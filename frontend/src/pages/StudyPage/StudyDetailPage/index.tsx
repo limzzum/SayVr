@@ -129,6 +129,7 @@ const StudyDetail: React.FC = () => {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -145,6 +146,7 @@ const StudyDetail: React.FC = () => {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
+            width:"4rem"
           }}
           onClick={props.onClick}
         >
@@ -285,11 +287,7 @@ const StudyDetail: React.FC = () => {
           <div className="studypage-inner-container">
      
             <div className="row">
-              {(studyCardTitles == null || studyCardTitles.length === 0) && (
-                <>
-                  <MyStudyWordCard addNew={handleCreateWordListButtonClick} studyId={studyId}/>
-                </>
-              )}
+        
               <Slider
                 infinite={studyCardTitles.length >= 3}
                 ref={sliderPersonal}
@@ -307,6 +305,14 @@ const StudyDetail: React.FC = () => {
                     </>
                   );
                 })}
+                {(studyCardTitles == null || studyCardTitles.length <3) && (
+                <>
+                  <MyStudyWordCard addNew={handleCreateWordListButtonClick} studyId={studyId}/>
+                </>
+              )}
+              {studyCardTitles.length===1 &&
+                <MyStudyWordCard addNew={handleCreateWordListButtonClick} studyId={studyId}/>
+              }
               </Slider>
             </div>
           </div>

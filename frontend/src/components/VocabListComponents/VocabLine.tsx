@@ -75,8 +75,8 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode, userId }) => {
           <div className='vocab-line'>
             <div>{saveMode}</div>
             <div></div>
-            <div className='flex row' style={{ display: "flex" }}>
-              <div className='col'>
+            <div className='flex row' style={{ display: "flex", alignItems:"center" }}>
+              <div className='col-1'>
                 <Speak word={props.eng} />
                 {/* <IconButton icon={<SoundIcon />} size={37} handleButtonClick={textToSpeech} /> */}
               </div>
@@ -86,8 +86,8 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode, userId }) => {
               </div>
             </div>
             <hr />
-            <div className='flex row' style={{ display: "flex", flexDirection: "row" }}>
-              <div className='col'>
+            <div className='flex row' style={{ display: "flex", flexDirection: "row", alignItems:"center" }}>
+              <div className='col-1'>
                 <IconButton icon={<UncheckedIcon />} size={37} handleButtonClick={uncheckWord} className={uncheckIcon} />
               </div>
               <div className='col'>{props?.kor}</div>

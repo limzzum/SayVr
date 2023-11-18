@@ -63,11 +63,12 @@ function VocabListPage() {
     return (
       <>
         <Button
-          style={{
-            borderColor: "transparent",
-            color: "black",
-            backgroundColor: "transparent",
-          }}
+        style={{
+          borderColor: "transparent",
+          color: "black",
+          backgroundColor: "transparent",
+          width:"4rem"
+        }}
           onClick={props.onClick}
         >
           <BsArrowLeft />
@@ -79,11 +80,12 @@ function VocabListPage() {
     return (
       <>
         <Button
-          style={{
-            borderColor: "transparent",
-            color: "black",
-            backgroundColor: "transparent",
-          }}
+        style={{
+          borderColor: "transparent",
+          color: "black",
+          backgroundColor: "transparent",
+          width:"4rem"
+        }}
           onClick={props.onClick}
         >
           <BsArrowRight />
@@ -163,7 +165,8 @@ function VocabListPage() {
           <>
             <div className='vocab-list-container row card-row'>
               <div className='vocab-list-title row'>
-                <div className='row'>
+              <div className='col'>
+              {/* <div className='row justify-content-center'> */}
                   <div className='list-title-buttons'>
                     <div className='card-title'>
                       <div className='card-title-private clickable' onClick={() => setMenu("private")}>
@@ -181,25 +184,31 @@ function VocabListPage() {
                 </div>
               </div>
               <div className='row clickable-card'>
-                {(personalCardTitles == null || personalCardTitles.length === 0) && (
-                  <>
-                    <MyWordCard type='none' addNew={handlePlusButtonClick} />
-                  </>
-                )}
-                <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
-                  {personalCardTitles?.map((deck, index) => {
+                <Slider infinite={personalCardTitles.length >= 3} 
+                // slidesToShow={personalCardTitles.length>=3?3:3} 
+                ref={sliderPersonal} {...carouselSettings}>
+  
+                {personalCardTitles?.map((deck, index) => {
                     return (
                       <>
                         <MyWordCard type={"private"} key={index + deck.id} addNew={handlePlusButtonClick} props={deck} />
                       </>
                     )
                   })}
+                {(personalCardTitles == null || personalCardTitles.length < 3) && (
+                    <MyWordCard type='none' addNew={handlePlusButtonClick} />
+                )}
+                { personalCardTitles.length ===1 &&
+                      <MyWordCard type='none' addNew={handlePlusButtonClick} />
+                }
                 </Slider>
               </div>
             </div>
             <div className='vocab-list-container row card-row'>
               <div className='vocab-list-title row'>
-                <div className='row justify-content-center'>
+              <div className='col'>
+              {/* <div className='row justify-content-center'> */}
+                  
                   <div className='list-title-buttons'>
                     <div className='card-title'>
                       <div
@@ -250,7 +259,7 @@ function VocabListPage() {
                               e.preventDefault()
                               handleSearch()
                             }}
-                            className='btn'
+                            className='search-btn'
                           >
                             Search
                           </Button>
@@ -264,13 +273,17 @@ function VocabListPage() {
                   </div>
                 </div>
               </div>
-              <div className='row justify-content-center clickable-card'>
-                {(publicCardTitles == null || publicCardTitles.length === 0) && (
-                  <>
+              <div className='row justify-content-center clickable-card'>  
+                <Slider infinite={publicCardTitles?.length >= 3} 
+                // slidesToShow={publicCardTitles.length>=2?3:1} 
+                ref={sliderPublic} {...carouselSettings}>
+                  {(publicCardTitles == null || publicCardTitles.length < 3) && (
+                      <MyWordCard type='none' addNew={handlePlusButtonClick} />
+                  )}
+                  {
+                    publicCardTitles.length === 1 &&
                     <MyWordCard type='none' addNew={handlePlusButtonClick} />
-                  </>
-                )}
-                <Slider infinite={publicCardTitles?.length >= 3} ref={sliderPublic} {...carouselSettings}>
+                  }
                   {publicCardTitles?.map((deck, index) => {
                     return (
                       <>

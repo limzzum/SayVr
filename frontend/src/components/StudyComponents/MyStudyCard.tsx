@@ -14,10 +14,10 @@ function MyStudyCard({ addNew, props }: StudyCardProps) {
     return (
       <>
         <div
-          className='emtpy-title-card'
+          className='emtpy-title-card deck-title-card justify-content-center'
           onClick={addNew}
         >
-          <div className='empty-add-button' style={{ justifyContent: "center" }}>
+          <div className='empty-add-button' style={{ justifyContent: "center", alignItems:"center" }}>
             <AddButton handleButtonClick={addNew} size='50' />
           </div>
         </div>
