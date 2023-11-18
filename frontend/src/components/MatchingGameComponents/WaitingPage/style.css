@@ -31,21 +31,9 @@
   width: 318px;
   height: 429px;
   padding: 0;
-  z-index: 1;
 }
 
-.match-profile-container1 {
-  position: relative;
-  background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
-  background-size: contain;
-  background-position: center;
-  width: 318px;
-  height: 429px;
-  padding: 0;
-  z-index: 1;
-}
-
-.match-profile-container2 {
+.match-profile-container {
   position: relative;
   background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
   background-size: contain;
@@ -72,10 +60,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
 }
 
-.match-profile-image1 {
+.match-profile-image {
   position: absolute;
   justify-content: center;
   background-clip: border-box;
@@ -88,17 +75,22 @@
   z-index: 1;
 }
 
-.match-profile-image2 {
+.match-profile-name {
   position: absolute;
-  justify-content: center;
-  background-clip: border-box;
-  border-radius: 50%;
-  width: 90px;
-  height: 90px;
-  top: 50%;
+  font-weight: bold;
+  top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
+}
+
+.match-profile-point {
+  position: absolute;
+  font-size: x-large;
+  font-weight: bold;
+  color: goldenrod;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .profile-image2 {
