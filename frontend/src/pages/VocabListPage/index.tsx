@@ -20,7 +20,7 @@ const carouselSettings = {
   dots: false,
   // infinite: true,
   speed: 500,
-  slidesToShow: 3,
+  // slidesToShow: 3,
   slidesToScroll: 3,
   arrows: false,
   responsive: [
@@ -185,7 +185,7 @@ function VocabListPage() {
               </div>
               <div className='row clickable-card'>
                 <Slider infinite={personalCardTitles.length >= 3} 
-                // slidesToShow={personalCardTitles.length>=3?3:3} 
+                slidesToShow={personalCardTitles.length===0?1:3} 
                 ref={sliderPersonal} {...carouselSettings}>
   
                 {personalCardTitles?.map((deck, index) => {
@@ -275,7 +275,7 @@ function VocabListPage() {
               </div>
               <div className='row justify-content-center clickable-card'>  
                 <Slider infinite={publicCardTitles?.length >= 3} 
-                // slidesToShow={publicCardTitles.length>=2?3:1} 
+                slidesToShow={publicCardTitles.length===0?1:3} 
                 ref={sliderPublic} {...carouselSettings}>
                   {(publicCardTitles == null || publicCardTitles.length < 3) && (
                       <MyWordCard type='none' addNew={handlePlusButtonClick} />

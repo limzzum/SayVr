@@ -30,7 +30,7 @@ export interface CreateWordcardRequestDto {
 // const DeckDetail: React.FC<DeckDetailProps> = ({ props, changeView }) => {
 const DeckDetail: React.FC = () => {
   // const [loginUser, setLoginUser] = useState<number>(Number(useRecoilValue(loggedIdState)))
-  const loggedUserId = localStorage.getItem("userId")?Number(localStorage.getItem("userId")):0;
+  const [loggedUserId,setLoggedUserId] =useState(localStorage.getItem("userId")?Number(localStorage.getItem("userId")):0);
   const { id } = useParams()
   const [deckId, setDeckId] = useState(Number(id))
   const navigate = useNavigate()
@@ -55,6 +55,7 @@ const DeckDetail: React.FC = () => {
 
   // const
   useEffect(() => {
+    setLoggedUserId(localStorage.getItem("userId")?Number(localStorage.getItem("userId")):0)
     if (id) {
       getOneDeck(deckId)
         .then((res) => {
@@ -71,10 +72,11 @@ const DeckDetail: React.FC = () => {
   }, [id, setMenu])
   useEffect(() => {
     console.log(loggedUserId)
-    // setLoginUser(loggedUserId)
+    setLoggedUserId(localStorage.getItem("userId")?Number(localStorage.getItem("userId")):0)
     // console.log("set user id"+ loggedUserId)
     // return () => {}
     if (id) {
+      console.log("단어장 정보가져오기")
       getOneDeck(deckId)
         .then((res) => {
           setDeck(res.data.data)
@@ -97,6 +99,7 @@ const DeckDetail: React.FC = () => {
       if (window.confirm(message)) {
         createForkedDeck(deck.id).then((res) => {
           navigate(`/flashcard/${res.data.data.id}`)
+          navigate(0);
         })
       }
     }
@@ -153,8 +156,8 @@ const DeckDetail: React.FC = () => {
           const response = res.data.data
           // console.log(response);
           if (!response.errorMessage) {
-            setWordList((prev) => [...prev, response.wordcard])
-            setMode("button")
+                        setWordList((prev) => [...prev, response.wordcard])
+                        setMode("button")
           } else {
             alert(response.errorMessage)
           }

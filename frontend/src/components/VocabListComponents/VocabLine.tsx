@@ -15,14 +15,15 @@ interface VocabLineProps {
 }
 
 export const VocabLine: FC<VocabLineProps> = ({ props, saveMode, userId }) => {
-  const loggedUserId = Number(useRecoilValue(loggedIdState))
+  // const loggedUserId = Number(useRecoilValue(loggedIdState))
+  const [loggedUserId,setLoggedUserId] =useState(localStorage.getItem("userId")?Number(localStorage.getItem("userId")):0);
   const [ownerId, setOwnerId] = useState(userId)
   const [status, setStatus] = useState(props.wordcardStatus)
   const [checkIcon, setCheckIcon] = useState("checked-button")
   const [uncheckIcon, setUncheckIcon] = useState("unchecked-button")
 
   const uncheckWord = () => {
-    if (saveMode && ownerId === loggedUserId) {
+        if (saveMode && ownerId === loggedUserId) {
       updateWordProgress(props.id, { wordcardStatus: WordcardStatus.UNCHECKED })
         .then((res) => {
           console.log(res.data.data.wordcard)
@@ -36,7 +37,7 @@ export const VocabLine: FC<VocabLineProps> = ({ props, saveMode, userId }) => {
     }
   }
   const checkWord = () => {
-    if (saveMode && ownerId === loggedUserId) {
+        if (saveMode && ownerId === loggedUserId) {
       updateWordProgress(props.id, { wordcardStatus: WordcardStatus.CHECKED })
         .then((res) => {
           setStatus(WordcardStatus.CHECKED)
