@@ -13,7 +13,7 @@
   display: flex;
   position: absolute;
   left: 50%;
-  top: 500px;
+  top: 550px;
   transform: translate(-50%, -50%);
 }
 
@@ -36,6 +36,28 @@
   z-index: 1;
 }
 
+.match-profile-container1 {
+  background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
+  background-size: contain;
+  background-position: center;
+  width: 318px;
+  height: 429px;
+  left: 30%;
+  padding: 0;
+  z-index: 1;
+}
+
+.match-profile-container2 {
+  background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
+  background-size: contain;
+  background-position: center;
+  width: 318px;
+  height: 429px;
+  left: 70%;
+  padding: 0;
+  z-index: 1;
+}
+
 .profile-image {
   position: absolute;
   justify-content: center;
@@ -46,6 +68,30 @@
   top: 360px;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.match-profile-image1 {
+  position: absolute;
+  justify-content: center;
+  background-clip: border-box;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  top: 360px;
+  left: 30%;
+  z-index: 1;
+}
+
+.match-profile-image2 {
+  position: absolute;
+  justify-content: center;
+  background-clip: border-box;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  top: 360px;
+  left: 70%;
   z-index: 1;
 }
 
@@ -70,7 +116,7 @@
   color: black;
   text-align: center;
   font-size: xxx-large;
-  width: 150px;
+  width: 200px;
 }
 
 .loading-spinner {
