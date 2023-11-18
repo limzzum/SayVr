@@ -220,7 +220,7 @@ const MyStudyAnalysisPage: React.FC = () => {
             )}
             </div>
             <div className="graph-block cal-container">
-            <h1>학습별 평균 등급 변동치</h1>
+            <h1>학습 그래프</h1>
               <ChartComponent data={graphData} />
             </div>
           </div>
