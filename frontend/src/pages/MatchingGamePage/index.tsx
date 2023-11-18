@@ -296,7 +296,7 @@ function MatchingGameWaitingPage() {
 
   if (gameStart) {
     return (
-      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <GameProceedingHeader
           player={gameStatus!.playerA!}
           opponent={gameStatus!.playerB!}
@@ -343,7 +343,7 @@ function MatchingGameWaitingPage() {
     );
   } else {
     return (
-      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <Header gameId={gameId} />
         <Body
           image={
@@ -351,9 +351,11 @@ function MatchingGameWaitingPage() {
               ? imageUrl
               : gameStatus?.playerA.profile
           }
-          rankPoint1={100}
+          rankPoint1={gameStatus?.playerA.point}
+          name1={gameStatus?.playerA.nickname}
           opponent={gameStatus?.playerB.profile}
-          rankPoint2={200}
+          rankPoint2={gameStatus?.playerB.point}
+          name2={gameStatus?.playerB.nickname}
           isMatch={isMatch}
         ></Body>
         <Footer />
