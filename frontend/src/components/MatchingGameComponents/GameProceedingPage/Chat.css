@@ -1,9 +1,10 @@
 .chatWrapper {
 }
 .chatArea {
+  position: relative;
   background-color: rgba(0, 0, 0, 0.3);
-  width: 550px;
-  height: 380px;
+  width: 530px;
+  height: 400px;
   flex-grow: 1;
   overflow-y: auto;
   /* Enable scrolling */
@@ -130,9 +131,10 @@
 }
 
 button.input {
-  background-color: rgba(204, 255, 0, 0.863);
+  background-color: rgba(0, 145, 255, 0.863);
   border-radius: var(--radius-md);
   font-family: NeoDunggeunmo Pro;
   border-width: 4px;
   border-color: #d1d1d1;
+  width: 200px;
 }
