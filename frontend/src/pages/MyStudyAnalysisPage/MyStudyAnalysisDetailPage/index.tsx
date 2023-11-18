@@ -153,7 +153,7 @@ function MyStudyAnalysisDetailPage() {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid mt-5">
       <div className="row">
         <div className="col-md-8">
           <div id="list-example" className="list-group">

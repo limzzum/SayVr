@@ -1,7 +1,7 @@
 .study-analysis-container {
   padding: 10px;
   margin: 30px auto;
-  width: 70vw;
+  width: 75vw;
   min-height: 80vh;
 }
 
@@ -11,30 +11,37 @@
 }
 
 .calendar {
-  width: 700px;
-  height: 400px;
+  width:fit-content;
+  /* width: 700px; */
+  height:fit-content;
+  min-height:10rem;
+  /* height: 400px; */
   background-color: #f1f7fa;
   border: none;
   .react-calendar {
     color: black !important;
   }
 }
-
-.cal-container {
+.calendar-block-bg{
   background-color: #f1f7fa;
-  border: 1px solid gray;
+  padding:1rem;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+.cal-container {
+  /* border: 1px solid gray; */
+  border-radius: 10px;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
   padding: 10px;
   margin: auto;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 
 .grade-container {
   background-color: white;
-  border: 1px solid gray;
+  /* border: 1px solid gray; */
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   padding: 10px;
   margin: auto;
   margin-bottom: 30px;
