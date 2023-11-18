@@ -29,7 +29,7 @@
 
 .member-form {
 	width: 300px;
-	height: 500px;
+	height: 600px;
 	display: flex;
 	flex-wrap: wrap;
 	text-align: left;
@@ -115,11 +115,13 @@
 .password_ok {
 	color: #008000;
 	display: none;
+	font-size: 16px;
 }
 
 .password_ok2 {
 	color: #008000;
 	display: none;
+	font-size: 16px;
 }
 
 .name {
@@ -148,21 +150,25 @@
 .nickname_ok {
 	color: #008000;
 	display: none;
+	font-size: 16px;
 }
 
 .nickname_already {
 	color: #6a82fb;
 	display: none;
+	font-size: 16px;
 }
 
 .nickname_size {
 	color: #ff0080;
 	display: none;
+	font-size: 16px;
 }
 
 .name_size {
 	color: #ff0080;
 	display: none;
+	font-size: 16px;
 }
 
 .tel {
