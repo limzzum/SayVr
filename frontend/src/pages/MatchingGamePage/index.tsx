@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  subscribeURL,
-  imageURL,
-  publishURL,
-} from "./constants/constants";
+import { subscribeURL, imageURL, publishURL } from "./constants/constants";
 import Socket from "./constants/socket";
 import { useNavigate } from "react-router-dom";
 import {
@@ -116,7 +112,6 @@ function MatchingGameWaitingPage() {
   const [isEndGame, setIsEndGame] = useState(false);
   const [endMessage, setEndMessage] = useState("");
 
-
   const [gameResult, setGameResult] = useState<GameResultDto>({
     draw: false,
     winnerId: 0,
@@ -127,23 +122,38 @@ function MatchingGameWaitingPage() {
   });
 
   const history = useNavigate();
+  const saveGameStatus = (response: SocketResponseDto<any>) => {
+    console.log("save game status ");
+    console.log(response);
+    setGameStatus(response.gameStatusDto);
+    setGameStatus((prevGameStatus: any) => ({
+      ...prevGameStatus,
+      playerA:
+        response.gameStatusDto!.playerA.userId.toString() ==
+        localStorage.getItem("userId")!
+          ? response.gameStatusDto!.playerA
+          : response.gameStatusDto!.playerB,
+      playerB:
+        response.gameStatusDto?.playerB.userId.toString() ==
+        localStorage.getItem("userId")!
+          ? response.gameStatusDto!.playerA
+          : response.gameStatusDto!.playerB,
+    }));
+    console.log("local 저장한 상태 " + JSON.stringify(gameStatus));
+    localStorage.setItem("gameStatus", JSON.stringify(gameStatus));
+  };
 
   const socketReceive = (response: SocketResponseDto<any>) => {
     console.log("게임 대기 페이지 socket 응답받음");
     if (response.socketType == SocketType.GAME_START) {
       console.log("게임 매칭");
-      response.gameStatusDto!.playerA.userId.toString() ==
-      localStorage.getItem("userId")!
-        ? setPlayerA(response.gameStatusDto!.playerA)
-        : setPlayerA(response.gameStatusDto!.playerB);
-      response.gameStatusDto?.playerB.userId.toString() ==
-      localStorage.getItem("userId")!
-        ? setPlayerB(response.gameStatusDto!.playerA)
-        : setPlayerB(response.gameStatusDto!.playerB);
-
       Socket.sendMsg(publishURL + "." + gameId, messageToSend);
-      localStorage.setItem("gameStatus", JSON.stringify(response.gameStatusDto));
-      setGameStatus(response.gameStatusDto);
+
+      saveGameStatus(response);
+      setGameStatus((prevGameStatus: any) => ({
+        ...prevGameStatus,
+        quizEndTime: Date.now() + 3000,
+      }));
 
       setIsMatch(true);
       const timer = setTimeout(() => {
@@ -164,22 +174,14 @@ function MatchingGameWaitingPage() {
       console.log("퀴즈 정보");
       if (response.data.answer) {
         handleClick();
-        let username = response.data.userId == playerA.userId? playerA.nickname : playerB.nickname
-        setCurRound(response.gameStatusDto!.curRound);
-        setQuestion(response.gameStatusDto!.question);
-        setAnswer(response.gameStatusDto!.answer);
-        response.gameStatusDto!.playerA.userId.toString() ==
-      localStorage.getItem("userId")!
-        ? setPlayerA(response.gameStatusDto!.playerA)
-        : setPlayerA(response.gameStatusDto!.playerB);
-      response.gameStatusDto?.playerB.userId.toString() ==
-      localStorage.getItem("userId")!
-        ? setPlayerB(response.gameStatusDto!.playerA)
-        : setPlayerB(response.gameStatusDto!.playerB);
-      };
-     
+        let username =
+          response.data.userId == playerA.userId
+            ? playerA.nickname
+            : playerB.nickname;
+
+        saveGameStatus(response);
       }
-    
+    }
 
     if (response.socketType == SocketType.PLAYER_OUT) {
       console.log("상대 플레이어 게임 떠남.");
@@ -187,33 +189,27 @@ function MatchingGameWaitingPage() {
       setEndMessage(response.message!);
       setGameResult(response.data);
       setIsEndGame(true);
+      localStorage.removeItem("gameStatus");
 
       alert("상대 플레이어 게임 떠남.");
-
     }
 
     if (response.socketType == SocketType.GAME_INFO) {
       console.log("게임 info");
-      setCurRound(response.gameStatusDto!.curRound);
-      setQuestion(response.gameStatusDto!.question);
-      setAnswer(response.gameStatusDto!.answer);
-      localStorage.setItem("gameStatus", JSON.stringify(response.gameStatusDto));
-      setGameStatus(response.gameStatusDto);
+      saveGameStatus(response);
     }
 
     if (response.socketType == SocketType.QUIZ_TIME_OVER) {
-      console.log("퀴즈 타임 오버 문제 업데이트")
-      setCurRound(response.gameStatusDto!.curRound);
-      setQuestion(response.gameStatusDto!.question);
-      setAnswer(response.gameStatusDto!.answer);
+      console.log("퀴즈 타임 오버 문제 업데이트");
+      saveGameStatus(response);
     }
-
 
     if (response.socketType == SocketType.GAME_END) {
       console.log("게임 end");
       setEndMessage(response.message!);
       setGameResult(response.data);
       setIsEndGame(true);
+      localStorage.removeItem("gameStatus");
     }
 
     console.log("socket 구독 receive");
@@ -226,54 +222,47 @@ function MatchingGameWaitingPage() {
   };
 
   useEffect(() => {
-    console.log("localstorage : "+localStorage.getItem("gameStatus"));
-   
+    console.log("localstorage : " + localStorage.getItem("gameStatus"));
+
     Socket.connect().then(() => {
-       if(localStorage.getItem("gameStatus") != null){
-      console.log("not null");
-      setGameStatus(JSON.parse(localStorage.getItem("gameStatus")!));
-      setGameId(JSON.parse(localStorage.getItem("gameStatus")!).gameId)
-      setGameStart(true);
-    }else{
-      console.log("else")
-      console.log("connect");
-      waitingGame()
-        .then((response) => {
-          
-          console.log(response);
-          console.log("is start : " + response.data.data.gameStart);
+      if (localStorage.getItem("gameStatus") != null) {
+        console.log("not null");
+        setGameStatus(JSON.parse(localStorage.getItem("gameStatus")!));
+        setGameId(JSON.parse(localStorage.getItem("gameStatus")!).gameId);
+        setGameStart(true);
+      } else {
+        console.log("else");
+        console.log("connect");
+        waitingGame()
+          .then((response) => {
+            console.log(response);
+            console.log("is start : " + response.data.data.gameStart);
 
-          setGameId(response.data.data.gameId);
-          oldgameId = response.data.data.gameId;
-          console.log("set 게임 아이디 : "+ gameId);
+            setGameId(response.data.data.gameId);
+            oldgameId = response.data.data.gameId;
+            console.log("set 게임 아이디 : " + gameId);
 
-          setImageUrl(imageURL + response.data.data.profile);
+            let img =
+              response.data.data.profile == null
+                ? "default.png"
+                : response.data.data.profile;
+            setImageUrl(imageURL + img);
 
-          if (response.data.data.gameStart) {
-            startGame();
-            // setIsMatch(true);
-            // const timer = setTimeout(() => {
-            //   setGameStart(true);
-            // }, 3000);
+            if (response.data.data.gameStart) {
+              startGame();
+            }
 
-            // return () => {
-            //   clearTimeout(timer);
-            // };
-          }
-
-          return () => {};
-        }
-        
-        )
-        .catch((error) => {
-          console.log("wait axios 요청");
-        });
-    }
+            return () => {};
+          })
+          .catch((error) => {
+            console.log("wait axios 요청");
+          });
+      }
     });
 
     return () => {
-      console.log("게임 아이디 : "+ oldgameId);
-      console.log("state gameId "+ gameId)
+      console.log("게임 아이디 : " + oldgameId);
+      console.log("state gameId " + gameId);
       Socket.sendMsg(publishURL + "." + oldgameId, {
         socketType: SocketType.PLAYER_OUT,
         message: "out",
@@ -297,9 +286,17 @@ function MatchingGameWaitingPage() {
     return () => {};
   }, [gameId]);
 
+  useEffect(() => {
+    if (gameStatus) {
+      localStorage.setItem("gameStatus", JSON.stringify(gameStatus));
+    }
+
+    return () => {};
+  }, [gameStatus]);
+
   if (gameStart) {
     return (
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <GameProceedingHeader
           player={gameStatus!.playerA!}
           opponent={gameStatus!.playerB!}
@@ -310,6 +307,7 @@ function MatchingGameWaitingPage() {
           question={gameStatus!.question}
           curRound={gameStatus!.curRound}
           answer={gameStatus!.answer}
+          endTime={gameStatus!.quizEndTime!}
         />
         <Modal
           isOpen={isEndGame}
@@ -318,24 +316,22 @@ function MatchingGameWaitingPage() {
           className="Modal"
         >
           <div>{endMessage}</div>
-          {gameResult.draw ? 
+          {gameResult.draw ? (
             <div>무승부</div>
-            :
+          ) : (
             <div>
               <div>winner : {gameResult.winnerId}</div>
               <div>loser : {gameResult!.loserId}</div>
-              </div>
-            
-            }
+            </div>
+          )}
 
           <div>
             {" "}
             point : +{" "}
-            {
-            gameResult.draw ? 
-            gameResult!.drawPoint
-            :
-            gameResult!.winnerId.toString() == localStorage.getItem("userId")
+            {gameResult.draw
+              ? gameResult!.drawPoint
+              : gameResult!.winnerId.toString() ==
+                localStorage.getItem("userId")
               ? gameResult!.winnerPoint
               : gameResult!.loserPoint}
           </div>
@@ -347,16 +343,20 @@ function MatchingGameWaitingPage() {
     );
   } else {
     return (
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <Header gameId={gameId} />
         <Body
-          image={imageUrl}
+          image={
+            gameStatus?.playerA.profile == null
+              ? imageUrl
+              : gameStatus?.playerA.profile
+          }
           rankPoint1={100}
-          opponent={playerB?.profile}
+          opponent={gameStatus?.playerB.profile}
           rankPoint2={200}
           isMatch={isMatch}
         ></Body>
-        {!gameStart && <Footer />}
+        <Footer />
       </div>
     );
   }
