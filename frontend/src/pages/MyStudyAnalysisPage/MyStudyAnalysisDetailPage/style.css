@@ -1,8 +1,15 @@
 .scrollspy-example {
   overflow-y: scroll;
   background-color: #e6f1fa;
-  height: 500px;
+  /* height: 500px; */
+  height:50vh;
+  border-radius: 0 10px 0 10px;
   margin-bottom: 20px;
+}
+
+.analysis-container {
+  display: flex;
+  flex-direction: row;
 }
 
 .message-container {
@@ -10,7 +17,12 @@
   flex-direction: column;
   padding: 10px;
 }
-
+.page-center {
+  width: 75vw !important;
+  display: flex !important;
+  flex-direction: row;
+  justify-content: center !important;
+}
 .message-bubble {
   max-width: 70%;
   padding: 10px;
@@ -22,30 +34,39 @@
 
 .user-message {
   align-self: flex-start;
-  background-color: #f1f7ff;
+  background-color: white;
 }
 
 .other-message {
   align-self: flex-end;
-  background-color: #4629f2;
+  background-color: #0d6efd;
   color: #fff;
 }
-
+.review-header{
+  display:flex;
+  flex-direction:row;
+}
 .script-container {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   padding: 10px;
-  margin-top: 10px;
-  height: 500px;
-  margin-top: 50px;
+  /* height: 500px; */
+  /* margin-top: 50px; */
   background-color: #f0f0f0;
-  border: 1px solid gray;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+.script-column {
+height:67vh;
+}
+/* .review-container-div {
+  width: 50%;
+} */
 .review-container {
   background-color: white;
   border: 9px solid white;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.translation-bar {
+  width: 100%;
 }
