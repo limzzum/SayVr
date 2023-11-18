@@ -150,10 +150,10 @@ const Translation: React.FC<TranslationProps> = () => {
           </div>
         </div>
         <div className="button-container">
-          <button className="btn btn-primary" onClick={translate}>
+          <button className="translate-btn btn-primary" onClick={translate}>
             번역
           </button>
-          <button className="btn btn-primary" onClick={fetchFlashcards}>
+          <button className="translate-btn btn-primary" onClick={fetchFlashcards}>
             단어장 추가
           </button>
         </div>

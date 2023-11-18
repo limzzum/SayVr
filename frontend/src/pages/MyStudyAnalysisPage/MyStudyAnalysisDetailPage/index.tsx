@@ -177,7 +177,7 @@ function MyStudyAnalysisDetailPage() {
           <div className="script-container">
             <div className="row position-relative">
               <div className="row  position-relative">
-              <div className="col-6">
+              <div className="col-5">
                 <h1>Review</h1>
               </div>
                 <div className="col-auto end" style={{ backgroundColor: "transparent", position: "relative" }}>
