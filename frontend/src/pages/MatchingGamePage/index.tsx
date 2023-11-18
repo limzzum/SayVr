@@ -307,7 +307,6 @@ function MatchingGameWaitingPage() {
           question={gameStatus!.question}
           curRound={gameStatus!.curRound}
           answer={gameStatus!.answer}
-          endTime={gameStatus!.quizEndTime!}
         />
         <Modal
           isOpen={isEndGame}
