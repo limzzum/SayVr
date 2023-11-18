@@ -8,6 +8,12 @@
   display: flex;
   justify-content: center;
 }
+.body-container2 {
+  display: flex;
+  justify-content: space-around;
+  padding-left: 300px;
+  padding-right: 300px;
+}
 
 .footer-container {
   display: flex;
@@ -17,16 +23,8 @@
   transform: translate(-50%, -50%);
 }
 
-.matching-game-container {
-  position: absolute;
-  background-image: url("../../../assets/MatchingGamePageAssets/Background.png");
-  background-size: cover;
-  width: 100vw;
-  height: 92vh;
-  z-index: -1;
-}
-
 .profile-container {
+  position: relative;
   background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
   background-size: contain;
   background-position: center;
@@ -37,25 +35,31 @@
 }
 
 .match-profile-container1 {
+  position: relative;
   background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
   background-size: contain;
   background-position: center;
   width: 318px;
   height: 429px;
-  left: 30%;
   padding: 0;
   z-index: 1;
 }
 
 .match-profile-container2 {
+  position: relative;
   background-image: url("../../../assets/MatchingGamePageAssets/Group\ 1000004175.png");
   background-size: contain;
   background-position: center;
   width: 318px;
   height: 429px;
-  left: 70%;
   padding: 0;
   z-index: 1;
+}
+
+.vs-text {
+  display: flex;
+  font-size: xxx-large;
+  padding-top: 170px;
 }
 
 .profile-image {
@@ -65,7 +69,7 @@
   border-radius: 50%;
   width: 90px;
   height: 90px;
-  top: 360px;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
@@ -78,8 +82,9 @@
   border-radius: 50%;
   width: 90px;
   height: 90px;
-  top: 360px;
-  left: 30%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 }
 
@@ -90,8 +95,9 @@
   border-radius: 50%;
   width: 90px;
   height: 90px;
-  top: 360px;
-  left: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 }
 
@@ -109,7 +115,6 @@
 }
 
 .waiting-time {
-  /* size: 500px; */
   position: relative;
   position: absolute;
   margin-right: auto;
