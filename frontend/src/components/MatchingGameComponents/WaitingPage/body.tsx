@@ -26,17 +26,22 @@ const Body: React.FC<props> = ({
       <div className="body-container">
         <div className="profile-container"></div>
         <img src={image} className="profile-image" />
+        <div>{name1}</div>
       </div>
     );
   } else {
     return (
       <div className="body-container2">
-        <div className="match-profile-container1">
-          <img src={image} alt="profile" className="match-profile-image1" />
+        <div className="match-profile-container">
+          <div className="match-profile-point">{rankPoint1}점</div>
+          <img src={image} alt="profile" className="match-profile-image" />
+          <div className="match-profile-name">{name1}</div>
         </div>
         <div className="vs-text"> VS </div>
-        <div className="match-profile-container2">
-          <img src={imageURL + opponent} className="match-profile-image2" />
+        <div className="match-profile-container">
+          <div className="match-profile-point">{rankPoint2}점</div>
+          <img src={imageURL + opponent} className="match-profile-image" />
+          <div className="match-profile-name">{name2}</div>
         </div>
         {/* <div> rankPoint1</div> */}
       </div>
