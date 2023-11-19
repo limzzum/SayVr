@@ -1,8 +1,10 @@
 .englishword {
-    text-align: center;
-    font-size: 70px;
+  /* width: 1200px;
+  height: 100px; */
+  text-align: center;
+  font-size: 3em;
 }
 .koreanword {
-    text-align: center;
-    font-size: 50px;
+  text-align: center;
+  font-size: 2em;
 }
