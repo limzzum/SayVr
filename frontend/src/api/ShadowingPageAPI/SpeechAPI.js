@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
+import toWav from "audiobuffer-to-wav";
+import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 
 const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
   const [stream, setStream] = useState();
@@ -16,58 +18,122 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
     }
   }, [onRec, onRecordingStop, audioUrl]);
 
-  const onRecAudio = () => {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioCtx.createScriptProcessor(0, 1, 1);
-    setAnalyser(analyser);
+  const onRecAudio = useCallback(async () => {
+    const speechConfig = sdk.SpeechConfig.fromSubscription(
+      "07c3100614404b018bcd2dae1c463146",
+      "koreacentral" // Region
+    );
+    speechConfig.speechRecognitionLanguage = "en-US";
 
-    function makeSound(stream) {
-      const source = audioCtx.createMediaStreamSource(stream);
-      setSource(source);
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
+    const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
+    const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+
+    // 발음 평가 설정
+    const reference_text = "";
+    const pronunciationAssessmentConfig = new sdk.PronunciationAssessmentConfig(
+      reference_text,
+      sdk.PronunciationAssessmentGradingSystem.HundredMark,
+      sdk.PronunciationAssessmentGranularity.Phoneme,
+      true
+    );
+
+    // 발음평가 설정 적용
+    pronunciationAssessmentConfig.applyTo(recognizer);
+
+    // STT + 발음 평가 완료 시 호출하는 콜백함수
+    function onRecognizedResult(result) {
+      // 인식된 텍스트
+      console.log("발음 평가 텍스트 : ", result.text);
+
+      // 발음 평가 결과
+      const pronunciation_result = sdk.PronunciationAssessmentResult.fromResult(result);
+      console.log(
+        " Accuracy score: ",
+        pronunciation_result.accuracyScore,
+        "\n",
+        "pronunciation score: ",
+        pronunciation_result.pronunciationScore,
+        "\n",
+        "completeness score : ",
+        pronunciation_result.completenessScore,
+        "\n",
+        "fluency score: ",
+        pronunciation_result.fluencyScore
+      );
+
+      recognizer.close();
     }
 
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.start();
-      setStream(stream);
-      setMedia(mediaRecorder);
-      makeSound(stream);
-
-      analyser.onaudioprocess = function (e) {
-        if (e.playbackTime > 180) {
-          stream.getAudioTracks().forEach(function (track) {
-            track.stop();
-          });
-          mediaRecorder.stop();
-          analyser.disconnect();
-          audioCtx.createMediaStreamSource(stream).disconnect();
-
-          mediaRecorder.ondataavailable = function (e) {
-            setAudioUrl(e.data);
-            setOnRec(true);
-          };
-        } else {
-          setOnRec(false);
-        }
-      };
+    // 음성 인식 시작
+    recognizer.recognizeOnceAsync((result) => {
+      onRecognizedResult(result);
     });
-  };
+  }, []);
+
+  // const onRecAudio = useCallback(async () => {
+  //   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  //   const analyser = audioCtx.createScriptProcessor(0, 1, 1);
+  //   setAnalyser(analyser);
+
+  //   function makeSound(stream) {
+  //     const source = audioCtx.createMediaStreamSource(stream);
+  //     setSource(source);
+  //     source.connect(analyser);
+  //     analyser.connect(audioCtx.destination);
+  //   }
+
+  //   try {
+  //     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  //     const mediaRecorder = new MediaRecorder(stream, {
+  //       mimeType: 'audio/webm',
+  //       audioBitsPerSecond: 16000,
+  //       bitsPerSecond: 16000,
+  //       audio: {
+  //         sampleRate: 16000,
+  //       },
+  //     });
+  //     mediaRecorder.start();
+  //     setStream(stream);
+  //     setMedia(mediaRecorder);
+  //     makeSound(stream);
+
+  //     analyser.onaudioprocess = function (e) {
+  //       // 녹음 중지와 관련된 로직을 여기에서 처리하지 않도록 변경
+  //       if (e.playbackTime > 20) {
+  //         // 녹음 중지 로직 추가
+  //         stopRecording();
+  //       } else {
+  //         setOnRec(false);
+  //       }
+  //     };
+  //   } catch (error) {
+  //     console.error("Error accessing microphone:", error);
+  //   }
+  // }, []);
 
   const offRecAudio = () => {
-    media.ondataavailable = function (e) {
-      setAudioUrl(e.data);
-      setOnRec(true);
-    };
+    // 기존 코드와 중복되는 부분을 stopRecording 함수로 분리
+    stopRecording();
+  };
 
-    stream.getAudioTracks().forEach(function (track) {
-      track.stop();
-    });
+  const stopRecording = () => {
+    if (media) {
+      media.ondataavailable = null; // 기존 이벤트 리스너 삭제
 
-    media.stop();
-    analyser.disconnect();
-    source.disconnect();
+      media.ondataavailable = function (e) {
+        const audioBlob = e.data;
+        setAudioUrl(audioBlob);
+        setOnRec(true);
+      };
+
+      stream.getAudioTracks().forEach(function (track) {
+        track.stop();
+      });
+
+      media.stop();
+      analyser.disconnect();
+      source.disconnect();
+    }
   };
 
   const onSubmitAudioFile = useCallback(() => {
@@ -75,20 +141,40 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
       console.log("녹음된 데이터 유알엘 변경 작업 중");
       console.log(URL.createObjectURL(audioUrl));
 
+      // 리샘플링 및 기타 처리
+      const audioBlob = audioUrl;
       const reader = new FileReader();
+      reader.readAsArrayBuffer(audioBlob);
+
       reader.onloadend = function () {
-        const base64String = reader.result.split(',')[1];
-        console.log(base64String);
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const arrayBuffer = reader.result;
+        audioCtx.decodeAudioData(arrayBuffer, function (decodedBuffer) {
+          const resampledBuffer = audioCtx.createBuffer(1, decodedBuffer.length, 16000);
+          resampledBuffer.getChannelData(0).set(decodedBuffer.getChannelData(0));
+          const wavBuffer = toWav(resampledBuffer);
 
-        callPronunciationAPI(base64String);
+          // Create a new Blob from the resampled data
+          const resampledBlob = new Blob([wavBuffer], { type: "audio/wav" });
+
+          // Now, you can convert the Blob to a base64 string
+          const readerForBase64 = new FileReader();
+          readerForBase64.onloadend = function () {
+            const base64String = readerForBase64.result.split(",")[1];
+            console.log(base64String);
+
+            // Call your API with the base64 string
+            callPronunciationAPI(base64String);
+          };
+
+          readerForBase64.readAsDataURL(resampledBlob);
+        });
       };
-
-      reader.readAsDataURL(audioUrl);
     }
   }, [audioUrl]);
 
   const callPronunciationAPI = (base64String) => {
-    console.log("axios 부분에서 확인하는 값", base64String)
+    console.log("axios 부분에서 확인하는 값", base64String);
 
     const openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation";
     const accessKey = "5a9f37a7-aac6-41ab-9be2-989c17d29f17";
@@ -112,6 +198,7 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
       body: JSON.stringify(requestJson),
     })
       .then((response) => {
+        console.log(response);
         console.log("[responseCode] " + response.status);
         return response.text();
       })
