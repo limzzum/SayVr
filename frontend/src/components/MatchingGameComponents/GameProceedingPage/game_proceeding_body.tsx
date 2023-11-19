@@ -220,7 +220,7 @@ const GameTimer: React.FC<{
           const body = { socketType: SocketType.QUIZ_TIME_OVER, message: "" };
           sendMsg(publishURL + "." + gameId, body);
           setIsModalOpen(false);
-        }, 3000);
+        }, 300000000);
       }
     }, 1000);
 
@@ -242,8 +242,11 @@ const GameTimer: React.FC<{
         contentLabel="Example Modal"
         className="game_answer_modal"
       >
-        <div> 정답 : {answer} </div>
+        <div style={{ fontSize: "xxx-large" }}>Time Over!</div>
         <div>시간이 종료되었습니다.</div>
+        <div style={{ height: "20px" }}></div>
+        <div> 정답 : {answer} </div>
+
         <div>잠시 후 다음 라운드가 시작됩니다..</div>
       </Modal>
     </div>
