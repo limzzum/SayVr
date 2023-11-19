@@ -238,9 +238,9 @@ const GameTimer: React.FC<{
       <div className="time-left">{timeLeft} seconds left</div>
       <Modal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {}}
         contentLabel="Example Modal"
-        className="Modal"
+        className="game_answer_modal"
       >
         <div> 정답 : {answer} </div>
         <div>시간이 종료되었습니다.</div>
