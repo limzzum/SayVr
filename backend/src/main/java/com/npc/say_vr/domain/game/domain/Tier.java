@@ -26,5 +26,5 @@ public class Tier {
     private String name;
     private String image;
     private int minPoint;
-    private int maxPoint;
+    private Long maxPoint;
 }
