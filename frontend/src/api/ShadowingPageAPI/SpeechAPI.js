@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import toWav from "audiobuffer-to-wav";
+import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 
 const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
   const [stream, setStream] = useState();
@@ -18,45 +19,97 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
   }, [onRec, onRecordingStop, audioUrl]);
 
   const onRecAudio = useCallback(async () => {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioCtx.createScriptProcessor(0, 1, 1);
-    setAnalyser(analyser);
+    const speechConfig = sdk.SpeechConfig.fromSubscription(
+      "07c3100614404b018bcd2dae1c463146",
+      "koreacentral" // Region
+    );
+    speechConfig.speechRecognitionLanguage = "en-US";
 
-    function makeSound(stream) {
-      const source = audioCtx.createMediaStreamSource(stream);
-      setSource(source);
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
+    const audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
+    const recognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
+
+    // 발음 평가 설정
+    const reference_text = "";
+    const pronunciationAssessmentConfig = new sdk.PronunciationAssessmentConfig(
+      reference_text,
+      sdk.PronunciationAssessmentGradingSystem.HundredMark,
+      sdk.PronunciationAssessmentGranularity.Phoneme,
+      true
+    );
+
+    // 발음평가 설정 적용
+    pronunciationAssessmentConfig.applyTo(recognizer);
+
+    // STT + 발음 평가 완료 시 호출하는 콜백함수
+    function onRecognizedResult(result) {
+      // 인식된 텍스트
+      console.log("발음 평가 텍스트 : ", result.text);
+
+      // 발음 평가 결과
+      const pronunciation_result = sdk.PronunciationAssessmentResult.fromResult(result);
+      console.log(
+        " Accuracy score: ",
+        pronunciation_result.accuracyScore,
+        "\n",
+        "pronunciation score: ",
+        pronunciation_result.pronunciationScore,
+        "\n",
+        "completeness score : ",
+        pronunciation_result.completenessScore,
+        "\n",
+        "fluency score: ",
+        pronunciation_result.fluencyScore
+      );
+
+      recognizer.close();
     }
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm',
-        audioBitsPerSecond: 16000,
-        bitsPerSecond: 16000,
-        audio: {
-          sampleRate: 16000,
-        },
-      });
-      mediaRecorder.start();
-      setStream(stream);
-      setMedia(mediaRecorder);
-      makeSound(stream);
-
-      analyser.onaudioprocess = function (e) {
-        // 녹음 중지와 관련된 로직을 여기에서 처리하지 않도록 변경
-        if (e.playbackTime > 20) {
-          // 녹음 중지 로직 추가
-          stopRecording();
-        } else {
-          setOnRec(false);
-        }
-      };
-    } catch (error) {
-      console.error("Error accessing microphone:", error);
-    }
+    // 음성 인식 시작
+    recognizer.recognizeOnceAsync((result) => {
+      onRecognizedResult(result);
+    });
   }, []);
+
+  // const onRecAudio = useCallback(async () => {
+  //   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  //   const analyser = audioCtx.createScriptProcessor(0, 1, 1);
+  //   setAnalyser(analyser);
+
+  //   function makeSound(stream) {
+  //     const source = audioCtx.createMediaStreamSource(stream);
+  //     setSource(source);
+  //     source.connect(analyser);
+  //     analyser.connect(audioCtx.destination);
+  //   }
+
+  //   try {
+  //     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  //     const mediaRecorder = new MediaRecorder(stream, {
+  //       mimeType: 'audio/webm',
+  //       audioBitsPerSecond: 16000,
+  //       bitsPerSecond: 16000,
+  //       audio: {
+  //         sampleRate: 16000,
+  //       },
+  //     });
+  //     mediaRecorder.start();
+  //     setStream(stream);
+  //     setMedia(mediaRecorder);
+  //     makeSound(stream);
+
+  //     analyser.onaudioprocess = function (e) {
+  //       // 녹음 중지와 관련된 로직을 여기에서 처리하지 않도록 변경
+  //       if (e.playbackTime > 20) {
+  //         // 녹음 중지 로직 추가
+  //         stopRecording();
+  //       } else {
+  //         setOnRec(false);
+  //       }
+  //     };
+  //   } catch (error) {
+  //     console.error("Error accessing microphone:", error);
+  //   }
+  // }, []);
 
   const offRecAudio = () => {
     // 기존 코드와 중복되는 부분을 stopRecording 함수로 분리
@@ -87,12 +140,12 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
     if (audioUrl) {
       console.log("녹음된 데이터 유알엘 변경 작업 중");
       console.log(URL.createObjectURL(audioUrl));
-  
+
       // 리샘플링 및 기타 처리
       const audioBlob = audioUrl;
       const reader = new FileReader();
       reader.readAsArrayBuffer(audioBlob);
-  
+
       reader.onloadend = function () {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const arrayBuffer = reader.result;
@@ -100,20 +153,20 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
           const resampledBuffer = audioCtx.createBuffer(1, decodedBuffer.length, 16000);
           resampledBuffer.getChannelData(0).set(decodedBuffer.getChannelData(0));
           const wavBuffer = toWav(resampledBuffer);
-          
+
           // Create a new Blob from the resampled data
-          const resampledBlob = new Blob([wavBuffer], { type: 'audio/wav' });
-  
+          const resampledBlob = new Blob([wavBuffer], { type: "audio/wav" });
+
           // Now, you can convert the Blob to a base64 string
           const readerForBase64 = new FileReader();
           readerForBase64.onloadend = function () {
-            const base64String = readerForBase64.result.split(',')[1];
+            const base64String = readerForBase64.result.split(",")[1];
             console.log(base64String);
-            
+
             // Call your API with the base64 string
             callPronunciationAPI(base64String);
           };
-  
+
           readerForBase64.readAsDataURL(resampledBlob);
         });
       };
@@ -145,7 +198,7 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop }) => {
       body: JSON.stringify(requestJson),
     })
       .then((response) => {
-        console.log(response)
+        console.log(response);
         console.log("[responseCode] " + response.status);
         return response.text();
       })

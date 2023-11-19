@@ -51,39 +51,41 @@ const Profile: React.FC<PlayerProfile> = ({
   ranking,
   tierImage,
 }) => {
+  profile = profile == null ? "default.png" : profile;
   return (
     <div className="game-proceeding-profile-container">
       <img
         src={imageURL + profile}
         className="game-proceeding-profile-image"
+        alt="profile"
       ></img>
       <div className="profile-info">
         <div className="profile-info-text">
           <div>{nickname}</div>
-           <div style={{width: "100px"}}>랭킹 : {ranking}  </div>
+          <div>랭킹 : {ranking} </div>
         </div>
 
         <div>
-        <img width={"100px"} height={"100px"} src={imageURL+tierImage}></img>
+          <img
+            width={"100px"}
+            height={"100px"}
+            src={imageURL + tierImage}
+          ></img>
         </div>
-        
       </div>
     </div>
   );
 };
 
 interface ScoreProps {
-  winCntA: number,
-  winCntB: number
+  winCntA: number;
+  winCntB: number;
 }
 
-const Score: React.FC<ScoreProps> = ({
-  winCntA, winCntB
-}) => {
+const Score: React.FC<ScoreProps> = ({ winCntA, winCntB }) => {
   return (
     <div className="score">
       {winCntA} : {winCntB}
     </div>
   );
 };
-

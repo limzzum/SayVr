@@ -98,7 +98,9 @@ function MyStudyAnalysisDetailPage() {
       aTags.push(
         <a
           key={i}
-          className={`list-group-item list-group-item-action ${selectedItem === `Item ${i}` && "active"}`}
+          className={`list-group-item list-group-item-action ${
+            selectedItem === `Item ${i}` && "active"
+          }`}
           onClick={() => {
             setSelectedItem(`Item ${i}`);
             if (window.handleItemClick) {
@@ -134,14 +136,17 @@ function MyStudyAnalysisDetailPage() {
 
     return (
       <div className="message-container">
-        <h2>Script</h2>
         {messageList
           .filter((message) => message.role !== "system")
           .map((message, index) => (
             <div
               key={index}
-              className={`message-bubble ${message.role === "user" ? "user-message" : "other-message"}`}
-              style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start" }}
+              className={`message-bubble ${
+                message.role === "user" ? "user-message" : "other-message"
+              }`}
+              style={{
+                alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+              }}
             >
               <div className="message-content">
                 <p>{message.content}</p>
@@ -153,9 +158,11 @@ function MyStudyAnalysisDetailPage() {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-md-8">
+    <div className="container-fluid analysis-container mt-5 justify-content-center">
+      <div className="page-box">
+      <div className="row page-center">
+        <div className="script-column col">
+        <h1>Script</h1>
           <div id="list-example" className="list-group">
             <div className="d-flex">{generateATags()}</div>
           </div>
@@ -167,20 +174,32 @@ function MyStudyAnalysisDetailPage() {
             tabIndex={0}
           >
             {Array.from({ length: numberOfIds }, (_, index) => (
-              <div key={index} style={{ display: selectedItem === `Item ${index + 1}` ? "block" : "none" }}>
-                {formattedId && generateMessageContent(conversationData?.messageList || [])}
+              <div
+                key={index}
+                style={{
+                  display:
+                    selectedItem === `Item ${index + 1}` ? "block" : "none",
+                }}
+              >
+                {formattedId &&
+                  generateMessageContent(conversationData?.messageList || [])}
               </div>
             ))}
           </div>
         </div>
-        <div className="col-md-4 script-container-div">
+        <div className="review-container-div col-4">
+          <h1>Review</h1>
           <div className="script-container">
             <div className="row position-relative">
-              <div className="row  position-relative">
-              <div className="col-5">
-                <h1>Review</h1>
-              </div>
-                <div className="col-auto end" style={{ backgroundColor: "transparent", position: "relative" }}>
+              <div className="row  position-relative review-header">
+                <div className="col-6r"></div>
+                <div
+                  className="col-auto end"
+                  style={{
+                    backgroundColor: "transparent",
+                    position: "relative",
+                  }}
+                >
                   <span
                     style={{
                       color: "black",
@@ -193,9 +212,19 @@ function MyStudyAnalysisDetailPage() {
                   >
                     {conversationData?.conversationGrammar}
                   </span>
-                  <img src={GrammarScore} alt="GrammarScoreBadge" style={{ maxWidth: "100px", zIndex: 1 }} />
+                  <img
+                    src={GrammarScore}
+                    alt="GrammarScoreBadge"
+                    style={{ maxWidth: "100px", zIndex: 1 }}
+                  />
                 </div>
-                <div className="col-auto end" style={{ backgroundColor: "transparent", position: "relative" }}>
+                <div
+                  className="col-auto end"
+                  style={{
+                    backgroundColor: "transparent",
+                    position: "relative",
+                  }}
+                >
                   <span
                     style={{
                       color: "black",
@@ -208,7 +237,11 @@ function MyStudyAnalysisDetailPage() {
                   >
                     {conversationData?.conversationContext}
                   </span>
-                  <img src={ContextScore} alt="ContextScoreBadge" style={{ maxWidth: "100px", zIndex: 1 }} />
+                  <img
+                    src={ContextScore}
+                    alt="ContextScoreBadge"
+                    style={{ maxWidth: "100px", zIndex: 1 }}
+                  />
                 </div>
               </div>
             </div>
@@ -217,8 +250,9 @@ function MyStudyAnalysisDetailPage() {
           </div>
         </div>
       </div>
-      <div>
+      <div className="translation-bar" style={{padding:"0"}}>
         <Translation />
+      </div>
       </div>
     </div>
   );

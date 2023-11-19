@@ -26,6 +26,10 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data }) => {
   const [chartData, setChartData] = useState<ApexOptions>({
     series: [],
     chart: {
+      toolbar: {
+        show: false,
+      },
+      width:"100%",
       height: 350,
       type: "line" as const,
       zoom: {
@@ -48,13 +52,15 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data }) => {
         colors: ["#f3f3f3", "transparent"],
         opacity: 0.5,
       },
+      padding:{right:0}
     },
     xaxis: {
-      categories: data?.scoreHistory?.map((item: ScoreHistory) => item.createdAt) || [],
+      categories:
+        data?.scoreHistory?.map((item: ScoreHistory) => item.createdAt) || [],
     },
     legend: {
       markers: {
-        fillColors: ["gray", "#FDD66C", "#85E3C7",], // 각 시리즈에 대한 도트 색상 지정
+        fillColors: ["gray", "#FDD66C", "#85E3C7"], // 각 시리즈에 대한 도트 색상 지정
       },
     },
   });
@@ -64,19 +70,25 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data }) => {
       const seriesData = [
         {
           name: "Average Total",
-          data: data.scoreHistory.map((item: ScoreHistory) => item.averageTotal),
+          data: data.scoreHistory.map(
+            (item: ScoreHistory) => item.averageTotal
+          ),
         },
         {
           name: "Context Total",
-          data: data.scoreHistory.map((item: ScoreHistory) => item.contextTotal),
+          data: data.scoreHistory.map(
+            (item: ScoreHistory) => item.contextTotal
+          ),
         },
         {
           name: "Grammar Total",
-          data: data.scoreHistory.map((item: ScoreHistory) => item.grammarTotal),
+          data: data.scoreHistory.map(
+            (item: ScoreHistory) => item.grammarTotal
+          ),
         },
       ];
 
-      const colors = ["gray", "#FDD66C", "#85E3C7",];
+      const colors = ["gray", "#FDD66C", "#85E3C7"];
       setChartData((prevChartData) => ({
         ...prevChartData,
         series: seriesData,
@@ -95,9 +107,18 @@ const ChartComponent: React.FC<ChartComponentProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className="col-12 custom-chart-container" style={{ marginBottom: "20px" }}>
-      <h3>학습별 평균 등급 변동치</h3>
-      <ApexCharts options={chartData} series={chartData.series} type="line" height={250} />
+    <div
+      className="col-12 custom-chart-container"
+      style={{ marginBottom: "20px" }}
+    >
+      <ApexCharts
+        options={chartData}
+        series={chartData.series}
+        type="line"
+        height={250}
+        // width={560}
+        width={"100%"}
+      />
     </div>
   );
 };

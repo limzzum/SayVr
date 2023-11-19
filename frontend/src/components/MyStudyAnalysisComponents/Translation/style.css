@@ -1,13 +1,15 @@
 /* style.css */
-.translation-container {
+.translation-container-analysis {
   display: flex;
-  width: 80%;
-  margin-left: 10%;
+  width: 100%;
+  padding:0;
+  /* margin-left: 10%; */
 }
 
 .half-width-container {
   flex: 1;
-  margin: 0 10px;
+  /* padding:1rem; */
+  /* margin: 0 10px; */
   display: flex;
   flex-direction: column; /* 컨테이너 내의 요소들을 세로로 배열 */
 }

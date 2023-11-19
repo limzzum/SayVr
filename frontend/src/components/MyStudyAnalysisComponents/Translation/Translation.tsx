@@ -132,8 +132,8 @@ const Translation: React.FC<TranslationProps> = () => {
   };
 
   return (
-    <div className="translation-container">
-      <div className="half-width-container">
+    <div className="translation-container-analysis">
+      <div className="half-width-container" style={{marginRight:"1rem"}}>
         <div className="input-container">
           <textarea
             value={textToTranslate}
@@ -143,17 +143,17 @@ const Translation: React.FC<TranslationProps> = () => {
           />
         </div>
       </div>
-      <div className="half-width-container">
+      <div className="half-width-container" style={{marginLeft:"1rem"}}>
         <div className="output-container">
           <div className="output-box">
             <p>{translatedText || "번역된 텍스트가 여기에 나타납니다"}</p>
           </div>
         </div>
-        <div className="button-container">
-          <button className="translate-btn btn-primary" onClick={translate}>
+        <div className="button-container mb-3">
+          <button className="btn btn-primary" style={{marginRight:"1rem"}} onClick={translate}>
             번역
           </button>
-          <button className="translate-btn btn-primary" onClick={fetchFlashcards}>
+          <button className="btn btn-primary" onClick={fetchFlashcards}>
             단어장 추가
           </button>
         </div>

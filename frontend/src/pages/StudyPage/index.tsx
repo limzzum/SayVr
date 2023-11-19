@@ -26,7 +26,7 @@ const carouselSettings = {
   dots: false,
   // infinite: true,
   speed: 500,
-  slidesToShow: 3, // 한 번에 보여질 카드 수
+  // slidesToShow: 3, // 한 번에 보여질 카드 수
   slidesToScroll: 3, // 넘어갈 카드 수
   arrows: false,
   responsive: [
@@ -200,7 +200,7 @@ function StudyPage() {
               <div className="row clickable-cards">
                 <Slider
                   infinite={studyMineList.length >= 3}
-                  // slidesToShow={studyMineList.length>=2?3:1}
+                  slidesToShow={studyMineList.length===0?1:3}
                   ref={sliderMine}
                   {...carouselSettings}
                 >
@@ -294,7 +294,7 @@ function StudyPage() {
                 )}
                 <Slider
                   infinite={allStudyList?.length >= 3}
-                  // slidesToShow={allStudyList.length>=2?3:1}
+                  slidesToShow={allStudyList.length===0?1:3}
                   ref={sliderAll}
                   {...carouselSettings}
                 >

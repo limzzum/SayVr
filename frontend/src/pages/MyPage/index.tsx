@@ -95,7 +95,7 @@ function MyPage() {
     arrows:false,
     // infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    // slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
@@ -222,7 +222,7 @@ function MyPage() {
       </div>
       {/* <div className='row card-row custom-chart-container'></div> */}
       <div className='vocab-list-container row card-row'>
-        <div className='vocab-list-title' style={{ marginLeft: "0" }}>
+        <div className='vocab-list-title' style={{ marginLeft: "0",marginBottom:"2rem" }}>
           <div className='' style={{ marginLeft: "0" }}>
             <div className='list-title-buttons' style={{ marginLeft: "0" }}>
               <div className='card-title' style={{ marginLeft: "0" }}>
@@ -239,7 +239,7 @@ function MyPage() {
         </div>
         <div className='row clickable-cards'>
           
-          <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
+          <Slider infinite={personalCardTitles.length >= 3} slidesToShow={personalCardTitles.length===0?1:3}  ref={sliderPersonal} {...carouselSettings}>
             {personalCardTitles?.map((deck, index) => {
               return (
                 <>
@@ -247,14 +247,14 @@ function MyPage() {
                 </>
               )
             })}
-            {(personalCardTitles == null || personalCardTitles.length <3) && <>
-            <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} /></>}
+            {(personalCardTitles == null || personalCardTitles.length <3) &&
+            <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} />}
             {personalCardTitles.length===1 && <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} />}
           </Slider>
         </div>
       </div>
       <div className='vocab-list-container row card-row'>
-        <div className='vocab-list-title' style={{ marginLeft: "0" }}>
+        <div className='vocab-list-title' style={{ marginLeft: "0",marginBottom:"2rem" }}>
           <div className='' style={{ marginLeft: "0" }}>
             <div className='list-title-buttons' style={{ marginLeft: "0" }}>
               <div className='card-title' style={{ marginLeft: "0" }}>
@@ -271,7 +271,7 @@ function MyPage() {
         </div>
         <div className='row clickable-cards'>
 
-          <Slider infinite={studyMineList.length >= 3} ref={sliderMine} {...carouselSettings}>
+          <Slider infinite={studyMineList.length >= 3} slidesToShow={studyMineList.length===0?1:3}  ref={sliderMine} {...carouselSettings}>
             {studyMineList?.map((study, index) => {
               return (
                 <>
@@ -280,9 +280,9 @@ function MyPage() {
               )
             })}
             {(studyMineList == null || studyMineList.length < 3) && (
-              <>
+              
                 <MyStudyCard addNew={()=>navigate("/StudyList")} />
-              </>
+              
             )}
             { studyMineList.length===1 && <MyStudyCard addNew={()=>navigate("/StudyList")} />}
           </Slider>
