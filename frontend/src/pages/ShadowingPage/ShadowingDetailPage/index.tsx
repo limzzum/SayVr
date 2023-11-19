@@ -13,6 +13,7 @@ interface ExtendedYouTube extends YouTube {
   getCurrentTime(): number;
   getPlayerState(): number;
   pauseVideo(): void;
+  playVideo(): void;
 }
 
 function ShadowingDetailPage() {
@@ -27,9 +28,7 @@ function ShadowingDetailPage() {
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const previousStartRef = useRef<number | null>(null);
   const [isShadowing, setIsShadowing] = useState(false);
-  const [currentScriptStartTime, setCurrentScriptStartTime] = useState<number | null>(null);
-  const [currentScriptDuration, setCurrentScriptDuration] = useState<number | null>(null);
-
+  const [initialPlaybackTime, setInitialPlaybackTime] = useState<number | null>(null);
 
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
@@ -93,7 +92,19 @@ function ShadowingDetailPage() {
         player.getPlayerState() === window.YT.PlayerState.ENDED
       ) {
         clearUpdateInterval();
+        console.log("재생이나 일시정지 상태입니다.");
+      } else if (player.getPlayerState() === window.YT.PlayerState.PLAYING) {
+        setIsShadowing(false);
+        console.log("재생 중입니다.");
       }
+    }
+  };
+
+  const playAgain = () => {
+    if (playerRef.current) {
+      const player = playerRef.current;
+      player.playVideo();
+      setIsShadowing(false);
     }
   };
 
@@ -105,28 +116,19 @@ function ShadowingDetailPage() {
       );
 
       if (currentScript && currentScript.start !== previousStartRef.current) {
-        
-        console.log("갱신")
         previousStartRef.current = currentScript.start;
 
         setPrevDisplayedScript(currentScript.text);
         setDisplayedScript(currentScript.text);
-
-        setCurrentScriptStartTime(currentScript.start);
-        setCurrentScriptDuration(currentScript.duration);
-
         const translatedText = await translate(currentScript.text);
         setTranslatedText(translatedText);
 
         translateButtonHandler(currentScript.text);
-        console.log(currentScriptDuration)
-        console.log(currentScriptStartTime)
       } else {
         return;
       }
     }
   };
-
 
   const translate = async (text: string) => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
@@ -220,8 +222,8 @@ function ShadowingDetailPage() {
             <button style={{ display: "none" }} onClick={() => translateButtonHandler(displayedScript)}>
               번역하기
             </button>
-            <button className="marginLeftButton" onClick={onShadowingButtonClick}>
-              쉐도잉
+            <button className="marginLeftButton" onClick={isShadowing ? playAgain : onShadowingButtonClick}>
+              {isShadowing ? "영상 다시 재생" : "쉐도잉"}
             </button>
             {isShadowing && (
               <RecorderModule
