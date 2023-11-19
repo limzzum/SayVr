@@ -57,16 +57,16 @@
 }
 .script-column {
 height:67vh;
+max-width: 70% !important;
 }
-/* .review-container-div {
-  width: 50%;
-} */
+
 .review-container {
   background-color: white;
   border: 9px solid white;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .translation-bar {
   width: 100%;
 }
