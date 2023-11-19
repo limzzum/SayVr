@@ -27,10 +27,10 @@ public class UserResponseDto {
         private String profile;
         private Long ranking;
         private String tier;
-        private Long point;
+        private int point;
 
         @Builder
-        public UserInfoResponseDto(User user, Long rank, String tier, Long point) {
+        public UserInfoResponseDto(User user, Long rank, String tier, int point) {
             this.username = user.getUsername();
             this.nickname = user.getNickname();
             this.profile = user.getProfile();

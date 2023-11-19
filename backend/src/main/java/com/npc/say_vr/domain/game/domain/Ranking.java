@@ -33,7 +33,7 @@ public class Ranking {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long point;
+    private int point;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tier_id")

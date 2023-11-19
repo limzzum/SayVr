@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     private final RankingRepository rankingRepository;
     private final TierRepository tierRepository;
 
-    private static final Long CREATE_USER_POINT = 0L;
+    private static final int CREATE_USER_POINT = 0;
 
 
     private Long createUser(User user) {
