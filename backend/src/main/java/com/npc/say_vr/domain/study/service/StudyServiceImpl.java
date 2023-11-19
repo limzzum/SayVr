@@ -1,5 +1,12 @@
 package com.npc.say_vr.domain.study.service;
 
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDYMEMBER_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDYMEMBER_NO_LTUPDATE;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDY_FULL_MEMBER;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDY_NOT_FOUND;
+import static com.npc.say_vr.global.error.constant.ExceptionMessage.FORBIDDEN;
+import static com.npc.say_vr.global.error.constant.ExceptionMessage.UN_AUTHORIZATION;
+
 import com.npc.say_vr.domain.study.constant.StudyRole;
 import com.npc.say_vr.domain.study.constant.StudyStatus;
 import com.npc.say_vr.domain.study.domain.Study;
@@ -12,6 +19,7 @@ import com.npc.say_vr.domain.study.dto.responseDto.StudyEnterResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyInfoDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyListResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyMineListResponseDto;
+import com.npc.say_vr.domain.study.exception.StudyException;
 import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
 import com.npc.say_vr.domain.study.repository.studyRepository.StudyRepository;
 import com.npc.say_vr.domain.user.domain.User;
@@ -36,7 +44,7 @@ public class StudyServiceImpl implements StudyService {
   @Override
   public StudyEnterResponseDto createStudy(Long userId, CreateStudyRequestDto createStudyRequestDto) {
       // TODO : user 예외처리
-    User leader = userRepository.findById(userId).orElseThrow();
+    User leader = userRepository.findById(userId).orElseThrow(() -> new StudyException(UN_AUTHORIZATION));
     Study study = studyRepository.save(createStudyRequestDto.toEntity());
     log.info("study 생성 완료 : " + study.getId());
     StudyMember studyMember = StudyMember.builder()
@@ -57,9 +65,7 @@ public class StudyServiceImpl implements StudyService {
     public StudyDetailResponseDto readStudy(Long userId, Long studyId) {
     StudyMember studyMember = studyMemberRepository.myfindAndNickNameByStudyId(userId, studyId);
       if (studyMember == null) {
-//        Todo : 예외처리
-          return null;
-//        throw new StudyMemberNotFoundException("해당 스터디 멤버를 찾을 수 없습니다.");
+        throw new StudyException(STUDYMEMBER_NOT_FOUND);
       }
         log.info("studyMember에 조회 완료 : "+ studyMember.getId());
         StudyInfoDto studyInfoDto = createStudyInfoDto(studyMember.getStudy());
@@ -77,7 +83,7 @@ public class StudyServiceImpl implements StudyService {
       List<StudyInfoDto> studyInfoDtoList = studyRepository.findByUserId(userId);
 
       if(studyInfoDtoList.isEmpty() || studyInfoDtoList == null) {
-          // TODO : 예외처리
+          // TODO : 예외처리..? 근데 이게 예외인가!.....
           log.info("내 스터디 리스트 없음");
       }
       log.info("내 스터디 조회 완료");
@@ -91,20 +97,18 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public StudyEnterResponseDto joinStudy(Long userId, Long studyId) {
         // TODO : user,study 예외처리
-        User user = userRepository.findById(userId).orElseThrow();
-        Study study = studyRepository.findById(studyId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new StudyException(UN_AUTHORIZATION));
+        Study study = studyRepository.findById(studyId).orElseThrow(() -> new StudyException(STUDY_NOT_FOUND));
 
         StudyMember existingMember = studyMemberRepository.findByUserIdAndStudyId(userId, studyId);
 
 
         if(existingMember != null && existingMember.getStatus().equals(Status.ACTIVE)) {
-            // TODO : 존재하는 멤버 예외처리
-            return null;
+            throw new StudyException(STUDYMEMBER_NOT_FOUND);
         }
 
         if(study.getStudyStatus().equals(StudyStatus.FULL)) {
-            // TODO : 예외처리
-            return null;
+            throw new StudyException(STUDY_FULL_MEMBER);
         }
 
         StudyMember studyMember;
@@ -164,13 +168,13 @@ public class StudyServiceImpl implements StudyService {
       if(studyMember.getStudyRole().equals(StudyRole.MEMBER)) {
           // TODO :예외 처리
           log.info("방장이 아니라 수정 불가");
-          return null;
+          throw new StudyException(FORBIDDEN);
       }
 
       if(updateStudyRequestDto.getMaxPeople() < studyMember.getStudy().getCurrentPeople()) {
           // TODO : 예외처리
           log.info("현재 인원보다 설정한 인원이 작아서 수정 불가");
-          return null;
+          throw new StudyException(STUDYMEMBER_NO_LTUPDATE);
       }
 
       studyMember.getStudy().updateStudy(updateStudyRequestDto.getName(), updateStudyRequestDto.getMaxPeople(),

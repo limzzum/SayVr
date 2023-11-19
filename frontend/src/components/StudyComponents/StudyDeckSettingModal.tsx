@@ -1,9 +1,14 @@
 // SettingsModal.tsx
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import {updateStudyDeckSettings,StudyDeckOneDetailResponseDto,deleteStudyDeck} from "../../api/StudyPageAPI/StudyAPI"
+import {
+  updateStudyDeckSettings,
+  StudyDeckOneDetailResponseDto,
+  deleteStudyDeck,
+} from "../../api/StudyPageAPI/StudyAPI";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 interface SettingsModalProps {
   showModal: boolean;
@@ -11,11 +16,11 @@ interface SettingsModalProps {
   id: number;
   handleRefresh: (updated: StudyDeckOneDetailResponseDto) => void;
   info: StudyDeckOneDetailResponseDto;
-  studyId : Number;
+  studyId: Number;
 }
 export interface DeckSettingsUpdateRequestDto {
-  studyDeckId : Number,
-  name: string
+  studyDeckId: Number;
+  name: string;
 }
 const StudyDeckSettingsModal: React.FC<SettingsModalProps> = ({
   showModal,
@@ -23,19 +28,19 @@ const StudyDeckSettingsModal: React.FC<SettingsModalProps> = ({
   handleRefresh,
   info,
   id,
-  studyId
+  studyId,
 }) => {
   const navigate = useNavigate();
   const [mode, setMode] = useState("settings");
- 
+
   const [flashcardForm, setFlashcardForm] =
     useState<DeckSettingsUpdateRequestDto>({
       name: info.name,
       studyDeckId: id,
     });
-    
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type} = event.target;
+    const { name, value, type } = event.target;
     if (type === "text") {
       setFlashcardForm((prevData) => ({
         ...prevData,
@@ -46,12 +51,20 @@ const StudyDeckSettingsModal: React.FC<SettingsModalProps> = ({
   const changeMode = (mode: string) => {
     setMode(mode);
   };
-  
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!flashcardForm.name) {
-      alert("제목을 입력해주세요");
+      Swal.fire({
+        title: "입력하지 않은 항목이 있습니다.",
+        text: "단어장 이름을 입력해주세요.",
+        icon: "warning",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
       return;
     } else {
       // console.log(flashcardForm)
@@ -62,9 +75,15 @@ const StudyDeckSettingsModal: React.FC<SettingsModalProps> = ({
           handleRefresh(res.data.data);
           // navigate(`/flashcard/${id}`);
         })
-        .catch((error) => {
-          console.error("Error updating deck", error);
-          alert("단어장 정보를 수정하는데 실패했습니다.");
+        .catch((e) => {
+          Swal.fire({
+            icon: "error",
+            title: "스터디 단어장을 업데이트하는데 오류가 발생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
         });
     }
   };
@@ -80,13 +99,20 @@ const StudyDeckSettingsModal: React.FC<SettingsModalProps> = ({
   }, []);
 
   const handleDelete = () => {
-    deleteStudyDeck(studyId,id).then((res) => {
+    deleteStudyDeck(studyId, id).then((res) => {
       let message = res.data.data.message;
       // console.log(message)
       if (message === "단어장이 삭제되었습니다") {
         navigate(`/study/${studyId}`);
       } else {
-        alert(message);
+        Swal.fire({
+          icon: "warning",
+          title: message,
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
       }
     });
   };
@@ -110,8 +136,7 @@ const StudyDeckSettingsModal: React.FC<SettingsModalProps> = ({
               placeholder="단어장 제목을 입력해주세요"
               onChange={handleInputChange}
             />
-            <div className="row mt-4">
-            </div>
+            <div className="row mt-4"></div>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="danger" onClick={() => changeMode("delete")}>

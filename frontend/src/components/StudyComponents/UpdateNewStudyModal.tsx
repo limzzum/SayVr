@@ -4,6 +4,7 @@ import {
   StudyDetailResponseDto,
   updateStudy,
 } from "../../api/StudyPageAPI/StudyAPI";
+import Swal from "sweetalert2";
 
 interface UpdateNewListModalProps {
   showModal: boolean;
@@ -67,7 +68,16 @@ const UpdateNewStudyModal: React.FC<UpdateNewListModalProps> = ({
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!studyForm.name) {
-      alert("이름을 입력해주세요"); // 이름 글자수 제한두기
+      Swal.fire({
+        title: "입력하지 않은 항목이 있습니다.",
+        text: "스터디 이름을 입력해주세요",
+        icon: "warning",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
       return;
     } else {
       updateStudy(readStudyInfo?.studyInfoDto.studyId, studyForm)
@@ -77,7 +87,14 @@ const UpdateNewStudyModal: React.FC<UpdateNewListModalProps> = ({
           handleClose();
         })
         .catch((error) => {
-          console.error("스터디 수정 중 오류 발생", error);
+          Swal.fire({
+            icon: "error",
+            title: "스터디를 업데이트하는데 오류가 방생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
         });
     }
   };
@@ -97,7 +114,7 @@ const UpdateNewStudyModal: React.FC<UpdateNewListModalProps> = ({
             value={studyForm.name}
             placeholder="스터디 제목을 입력해주세요"
             onChange={handleInputChange}
-            style={{marginBottom:"1rem"}}
+            style={{ marginBottom: "1rem" }}
           />
           <Form.Label htmlFor="people">최대 참여 인원</Form.Label>
           <Form.Select
@@ -105,7 +122,7 @@ const UpdateNewStudyModal: React.FC<UpdateNewListModalProps> = ({
             id="people"
             value={studyForm.maxPeople}
             onChange={handleSelectChange}
-            style={{marginBottom:"1rem"}}
+            style={{ marginBottom: "1rem" }}
           >
             {Array.from({ length: 11 }, (_, index) => index + 2).map((num) => (
               <option key={num} value={num}>
@@ -122,7 +139,7 @@ const UpdateNewStudyModal: React.FC<UpdateNewListModalProps> = ({
             value={studyForm.description}
             placeholder="스터디 설명을 입력해주세요"
             onChange={handleInputChange}
-            style={{marginBottom:"1rem"}}
+            style={{ marginBottom: "1rem" }}
           />
           <Form.Label htmlFor="rules">스터디 규칙</Form.Label>
           <Form.Control

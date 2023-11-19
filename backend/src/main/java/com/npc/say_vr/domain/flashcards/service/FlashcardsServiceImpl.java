@@ -1,5 +1,10 @@
 package com.npc.say_vr.domain.flashcards.service;
 
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsErrorCode.ENGLISH_BOOK_NOT_FOUND;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsErrorCode.WORDS_SEARCH_NOT_FOUND;
+import static com.npc.say_vr.global.error.constant.ExceptionMessage.FORBIDDEN;
+import static com.npc.say_vr.global.error.constant.ExceptionMessage.NOT_ALLOW_USER;
+
 import com.npc.say_vr.domain.flashcards.constant.FlashcardStatus;
 import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
 import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
@@ -16,6 +21,7 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckDetailResp
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckListResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.DeckTitleResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
+import com.npc.say_vr.domain.flashcards.exception.FlashcardsException;
 import com.npc.say_vr.domain.flashcards.repository.FlashcardsRepository;
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.QueryDslFlashcardRepository;
@@ -24,6 +30,7 @@ import com.npc.say_vr.domain.study.repository.flashcardDeckRepostiory.QueryDslFl
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.global.dto.ResponseDto;
+import com.npc.say_vr.global.error.exception.UserException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,10 +57,9 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Override
     public DeckCreateResponseDto createPersonalDeck(Long userId,
         CreateFlashcardsRequestDto requestDto) {
-        //TODO: 예외 처리 유저 없을때 ->
         FlashcardDeck flashcardDeck = FlashcardDeck.builder().build();
         flashcardDeck = flashcardsRepository.save(flashcardDeck);
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserException(NOT_ALLOW_USER));
         PersonalDeck personalDeck = requestDto.createPersonalDeck(user, flashcardDeck);
         personalDeck.updateSavingProgress(SavingProgressStatus.ENABLED);
         personalDeck = personalDeckRepository.save(personalDeck);
@@ -67,7 +73,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Transactional
     @Override
     public DeckCreateResponseDto createForkedDeck(Long userId, Long personalDeckId) {
-        PersonalDeck deckToFork = personalDeckRepository.findById(personalDeckId).orElseThrow();
+        PersonalDeck deckToFork = personalDeckRepository.findById(personalDeckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         deckToFork.updateForkCount();
         personalDeckRepository.save(deckToFork);
         FlashcardDeck forkedWords = FlashcardDeck.builder().build();
@@ -81,7 +87,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
         }
         copiedList=wordcardRepository.saveAll(copiedList);
         forkedWords.updateWords(copiedList);
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserException(NOT_ALLOW_USER));
         //TODO: 복사할 내용 뜯어오기
         PersonalDeck personalDeck = PersonalDeck.builder()
             .flashcardDeck(forkedWords)
@@ -119,13 +125,15 @@ public class FlashcardsServiceImpl implements FlashcardsService {
         List<PersonalDeck> personalDeckList = queryDslFlashcardRepository.searchAndSortPersonalDecks(
             readDeckSearchRequestDto);
 
+        if(personalDeckList.size() == 0) throw new FlashcardsException(WORDS_SEARCH_NOT_FOUND);
+
         return new DeckListResponseDto(personalDeckList);
     }
 
     @Override
     public DeckDetailResponseDto readDeckDetail(Long userId, Long deckId) {
 
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         FlashcardStatus access = personalDeck.getStatus();
         FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
         if ((access.equals(FlashcardStatus.PRIVATE)
@@ -133,8 +141,7 @@ public class FlashcardsServiceImpl implements FlashcardsService {
             && !Objects.equals(personalDeck.getUser().getId(), userId)) {
             log.info("private or forked and unauthorized");
             //TODO: 접근 권한 예외 처리
-            //            throw new FlashcardsNotFoundException("비공개 단어장 접근 권한 없음");
-            return DeckDetailResponseDto.builder().build();
+            throw new FlashcardsException("비공개 단어장 권한이 없습니다",FORBIDDEN);
         } else {
             return new DeckDetailResponseDto(personalDeck);
         }
@@ -144,10 +151,10 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Override
     public DeckDetailResponseDto updateSavingProgressOption(Long userId, Long deckId,
         DeckUpdateRequestDto requestDto) {
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         if (!personalDeck.getUser().getId().equals(userId)) {
             log.info("not authorized");
-//            return new MessageOnlyResponseDto("권한이 없습니다");
+            throw new FlashcardsException(FORBIDDEN);
         } else {
             personalDeck.updateSavingProgress(requestDto.toEnum());
             personalDeck = personalDeckRepository.save(personalDeck);
@@ -158,10 +165,10 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Transactional
     @Override
     public DeckDetailResponseDto updateResetProgress(Long userId, Long deckId) {
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         if (!personalDeck.getUser().getId().equals(userId)) {
             log.info("not authorized");
-//            return new MessageOnlyResponseDto("권한이 없습니다");
+            throw new FlashcardsException(FORBIDDEN);
         } else {
             FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
             //TODO: 학습상태 전부 unchecked로 바꾸기
@@ -186,10 +193,10 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Override
     public DeckDetailResponseDto updateDeck(Long userId, Long deckId,
         DeckSettingsUpdateRequestDto requestDto) {
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         if (!personalDeck.getUser().getId().equals(userId)) {
             log.info("not authorized");
-//            return new MessageOnlyResponseDto("권한이 없습니다");
+            throw new FlashcardsException(FORBIDDEN);
         } else {
             personalDeck.updateStatus(requestDto.toEnum());
             personalDeck.updateName(requestDto.getName());
@@ -201,12 +208,13 @@ public class FlashcardsServiceImpl implements FlashcardsService {
     @Transactional
     @Override
     public MessageOnlyResponseDto deleteDeck(Long userId, Long deckId) {
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();//TODO 없을때
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));//TODO 없을때
         if (personalDeck.getUser().getId().equals(userId)) {
             personalDeck.updateStatus(FlashcardStatus.DELETED);
             personalDeckRepository.save(personalDeck);
             return new MessageOnlyResponseDto("단어장이 삭제되었습니다");
         } else {
+            // TODO => 이렇게 말고 예외처리해서 변경하면 좋을듯함다....
             return new MessageOnlyResponseDto("권한이 없습니다");
         }
     }

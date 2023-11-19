@@ -3,7 +3,8 @@ import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import API_URL from "../../../config";
 import { tokenState } from "../../../recoil/GoalbalState";
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue } from "recoil";
+import Swal from "sweetalert2";
 
 interface ChangeNicknameModalProps {
   show: boolean;
@@ -11,11 +12,14 @@ interface ChangeNicknameModalProps {
   onNicknameChange: (newNickname: string) => void;
 }
 
-const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide, onNicknameChange }) => {
+const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({
+  show,
+  onHide,
+  onNicknameChange,
+}) => {
   const [newNickname, setNewNickname] = useState("");
   const token = useRecoilValue(tokenState);
   const [nicknameError, setNicknameError] = useState("");
-
 
   useEffect(() => {
     setNewNickname("");
@@ -37,19 +41,39 @@ const ChangeNicknameModal: React.FC<ChangeNicknameModalProps> = ({ show, onHide,
           },
         }
       );
-  
+
       if (response) {
         console.log("여기가 닉네임 변경에 대한 응답", response);
         const data = response.data.message;
-        alert(data);
+        Swal.fire({
+          icon: "warning",
+          title: data,
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
         onNicknameChange(newNickname);
         onHide();
       } else {
-        alert("닉네임 변경에 실패했습니다.");
+        Swal.fire({
+          icon: "warning",
+          title: "닉네임 변경에 실패했습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
       }
     } catch (error) {
-      console.error("닉네임 변경 중 오류 발생:", error);
-      alert("닉네임 변경 중 오류가 발생했습니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "닉네임 변경 중 오류가 발생했습니다.",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+          icon: "swal-icon-sign",
+        },
+      });
     }
   };
 

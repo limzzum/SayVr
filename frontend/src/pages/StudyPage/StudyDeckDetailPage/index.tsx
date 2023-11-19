@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BsChevronLeft } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {WordcardDto,StudyRole, getOneStudyDeck,StudyDeckOneDetailResponseDto,createStudyWordcard} from "../../../api/StudyPageAPI/StudyAPI"
+import {
+  WordcardDto,
+  StudyRole,
+  getOneStudyDeck,
+  StudyDeckOneDetailResponseDto,
+  createStudyWordcard,
+} from "../../../api/StudyPageAPI/StudyAPI";
 import AddButton from "../../../components/StudyComponents/AddButton";
 import { AddLine } from "../../../components/VocabListComponents/AddLine";
 import StudyDeckSettingsModal from "../../../components/StudyComponents/StudyDeckSettingModal";
@@ -10,7 +16,8 @@ import IconButton from "../../../components/VocabListComponents/IconButton";
 import SettingsIcon from "../../../components/VocabListComponents/Icons/SettingsIcon";
 import { StudyVocabLine } from "../../../components/StudyComponents/StudyVocabLine";
 import "./style.css";
-import {CreateWordcardRequestDto} from "../../VocabListPage/DeckDetailPage"
+import { CreateWordcardRequestDto } from "../../VocabListPage/DeckDetailPage";
+import Swal from "sweetalert2";
 // export interface CreateWordcardRequestDto {
 //   kor: string;
 //   eng: string;
@@ -23,25 +30,30 @@ const StudyDeckDetail: React.FC = () => {
   const [deckId, setDeckId] = useState(Number(id));
   const [studyId, setStudyId] = useState(Number(studyid));
   const navigate = useNavigate();
-  const [mode, setMode] = useState("button")
+  const [mode, setMode] = useState("button");
   const [deck, setDeck] = useState<StudyDeckOneDetailResponseDto>();
 
   // const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [wordList, setWordList] = useState<WordcardDto[]>([]);
- 
 
   useEffect(() => {
     if (id) {
-      getOneStudyDeck(studyId,deckId)
+      getOneStudyDeck(studyId, deckId)
         .then((res) => {
           setDeck(res.data.data);
           setUserStudyRole(res.data.data.studyRole);
           setWordList(res.data.data.flashcardDto.wordcardList);
         })
-        .catch((e) => {
-          console.log(e);
-          alert("단어장 정보를 불러오는데 실패했습니다.");
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "스터디 단어장을 조회하는데 오류가 발생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
         });
     }
   }, [id]);
@@ -49,7 +61,6 @@ const StudyDeckDetail: React.FC = () => {
   const handleSettingsClick = () => {
     setShowModal(true);
   };
-
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -92,12 +103,25 @@ const StudyDeckDetail: React.FC = () => {
             setWordList((prev) => [...prev, response.wordcard]);
             setMode("button");
           } else {
-            alert(response.errorMessage);
+            Swal.fire({
+              icon: "warning",
+              title: response.errorMessage,
+              customClass: {
+                confirmButton: "swal-btn-sign",
+                icon: "swal-icon-sign",
+              },
+            });
           }
         })
         .catch((e) => {
-          console.log(e);
-          alert("단어를 추가하는데 실패했습니다.");
+          Swal.fire({
+            icon: "error",
+            title: "단어를 추가하는데 오류가 발생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
         });
     }
   };
@@ -127,48 +151,47 @@ const StudyDeckDetail: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <div>
-                    </div>
+                    <div></div>
                   </>
                 )}
               </div>
             </div>
-              <>
-                <div
-                  style={{
-                    marginTop: "100px",
-                    borderRadius: "10px",
-                    backgroundColor: "aliceblue",
-                    minHeight: "70vh",
-                  }}
-                >
-                  {wordList?.map((wordcard, index) => {
-                    return (
-                      <>
-                        <StudyVocabLine
-                          key={index + "wordcard" + id}
-                          props={wordcard}
-                          studyId={studyId}
-                          deckId={deckId}
-                        ></StudyVocabLine>
-                      </>
-                    );
-                  })}
-                  <div className="vocab-line">
-                    {mode === "button" && (
-                      <AddButton
-                        handleButtonClick={() => setMode("add")}
-                        size="45"
-                      />
-                    )}
-                    {mode === "add" && (
-                      <>
-                        <AddLine addWord={addWord} />
-                      </>
-                    )}
-                  </div>
+            <>
+              <div
+                style={{
+                  marginTop: "100px",
+                  borderRadius: "10px",
+                  backgroundColor: "aliceblue",
+                  minHeight: "70vh",
+                }}
+              >
+                {wordList?.map((wordcard, index) => {
+                  return (
+                    <>
+                      <StudyVocabLine
+                        key={index + "wordcard" + id}
+                        props={wordcard}
+                        studyId={studyId}
+                        deckId={deckId}
+                      ></StudyVocabLine>
+                    </>
+                  );
+                })}
+                <div className="vocab-line">
+                  {mode === "button" && (
+                    <AddButton
+                      handleButtonClick={() => setMode("add")}
+                      size="45"
+                    />
+                  )}
+                  {mode === "add" && (
+                    <>
+                      <AddLine addWord={addWord} />
+                    </>
+                  )}
                 </div>
-              </>
+              </div>
+            </>
           </div>
           <div className="create-new-list-modal">
             {deck && (

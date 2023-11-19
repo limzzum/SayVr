@@ -18,6 +18,7 @@ import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Slider from "react-slick";
 import "./style.css";
 import StudyListPage from "./StudyListPage";
+import Swal from "sweetalert2";
 
 interface ArrowProps {
   onClick: () => void;
@@ -73,7 +74,7 @@ function StudyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
-            width:"4rem"
+            width: "4rem",
           }}
           onClick={props.onClick}
         >
@@ -90,7 +91,7 @@ function StudyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
-            width:"4rem"
+            width: "4rem",
           }}
           onClick={props.onClick}
         >
@@ -126,6 +127,18 @@ function StudyPage() {
       let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
       setSearchStudyInfos(show);
       console.log(show);
+      if (show === null || show.length === 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "스터디 검색 결과가 없습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
+        setSearchKeyword("");
+        return;
+      }
       setMenu("public");
     });
   };
@@ -200,7 +213,7 @@ function StudyPage() {
               <div className="row clickable-cards">
                 <Slider
                   infinite={studyMineList.length >= 3}
-                  slidesToShow={studyMineList.length===0?1:3}
+                  slidesToShow={studyMineList.length === 0 ? 1 : 3}
                   ref={sliderMine}
                   {...carouselSettings}
                 >
@@ -220,9 +233,9 @@ function StudyPage() {
                       <MyStudyCard addNew={handleCreatePlusButtonClick} />
                     </>
                   )}
-                  { studyMineList.length ===1 &&
+                  {studyMineList.length === 1 && (
                     <MyStudyCard addNew={handleCreatePlusButtonClick} />
-                  }
+                  )}
                 </Slider>
               </div>
             </div>
@@ -294,7 +307,7 @@ function StudyPage() {
                 )}
                 <Slider
                   infinite={allStudyList?.length >= 3}
-                  slidesToShow={allStudyList.length===0?1:3}
+                  slidesToShow={allStudyList.length === 0 ? 1 : 3}
                   ref={sliderAll}
                   {...carouselSettings}
                 >
@@ -311,12 +324,12 @@ function StudyPage() {
                       </>
                     );
                   })}
-                  {(allStudyList == null || allStudyList.length <3) && (
+                  {(allStudyList == null || allStudyList.length < 3) && (
                     <MyStudyCard addNew={handleCreatePlusButtonClick} />
                   )}
-                  { allStudyList.length ===1 &&
+                  {allStudyList.length === 1 && (
                     <MyStudyCard addNew={handleCreatePlusButtonClick} />
-                  }
+                  )}
                 </Slider>
               </div>
             </div>
