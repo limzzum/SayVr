@@ -70,6 +70,16 @@ button:hover {
   margin-left: 10%;
 }
 
+.ScoreBadge {
+  background-color: #1D5193;
+  color: white;
+  padding: 5px 10px;
+  width: 100%;
+  border-radius: 5px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
 span {
   font-size: 20px;
   /* color: white; */
@@ -77,4 +87,12 @@ span {
 
 .marginLeftButton {
   margin-right: 15px;
+}
+
+.output-box {
+  max-width: 100%;
+  overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
+}
+.output-score-box {
+  max-width: 30%;
 }

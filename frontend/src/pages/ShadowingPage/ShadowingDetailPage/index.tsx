@@ -189,12 +189,19 @@ function ShadowingDetailPage() {
               <p>{translatedText}</p>
             </div>
             {pronunciationResult && (
-              <div className="output-box pronunciation-result-box">
-                <p>인식된 문장:{pronunciationResult.text}</p>
-                <p>정확도 점수: {pronunciationResult.accuracyScore}</p>
-                <p>발음 점수: {pronunciationResult.pronunciationScore}</p>
-                <p>문장 점수: {pronunciationResult.completenessScore}</p>
-                <p>유창성 점수: {pronunciationResult.fluencyScore}</p>
+              <div className="output-score-box">
+                <div>
+                  <div className="ScoreBadge">
+                    <span className="rounded-pill">🙋‍♂️ 발음 평가 내용</span>
+                  </div>
+                  <div className="output-box pronunciation-result-box">
+                    <p>인식된 문장: {pronunciationResult.text}</p>
+                    <p>정확도 점수: {pronunciationResult.accuracyScore}</p>
+                    <p>발음 점수: {pronunciationResult.pronunciationScore}</p>
+                    <p>문장 점수: {pronunciationResult.completenessScore}</p>
+                    <p>유창성 점수: {pronunciationResult.fluencyScore}</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -205,7 +212,13 @@ function ShadowingDetailPage() {
             <button className="marginLeftButton" onClick={onShadowingButtonClick}>
               쉐도잉
             </button>
-            {isShadowing && <RecorderModule onRecordingStart={onRecordingStart} onRecordingStop={onRecordingStop} onPronunciationResult={onPronunciationResult} />}
+            {isShadowing && (
+              <RecorderModule
+                onRecordingStart={onRecordingStart}
+                onRecordingStop={onRecordingStop}
+                onPronunciationResult={onPronunciationResult}
+              />
+            )}
           </div>
         </div>
       )}
