@@ -127,7 +127,7 @@
   font-weight: bold;
 }
 
-.Modal {
+.game_answer_modal {
   display: flex;
   flex-direction: column;
   justify-content: center;
