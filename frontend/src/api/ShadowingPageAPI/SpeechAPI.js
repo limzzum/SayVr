@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 
-const RecorderModule = ({ onRecordingStart, onRecordingStop, onPronunciationResult }) => {
+const RecorderModule = ({ onRecordingStart, onRecordingStop, onPronunciationResult, currentScriptText }) => {
   const [stream, setStream] = useState();
   const [media, setMedia] = useState();
   const [onRec, setOnRec] = useState(true);
@@ -30,7 +30,7 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop, onPronunciationResu
     const newRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
     setRecognizer(newRecognizer);
 
-    const reference_text = "";
+    const reference_text = currentScriptText;
     const pronunciationAssessmentConfig = new sdk.PronunciationAssessmentConfig(
       reference_text,
       sdk.PronunciationAssessmentGradingSystem.HundredMark,

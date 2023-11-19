@@ -22,7 +22,7 @@ function ShadowingDetailPage() {
   const [script, setScript] = useState<ScriptItem[] | null>(null);
   const [displayedScript, setDisplayedScript] = useState<string>("");
   const [translatedText, setTranslatedText] = useState<string>("");
-  const [pronunciationResult, setPronunciationResult] = useState<any>(null); // Replace 'any' with the actual type if available
+  const [pronunciationResult, setPronunciationResult] = useState<any>(null);
   const playerRef = useRef<ExtendedYouTube | null>(null);
   const [prevDisplayedScript, setPrevDisplayedScript] = useState<string>("");
   const [intervalId, setIntervalId] = useState<number | null>(null);
@@ -39,7 +39,6 @@ function ShadowingDetailPage() {
   const onRecordingStop = (blob: Blob) => {
     setAudioBlob(blob);
     console.log("Recording stopped!");
-    // 여기에서 녹음 파일을 서버로 전송하거나 추가 작업 수행
   };
 
   const onPronunciationResult = async (result: any) => {
@@ -230,6 +229,7 @@ function ShadowingDetailPage() {
                 onRecordingStart={onRecordingStart}
                 onRecordingStop={onRecordingStop}
                 onPronunciationResult={onPronunciationResult}
+                currentScriptText={displayedScript}
               />
             )}
           </div>
