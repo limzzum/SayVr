@@ -27,16 +27,16 @@ public enum ExceptionMessage implements ErrorCode{
 
     @Override
     public String getMessage() {
-        return null;
+        return message;
     }
 
     @Override
     public String getErrorCode() {
-        return null;
+        return errorCode;
     }
 
     @Override
     public int getStatusCode() {
-        return 0;
+        return statusCode;
     }
 }

@@ -3,7 +3,8 @@ import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 import API_URL from "../../../config";
 import { tokenState } from "../../../recoil/GoalbalState";
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue } from "recoil";
+import Swal from "sweetalert2";
 
 interface ChangeProfileModalProps {
   show: boolean;
@@ -11,7 +12,11 @@ interface ChangeProfileModalProps {
   onProfileChange: (newProfile: File) => void;
 }
 
-const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, onProfileChange }) => {
+const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({
+  show,
+  onHide,
+  onProfileChange,
+}) => {
   const [selectedProfile, setSelectedProfile] = useState<File | null>(null);
   const token = useRecoilValue(tokenState);
 
@@ -24,29 +29,49 @@ const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, o
       if (selectedProfile) {
         const formData = new FormData();
         formData.append("profile", selectedProfile);
-  
+
         // Axios 요청 결과를 변수에 저장
         const response = await axios({
           method: "put",
           url: `${API_URL}/user/profileimg`,
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
           data: formData,
         });
-  
+
         // 서버 응답을 콘솔에 출력
         console.log("서버 응답:", response);
-  
+
         onProfileChange(selectedProfile);
-        alert("프로필 사진 변경이 완료되었습니다.");
+        Swal.fire({
+          icon: "success",
+          title: "프로필 사진 변경이 완료되었습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
         onHide();
       } else {
-        alert("프로필 사진을 선택하세요.");
+        Swal.fire({
+          icon: "warning",
+          title: "프로필 사진을 선택하세요.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
       }
     } catch (error) {
-      console.error("프로필 변경 중 오류 발생:", error);
-      alert("프로필 변경 중 오류가 발생했습니다.");
+      Swal.fire({
+        icon: "error",
+        title: "프로필 변경 중 오류가 발생했습니다.",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+          icon: "swal-icon-sign",
+        },
+      });
     }
   };
 
@@ -65,7 +90,11 @@ const ChangeProfileModal: React.FC<ChangeProfileModalProps> = ({ show, onHide, o
       <Modal.Body>
         <Form.Group controlId="formProfile">
           <Form.Label>새로운 프로필 사진 선택</Form.Label>
-          <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>

@@ -1,6 +1,10 @@
 package com.npc.say_vr.domain.vr.service;
 
+import static com.npc.say_vr.domain.vr.constant.VrErrorCode.CONVERSATION_NOT_FOUND;
+import static com.npc.say_vr.global.error.constant.ExceptionMessage.UN_AUTHORIZATION;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.npc.say_vr.domain.study.exception.StudyException;
 import com.npc.say_vr.domain.user.domain.User;
 import com.npc.say_vr.domain.user.repository.UserRepository;
 import com.npc.say_vr.domain.vr.domain.Conversation;
@@ -18,6 +22,7 @@ import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ProficiencyInfoRespo
 import com.npc.say_vr.domain.vr.dto.ConversationResponseDto.ScoreDto;
 import com.npc.say_vr.domain.vr.dto.EvaluationDto;
 import com.npc.say_vr.domain.vr.dto.OpenAIMessageDto;
+import com.npc.say_vr.domain.vr.exception.VrException;
 import com.npc.say_vr.domain.vr.repository.ConversationRepository;
 import com.npc.say_vr.domain.vr.repository.MessageRepository;
 import com.npc.say_vr.domain.vr.repository.ScoreRepository;
@@ -74,7 +79,7 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     public ConversationDto createConversation(Long userId,
         CreateConversationRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new VrException(UN_AUTHORIZATION));
 //        String dtoToString = requestDto.getRawJson();
 //        log.info("data in string:{}",dtoToString);
         //TODO: how to rate the proficiency? and when to add them to the entity
@@ -197,7 +202,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ProficiencyInfoResponseDto readProficiency(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new VrException(UN_AUTHORIZATION));
         List<Score> scoreList = scoreRepository.findByUser_Id(userId);
         if (scoreList.size() == 0) {
             Score basis = Score.builder()
@@ -242,7 +247,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ConversationInfoResponseDto readConversation(Long userId, Long conversationId) {
-        Conversation conversation = conversationRepository.findById(conversationId).orElseThrow();
+        Conversation conversation = conversationRepository.findById(conversationId).orElseThrow(() -> new VrException(CONVERSATION_NOT_FOUND));
         return ConversationInfoResponseDto.builder()
             .conversation(new ConversationDto(conversation, conversation.getMessageList()))
             .build();
