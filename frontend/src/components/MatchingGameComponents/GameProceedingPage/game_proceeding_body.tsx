@@ -220,7 +220,7 @@ const GameTimer: React.FC<{
           const body = { socketType: SocketType.QUIZ_TIME_OVER, message: "" };
           sendMsg(publishURL + "." + gameId, body);
           setIsModalOpen(false);
-        }, 300000000);
+        }, 3000);
       }
     }, 1000);
 
