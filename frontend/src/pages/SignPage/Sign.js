@@ -76,7 +76,7 @@ function Sign() {
         });
       }
     } catch (error) {
-      if (e.response && e.response.data) {
+      if (error.response && error.response.data) {
         Swal.fire({
           icon: "error",
           title: error.response.data.message,
@@ -126,7 +126,7 @@ function Sign() {
       if (error.response.data.errorCode === "USER_002") {
         document.querySelector(".email_already").style.display = "inline-block";
         document.querySelector(".email_ok").style.display = "none";
-        if (e.response && e.response.data) {
+        if (error.response && error.response.data) {
           Swal.fire({
             icon: "error",
             title: error.response.data.message,
