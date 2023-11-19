@@ -25,6 +25,7 @@ import MyStudyCard from "../../components/StudyComponents/MyStudyCard"
 interface ArrowProps {
   onClick: () => void
 }
+
 function MyPage() {
   const navigate = useNavigate()
   const [userData, setUserData] = useState<UserData | null>(null)
@@ -50,6 +51,7 @@ function MyPage() {
         const data = await getUserData(token)
         console.log("토큰 제대로 전달 되는지", token)
         data.data.profile = data.data.profile == null? `${SERVCER_URL}/profiles/default.png` : `${SERVCER_URL}/profiles/${data.data.profile}`
+
         console.log("받아온 데이터", data)
 
         if (isMounted) {
@@ -185,14 +187,15 @@ function MyPage() {
   return (
     <div className='container' style={{ marginTop: "30px"}}>
       <div className='row justify-content-center align-items-center custom-chart-container'>
-        <div className='col-sm-2 d-flex align-items-center'>
+        <div className='col-sm-3 d-flex align-items-center'>
           {userData && <img className='userimg' src={userData.data.profile} alt='User' />}
           <div className='ml-2'>
-            {userData && <p>{userData.data.username}</p>}
-            <p>랭킹 31</p>
+            {userData && <h4>{userData.data.nickname}</h4>}
+            {userData && <p style={{ whiteSpace: 'nowrap' }}>👑  랭킹:  {userData.data.ranking} 위</p>}            
+            {userData && <p style={{ whiteSpace: 'nowrap' }}>💲  포인트:  {userData.data.point} 점</p>}            
           </div>
         </div>
-        <div className='col-sm-4 d-flex flex-column align-items-start'>
+        <div className='col-sm-3 d-flex flex-column align-items-start'>
           <img className='badgeimg' src={MyPageBadge} alt='User' />
         </div>
         <div className='col-sm-5 d-flex flex-column align-items-end'>
