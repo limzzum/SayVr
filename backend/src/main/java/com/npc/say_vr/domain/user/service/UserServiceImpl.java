@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     private final RankingRepository rankingRepository;
     private final TierRepository tierRepository;
 
-    private static int CREATE_USER_POINT = 0;
+    private static final Long CREATE_USER_POINT = 0L;
 
 
     private Long createUser(User user) {
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         Long rank = rankingService.readRank(userId);
         Ranking ranking = rankingRepository.findByUserId(userId).orElseThrow();
 
-        return UserInfoResponseDto.builder().user(user).rank(rank).tier(ranking.getTier().getImage()).build();
+        return UserInfoResponseDto.builder().user(user).rank(rank).tier(ranking.getTier().getImage()).point(ranking.getPoint()).build();
     }
 
     @Override

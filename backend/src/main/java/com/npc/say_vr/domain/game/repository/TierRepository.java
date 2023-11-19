@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface TierRepository extends JpaRepository<Tier, Long> {
 
     @Query("SELECT t FROM Tier t WHERE t.minPoint <= :point AND t.maxPoint >= :point")
-    Optional<Tier> findTierByMinPointIsLessThanEqualAndMaxPointGreaterThanEqual(int point);
+    Optional<Tier> findTierByMinPointIsLessThanEqualAndMaxPointGreaterThanEqual(Long point);
 
 }

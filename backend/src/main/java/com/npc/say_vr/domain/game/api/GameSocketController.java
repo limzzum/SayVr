@@ -78,15 +78,7 @@ public class GameSocketController {
             if(gameService.checkQuizAnswer(submitAnswerRequestDto)){
                 isAnswer = true;
                 message = IS_ANSWER.getMessage();
-                if(gameService.isEndGame(Long.valueOf(gameId))){
-                    gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
-                        .data(gameService.getGameResult(Long.valueOf(gameId)))
-                        .build();
-                    rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
-                    activityService.saveActicity(userId, OptionType.GAME);
-                    goalService.updateCheckListOption(userId,OptionType.GAME);
-                    return;
-                }
+
                 gameService.updateQuiz(Long.valueOf(gameId));
                 gameStatusDto = redisUtil.getGameStatusList(gameId);
             }
@@ -104,6 +96,15 @@ public class GameSocketController {
                 .build();
             rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
+            if(gameService.isEndGame(Long.valueOf(gameId))){
+                gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
+                    .data(gameService.getGameResult(Long.valueOf(gameId)))
+                    .build();
+                rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
+                activityService.saveActicity(userId, OptionType.GAME);
+                goalService.updateCheckListOption(userId,OptionType.GAME);
+                return;
+            }
             return;
         }
 

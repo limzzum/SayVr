@@ -62,7 +62,6 @@ public class User extends BaseEntity {
     private List<Activity> activityList;
 
     public void updateName(String username) {
-        this.username = username;
         this.nickname = username;
     }
 

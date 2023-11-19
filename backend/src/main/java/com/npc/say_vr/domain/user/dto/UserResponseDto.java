@@ -27,14 +27,16 @@ public class UserResponseDto {
         private String profile;
         private Long ranking;
         private String tier;
+        private Long point;
 
         @Builder
-        public UserInfoResponseDto(User user, Long rank, String tier) {
+        public UserInfoResponseDto(User user, Long rank, String tier, Long point) {
             this.username = user.getUsername();
             this.nickname = user.getNickname();
             this.profile = user.getProfile();
             this.ranking = rank;
             this.tier = tier;
+            this.point = point;
         }
     }
 
