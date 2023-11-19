@@ -9,6 +9,7 @@ export interface UserData {
     username: string;
     ranking: number;
     tier: File;
+    point: number;
   };
 }
 

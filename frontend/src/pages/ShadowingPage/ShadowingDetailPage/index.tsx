@@ -27,6 +27,9 @@ function ShadowingDetailPage() {
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const previousStartRef = useRef<number | null>(null);
   const [isShadowing, setIsShadowing] = useState(false);
+  const [currentScriptStartTime, setCurrentScriptStartTime] = useState<number | null>(null);
+  const [currentScriptDuration, setCurrentScriptDuration] = useState<number | null>(null);
+
 
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
@@ -102,20 +105,28 @@ function ShadowingDetailPage() {
       );
 
       if (currentScript && currentScript.start !== previousStartRef.current) {
+        
+        console.log("갱신")
         previousStartRef.current = currentScript.start;
 
         setPrevDisplayedScript(currentScript.text);
         setDisplayedScript(currentScript.text);
 
+        setCurrentScriptStartTime(currentScript.start);
+        setCurrentScriptDuration(currentScript.duration);
+
         const translatedText = await translate(currentScript.text);
         setTranslatedText(translatedText);
 
         translateButtonHandler(currentScript.text);
+        console.log(currentScriptDuration)
+        console.log(currentScriptStartTime)
       } else {
         return;
       }
     }
   };
+
 
   const translate = async (text: string) => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
