@@ -13,6 +13,7 @@ interface ExtendedYouTube extends YouTube {
   getCurrentTime(): number;
   getPlayerState(): number;
   pauseVideo(): void;
+  playVideo(): void;
 }
 
 function ShadowingDetailPage() {
@@ -21,13 +22,13 @@ function ShadowingDetailPage() {
   const [script, setScript] = useState<ScriptItem[] | null>(null);
   const [displayedScript, setDisplayedScript] = useState<string>("");
   const [translatedText, setTranslatedText] = useState<string>("");
+  const [pronunciationResult, setPronunciationResult] = useState<any>(null);
   const playerRef = useRef<ExtendedYouTube | null>(null);
   const [prevDisplayedScript, setPrevDisplayedScript] = useState<string>("");
   const [intervalId, setIntervalId] = useState<number | null>(null);
   const previousStartRef = useRef<number | null>(null);
-
-
-
+  const [isShadowing, setIsShadowing] = useState(false);
+  const [initialPlaybackTime, setInitialPlaybackTime] = useState<number | null>(null);
 
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
@@ -38,21 +39,19 @@ function ShadowingDetailPage() {
   const onRecordingStop = (blob: Blob) => {
     setAudioBlob(blob);
     console.log("Recording stopped!");
-    // 여기에서 녹음 파일을 서버로 전송하거나 추가 작업 수행
   };
 
-  // 일단은 영상을 멈추는 기능만 추가 되어 있음
+  const onPronunciationResult = async (result: any) => {
+    console.log("Pronunciation Result:", result);
+    setPronunciationResult(result);
+  };
+
   const onShadowingButtonClick = async () => {
     if (playerRef.current) {
       playerRef.current.pauseVideo();
+      setIsShadowing(true);
     }
   };
-
-
-
-
-
-  
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     event.target.pauseVideo();
@@ -63,7 +62,6 @@ function ShadowingDetailPage() {
     if (playerRef.current) {
       const player = playerRef.current;
 
-      // 기존 인터벌 정리
       if (intervalId !== null) {
         clearInterval(intervalId);
         setIntervalId(null);
@@ -72,15 +70,12 @@ function ShadowingDetailPage() {
       const updateScript = async () => {
         const currentTime = player.getCurrentTime();
         const playerState = player.getPlayerState();
-        console.log("Player State:", playerState);
 
         if (playerState !== 2 || currentTime !== undefined) {
-          // Player state가 2(재생 중)이 아닌 경우에만 실행
           displayScript(currentTime);
         }
       };
 
-      // 새로운 인터벌 시작
       const newIntervalId = setInterval(updateScript, 1500) as unknown as number;
       setIntervalId(newIntervalId);
 
@@ -96,7 +91,19 @@ function ShadowingDetailPage() {
         player.getPlayerState() === window.YT.PlayerState.ENDED
       ) {
         clearUpdateInterval();
+        console.log("재생이나 일시정지 상태입니다.");
+      } else if (player.getPlayerState() === window.YT.PlayerState.PLAYING) {
+        setIsShadowing(false);
+        console.log("재생 중입니다.");
       }
+    }
+  };
+
+  const playAgain = () => {
+    if (playerRef.current) {
+      const player = playerRef.current;
+      player.playVideo();
+      setIsShadowing(false);
     }
   };
 
@@ -108,29 +115,20 @@ function ShadowingDetailPage() {
       );
 
       if (currentScript && currentScript.start !== previousStartRef.current) {
-        console.log("현재 대본이 이전 대본과 다를 때 갱신합니다.", currentScript.text);
         previousStartRef.current = currentScript.start;
 
         setPrevDisplayedScript(currentScript.text);
         setDisplayedScript(currentScript.text);
-
-        // 번역 요청
         const translatedText = await translate(currentScript.text);
-
-        // 번역 결과 표시
         setTranslatedText(translatedText);
 
-        // 자동으로 번역하기 버튼 누르기
         translateButtonHandler(currentScript.text);
       } else {
-        // 대본이 변경되지 않았을 때 추가 작업이 필요하면 여기에 작성하세요.
         return;
       }
     }
   };
 
-  //=================================================================================
-  // 번역 요청 보내는 부분
   const translate = async (text: string) => {
     const route = "/translate?api-version=3.0&from=en&to=ko";
 
@@ -156,13 +154,10 @@ function ShadowingDetailPage() {
     }
   };
 
-  // 자동으로 번역하기 버튼을 누르는 함수
   const translateButtonHandler = async (text: string) => {
-    // 여기에서 번역 함수 호출 또는 번역 기능 구현
     await translate(text);
   };
 
-  // 스크립트 가져오기
   useEffect(() => {
     const fetchScript = async () => {
       try {
@@ -205,14 +200,39 @@ function ShadowingDetailPage() {
             <div className="output-box translation-box">
               <p>{translatedText}</p>
             </div>
+            {pronunciationResult && (
+              <div className="output-score-box">
+                <div>
+                  <div className="ScoreBadge">
+                    <span className="rounded-pill">🙋‍♂️ 발음 평가 내용</span>
+                  </div>
+                  <div className="output-box pronunciation-result-box">
+                    <p>인식된 문장: {pronunciationResult.text}</p>
+                    <p>정확도 점수: {pronunciationResult.accuracyScore}</p>
+                    <p>발음 점수: {pronunciationResult.pronunciationScore}</p>
+                    <p>문장 점수: {pronunciationResult.completenessScore}</p>
+                    <p>유창성 점수: {pronunciationResult.fluencyScore}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="button-container">
-            <button onClick={() => translateButtonHandler(displayedScript)}>번역하기</button>
-            <button className="marginLeftButton" onClick={onShadowingButtonClick}>
-              쉐도잉
+            <button style={{ display: "none" }} onClick={() => translateButtonHandler(displayedScript)}>
+              번역하기
             </button>
+            <button className="marginLeftButton" onClick={isShadowing ? playAgain : onShadowingButtonClick}>
+              {isShadowing ? "영상 다시 재생" : "쉐도잉"}
+            </button>
+            {isShadowing && (
+              <RecorderModule
+                onRecordingStart={onRecordingStart}
+                onRecordingStop={onRecordingStop}
+                onPronunciationResult={onPronunciationResult}
+                currentScriptText={displayedScript}
+              />
+            )}
           </div>
-          <RecorderModule onRecordingStart={onRecordingStart} onRecordingStop={onRecordingStop} />
         </div>
       )}
     </div>

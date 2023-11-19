@@ -25,6 +25,7 @@ import MyStudyCard from "../../components/StudyComponents/MyStudyCard"
 interface ArrowProps {
   onClick: () => void
 }
+
 function MyPage() {
   const navigate = useNavigate()
   const [userData, setUserData] = useState<UserData | null>(null)
@@ -50,6 +51,7 @@ function MyPage() {
         const data = await getUserData(token)
         console.log("토큰 제대로 전달 되는지", token)
         data.data.profile = data.data.profile == null? `${SERVCER_URL}/profiles/default.png` : `${SERVCER_URL}/profiles/${data.data.profile}`
+
         console.log("받아온 데이터", data)
 
         if (isMounted) {
@@ -95,7 +97,7 @@ function MyPage() {
     arrows:false,
     // infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    // slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
@@ -188,14 +190,15 @@ function MyPage() {
         <div className='col-sm-2 d-flex align-items-center'>
           {userData && <img className='userimg' src={userData.data.profile} alt='User' />}
           <div className='ml-2'>
-            {userData && <p>{userData.data.username}</p>}
-            <p>랭킹 31</p>
+            {userData && <h4>{userData.data.nickname}</h4>}
+            {userData && <p style={{ whiteSpace: 'nowrap' }}>👑  랭킹:  {userData.data.ranking} 위</p>}            
+            {userData && <p style={{ whiteSpace: 'nowrap' }}>💲  포인트:  {userData.data.point} 점</p>}            
           </div>
         </div>
-        <div className='col-sm-4 d-flex flex-column align-items-start'>
+        <div className='col-sm-1 d-flex flex-column align-items-start'>
           <img className='badgeimg' src={MyPageBadge} alt='User' />
         </div>
-        <div className='col-sm-5 d-flex flex-column align-items-end'>
+        <div className='col-sm-8 d-flex flex-column align-items-end'>
           <button className='btn mb-2' onClick={handleOpenChangeProfileModal}>
             프로필 수정
           </button>
@@ -222,7 +225,7 @@ function MyPage() {
       </div>
       {/* <div className='row card-row custom-chart-container'></div> */}
       <div className='vocab-list-container row card-row'>
-        <div className='vocab-list-title' style={{ marginLeft: "0" }}>
+        <div className='vocab-list-title' style={{ marginLeft: "0",marginBottom:"2rem" }}>
           <div className='' style={{ marginLeft: "0" }}>
             <div className='list-title-buttons' style={{ marginLeft: "0" }}>
               <div className='card-title' style={{ marginLeft: "0" }}>
@@ -238,8 +241,8 @@ function MyPage() {
           </div>
         </div>
         <div className='row clickable-cards'>
-          {(personalCardTitles == null || personalCardTitles.length === 0) && <></>}
-          <Slider infinite={personalCardTitles.length >= 3} ref={sliderPersonal} {...carouselSettings}>
+          
+          <Slider infinite={personalCardTitles.length >= 3} slidesToShow={personalCardTitles.length===0?1:3}  ref={sliderPersonal} {...carouselSettings}>
             {personalCardTitles?.map((deck, index) => {
               return (
                 <>
@@ -247,11 +250,14 @@ function MyPage() {
                 </>
               )
             })}
+            {(personalCardTitles == null || personalCardTitles.length <3) &&
+            <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} />}
+            {personalCardTitles.length===1 && <MyWordCard type={"private"} addNew={() => navigate("/VocabList")} />}
           </Slider>
         </div>
       </div>
       <div className='vocab-list-container row card-row'>
-        <div className='vocab-list-title' style={{ marginLeft: "0" }}>
+        <div className='vocab-list-title' style={{ marginLeft: "0",marginBottom:"2rem" }}>
           <div className='' style={{ marginLeft: "0" }}>
             <div className='list-title-buttons' style={{ marginLeft: "0" }}>
               <div className='card-title' style={{ marginLeft: "0" }}>
@@ -267,12 +273,8 @@ function MyPage() {
           </div>
         </div>
         <div className='row clickable-cards'>
-        {(studyMineList == null || studyMineList.length === 0) && (
-              <>
-                <MyStudyCard addNew={()=>navigate("/StudyList")} />
-              </>
-            )}
-          <Slider infinite={studyMineList.length >= 3} ref={sliderMine} {...carouselSettings}>
+
+          <Slider infinite={studyMineList.length >= 3} slidesToShow={studyMineList.length===0?1:3}  ref={sliderMine} {...carouselSettings}>
             {studyMineList?.map((study, index) => {
               return (
                 <>
@@ -280,6 +282,12 @@ function MyPage() {
                 </>
               )
             })}
+            {(studyMineList == null || studyMineList.length < 3) && (
+              
+                <MyStudyCard addNew={()=>navigate("/StudyList")} />
+              
+            )}
+            { studyMineList.length===1 && <MyStudyCard addNew={()=>navigate("/StudyList")} />}
           </Slider>
         </div>
       </div>

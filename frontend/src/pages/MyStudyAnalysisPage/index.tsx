@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import "react-calendar/dist/Calendar.css";
 import GetConversationDates from "../../api/MyStudyAnalysisAPI/GetConversationDates";
 import GetMyAverageScore from "../../api/MyStudyAnalysisAPI/GetMyAverageScore";
-import ChartComponent, { ChartData } from "../../components/MyStudyAnalysisComponents";
+import ChartComponent, {
+  ChartData,
+} from "../../components/MyStudyAnalysisComponents";
 import AverageScore from "../../assets/MygradeAssets/AverageScore.png";
 import ContextScore from "../../assets/MygradeAssets/ContextScore.png";
 import GrammarScore from "../../assets/MygradeAssets/GrammarScore.png";
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue } from "recoil";
 import { tokenState } from "../../recoil/GoalbalState";
 import "./style.css";
 
@@ -20,7 +22,9 @@ const MyStudyAnalysisPage: React.FC = () => {
   const [conversationIds, setConversationIds] = useState<number[]>([]);
   const [graphData, setGraphData] = useState<ChartData | null>(null);
   const [data, setData] = useState<any>(null);
-  const [dateIdMap, setDateIdMap] = useState<Record<string, number[]> | null>(null);
+  const [dateIdMap, setDateIdMap] = useState<Record<string, number[]> | null>(
+    null
+  );
   const navigate = useNavigate();
   const token = useRecoilValue(tokenState);
 
@@ -36,7 +40,8 @@ const MyStudyAnalysisPage: React.FC = () => {
             averageTotal: averageScoresData.averageScore.averageTotal,
             contextTotal: averageScoresData.averageScore.contextTotal,
             grammarTotal: averageScoresData.averageScore.grammarTotal,
-            pronunciationTotal: averageScoresData.averageScore.pronunciationTotal,
+            pronunciationTotal:
+              averageScoresData.averageScore.pronunciationTotal,
             createdAt: averageScoresData.averageScore.createdAt,
             scoreHistory: averageScoresData.scoreHistory,
           };
@@ -47,7 +52,11 @@ const MyStudyAnalysisPage: React.FC = () => {
         if (value) {
           const year = value.getFullYear();
           const month = value.getMonth() + 1;
-          const conversationDatesResponse = await GetConversationDates(month, year, token);
+          const conversationDatesResponse = await GetConversationDates(
+            month,
+            year,
+            token
+          );
           const conversationDates = conversationDatesResponse.data;
           const conversationIds = conversationDatesResponse.id;
           const dateIdMap = conversationDatesResponse.dateIdMap;
@@ -65,16 +74,18 @@ const MyStudyAnalysisPage: React.FC = () => {
   }, [value]);
 
   const handleDateClick = (date: Date) => {
-    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-      date.getDate()
-    ).padStart(2, "0")}`;
+    const formattedDate = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
     const isHighlightedDate = highlightedDates.includes(formattedDate);
     if (isHighlightedDate && dateIdMap) {
       console.log("이동 버튼 눌림");
       const ids = dateIdMap[formattedDate] || [];
       console.log("여기가 새로운 아이디들", ids);
-      navigate(`/MyStudyAnalysis/Detail?date=${formattedDate}&ids=${ids.join(",")}`);
+      navigate(
+        `/MyStudyAnalysis/Detail?date=${formattedDate}&ids=${ids.join(",")}`
+      );
     }
   };
 
@@ -89,41 +100,57 @@ const MyStudyAnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="study-analysis-container">
+    <div className="study-analysis-container mt-5">
       <div className="row">
         <div className="col-sm-5 cal-container" style={{ marginRight: "30px" }}>
-          <h3>학습 달력📆</h3>
-          <Calendar
-            onChange={handleChange as CalendarProps["onChange"]}
-            value={value}
-            className="calendar"
-            tileContent={({ date }) => {
-              const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-                date.getDate()
-              ).padStart(2, "0")}`;
+          <h1>📆 학습 달력</h1>
+          <div className="calendar-block-bg">
+            <Calendar
+              onChange={handleChange as CalendarProps["onChange"]}
+              value={value}
+              className="calendar"
+              tileContent={({ date }) => {
+                const formattedDate = `${date.getFullYear()}-${String(
+                  date.getMonth() + 1
+                ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-              if (highlightedDates.includes(formattedDate)) {
-                return <div className="highlighted-day" onClick={() => handleDateClick(date)}></div>;
+                if (highlightedDates.includes(formattedDate)) {
+                  return (
+                    <div
+                      className="highlighted-day"
+                      onClick={() => handleDateClick(date)}
+                    ></div>
+                  );
+                }
+
+                return null;
+              }}
+              tileClassName={({ date }) => {
+                const formattedDate = `${date.getFullYear()}-${String(
+                  date.getMonth() + 1
+                ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+                return highlightedDates.includes(formattedDate)
+                  ? "highlighted-tile"
+                  : null;
+              }}
+              onClickDay={(value, event) => handleDateClick(value)}
+              onActiveStartDateChange={({ activeStartDate }) =>
+                handleActiveStartDateChange(activeStartDate)
               }
-
-              return null;
-            }}
-            tileClassName={({ date }) => {
-              const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-                date.getDate()
-              ).padStart(2, "0")}`;
-
-              return highlightedDates.includes(formattedDate) ? "highlighted-tile" : null;
-            }}
-            onClickDay={(value, event) => handleDateClick(value)}
-            onActiveStartDateChange={({ activeStartDate }) => handleActiveStartDateChange(activeStartDate)}
-          />
+            />
+          </div>
         </div>
         <div className="col-sm-6">
           <div className="row align-items-center">
+            <div className="grade-block cal-container">
+            <h1>내 현재 등급</h1>
             {data && (
-              <div className="col-12 grade-container" style={{ marginBottom: "30px" }}>
-                <h3>내 현재 등급</h3>
+              <div
+                className="col-12 grade-container"
+                style={{ marginBottom: "30px" }}
+              >
+                
                 <div className="d-flex justify-content-around">
                   <div className="text-center position-relative">
                     <span
@@ -191,7 +218,11 @@ const MyStudyAnalysisPage: React.FC = () => {
                 </div>
               </div>
             )}
-            <ChartComponent data={graphData} />
+            </div>
+            <div className="graph-block cal-container">
+            <h1>학습 그래프</h1>
+              <ChartComponent data={graphData} />
+            </div>
           </div>
         </div>
       </div>

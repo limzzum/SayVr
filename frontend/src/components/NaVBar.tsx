@@ -42,14 +42,15 @@ const NavBar: React.FC = () => {
             <Link className="nav-link me-4" to="/StudyList">
               스터디
             </Link>
-            <Link className="nav-link me-4" to="/MyStudyAnalysis">
-              내 학습 기록&통계
-            </Link>
+
             <Link className="nav-link me-4" to="/Shadowing">
               쉐도잉
             </Link>
             <Link className="nav-link me-4" to="/MatchingGame">
               매칭게임
+            </Link>
+            <Link className="nav-link me-4" to="/MyStudyAnalysis">
+              학습 기록
             </Link>
             {token ? (
               <>

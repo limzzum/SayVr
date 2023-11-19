@@ -1,7 +1,10 @@
 package com.npc.say_vr.domain.user.service;
 
+import static com.npc.say_vr.domain.user.constant.UserErrorCode.NICKNAME_EXIST_FOUND;
+import static com.npc.say_vr.domain.user.constant.UserErrorCode.USERID_EXIST_FOUND;
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.ALREADY_EXIST_USER;
 import static com.npc.say_vr.domain.user.constant.UserExceptionMessage.NOT_EXIST_USER;
+import static com.npc.say_vr.global.error.constant.ExceptionMessage.NOT_VERIFIED_USER;
 
 import com.npc.say_vr.domain.game.domain.Ranking;
 import com.npc.say_vr.domain.game.domain.Tier;
@@ -16,9 +19,11 @@ import com.npc.say_vr.domain.user.dto.LoginUserResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.FileUploadResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.TokenResponseDto;
 import com.npc.say_vr.domain.user.dto.UserResponseDto.UserInfoResponseDto;
+import com.npc.say_vr.domain.user.exception.UserException;
 import com.npc.say_vr.domain.user.exception.UserExistException;
 import com.npc.say_vr.domain.user.exception.UserNotFoundException;
 import com.npc.say_vr.domain.user.repository.UserRepository;
+import com.npc.say_vr.global.error.exception.CustomException;
 import com.npc.say_vr.global.file.FileStore;
 import com.npc.say_vr.global.util.JwtUtil;
 import java.util.Map;
@@ -81,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkUserId(String email) {
         if(userRepository.findByEmail(email).isPresent()){
-            return false;
+            throw new UserException(USERID_EXIST_FOUND);
         }
         return true;
     }
@@ -89,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkNickname(String nickname) {
         if(userRepository.findByNickname(nickname).isPresent()){
-            return false;
+            throw new UserException(NICKNAME_EXIST_FOUND);
         }
         return true;
     }
@@ -97,13 +102,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(CreateUserRequestDto createUserRequestDto) {
         if(!checkUserId(createUserRequestDto.getEmail())) {
-            // 예외처리
-            return;
+            throw new UserException(USERID_EXIST_FOUND);
 
         }
         if(!checkNickname(createUserRequestDto.getNickname())) {
-            // 예외처리
-            return;
+            throw new UserException(NICKNAME_EXIST_FOUND);
         }
         // TODO : 예외처리
         Tier tier = tierRepository.findById(1L).orElseThrow();
@@ -133,7 +136,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginUserResponseDto loginUser(LoginUserRequestDto loginUserRequestDto) {
         // 예외처리
-        User user = userRepository.findByEmailAndPassword(loginUserRequestDto.getEmail(),loginUserRequestDto.getPassword()).orElseThrow();
+        User user = userRepository.findByEmailAndPassword(loginUserRequestDto.getEmail(),loginUserRequestDto.getPassword()).orElseThrow(() -> new CustomException(NOT_VERIFIED_USER));
 
         TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
                                         .accessToken(jwtUtil.createJwtToken(user.getId()))

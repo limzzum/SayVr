@@ -1,5 +1,11 @@
 package com.npc.say_vr.domain.study.service;
 
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.CHECKLIST_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.GOAL_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.GOAL_OPTION_EXIST_FONUD;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDY_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.WEEKLYSPRINT_NOT_FOUND;
+
 import com.npc.say_vr.domain.study.constant.CheckListStatus;
 import com.npc.say_vr.domain.study.constant.OptionCheckItem;
 import com.npc.say_vr.domain.study.constant.OptionType;
@@ -16,6 +22,7 @@ import com.npc.say_vr.domain.study.dto.responseDto.GoalDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.GoalResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.MemberCheckListResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.WeeklySprintDetailResponse;
+import com.npc.say_vr.domain.study.exception.StudyException;
 import com.npc.say_vr.domain.study.repository.CheckListItemRepository.CheckListItemRepository;
 import com.npc.say_vr.domain.study.repository.GoalRepository.GoalRepository;
 import com.npc.say_vr.domain.study.repository.WeeklySprintRepository.WeeklySprintRepository;
@@ -53,10 +60,9 @@ public class GoalServiceImpl implements GoalService{
         LocalDate startDate = createWeeklySprintRequestDto.getStartDate();
         List<CreateGoalRequestDto> goalDtoList = createWeeklySprintRequestDto.getGoalDtoList();
 
-        // TODO : 예외처리
         // TODO : QUERYDSL로 STUDY에서 한번에 가져오기 ( + studymember active만 가져오기도 처리 )
         // TODO : QUERYDSL로 STUDY + STUDYMEMBER + USER의 닉네임한번에 가져오기
-        Study study = studyRepository.findById(studyId).orElseThrow();
+        Study study = studyRepository.findById(studyId).orElseThrow(()-> new StudyException(STUDY_NOT_FOUND));
         List<StudyMember> studyMembers = study.getStudyMembers();
 
         WeeklySprint weeklySprint = WeeklySprint.builder()
@@ -82,7 +88,7 @@ public class GoalServiceImpl implements GoalService{
                         .description(createGoalRequestDto.getDescription())
                         .build();
                     goalRepository.save(goal);
-                }else {
+                } else {
                     goal = Goal.builder()
                         .count(createGoalRequestDto.getCount())
                         .optionType(createGoalRequestDto.getOptionType())
@@ -149,9 +155,8 @@ public class GoalServiceImpl implements GoalService{
     public WeeklySprintDetailResponse createGoal(Long userId,Long studyId, Long weeklySprintId,CreateGoalRequestDto createGoalRequestDto) {
 
         if(!createGoalRequestDto.getOptionType().equals(OptionType.ETC) && goalRepository.existGoal(weeklySprintId,createGoalRequestDto.getOptionType())) {
-            // TODO : 만약 이미 있는 옵션 타입이라면 예외 처리
             log.info("이미 있는 옵션 타입입니다.");
-            return null;
+            throw new StudyException(GOAL_OPTION_EXIST_FONUD);
         }
         createGoalAndSave(studyId,weeklySprintId,createGoalRequestDto);
         return readGoalAndCheckListItem(userId,studyId,weeklySprintId);
@@ -162,8 +167,7 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public void createGoalAndSave(Long studyId, Long weeklySprintId,
         CreateGoalRequestDto createGoalRequestDto){
-        // TODO : 예외처리
-        WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow();
+        WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow(()-> new StudyException(WEEKLYSPRINT_NOT_FOUND));
         Goal goal;
         if(createGoalRequestDto.getOptionType().equals(OptionType.ETC)){
             goal = Goal.builder()
@@ -220,8 +224,8 @@ public class GoalServiceImpl implements GoalService{
     @Transactional
     @Override
     public void updateGoalAndCheckList(Long goalId, UpdateGoalRequestDto updateGoalRequestDto) {
-        // TODO 예외처리
         Goal goal = goalRepository.findGoalAndCheckListItem(goalId);
+        if(goal == null) throw new StudyException(GOAL_NOT_FOUND);
         // TODO : 코드 리팩토링
         if(goal.getOptionType().equals(OptionType.ETC)) {
             goal.updateETCGoal(updateGoalRequestDto.getDescription());
@@ -249,8 +253,7 @@ public class GoalServiceImpl implements GoalService{
     // TODO : nickname, studymemberid
     @Override
     public WeeklySprintDetailResponse readGoalAndCheckListItem(Long userId,Long studyId,@Nullable Long weeklySprintId) {
-        // TODO : 예외처리
-        WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow();
+        WeeklySprint weeklySprint = weeklySprintRepository.findById(weeklySprintId).orElseThrow(()-> new StudyException(WEEKLYSPRINT_NOT_FOUND));
         List<GoalResponseDto> goalResponseDtoList = goalRepository.findGoalAndWeeklySprintId(weeklySprintId);
         // TODO : 1번쨰 경우 -> studymember를 조회하고 dto로 묶어서 checklist 받아오기 -> MEMBER의 수만큼 쿼리 발생 ( 우선 이거 )
         // TODO : 2번째 경우 -> List<studymember>를 fetchjoin으로 한번에 다 가져온다 -> 목표까지 다 가지고 와야 함
@@ -308,6 +311,8 @@ public class GoalServiceImpl implements GoalService{
 
         WeeklySprint weeklySprint = weeklySprintRepository.findNowSprint(studyId);
 
+        if(weeklySprint == null) return;
+
         if (!(today.isAfter(weeklySprint.getTargetDate()) && today.isBefore(weeklySprint.getTargetDate().plusDays(6))) &&
                 !today.isEqual(weeklySprint.getTargetDate()) &&
                 !today.isEqual(weeklySprint.getTargetDate().plusDays(6))) {
@@ -339,7 +344,6 @@ public class GoalServiceImpl implements GoalService{
     // TODO : 동적으로 작성하기 => 만약 weeklysprintId가 없다면 가장 최근 값들고오는걸로 repository 가져올 수 있을 것 가틈!
     @Override
     public WeeklySprintDetailResponse readNowWeeklySprint(Long userId, Long studyId) {
-        // TODO : 예외처리
         Long weeklySprintId = weeklySprintRepository.findNowSprintId(studyId);
         if(weeklySprintId == null) return null;
         return readGoalAndCheckListItem(userId,studyId, weeklySprintId);
@@ -365,8 +369,10 @@ public class GoalServiceImpl implements GoalService{
     @Transactional
     @Override
     public void deleteGoalAndSave(Long goalId) {
-        // TODO 예외처리
         Goal goal = goalRepository.findGoalAndCheckListItem(goalId);
+
+        if(goal == null) throw new StudyException(GOAL_NOT_FOUND);
+
         goal.updateStatus(OptionType.DELETE);
 
         List<ChecklistItem> checklistItemList = goal.getChecklistItemList();
@@ -404,6 +410,8 @@ public class GoalServiceImpl implements GoalService{
 
         List<ChecklistItem> checklistItemList = checkListItemRepository.findByUserIdAndOptiontype(userId,optionType,today);
 
+
+        // TODO 예외처리
         if(checklistItemList == null) return;
 
         // TODO : 성능개선

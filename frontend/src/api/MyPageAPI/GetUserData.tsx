@@ -7,6 +7,9 @@ export interface UserData {
     nickname: string;
     profile: string;
     username: string;
+    ranking: number;
+    tier: File;
+    point: number;
   };
 }
 

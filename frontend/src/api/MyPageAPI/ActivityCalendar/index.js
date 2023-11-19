@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_URL from "../../../config";
 import { tokenState } from "../../../recoil/GoalbalState";
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue } from "recoil";
 import { ActivityCalendar } from "activity-calendar-react";
 import "./style.css";
 
 function ActiveCalendarComponent() {
   const [activityData, setActivityData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const token = useRecoilValue(tokenState)
-  
+  const token = useRecoilValue(tokenState);
+
   useEffect(() => {
     const fetchActivityData = async () => {
       try {
@@ -20,9 +20,9 @@ function ActiveCalendarComponent() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });        
+        });
         console.log("요청은 가나");
-        console.log("엑티브 캘린더",response);
+        console.log("엑티브 캘린더", response);
         setActivityData(response.data.data.activityDtoList);
         setIsLoading(false);
       } catch (error) {
@@ -39,13 +39,13 @@ function ActiveCalendarComponent() {
     if (activityCount === 0) {
       return "#dadada";
     } else if (activityCount === 1) {
-      return "#0e4429";
+      return "#3A0CA3";
     } else if (activityCount === 2) {
-      return "#006d32";
+      return "#414CDC";
     } else if (activityCount === 3) {
-      return "#26a641";
+      return "#467BEF";
     } else if (activityCount >= 4) {
-      return "#39d353";
+      return "#76B0F2";
     }
   }
 
@@ -60,16 +60,18 @@ function ActiveCalendarComponent() {
   }));
 
   const colorCustomization = {
-    activity0: '#dadada',
-    activity1: '#0e4429',
-    activity2: '#006d32',
-    activity3: '#26a641',
-    activity4: '#39d353',
+    activity0: "#dadada",
+    activity4: "#3A0CA3",
+    activity3: "#414CDC",
+    activity2: "#467BEF",
+    activity1: "#76B0F2",
   };
 
   return (
     <div className="calendar-container">
-      <ActivityCalendar sampleData={transformedData} colorCustomization={colorCustomization} showMonth={true} />
+      <div style={{ width: "90%", marginLeft: "auto", marginRight: "auto" }}>
+        <ActivityCalendar sampleData={transformedData} colorCustomization={colorCustomization} showMonth={true} />
+      </div>
     </div>
   );
 }

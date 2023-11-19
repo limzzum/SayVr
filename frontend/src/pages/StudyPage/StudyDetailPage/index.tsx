@@ -21,6 +21,7 @@ import CreatWeeklySprintModal from "../../../components/StudyComponents/CreatWee
 import "../style.css";
 import { Button } from "react-bootstrap";
 import CreateStudyWordModal from "../../../components/StudyComponents/CreateStudyWordModal";
+import Swal from "sweetalert2";
 
 interface ArrowProps {
   onClick: () => void;
@@ -97,7 +98,15 @@ const StudyDetail: React.FC = () => {
       targetDate.setDate(targetDate.getDate() + 6);
 
       if (today < targetDate) {
-        alert("목표 기간 동안은 새로운 목표를 설정할 수 없습니다.");
+        Swal.fire({
+          icon: "warning",
+          title: "목표를 설정할 수 없습니다.",
+          text: "목표 기간 동안은 새로운 목표를 설정할 수 없습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
         return;
       }
     }
@@ -129,7 +138,7 @@ const StudyDetail: React.FC = () => {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
-            width:"4rem"
+            width: "4rem",
           }}
           onClick={props.onClick}
         >
@@ -146,7 +155,7 @@ const StudyDetail: React.FC = () => {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
-            width:"4rem"
+            width: "4rem",
           }}
           onClick={props.onClick}
         >
@@ -164,7 +173,14 @@ const StudyDetail: React.FC = () => {
         console.log(show);
       })
       .catch((error) => {
-        console.error("Error fetching studyDeckList", error);
+        Swal.fire({
+          icon: "error",
+          title: "스터디 단어장 리스트를 조회하는데 오류가 발생하였습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,8 +204,21 @@ const StudyDetail: React.FC = () => {
             setStudyDeckList(data.studyDeckDetailResponseDto);
           }
         })
-        .catch((e) => console.log(e));
-      // TODO : 회원 아닌 사람 예외처리하기 스터디 리스트 페이지로 돌려보내기
+        .catch((e) => {
+          if (e.response && e.response.data) {
+            Swal.fire({
+              icon: "error",
+              title: e.response.data.message,
+              customClass: {
+                confirmButton: "swal-btn-sign",
+                icon: "swal-icon-sign",
+              },
+            });
+            if (e.response.data.errorCode === "STUDY_009") {
+              navigate(`/StudyList`);
+            }
+          }
+        });
     }
   }, [id]);
 
@@ -266,32 +295,31 @@ const StudyDetail: React.FC = () => {
             ></WeeklySprintComponent>
           </div>
         </div>
-        <div className="study-goal-title" style={{justifyContent:"space-between", display:"flex", flexDirection:"row"}}>
-          <div style={{display:"flex",flexDirection:"row"}}>
-          <h2>스터디 단어장</h2>
-          <div style={{ marginLeft: "1rem" }}>
-            <AddButton
-              handleButtonClick={handleCreateWordListButtonClick}
-              size="45"
-            />
-          </div>       
-          </div>
-          <div>
-              <ArrowLeft onClick={() => sliderPersonal?.current?.slickPrev()} />
-              <ArrowRight
-                onClick={() => sliderPersonal?.current?.slickNext()}
+        <div
+          className="study-goal-title"
+          style={{
+            justifyContent: "space-between",
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <h2>스터디 단어장</h2>
+            <div style={{ marginLeft: "1rem" }}>
+              <AddButton
+                handleButtonClick={handleCreateWordListButtonClick}
+                size="45"
               />
             </div>
+          </div>
+          <div>
+            <ArrowLeft onClick={() => sliderPersonal?.current?.slickPrev()} />
+            <ArrowRight onClick={() => sliderPersonal?.current?.slickNext()} />
+          </div>
         </div>
         <div className="row card-row justify-content-center align-items-center">
           <div className="studypage-inner-container">
-     
             <div className="row">
-              {(studyCardTitles == null || studyCardTitles.length === 0) && (
-                <>
-                  <MyStudyWordCard addNew={handleCreateWordListButtonClick} studyId={studyId}/>
-                </>
-              )}
               <Slider
                 infinite={studyCardTitles.length >= 3}
                 ref={sliderPersonal}
@@ -309,6 +337,20 @@ const StudyDetail: React.FC = () => {
                     </>
                   );
                 })}
+                {(studyCardTitles == null || studyCardTitles.length < 3) && (
+                  <>
+                    <MyStudyWordCard
+                      addNew={handleCreateWordListButtonClick}
+                      studyId={studyId}
+                    />
+                  </>
+                )}
+                {studyCardTitles.length === 1 && (
+                  <MyStudyWordCard
+                    addNew={handleCreateWordListButtonClick}
+                    studyId={studyId}
+                  />
+                )}
               </Slider>
             </div>
           </div>

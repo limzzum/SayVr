@@ -1,19 +1,29 @@
 .login-body {
-	border: 1px solid lightgray;
-	border-radius: 8px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 80px 50px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 50px;
+}
+
+.swal-btn-login {
+  width: 100px;
+  height: 50px;
+}
+
+.swal-icon-login {
+  width: 100px;
+  height: 100px;
 }
 
 .loginB {
-	height: 85vh;
-	padding: 100px 0px;
-	border-bottom: 1px solid lightgray;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  height: 85vh;
+  padding: 100px 0px;
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* .login-form-img {
@@ -23,51 +33,51 @@
 } */
 
 .login-form {
-	display: flex;
-	flex-wrap: wrap;
-	text-align: left;
-	width: 310px;
-	height: 350px;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: left;
+  width: 310px;
+  height: 350px;
 }
 
 .login-form h2 {
-	font-weight: bold;
-	color: rgb(63, 63, 143);
-	margin-left: 0px;
+  font-weight: bold;
+  color: rgb(63, 63, 143);
+  margin-left: 0px;
 }
 
 .btn-login {
-	cursor: pointer;
-	margin-top: 15px;
-	width: 310px;
-	height: 40px;
-	border-radius: 7px;
-	font-weight: bold;
-	font-size: 15px;
-	color: white;
-	background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
-	border: none;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 310px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
 }
 
 #btn-signUpMove {
-	width: 310px;
+  width: 310px;
 }
 
 #btn-login {
-	width: 310px;
+  width: 310px;
 }
 
 .login-form tr {
-	display: grid;
-	grid-template-rows: auto;
-	margin-top: 15px;
+  display: grid;
+  grid-template-rows: auto;
+  margin-top: 15px;
 }
 
 .email {
-	width: 310px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
+  width: 310px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
 }
 
 /* .email-th {
@@ -78,10 +88,10 @@
 } */
 
 .password {
-	width: 310px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
+  width: 310px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
 }
 
 /* .password-th {
@@ -92,44 +102,44 @@
 } */
 
 .under-line {
-	margin-top: 5px;
-	display: flex;
-	padding-left: 48px;
+  margin-top: 5px;
+  display: flex;
+  padding-left: 48px;
 }
 
 .under-line > .line1 {
-	font-weight: bold;
-	border-bottom: 1px solid;
-	width: 75px;
-	margin-bottom: 35px;
+  font-weight: bold;
+  border-bottom: 1px solid;
+  width: 75px;
+  margin-bottom: 35px;
 }
 
 .under-line > .line2 {
-	font-weight: bold;
-	padding-left: 25px;
-	padding-right: 25px;
-	color: rgb(93, 93, 209);
+  font-weight: bold;
+  padding-left: 25px;
+  padding-right: 25px;
+  color: rgb(93, 93, 209);
 }
 
 .under-line > .line3 {
-	font-weight: bold;
-	border-bottom: 1px solid;
-	width: 75px;
-	margin-bottom: 35px;
+  font-weight: bold;
+  border-bottom: 1px solid;
+  width: 75px;
+  margin-bottom: 35px;
 }
 
 .login-other {
-	display: flex;
-	flex-direction: column;
-	margin-left: 50px;
-	/* justify-content: center; */
-	/* text-align: center; */
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  /* justify-content: center; */
+  /* text-align: center; */
 }
 
 .login-other button {
-	margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .NaverLogin {
-	padding-top: 15px;
+  padding-top: 15px;
 }

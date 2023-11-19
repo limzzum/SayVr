@@ -1,9 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400&display=swap');
+
 /* style.css 파일 */
 /* .calendar-container {
     margin-left: 40% !important;
   }
+  */
   
-  .calendar {
+  .calendar-container{
     width: 100% !important;
   }
-   */
+
+
+  .activity-calender {
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .ac-item {
+    width: 17px;
+    height: 17px;
+  }

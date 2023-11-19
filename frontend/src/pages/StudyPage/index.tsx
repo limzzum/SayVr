@@ -18,6 +18,7 @@ import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Slider from "react-slick";
 import "./style.css";
 import StudyListPage from "./StudyListPage";
+import Swal from "sweetalert2";
 
 interface ArrowProps {
   onClick: () => void;
@@ -26,7 +27,7 @@ const carouselSettings = {
   dots: false,
   // infinite: true,
   speed: 500,
-  slidesToShow: 3, // 한 번에 보여질 카드 수
+  // slidesToShow: 3, // 한 번에 보여질 카드 수
   slidesToScroll: 3, // 넘어갈 카드 수
   arrows: false,
   responsive: [
@@ -73,7 +74,7 @@ function StudyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
-            width:"4rem"
+            width: "4rem",
           }}
           onClick={props.onClick}
         >
@@ -90,7 +91,7 @@ function StudyPage() {
             borderColor: "transparent",
             color: "black",
             backgroundColor: "transparent",
-            width:"4rem"
+            width: "4rem",
           }}
           onClick={props.onClick}
         >
@@ -126,6 +127,18 @@ function StudyPage() {
       let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
       setSearchStudyInfos(show);
       console.log(show);
+      if (show === null || show.length === 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "스터디 검색 결과가 없습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
+        setSearchKeyword("");
+        return;
+      }
       setMenu("public");
     });
   };
@@ -175,7 +188,7 @@ function StudyPage() {
                     <div className="card-title">
                       <div
                         className="card-title-private clickable"
-                        onClick={() => setMenu("private")}
+                        // onClick={() => setMenu("private")}
                       >
                         <h1>내 스터디 </h1>
                       </div>
@@ -198,13 +211,9 @@ function StudyPage() {
                 </div>
               </div>
               <div className="row clickable-cards">
-                {(studyMineList == null || studyMineList.length === 0) && (
-                  <>
-                    <MyStudyCard addNew={handleCreatePlusButtonClick} />
-                  </>
-                )}
                 <Slider
                   infinite={studyMineList.length >= 3}
+                  slidesToShow={studyMineList.length === 0 ? 1 : 3}
                   ref={sliderMine}
                   {...carouselSettings}
                 >
@@ -219,6 +228,14 @@ function StudyPage() {
                       </>
                     );
                   })}
+                  {(studyMineList == null || studyMineList.length < 3) && (
+                    <>
+                      <MyStudyCard addNew={handleCreatePlusButtonClick} />
+                    </>
+                  )}
+                  {studyMineList.length === 1 && (
+                    <MyStudyCard addNew={handleCreatePlusButtonClick} />
+                  )}
                 </Slider>
               </div>
             </div>
@@ -290,6 +307,7 @@ function StudyPage() {
                 )}
                 <Slider
                   infinite={allStudyList?.length >= 3}
+                  slidesToShow={allStudyList.length === 0 ? 1 : 3}
                   ref={sliderAll}
                   {...carouselSettings}
                 >
@@ -306,6 +324,12 @@ function StudyPage() {
                       </>
                     );
                   })}
+                  {(allStudyList == null || allStudyList.length < 3) && (
+                    <MyStudyCard addNew={handleCreatePlusButtonClick} />
+                  )}
+                  {allStudyList.length === 1 && (
+                    <MyStudyCard addNew={handleCreatePlusButtonClick} />
+                  )}
                 </Slider>
               </div>
             </div>

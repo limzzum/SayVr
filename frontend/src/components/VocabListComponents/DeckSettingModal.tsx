@@ -1,6 +1,6 @@
 // SettingsModal.tsx
-import React, { useEffect, useState } from "react"
-import { Button, Form, Modal } from "react-bootstrap"
+import React, { useEffect, useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import {
   DeckDetailResponseDto,
   DeckUpdateRequestDto,
@@ -9,72 +9,92 @@ import {
   resetDeckProgress,
   updateDeckSettings,
   updateProgressSaving,
-} from "../../api/VocabListAPI/FlashcardsAPI"
+} from "../../api/VocabListAPI/FlashcardsAPI";
 
-import { useLocation, useNavigate } from "react-router-dom"
-import { PrivacyStatus } from "./CreateNewListModal"
+import { useLocation, useNavigate } from "react-router-dom";
+import { PrivacyStatus } from "./CreateNewListModal";
+import Swal from "sweetalert2";
 
 interface SettingsModalProps {
-  showModal: boolean
-  handleClose: () => void
-  id: number
-  handleRefresh: (updated: DeckDetailResponseDto) => void
-  info: DeckDetailResponseDto
+  showModal: boolean;
+  handleClose: () => void;
+  id: number;
+  handleRefresh: (updated: DeckDetailResponseDto) => void;
+  info: DeckDetailResponseDto;
 }
 export interface DeckSettingsUpdateRequestDto {
-  name: string
-  flashcardStatus: PrivacyStatus
+  name: string;
+  flashcardStatus: PrivacyStatus;
 }
-const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClose, handleRefresh, info, id }) => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [mode, setMode] = useState("settings")
-  const [saving, setSaving] = useState<ProgressStatus>(info.savingProgressStatus)
+const DeckSettingsModal: React.FC<SettingsModalProps> = ({
+  showModal,
+  handleClose,
+  handleRefresh,
+  info,
+  id,
+}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [mode, setMode] = useState("settings");
+  const [saving, setSaving] = useState<ProgressStatus>(
+    info.savingProgressStatus
+  );
   const [saveForm, setSaveForm] = useState<DeckUpdateRequestDto>({
     savingProgressStatus: saving,
-  })
-  const [flashcardForm, setFlashcardForm] = useState<DeckSettingsUpdateRequestDto>({
-    name: info.name,
-    flashcardStatus: info.status,
-  })
+  });
+  const [flashcardForm, setFlashcardForm] =
+    useState<DeckSettingsUpdateRequestDto>({
+      name: info.name,
+      flashcardStatus: info.status,
+    });
 
   useEffect(() => {
-    setMode("settings")
-  }, [showModal])
+    setMode("settings");
+  }, [showModal]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = event.target
+    const { name, value, type, checked } = event.target;
     if (type === "text") {
       setFlashcardForm((prevData) => ({
         ...prevData,
         [name]: value,
-      }))
+      }));
     } else if (name === "flashcardStatus") {
       // console.log("handle change")
-      const newPrivacyStatus = checked ? PrivacyStatus.PUBLIC : PrivacyStatus.PRIVATE
+      const newPrivacyStatus = checked
+        ? PrivacyStatus.PUBLIC
+        : PrivacyStatus.PRIVATE;
       setFlashcardForm((prevData) => ({
         ...prevData,
         [name]: newPrivacyStatus,
-      }))
+      }));
     } else if (name === "savingProgress") {
-      const newSavingStatus = checked ? ProgressStatus.ENABLED : ProgressStatus.DISABLED
-      console.log("handle toggle value")
-      console.log(newSavingStatus)
+      const newSavingStatus = checked
+        ? ProgressStatus.ENABLED
+        : ProgressStatus.DISABLED;
+      console.log("handle toggle value");
+      console.log(newSavingStatus);
       updateProgressSaving(id, { savingProgressStatus: newSavingStatus })
         .then((res) => {
-          console.log(res)
-          handleRefresh(res.data.data)
+          console.log(res);
+          handleRefresh(res.data.data);
         })
         .catch((e) => {
-          console.log(e)
-          alert("모드 변경에 실패했습니다.")
-        })
-      setSaving(newSavingStatus)
+          Swal.fire({
+            icon: "error",
+            title: "단어장의 학습상태를 저장하는데 오류가 방생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
+        });
+      setSaving(newSavingStatus);
     }
-  }
+  };
   const changeMode = (mode: string) => {
-    setMode(mode)
-  }
+    setMode(mode);
+  };
 
   // const handleToggle = () => {
   //   console.log(saving);
@@ -91,60 +111,82 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
 
   const handleReset = () => {
     resetDeckProgress(id).then((res) => {
-      handleRefresh(res.data.data)
+      handleRefresh(res.data.data);
       // navigate(location.pathname)
       // navigate(`/flashcard/${id}`);
-      navigate(0)
+      navigate(0);
       // console.log("reset")
       // console.log(res.data.data)
-    })
+    });
 
-    handleClose()
-    setMode("settings")
-  }
+    handleClose();
+    setMode("settings");
+  };
   const handleSubmit = (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!flashcardForm.name) {
-      alert("제목을 입력해주세요")
-      return
+      Swal.fire({
+        title: "입력하지 않은 항목이 있습니다.",
+        text: "제목을 입력해주세요",
+        icon: "warning",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
+      return;
     } else {
       // console.log(flashcardForm)
       updateDeckSettings(id, flashcardForm)
         .then((res) => {
           // console.log(res.data.data.id)
-          handleClose()
-          handleRefresh(res.data.data)
+          handleClose();
+          handleRefresh(res.data.data);
           // navigate(`/flashcard/${id}`);
         })
         .catch((error) => {
-          console.error("Error updating deck", error)
-          alert("단어장 정보를 수정하는데 실패했습니다.")
-        })
-        navigate(0)
+          Swal.fire({
+            icon: "error",
+            title: "단어장을 수정하는데 오류가 발생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
+        });
+      navigate(0);
     }
-  }
+  };
   useEffect(() => {
     if (info) {
       setFlashcardForm({
         name: info.name,
         flashcardStatus: info.status,
-      })
+      });
       // console.log("useeffect")
       // console.log(flashcardForm)
     }
-  }, [])
+  }, []);
 
   const handleDelete = () => {
     deleteDeck(id).then((res) => {
-      let message = res.data.data.message
+      let message = res.data.data.message;
       // console.log(message)
       if (message === "단어장이 삭제되었습니다") {
-        navigate("/VocabList")
+        navigate("/VocabList");
       } else {
-        alert(message)
+        Swal.fire({
+          icon: "warning",
+          title: message,
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
       }
-    })
-  }
+    });
+  };
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -152,14 +194,17 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
       </Modal.Header>{" "}
       {mode === "settings" && (
         <>
-          <Modal.Body className='row popup-modal-settings' style={{ margin: "1rem" }}>
-            <Form.Label htmlFor='title'>제목</Form.Label>
+          <Modal.Body
+            className="row popup-modal-settings"
+            style={{ margin: "1rem" }}
+          >
+            <Form.Label htmlFor="title">제목</Form.Label>
             <Form.Control
-              type='text'
-              name='name'
-              id='flashcard-title'
+              type="text"
+              name="name"
+              id="flashcard-title"
               value={flashcardForm.name}
-              placeholder='단어장 제목을 입력해주세요'
+              placeholder="단어장 제목을 입력해주세요"
               onChange={handleInputChange}
               disabled={info.status === PrivacyStatus.FORKED}
             />
@@ -171,16 +216,18 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
               
               
             /> */}
-            <div className='row mt-4'>
-              <div className='col'>
+            <div className="row mt-4">
+              <div className="col">
                 <Form.Check
-                  type='switch'
-                  name='flashcardStatus'
-                  id='privacy-status'
-                  label='단어장 공개 여부'
+                  type="switch"
+                  name="flashcardStatus"
+                  id="privacy-status"
+                  label="단어장 공개 여부"
                   onChange={handleInputChange}
                   disabled={info.status === PrivacyStatus.FORKED}
-                  defaultChecked={flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC}
+                  defaultChecked={
+                    flashcardForm.flashcardStatus === PrivacyStatus.PUBLIC
+                  }
                 />
                 {/* <div className="form-check form-switch row-2">
                   <input
@@ -203,12 +250,14 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
                   </label>
                 </div> */}
                 <Form.Check
-                  type='switch'
-                  name='savingProgress'
-                  id='progress-switch'
-                  label='학습 기억 모드'
+                  type="switch"
+                  name="savingProgress"
+                  id="progress-switch"
+                  label="학습 기억 모드"
                   onChange={handleInputChange}
-                  defaultChecked={saveForm.savingProgressStatus === ProgressStatus.ENABLED}
+                  defaultChecked={
+                    saveForm.savingProgressStatus === ProgressStatus.ENABLED
+                  }
                   // onClick={handleToggle}
                 />
                 {/* <div
@@ -241,18 +290,23 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
                   </div>
                 </div> */}
               </div>
-              <div className='col-6 '>
-                <Button size='sm' style={{ width: "150px" }} variant='secondary' onClick={() => changeMode("reset")}>
+              <div className="col-6 ">
+                <Button
+                  size="sm"
+                  style={{ width: "150px" }}
+                  variant="secondary"
+                  onClick={() => changeMode("reset")}
+                >
                   학습 기록 초기화
                 </Button>
               </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='danger' onClick={() => changeMode("delete")}>
+            <Button variant="danger" onClick={() => changeMode("delete")}>
               삭제
             </Button>
-            <Button variant='light' onClick={handleSubmit}>
+            <Button variant="light" onClick={handleSubmit}>
               적용
             </Button>
           </Modal.Footer>
@@ -260,16 +314,16 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
       )}
       {mode === "delete" && (
         <>
-          <Modal.Body className='row '>
+          <Modal.Body className="row ">
             <h3>
               단어장 <b>'{info.name}'</b>을/를 삭제하시겠습니까?
             </h3>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='danger' onClick={() => handleDelete()}>
+            <Button variant="danger" onClick={() => handleDelete()}>
               삭제
             </Button>
-            <Button variant='light' onClick={() => changeMode("settings")}>
+            <Button variant="light" onClick={() => changeMode("settings")}>
               취소
             </Button>
           </Modal.Footer>
@@ -277,22 +331,22 @@ const DeckSettingsModal: React.FC<SettingsModalProps> = ({ showModal, handleClos
       )}
       {mode === "reset" && (
         <>
-          <Modal.Body className='row '>
+          <Modal.Body className="row ">
             <h3>학습 기록을 초기화하시겠습니까?</h3>
             <h5>단어의 학습 상태가 초기화됩니다.</h5>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='primary' onClick={() => handleReset()}>
+            <Button variant="primary" onClick={() => handleReset()}>
               초기화
             </Button>
-            <Button variant='light' onClick={() => changeMode("settings")}>
+            <Button variant="light" onClick={() => changeMode("settings")}>
               취소
             </Button>
           </Modal.Footer>
         </>
       )}
     </Modal>
-  )
-}
+  );
+};
 
-export default DeckSettingsModal
+export default DeckSettingsModal;

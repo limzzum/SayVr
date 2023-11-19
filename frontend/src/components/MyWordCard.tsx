@@ -14,7 +14,7 @@ function MyWordCard({ addNew, props, type }: MyWordCardProps) {
   if (!props) {
     return (
       <>
-        <div className="empty-title-card" onClick={addNew}>
+        <div className="empty-title-card deck-title-card" onClick={addNew}>
           <div className="empty-add-button">
             <AddButton handleButtonClick={addNew} size="50" />
           </div>

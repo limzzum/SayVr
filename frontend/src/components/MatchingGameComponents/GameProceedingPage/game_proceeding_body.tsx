@@ -14,6 +14,7 @@ import SpeechRecognition, {
   ListeningOptions,
 } from "react-speech-recognition";
 import { SocketType } from "../../../api/MatchingGameAPI/MatchingGameAPI";
+import speakImg from "../../../assets/MatchingGamePageAssets/speak.png";
 
 interface props {
   gameId: number;
@@ -28,18 +29,25 @@ const GameProceedingBody: React.FC<props> = ({
   chatMessage,
   question,
   curRound,
-  answer
+  answer,
 }) => {
   return (
     <div className="game-proceeding-body-container">
       <div>
-        <div style={{padding: '0', margin: '0', height : '1px', fontSize: '30px', }}>Round {curRound}</div>
+        <div
+          style={{ padding: "0", margin: "0", height: "1px", fontSize: "30px" }}
+        >
+          Round {curRound}
+        </div>
         <Question question={question}></Question>
-        <GameTimer curRound={curRound} gameId={gameId} answer={answer}></GameTimer>
+        <GameTimer
+          curRound={curRound}
+          gameId={gameId}
+          answer={answer}
+        ></GameTimer>
       </div>
       <div>
         <TextChatting gameId={gameId} chatMessage={chatMessage}></TextChatting>
-        <Dictaphone gameId={gameId} />
       </div>
     </div>
   );
@@ -148,16 +156,18 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
                       : "messageContainer otherMessage"
                   }`}
                 >
-                  {(message.message != "") &&
-                  <div>
-                    {message.userId === localStorage.getItem("userId")
-                      ? "나"
-                      : "상대방"}
-                  </div>}
+                  {message.message != "" && (
+                    <div>
+                      {message.userId === localStorage.getItem("userId")
+                        ? "나"
+                        : "상대방"}
+                    </div>
+                  )}
                   <div>{message.message}</div>
                 </div>
               ))}
             </div>
+            <Dictaphone gameId={gameId}></Dictaphone>
           </div>
           <div className="chatInput">
             <InputGroup style={{ flexGrow: 1 }}>
@@ -186,17 +196,17 @@ const TextChatting: React.FC<TextChattingProps> = ({ gameId, chatMessage }) => {
   );
 };
 
-const GameTimer: React.FC<{ curRound: number; gameId: number; answer: string }> = ({
-  curRound,
-  gameId,
-  answer
-}) => {
+const GameTimer: React.FC<{
+  curRound: number;
+  gameId: number;
+  answer: string;
+}> = ({ curRound, gameId, answer }) => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     setTimeLeft(30);
-  },[curRound])
+  }, [curRound]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -228,19 +238,22 @@ const GameTimer: React.FC<{ curRound: number; gameId: number; answer: string }> 
       <div className="time-left">{timeLeft} seconds left</div>
       <Modal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {}}
         contentLabel="Example Modal"
-        className="Modal"
+        className="game_answer_modal"
       >
-        <div> 정답 : {answer} </div>
+        <div style={{ fontSize: "xxx-large" }}>Time Over!</div>
         <div>시간이 종료되었습니다.</div>
+        <div style={{ height: "20px" }}></div>
+        <div> 정답 : {answer} </div>
+
         <div>잠시 후 다음 라운드가 시작됩니다..</div>
       </Modal>
     </div>
   );
 };
 
-const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
+const Dictaphone: React.FC<{ gameId: number }> = ({ gameId }) => {
   const {
     transcript,
     listening,
@@ -249,11 +262,12 @@ const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
   } = useSpeechRecognition();
 
   useEffect(() => {
-    if(transcript!=""){
-    const body = { socketType: "QUIZ", message: transcript };
-    sendMsg(publishURL + "." + gameId, body);
+    if (transcript != "") {
+      const body = { socketType: "QUIZ", message: transcript };
+      sendMsg(publishURL + "." + gameId, body);
+      resetTranscript();
     }
-  }, [transcript]);
+  }, [listening]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -263,23 +277,21 @@ const Dictaphone: React.FC<{gameId:number}> = ({gameId}) => {
     event
   ) => {
     event.preventDefault();
-    SpeechRecognition.startListening({ language: "en" });
+    listening
+      ? SpeechRecognition.stopListening()
+      : SpeechRecognition.startListening({ language: "en" });
   };
-
-  const handleStopListening: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.preventDefault();
-    SpeechRecognition.stopListening();
-  };
-
-
 
   return (
-    <div>
-      <p>Microphone: {listening ? "on" : "off"}</p>
-      <button onClick={handleStartListening}>Start</button>
-      <button onClick={handleStopListening}>Stop</button>
-      <button onClick={resetTranscript}>Reset</button>
-      <p>{transcript}</p>
+    <div className="listen-icon">
+      <button
+        style={{ backgroundColor: "transparent" }}
+        onClick={handleStartListening}
+      >
+        <img width="60px" height="50px" src={speakImg}></img>
+      </button>
+      <p>{listening ? "음성 듣는 중.." : "클릭하여 음성 말하기"}</p>
+      {/* <div>{finalTranscript}</div> */}
     </div>
   );
 };

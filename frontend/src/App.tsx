@@ -19,7 +19,8 @@ import StudyDetail from "./pages/StudyPage/StudyDetailPage";
 import SignPage from "./pages/SignPage";
 import JSConfetti from "js-confetti";
 import StudyDeckDetail from "./pages/StudyPage/StudyDeckDetailPage";
-import "./index.css"
+import "./index.css";
+import PrivateRoute from "./components/PrivateRoute";
 export const conteffi = new JSConfetti();
 
 function App() {
@@ -27,28 +28,30 @@ function App() {
     <Routes>
       <Route path="/Login" element={<LoginPage />} />
       <Route path="/" element={<MainPage />} />
-      <Route path="/MatchingGame" element={<MatchingGameWaitingPage />} />
-      <Route path="/My" element={<MyPage />} />
-      <Route path="/MyStudyAnalysis" element={<MyStudyAnalysisPage />} />
-      <Route
-        path="/MyStudyAnalysis/Detail"
-        element={<MyStudyAnalysisDetailPage />}
-      />
-      <Route path="/Shadowing" element={<ShadowingPage />} />
-      <Route path="/Shadowing/BBCPage" element={<BBCPage />} />
-      <Route path="/Shadowing/CNNPage" element={<CNNPage />} />
-      <Route path="/Shadowing/TeamCOCOPage" element={<TeamCOCOPage />} />
-      <Route path="/Shadowing/TEDPage" element={<TEDPage />} />
-      <Route
-        path="/Shadowing/ShadowingDetailPage"
-        element={<ShadowingDtailPage />}
-      />
-      <Route path="/StudyList" element={<StudyPage />} />
-      <Route path="/study/:id" element={<StudyDetail />} />
-      <Route path="/studycard/:studyid/:id" element={<StudyDeckDetail />} />
-      <Route path="/VocabList" element={<VocabListPage />} />
-      <Route path="/flashcard/:id" element={<DeckDetail />} />
       <Route path="/Sign" element={<SignPage />} />
+      <Route element={<PrivateRoute />}>
+        <Route path="/MatchingGame" element={<MatchingGameWaitingPage />} />
+        <Route path="/My" element={<MyPage />} />
+        <Route path="/MyStudyAnalysis" element={<MyStudyAnalysisPage />} />
+        <Route
+          path="/MyStudyAnalysis/Detail"
+          element={<MyStudyAnalysisDetailPage />}
+        />
+        <Route path="/Shadowing" element={<ShadowingPage />} />
+        <Route path="/Shadowing/BBCPage" element={<BBCPage />} />
+        <Route path="/Shadowing/CNNPage" element={<CNNPage />} />
+        <Route path="/Shadowing/TeamCOCOPage" element={<TeamCOCOPage />} />
+        <Route path="/Shadowing/TEDPage" element={<TEDPage />} />
+        <Route
+          path="/Shadowing/ShadowingDetailPage"
+          element={<ShadowingDtailPage />}
+        />
+        <Route path="/StudyList" element={<StudyPage />} />
+        <Route path="/study/:id" element={<StudyDetail />} />
+        <Route path="/studycard/:studyid/:id" element={<StudyDeckDetail />} />
+        <Route path="/VocabList" element={<VocabListPage />} />
+        <Route path="/flashcard/:id" element={<DeckDetail />} />
+      </Route>
     </Routes>
   );
 }

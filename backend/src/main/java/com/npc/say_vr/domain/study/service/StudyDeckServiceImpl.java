@@ -1,5 +1,10 @@
 package com.npc.say_vr.domain.study.service;
 
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDYDECKWORD_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDYDECK_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDYMEMBER_NOT_FOUND;
+import static com.npc.say_vr.domain.study.constant.StudyErrorCode.STUDY_NOT_FOUND;
+
 import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
 import com.npc.say_vr.domain.flashcards.domain.Word;
@@ -20,6 +25,7 @@ import com.npc.say_vr.domain.study.dto.responseDto.StudyDeckInfo;
 import com.npc.say_vr.domain.study.dto.responseDto.StudyDeckOneDetailResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.WordUpdateResponseDto;
 import com.npc.say_vr.domain.study.dto.responseDto.WordcardDto;
+import com.npc.say_vr.domain.study.exception.StudyException;
 import com.npc.say_vr.domain.study.repository.flashcardDeckRepostiory.FlashcardDeckRepostiory;
 import com.npc.say_vr.domain.study.repository.studyDeckRepository.StudyDeckRepository;
 import com.npc.say_vr.domain.study.repository.studyMemberRepository.StudyMemberRepository;
@@ -49,8 +55,7 @@ public class StudyDeckServiceImpl implements StudyDeckService{
     public StudyDeckInfo createStudyDeck(Long userId, Long studyId, CreateStudytDeckRequestDto createStudytDeckRequestDto) {
         FlashcardDeck flashcardDeck = FlashcardDeck.builder().build() ;
         flashcardDeck = flashcardDeckRepostiory.save(flashcardDeck);
-        // TODO : 예외처리
-        Study study = studyRepository.findById(studyId).orElseThrow();
+        Study study = studyRepository.findById(studyId).orElseThrow(()-> new StudyException(STUDY_NOT_FOUND));
         StudyDeck studyDeck = createStudytDeckRequestDto.createStudyDeck(study,flashcardDeck);
         studyDeck = studyDeckRepository.save(studyDeck);
 
@@ -68,14 +73,14 @@ public class StudyDeckServiceImpl implements StudyDeckService{
     @Override
     public void updateStudyDeck(Long userId, Long studyId, UpdateStudyDeckRequestDto updateStudyDeckRequestDto) {
         // TODO : 예외처리
-        StudyDeck studyDeck = studyDeckRepository.findById(updateStudyDeckRequestDto.getStudyDeckId()).orElseThrow();
+        StudyDeck studyDeck = studyDeckRepository.findById(updateStudyDeckRequestDto.getStudyDeckId()).orElseThrow(()-> new StudyException(STUDYDECK_NOT_FOUND));
         studyDeck.updateName(updateStudyDeckRequestDto.getName());
     }
 
     @Transactional
     @Override
     public MessageOnlyResponseDto deleteStudyDeck(Long userId, Long studyId, Long studyDeckId) {
-        StudyDeck studyDeck = studyDeckRepository.findById(studyDeckId).orElseThrow();
+        StudyDeck studyDeck = studyDeckRepository.findById(studyDeckId).orElseThrow(()-> new StudyException(STUDYDECK_NOT_FOUND));
         studyDeck.updateStatus(Status.DELETE);
         return new MessageOnlyResponseDto("단어장이 삭제되었습니다");
     }
@@ -88,7 +93,7 @@ public class StudyDeckServiceImpl implements StudyDeckService{
                 .wordcardList(studyDeckRepository.findWordcardsByFlashcardDeckId(studyDeckOneDetailResponseDto.getFlashcardDeckId()))
                 .build();
         // TODO : 예외처리
-        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyIdOnlyStudyMember(userId, studyId).orElseThrow();
+        StudyMember studyMember = studyMemberRepository.findByUserIdAndStudyIdOnlyStudyMember(userId, studyId).orElseThrow(()-> new StudyException(STUDYMEMBER_NOT_FOUND));
         studyDeckOneDetailResponseDto.updateFlashcardDto(flashcardDto,studyMember.getStudyRole());
         return studyDeckOneDetailResponseDto;
     }
@@ -96,7 +101,7 @@ public class StudyDeckServiceImpl implements StudyDeckService{
     @Transactional
     @Override
     public WordUpdateResponseDto createWordcard(Long userId, Long studyId, Long studyDeckId, CreateWordcardRequestDto createWordcardRequestDto) {
-        StudyDeck studyDeck = studyDeckRepository.findById(studyDeckId).orElseThrow();
+        StudyDeck studyDeck = studyDeckRepository.findById(studyDeckId).orElseThrow(()-> new StudyException(STUDYDECK_NOT_FOUND));
         FlashcardDeck flashcardDeck = studyDeck.getFlashcardDeck();
         // TODO : DEVELOP 하기
         Word word = wordRepository.findByEnglishAndKorean(createWordcardRequestDto.getEng(), createWordcardRequestDto.getKor());
@@ -142,7 +147,7 @@ public class StudyDeckServiceImpl implements StudyDeckService{
     @Override
     public MessageOnlyResponseDto deleteWordcard(Long userId, Long studyDeckId, Long wordcardId) {
         // TODO : 예외처리
-        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow(()-> new StudyException(STUDYDECKWORD_NOT_FOUND));
 
         if (wordcard != null) {
             wordcard.updateStatus(WordcardStatus.DELETED);
