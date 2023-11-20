@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GameServiceImpl implements GameService {
 
-    private final int FINAL_ROUND = 5;
+    private final int FINAL_ROUND = 3;
     private final int WINNER_POINT = 200;
     private final int LOSER_POINT = 50;
     private final int DRAW_POINT = 100;
