@@ -1,22 +1,20 @@
 /* style.css */
+
 .translation-container-analysis {
   display: flex;
   width: 100%;
-  padding:0;
-  /* margin-left: 10%; */
+  padding: 0;
 }
 
 .half-width-container {
   flex: 1;
-  /* padding:1rem; */
-  /* margin: 0 10px; */
   display: flex;
-  flex-direction: column; /* 컨테이너 내의 요소들을 세로로 배열 */
+  flex-direction: column;
 }
 
 .text-box,
 .output-box {
-  flex: 1; /* 높이를 동일하게 맞추기 위해 flex 속성 추가 */
+  flex: 1;
   width: 100%;
   padding: 15px;
   font-size: 18px;
@@ -62,13 +60,14 @@
   }
 }
 
-
-
 .clickable-item {
   cursor: pointer;
-  text-decoration: underline;
-  color: blue;
-  &:hover {
-    background-color: #f0f0f0;
-  }
+  text-decoration: none; /* Remove the underline */
+  color: #007bff; /* Blue color */
+  transition: color 0.3s ease; /* Add a smooth transition effect */
+}
+
+.clickable-item:hover {
+  color: #0056b3; /* Darker blue on hover */
+  background-color: #f0f0f0;
 }

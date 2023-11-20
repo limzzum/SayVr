@@ -23,11 +23,13 @@ body {
 
 .custom-chart-container {
     background-color: white;
-    /* border: 1px solid gray; */
+    max-width: 96%;
     border-radius: 10px;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
     padding: 10px;
     margin-bottom: 30px;
+    margin-left: auto;
+;
 }
 
 span {
