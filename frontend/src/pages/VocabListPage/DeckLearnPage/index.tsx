@@ -12,6 +12,7 @@ import {
 import Wordcard from "../../../components/VocabListComponents/Wordcard";
 import "../../../components/VocabListComponents/style.css";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 interface DeckDetailProps {
   props?: DeckDetailResponseDto;
   changeView: (menu: string) => void;
@@ -58,20 +59,26 @@ const DeckLearn: React.FC<DeckDetailProps> = ({
       console.log(props);
     }
   }, [props]);
-  useEffect(()=>{
+  useEffect(() => {
     if (props) {
-      console.log("단어장 정보가져오기")
+      console.log("단어장 정보가져오기");
       getOneDeck(props.id)
         .then((res) => {
           // console.log(deck);
-          setWordList(res.data.data.flashcardDto.wordcardList)
+          setWordList(res.data.data.flashcardDto.wordcardList);
         })
         .catch((e) => {
-          console.log(e)
-          alert("단어장 정보를 불러오는데 실패했습니다.")
-        })
+          Swal.fire({
+            icon: "error",
+            title: e.response.data.message,
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
+        });
     }
-  },[])
+  }, []);
 
   if (!props) {
     return (
@@ -88,15 +95,36 @@ const DeckLearn: React.FC<DeckDetailProps> = ({
         console.log("reset");
         console.log(res.data.data);
       })
-      .then(() => {});
+      .then(() => {})
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "단어장을 리셋하는데 오류가 방생하였습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
+      });
   };
+
   const backToFirst = () => {
     getOneDeck(props.id)
       .then((res) => {
         handleRefresh(res.data.data);
         setWordList(res.data.data.flashcardDto.wordcardList);
       })
-      .then(() => {});
+      .then(() => {})
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "단어장을 조회하는데 오류가 방생하였습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
+      });
   };
 
   return (
@@ -121,27 +149,27 @@ const DeckLearn: React.FC<DeckDetailProps> = ({
                     <br />
                     초기화하시겠습니까?
                   </h1>
-                  <div style={{display:"flex"}}>
-                  <Button
-                    size="sm"
-                    style={{ width: "150px", marginRight:"1rem" }}
-                    variant="secondary"
-                    onClick={() => handleReset()}
-                    
-                  >
-                    학습 기록 초기화
-                  </Button>
-                  <Button
-                    size="sm"
-                    style={{ width: "150px" }}
-                    variant="secondary"
-                    onClick={() => {
-                      // changeView("detail")
-                      navigate(0);
-                    }}
-                  >
-                    나가기
-                  </Button></div>
+                  <div style={{ display: "flex" }}>
+                    <Button
+                      size="sm"
+                      style={{ width: "150px", marginRight: "1rem" }}
+                      variant="secondary"
+                      onClick={() => handleReset()}
+                    >
+                      학습 기록 초기화
+                    </Button>
+                    <Button
+                      size="sm"
+                      style={{ width: "150px" }}
+                      variant="secondary"
+                      onClick={() => {
+                        // changeView("detail")
+                        navigate(0);
+                      }}
+                    >
+                      나가기
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
@@ -174,29 +202,30 @@ const DeckLearn: React.FC<DeckDetailProps> = ({
                     <br />
                     다시 처음으로 돌아갈까요?
                   </h1>
-                  <div style={{display:"flex"}}>
-                  <Button
-                    size="sm"
-                    style={{ width: "150px", marginRight:"1rem" }}
-                    variant="secondary"
-                    onClick={() => {
-                      backToFirst();
-                      slider?.current?.slickGoTo(0);
-                    }}
-                  >
-                    처음부터
-                  </Button>
-                  <Button
-                    size="sm"
-                    style={{ width: "150px" }}
-                    variant="secondary"
-                    onClick={() => {
-                      // changeView("detail")
-                      navigate(0);
-                    }}
-                  >
-                    나가기
-                  </Button></div>
+                  <div style={{ display: "flex" }}>
+                    <Button
+                      size="sm"
+                      style={{ width: "150px", marginRight: "1rem" }}
+                      variant="secondary"
+                      onClick={() => {
+                        backToFirst();
+                        slider?.current?.slickGoTo(0);
+                      }}
+                    >
+                      처음부터
+                    </Button>
+                    <Button
+                      size="sm"
+                      style={{ width: "150px" }}
+                      variant="secondary"
+                      onClick={() => {
+                        // changeView("detail")
+                        navigate(0);
+                      }}
+                    >
+                      나가기
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

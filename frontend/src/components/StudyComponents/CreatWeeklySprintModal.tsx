@@ -5,6 +5,7 @@ import {
   OptionType,
   GoalDetailResponseDto,
 } from "../../api/StudyPageAPI/StudyAPI";
+import Swal from "sweetalert2";
 
 // TODO : + 버튼 누를 때 : 목표기간동안은 목표를 설정할 수 없습니다. alert창 띄우기
 interface CreateNewWeeklySprintModalProps {
@@ -61,12 +62,17 @@ const CreatWeeklySprintModal: React.FC<CreateNewWeeklySprintModalProps> = ({
         (goal) => goal.optionType === optionType
       );
       if (index !== -1) {
-        newGoalDtoList[index].count = Number(String(value).replace(/^0+/, ""));
+        if (optionType === OptionType.ETC) {
+          newGoalDtoList[index].count = 1;
+        } else {
+          newGoalDtoList[index].count = Number(
+            String(value).replace(/^0+/, "")
+          );
+        }
       }
       return { ...prevData, goalDtoList: newGoalDtoList };
     });
-  }; // TODO : 03이런식으로 넣어보기 -> 8진수 취급되나?
-
+  };
   const addGoal = () => {
     setWeeklySprintForm((prevData) => ({
       ...prevData,
@@ -88,17 +94,28 @@ const CreatWeeklySprintModal: React.FC<CreateNewWeeklySprintModalProps> = ({
       );
       if (etcGoals[descriptionIndex]) {
         etcGoals[descriptionIndex].description = value;
+        if (value) {
+          etcGoals[descriptionIndex].count = 1;
+        } else {
+          etcGoals[descriptionIndex].count = 0;
+        }
       }
       return { ...prevData, goalDtoList: newGoalDtoList };
     });
   };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (weeklySprintFrom.startDate < today) {
-      alert("목표 날짜는 오늘 날짜 이후여야 합니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "목표 날짜는 오늘 날짜 이후여야 합니다.",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+          icon: "swal-icon-sign",
+        },
+      });
       return;
     }
     // VR 대화나 매칭 게임의 카운트 검사
@@ -115,7 +132,16 @@ const CreatWeeklySprintModal: React.FC<CreateNewWeeklySprintModalProps> = ({
     );
 
     if (vrCount < 1 && gameCount < 1 && etcGoals.length === 0) {
-      alert("목표를 설정하셔야 합니다.");
+      Swal.fire({
+        title: "입력하지 않은 항목이 있습니다.",
+        text: "목표를 하나 이상 설정해주세요",
+        icon: "warning",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
       return;
     }
     createWeeklySprint(studyId, weeklySprintFrom)

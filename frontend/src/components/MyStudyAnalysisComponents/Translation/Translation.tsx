@@ -5,6 +5,7 @@ import API_URL from "../../../config";
 import { tokenState } from "../../../recoil/GoalbalState";
 import { useRecoilValue } from "recoil";
 import "./style.css";
+import Swal from "sweetalert2";
 
 const endpoint = "https://api.cognitive.microsofttranslator.com";
 const location = "eastus";
@@ -16,7 +17,9 @@ const Translation: React.FC<TranslationProps> = () => {
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [flashcards, setFlashcards] = useState<Array<{ name: string; id: number; kor: string; eng: string }>>([]);
+  const [flashcards, setFlashcards] = useState<
+    Array<{ name: string; id: number; kor: string; eng: string }>
+  >([]);
   const authToken = useRecoilValue(tokenState);
 
   useEffect(() => {
@@ -42,13 +45,16 @@ const Translation: React.FC<TranslationProps> = () => {
       const flashcardResponse = await axios(flashcardConfig);
       console.log("요청응답", flashcardResponse);
 
-      const flashcardsData = flashcardResponse.data?.data?.personalDeckList || [];
+      const flashcardsData =
+        flashcardResponse.data?.data?.personalDeckList || [];
       console.log(flashcardsData);
 
-      const updatedFlashcards = flashcardsData.map((deck: { [key: string]: any }) => ({
-        ...deck,
-        id: deck.id || 0,
-      }));
+      const updatedFlashcards = flashcardsData.map(
+        (deck: { [key: string]: any }) => ({
+          ...deck,
+          id: deck.id || 0,
+        })
+      );
 
       setFlashcards(updatedFlashcards);
       console.log("저장된 플레시 카드", updatedFlashcards);
@@ -56,10 +62,26 @@ const Translation: React.FC<TranslationProps> = () => {
       if (translatedText && translatedText !== "없음") {
         setShowModal(true);
       } else {
-        alert("추가할 단어가 없습니다");
+        Swal.fire({
+          title: "추가할 단어가 없습니다",
+          icon: "warning",
+          confirmButtonColor: "#3396f4",
+          confirmButtonText: "확인",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+          },
+        });
       }
     } catch (error) {
-      console.error("단어장을 가져오는 중 오류가 발생했습니다:", error);
+      Swal.fire({
+        title: "단어장을 가져오는 중 오류가 발생했습니다:",
+        icon: "error",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
     }
   };
 
@@ -96,12 +118,38 @@ const Translation: React.FC<TranslationProps> = () => {
       setShowModal(true);
 
       if (cardDetailData.errorMessage === null) {
-        alert("단어장에 추가되었습니다.");
-      } else if (cardDetailData.errorMessage === "이미 단어장에 존재하는 단어입니다") {
-        alert("이미 단어장에 존재하는 단어입니다");
+        Swal.fire({
+          title: "단어장에 추가되었습니다.",
+          icon: "success",
+          confirmButtonColor: "#3396f4",
+          confirmButtonText: "확인",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+          },
+        });
+      } else if (
+        cardDetailData.errorMessage === "이미 단어장에 존재하는 단어입니다"
+      ) {
+        Swal.fire({
+          title: "이미 단어장에 존재하는 단어입니다",
+          icon: "warning",
+          confirmButtonColor: "#3396f4",
+          confirmButtonText: "확인",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+          },
+        });
       }
     } catch (error) {
-      console.error("카드 정보를 가져오는 중 오류가 발생했습니다:", error);
+      Swal.fire({
+        title: "카드 정보를 가져오는 중 오류가 발생했습니다:",
+        icon: "error",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
     }
     setShowModal(true);
   };

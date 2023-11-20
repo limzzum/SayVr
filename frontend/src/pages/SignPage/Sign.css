@@ -1,22 +1,31 @@
 .member-body {
-	border: 1px solid lightgray;
-	border-radius: 8px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: row;
-	padding: 80px 60px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 80px 60px;
 }
 
 .signB {
-	height: 85vh;
-	padding: 100px 0px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-bottom: 1px solid lightgray;
+  height: 85vh;
+  padding: 100px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid lightgray;
 }
 
+.swal-btn-sign {
+  width: 100px;
+  height: 50px;
+}
+
+.swal-icon-sign {
+  width: 100px;
+  height: 100px;
+}
 /* 
 .member-form-img {
 	width: 550px;
@@ -28,197 +37,197 @@
 */
 
 .member-form {
-	width: 300px;
-	height: 600px;
-	display: flex;
-	flex-wrap: wrap;
-	text-align: left;
+  width: 300px;
+  height: 600px;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: left;
 }
 
 .member-form h3 {
-	font-weight: bold;
-	color: rgb(63, 63, 143);
-	margin-left: 0px;
+  font-weight: bold;
+  color: rgb(63, 63, 143);
+  margin-left: 0px;
 }
 
 .btn-login {
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	font-weight: bold;
-	font-size: 15px;
-	color: white;
-	background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
-	border: none;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
 }
 
 .member-form-table tr {
-	display: grid;
-	grid-template-rows: auto;
-	margin-top: 15px;
+  display: grid;
+  grid-template-rows: auto;
+  margin-top: 15px;
 }
 
 .checkbox {
-	margin-left: 8px;
-	margin-bottom: 15px;
-	margin-top: 15px;
+  margin-left: 8px;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .email {
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
-	padding-left: 5px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
+  padding-left: 5px;
 }
 
 .email-th {
-	color: rgb(19, 79, 190);
-	margin-left: 4px;
-	font-size: 12px;
-	font-weight: 500;
+  color: rgb(19, 79, 190);
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .email_ok {
-	color: #008000;
-	display: none;
-	font-size: 16px;
+  color: #008000;
+  display: none;
+  font-size: 16px;
 }
 
 .email_already {
-	color: #6a82fb;
-	display: none;
-	font-size: 16px;
+  color: #6a82fb;
+  display: none;
+  font-size: 16px;
 }
 
 .email_no {
-	color: #ff0080;
-	display: none;
-	font-size: 16px;
+  color: #ff0080;
+  display: none;
+  font-size: 16px;
 }
 
 .password {
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
-	padding-left: 5px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
+  padding-left: 5px;
 }
 
 .password-th {
-	color: rgb(19, 79, 190);
-	margin-left: 4px;
-	font-size: 12px;
-	font-weight: 500;
+  color: rgb(19, 79, 190);
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .password_ok {
-	color: #008000;
-	display: none;
-	font-size: 16px;
+  color: #008000;
+  display: none;
+  font-size: 16px;
 }
 
 .password_ok2 {
-	color: #008000;
-	display: none;
-	font-size: 16px;
+  color: #008000;
+  display: none;
+  font-size: 16px;
 }
 
 .name {
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
-	padding-left: 5px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
+  padding-left: 5px;
 }
 
 .nickname {
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
-	padding-left: 5px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
+  padding-left: 5px;
 }
 
 .nickname-th {
-	color: rgb(19, 79, 190);
-	margin-left: 4px;
-	font-size: 12px;
-	font-weight: 500;
+  color: rgb(19, 79, 190);
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .nickname_ok {
-	color: #008000;
-	display: none;
-	font-size: 16px;
+  color: #008000;
+  display: none;
+  font-size: 16px;
 }
 
 .nickname_already {
-	color: #6a82fb;
-	display: none;
-	font-size: 16px;
+  color: #6a82fb;
+  display: none;
+  font-size: 16px;
 }
 
 .nickname_size {
-	color: #ff0080;
-	display: none;
-	font-size: 16px;
+  color: #ff0080;
+  display: none;
+  font-size: 16px;
 }
 
 .name_size {
-	color: #ff0080;
-	display: none;
-	font-size: 16px;
+  color: #ff0080;
+  display: none;
+  font-size: 16px;
 }
 
 .tel {
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	border-color: rgb(19, 79, 190);
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  border-color: rgb(19, 79, 190);
 }
 
 .tel-th {
-	color: rgb(19, 79, 190);
-	margin-left: 8px;
-	font-size: 12px;
-	font-weight: 200;
+  color: rgb(19, 79, 190);
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 200;
 }
 
 #btn-insert {
-	cursor: pointer;
-	margin: 18px 0px 0px 0px;
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	font-weight: bold;
-	font-size: 15px;
-	color: white;
-	background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
-	border: none;
+  cursor: pointer;
+  margin: 18px 0px 0px 0px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
 }
 
 #btn-checkNickname {
-	cursor: pointer;
-	margin: 18px 0px 0px 0px;
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	font-weight: bold;
-	font-size: 15px;
-	color: white;
-	background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
-	border: none;
+  cursor: pointer;
+  margin: 18px 0px 0px 0px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
 }
 #btn-checkEmail {
-	cursor: pointer;
-	margin: 18px 0px 0px 0px;
-	width: 300px;
-	height: 40px;
-	border-radius: 7px;
-	font-weight: bold;
-	font-size: 15px;
-	color: white;
-	background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
-	border: none;
+  cursor: pointer;
+  margin: 18px 0px 0px 0px;
+  width: 300px;
+  height: 40px;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(271.15deg, #fe904b 7.64%, #fb724c 90.68%), #ee5757;
+  border: none;
 }

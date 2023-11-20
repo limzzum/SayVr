@@ -1,6 +1,10 @@
 package com.npc.say_vr.global.error;
 
+import com.npc.say_vr.global.dto.ErrorResponseDto;
 import com.npc.say_vr.global.dto.ResponseDto;
+import com.npc.say_vr.global.error.constant.ErrorCode;
+import com.npc.say_vr.global.error.constant.ExceptionMessage;
+import com.npc.say_vr.global.error.exception.CustomException;
 import com.npc.say_vr.global.error.exception.NotFoundException;
 import com.npc.say_vr.global.error.exception.NotVerifiedUserException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +17,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice(annotations = RestController.class)
 public class RestControllerExceptionHandler {
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<?> handleCustomException(CustomException e){
+        e.printStackTrace();
+        logging(e);
+        return new ResponseEntity<>(new ErrorResponseDto(e.getErrorCode()),HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<ResponseDto<?>> handleNotFoundException(
@@ -32,14 +43,13 @@ public class RestControllerExceptionHandler {
             ResponseDto.builder().message(exception.getMessage()).build()
         );
     }
-    // TODO exception errorCode 처리
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception e){
+    public ResponseEntity<ErrorResponseDto> handleException(Exception e){
         logging(e);
         e.printStackTrace();
-//        ErrorCode serverError = CommonErrorCode.SERVER_ERROR;
-//        return ResponseFactory.fail(e.getMessage(), serverError.getErrorCode(),serverError.getStatusCode());
-        return null;
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ExceptionMessage.SERVER_ERROR);
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private static void logging(Exception e){

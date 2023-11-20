@@ -1,5 +1,8 @@
 package com.npc.say_vr.domain.flashcards.service;
 
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsErrorCode.ENGLISH_BOOK_NOT_FOUND;
+import static com.npc.say_vr.domain.flashcards.constant.FlashcardsErrorCode.WORD_NOT_FOUND;
+
 import com.npc.say_vr.domain.flashcards.constant.SavingProgressStatus;
 import com.npc.say_vr.domain.flashcards.constant.WordcardStatus;
 import com.npc.say_vr.domain.flashcards.domain.FlashcardDeck;
@@ -13,6 +16,7 @@ import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.AutoCompleteRe
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.MessageOnlyResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.FlashcardsResponseDto.WordUpdateResponseDto;
 import com.npc.say_vr.domain.flashcards.dto.TranslationResponseDto;
+import com.npc.say_vr.domain.flashcards.exception.FlashcardsException;
 import com.npc.say_vr.domain.flashcards.repository.PersonalDeckRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordRepository;
 import com.npc.say_vr.domain.flashcards.repository.WordcardRepository;
@@ -56,7 +60,7 @@ public class WordcardServiceImpl implements WordcardService {
     @Override
     public WordUpdateResponseDto createWordcard(Long userId, Long deckId,
         CreateWordcardRequestDto requestDto) {
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
         log.info("get deck to add::{}", personalDeck);
         // TODO 이미 있는 단어인지 확인
@@ -81,6 +85,7 @@ public class WordcardServiceImpl implements WordcardService {
             if (preexist != null) {// 이미 단어장에 존재하는 단어->
                 log.info("redundant, returning preexisting word");
 //                return WordUpdateResponseDto.builder().wordcard(preexist).build();
+                // TODO : 프론트랑 보고 예외 처리하기
                 return new WordUpdateResponseDto("이미 단어장에 존재하는 단어입니다");
             } else {
                 log.info("add word to deck");
@@ -174,8 +179,8 @@ public class WordcardServiceImpl implements WordcardService {
     @Override
     public WordUpdateResponseDto updateLearningProgress(Long userId, Long wordcardId,
         WordcardUpdateRequestDto requestDto) {
-            Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
-            PersonalDeck personalDeck = wordcard.getFlashcardDeck().getPersonalDeck();;
+            Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow(() -> new FlashcardsException(WORD_NOT_FOUND));
+            PersonalDeck personalDeck = wordcard.getFlashcardDeck().getPersonalDeck();
         Long ownerId =personalDeck.getUser().getId();
         //TODO: 주인이 아닌 사람이 적용했을 때 프론트만 적용되는지?
         if(!Objects.equals(ownerId, userId)){
@@ -193,7 +198,7 @@ public class WordcardServiceImpl implements WordcardService {
     @Transactional
     @Override
     public MessageOnlyResponseDto deleteWordcard(Long userId, Long wordcardId) {
-        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow(() -> new FlashcardsException(WORD_NOT_FOUND));
         FlashcardDeck flashcardDeck = wordcard.getFlashcardDeck();
         PersonalDeck personalDeck = flashcardDeck.getPersonalDeck();
         if (wordcard != null) {
@@ -212,7 +217,7 @@ public class WordcardServiceImpl implements WordcardService {
 
     @Override
     public WordUpdateResponseDto readWordcard(Long wordcardId) {
-        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow();
+        Wordcard wordcard = wordcardRepository.findById(wordcardId).orElseThrow(() -> new FlashcardsException(WORD_NOT_FOUND));
         return WordUpdateResponseDto.builder()
             .wordcard(wordcard).build();
     }
@@ -242,7 +247,7 @@ public class WordcardServiceImpl implements WordcardService {
     @Transactional
     @Override
     public void createWordcards(Long userId, Long deckId, String kor, String eng) {
-        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow();
+        PersonalDeck personalDeck = personalDeckRepository.findById(deckId).orElseThrow(() -> new FlashcardsException(ENGLISH_BOOK_NOT_FOUND));
         FlashcardDeck flashcardDeck = personalDeck.getFlashcardDeck();
         log.info("get deck to add::{}", personalDeck);
         // TODO 이미 있는 단어인지 확인

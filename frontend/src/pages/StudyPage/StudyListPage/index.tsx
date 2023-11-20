@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 import ReadStudyInfoModal from "../../../components/StudyComponents/ReadStudyInfoModal";
 import CreateNewStudyModal from "../../../components/StudyComponents/CreatNewStudyModal";
 import AllStudyCard from "../../../components/StudyComponents/AllStudyCard";
-import "../../VocabListPage/style.css";
+import "../style.css";
+import Swal from "sweetalert2";
 
 interface StudyListProps {
   changeView: (menu: string) => void;
@@ -93,7 +94,14 @@ const StudyListPage: React.FC<StudyListProps> = ({
             }
           })
           .catch((error) => {
-            console.error("Error fetching decks", error);
+            Swal.fire({
+              icon: "error",
+              title: "단어장을 조회하는데 오류가 방생하였습니다.",
+              customClass: {
+                confirmButton: "swal-btn-sign",
+                icon: "swal-icon-sign",
+              },
+            });
           })
           .finally(() => {
             if (latestId === studyInfoDtos[studyInfoDtos.length - 1].studyId) {
@@ -137,7 +145,14 @@ const StudyListPage: React.FC<StudyListProps> = ({
     if (!searchResult) {
       // impossible?
       console.log("결과없이 페이지 불러와진 경우");
-      alert("잘못된 접근입니다");
+      Swal.fire({
+        icon: "error",
+        title: "잘못된 접근입니다",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+          icon: "swal-icon-sign",
+        },
+      });
       // getPublicFlashcards()
       //   .then((res) => {
       //     let show: PersonalDeckTitle[] = res.data.data.personalDeckList;
@@ -189,11 +204,22 @@ const StudyListPage: React.FC<StudyListProps> = ({
   };
 
   const handleSearch = async () => {
-    getStudyListKeyWord(searchParams).then((res) => {
-      let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
-      setStudyInfoDtos(show);
-      console.log(show);
-    });
+    getStudyListKeyWord(searchParams)
+      .then((res) => {
+        let show: StudyInfoDto[] = res.data.data.studyInfoDtoList;
+        setStudyInfoDtos(show);
+        console.log(show);
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "단어장을 조회하는데 오류가 방생하였습니다.",
+          customClass: {
+            confirmButton: "swal-btn-sign",
+            icon: "swal-icon-sign",
+          },
+        });
+      });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

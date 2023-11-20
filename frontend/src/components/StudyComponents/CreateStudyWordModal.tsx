@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { createStudyDeck } from "../../api/StudyPageAPI/StudyAPI";
+import Swal from "sweetalert2";
 
 interface CreateNewListModalProps {
   showModal: boolean;
@@ -37,18 +38,33 @@ const CreateStudyWordModal: React.FC<CreateNewListModalProps> = ({
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!flashcardForm.name) {
-      alert("제목을 입력해주세요");
+      Swal.fire({
+        title: "입력하지 않은 항목이 있습니다.",
+        text: "단어장 이름을 입력해주세요",
+        icon: "warning",
+        confirmButtonColor: "#3396f4",
+        confirmButtonText: "확인",
+        customClass: {
+          confirmButton: "swal-btn-sign",
+        },
+      });
       return;
     } else {
       createStudyDeck(studyId, flashcardForm)
         .then((res) => {
-          // navigate()
           console.log(res.data.data);
           handleClose();
           goToDetail(res.data.data.studyDeckId);
         })
         .catch((error) => {
-          console.error("Error creating deck", error);
+          Swal.fire({
+            icon: "error",
+            title: "스터디 단어장을 생성하는데 오류가 방생하였습니다.",
+            customClass: {
+              confirmButton: "swal-btn-sign",
+              icon: "swal-icon-sign",
+            },
+          });
         });
     }
   };
