@@ -297,7 +297,7 @@ function VocabListPage() {
                               orderby === "createdAt"
                                 ? "최신순"
                                 : orderby === "forkCount"
-                                ? "저장순"
+                                ? "포크순"
                                 : orderby === "wordCount"
                                 ? "단어순"
                                 : "정렬"
@@ -314,7 +314,7 @@ function VocabListPage() {
                               onClick={() => setOrderby("forkCount")}
                               href="#"
                             >
-                              저장순
+                              포크순
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => setOrderby("wordCount")}
