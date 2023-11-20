@@ -107,7 +107,7 @@ const DeckListPage: React.FC<DeckListProps> = ({
               setHasMore(false);
               return;
             }
-          })
+          )
           .finally(() => {
             if (latestId === publicCardTitles[publicCardTitles.length - 1].id) {
               setLoading(false);
