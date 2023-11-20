@@ -208,10 +208,10 @@ function ShadowingDetailPage() {
                   </div>
                   <div className="output-box pronunciation-result-box">
                     <p>인식된 문장: {pronunciationResult.text}</p>
-                    <p>정확도 점수: {pronunciationResult.accuracyScore}</p>
-                    <p>발음 점수: {pronunciationResult.pronunciationScore}</p>
-                    <p>문장 점수: {pronunciationResult.completenessScore}</p>
-                    <p>유창성 점수: {pronunciationResult.fluencyScore}</p>
+                    <p>✔️정확도 점수: {pronunciationResult.accuracyScore}점</p>
+                    <p>✔️발음 점수: {pronunciationResult.pronunciationScore}점</p>
+                    <p>✔️문장 점수: {pronunciationResult.completenessScore}점</p>
+                    <p>✔️유창성 점수: {pronunciationResult.fluencyScore}점</p>
                   </div>
                 </div>
               </div>

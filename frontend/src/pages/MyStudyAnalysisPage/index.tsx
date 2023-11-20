@@ -33,6 +33,7 @@ const MyStudyAnalysisPage: React.FC = () => {
       try {
         const averageScoreResponse = await GetMyAverageScore(token);
         const averageScoresData = averageScoreResponse.data;
+        console.log("데이터",averageScoresData)
         if (averageScoresData && averageScoresData.averageScore) {
           setData(averageScoresData.averageScore);
 

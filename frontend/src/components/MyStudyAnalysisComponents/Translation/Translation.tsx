@@ -198,11 +198,7 @@ const Translation: React.FC<TranslationProps> = () => {
           </div>
         </div>
         <div className="button-container mb-3">
-          <button
-            className="btn btn-primary"
-            style={{ marginRight: "1rem" }}
-            onClick={translate}
-          >
+          <button className="btn btn-primary" style={{ marginRight: "1rem" }} onClick={translate}>
             번역
           </button>
           <button className="btn btn-primary" onClick={fetchFlashcards}>
@@ -223,20 +219,20 @@ const Translation: React.FC<TranslationProps> = () => {
           <p>
             <strong>단어장 목록:</strong>
           </p>
-          <ul>
-            {flashcards.map((flashcard, index) => (
-              <li key={index}>
-                <span
-                  onClick={() =>
-                    handleCardClick(flashcard.id, flashcard.kor, flashcard.eng)
-                  }
-                  className="clickable-item"
-                >
-                  {flashcard.name}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <div className="clickable-item-container">
+            <ul>
+              {flashcards.map((flashcard, index) => (
+                <li key={index}>
+                  <span
+                    onClick={() => handleCardClick(flashcard.id, flashcard.kor, flashcard.eng)}
+                    className="clickable-item"
+                  >
+                    {flashcard.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleModalClose}>
