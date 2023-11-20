@@ -80,11 +80,11 @@ const Translation: React.FC<TranslationProps> = () => {
           eng: textToTranslate,
         },
       };
-    
+
       const cardDetailResponse = await axios(cardDetailConfig);
       const cardDetailData = cardDetailResponse.data?.data;
       console.log("카드 응답 데이터:", cardDetailData);
-    
+
       if (cardDetailData) {
         setTextToTranslate(cardDetailData.eng);
         setTranslatedText(cardDetailData.kor);
@@ -92,14 +92,14 @@ const Translation: React.FC<TranslationProps> = () => {
         setTextToTranslate(eng);
         setTranslatedText(kor);
       }
-    
+
       setShowModal(true);
-      
+
       if (cardDetailData.errorMessage === null) {
         alert("단어장에 추가되었습니다.");
       } else if (cardDetailData.errorMessage === "이미 단어장에 존재하는 단어입니다") {
-        alert("이미 단어장에 존재하는 단어입니다")
-      } 
+        alert("이미 단어장에 존재하는 단어입니다");
+      }
     } catch (error) {
       console.error("카드 정보를 가져오는 중 오류가 발생했습니다:", error);
     }
@@ -133,7 +133,7 @@ const Translation: React.FC<TranslationProps> = () => {
 
   return (
     <div className="translation-container-analysis">
-      <div className="half-width-container" style={{marginRight:"1rem"}}>
+      <div className="half-width-container" style={{ marginRight: "1rem" }}>
         <div className="input-container">
           <textarea
             value={textToTranslate}
@@ -143,14 +143,14 @@ const Translation: React.FC<TranslationProps> = () => {
           />
         </div>
       </div>
-      <div className="half-width-container" style={{marginLeft:"1rem"}}>
+      <div className="half-width-container" style={{ marginLeft: "1rem" }}>
         <div className="output-container">
           <div className="output-box">
             <p>{translatedText || "번역된 텍스트가 여기에 나타납니다"}</p>
           </div>
         </div>
         <div className="button-container mb-3">
-          <button className="btn btn-primary" style={{marginRight:"1rem"}} onClick={translate}>
+          <button className="btn btn-primary" style={{ marginRight: "1rem" }} onClick={translate}>
             번역
           </button>
           <button className="btn btn-primary" onClick={fetchFlashcards}>
@@ -171,18 +171,20 @@ const Translation: React.FC<TranslationProps> = () => {
           <p>
             <strong>단어장 목록:</strong>
           </p>
-          <ul>
-            {flashcards.map((flashcard, index) => (
-              <li key={index}>
-                <span
-                  onClick={() => handleCardClick(flashcard.id, flashcard.kor, flashcard.eng)}
-                  className="clickable-item"
-                >
-                  {flashcard.name}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <div className="clickable-item-container">
+            <ul>
+              {flashcards.map((flashcard, index) => (
+                <li key={index}>
+                  <span
+                    onClick={() => handleCardClick(flashcard.id, flashcard.kor, flashcard.eng)}
+                    className="clickable-item"
+                  >
+                    {flashcard.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleModalClose}>
