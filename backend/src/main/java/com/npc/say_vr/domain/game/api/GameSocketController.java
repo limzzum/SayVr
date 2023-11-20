@@ -75,11 +75,15 @@ public class GameSocketController {
 
             SubmitAnswerRequestDto submitAnswerRequestDto = SubmitAnswerRequestDto.builder()
                 .gameId(Long.valueOf(gameId)).userId(userId).text(text).build();
+
+            boolean isEndGame = gameService.isEndGame(Long.valueOf(gameId));
             if(gameService.checkQuizAnswer(submitAnswerRequestDto)){
                 isAnswer = true;
                 message = IS_ANSWER.getMessage();
 
+                if(!isEndGame){
                 gameService.updateQuiz(Long.valueOf(gameId));
+                }
                 gameStatusDto = redisUtil.getGameStatusList(gameId);
             }
 
@@ -96,7 +100,7 @@ public class GameSocketController {
                 .build();
             rabbitTemplate.convertAndSend(EXCHANGE_NAME, "game." + gameId, gameSocketResponseDto);
 
-            if(gameService.isEndGame(Long.valueOf(gameId))){
+            if(isEndGame){
                 gameSocketResponseDto = GameSocketResponseDto.builder().socketType(SocketType.GAME_END)
                     .data(gameService.getGameResult(Long.valueOf(gameId)))
                     .build();
