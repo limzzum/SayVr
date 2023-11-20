@@ -9,7 +9,6 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop, onPronunciationResu
   const [source, setSource] = useState();
   const [analyser, setAnalyser] = useState();
   const [audioUrl, setAudioUrl] = useState();
-  const [audioElement, setAudioElement] = useState();
   const [recognizer, setRecognizer] = useState(null);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop, onPronunciationResu
 
     function onRecognizedResult(result) {
       console.log("발음 평가 텍스트 : ", result.text);
-      const pronunciation_result_text = result.text
+      const pronunciation_result_text = result.text;
       const pronunciation_result = sdk.PronunciationAssessmentResult.fromResult(result);
       console.log(
         "인식된 문장",
@@ -74,13 +73,17 @@ const RecorderModule = ({ onRecordingStart, onRecordingStop, onPronunciationResu
 
     newRecognizer.recognizeOnceAsync((result) => {
       onRecognizedResult(result);
+
+      const userSpeechText = result.text;
+      console.log("사용자의 말한 내용: ", userSpeechText);
+
       setAudioUrl(result.audioData);
       setIsRecording(false);
     });
 
     setOnRec(false);
     setIsRecording(true);
-  }, []);
+  }, [currentScriptText, onPronunciationResult]);
 
   const offRecAudio = async () => {
     if (recognizer) {

@@ -91,8 +91,8 @@ span {
 
 .output-box {
   max-width: 100%;
-  overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
+  overflow: auto;
 }
 .output-score-box {
-  max-width: 30%;
+  max-width: 45%;
 }

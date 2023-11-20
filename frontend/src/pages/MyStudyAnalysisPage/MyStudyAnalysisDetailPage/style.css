@@ -1,7 +1,6 @@
 .scrollspy-example {
   overflow-y: scroll;
   background-color: #e6f1fa;
-  /* height: 500px; */
   height:50vh;
   border-radius: 0 10px 0 10px;
   margin-bottom: 20px;
@@ -56,15 +55,19 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .script-column {
-height:67vh;
+height:67px;
 max-width: 70% !important;
 }
 
 .review-container {
   background-color: white;
   border: 9px solid white;
+  height:33vh;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.review-container-div { 
+  height:67vh;
 }
 
 .translation-bar {
