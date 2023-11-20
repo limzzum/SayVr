@@ -103,19 +103,10 @@ const DeckListPage: React.FC<DeckListProps> = ({
             }
           })
           .catch((error) => {
-            if (error.response && error.response.data && error.response.data.errorCode === "WORDS_003") {
               console.log("길이 0");
               setHasMore(false);
               return;
             }
-            Swal.fire({
-              icon: "error",
-              title: error.response ? error.response.data.message : 'Unknown error',
-              customClass: {
-                confirmButton: "swal-btn-sign",
-                icon: "swal-icon-sign",
-              },
-            });
           })
           .finally(() => {
             if (latestId === publicCardTitles[publicCardTitles.length - 1].id) {
