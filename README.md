@@ -2,7 +2,7 @@
 ---
 
 ### 📜 contents
- 1. [프로젝트 설명](https://lab.ssafy.com/s09-final/S09P31A501/-/tree/main#%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5)
+ 1. [프로젝트 설명](https://lab.ssafy.com/s09-final/S09P31A501/-/tree/main#프로젝트-설명)
  2. [주요 기능](https://lab.ssafy.com/s09-final/S09P31A501/-/tree/main#%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5)
  3. [서비스 화면](https://lab.ssafy.com/s09-final/S09P31A501/-/tree/main#%EC%84%9C%EB%B9%84%EC%8A%A4-%ED%99%94%EB%A9%B4)
  4. [개발 환경](https://lab.ssafy.com/s09-final/S09P31A501/-/tree/main#%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD)
