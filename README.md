@@ -513,14 +513,39 @@
 ![말해VrERD](./exec/image/말해VrERD.png)
 </details>
 
+
+
 ## 🙌팀원 소개
-| 팀원 | 역할 |
-| --- | --- |
-|[임정현](https://lab.ssafy.com/chfhddl1234)|팀장, Infra, BE, FE|
-|[김종원](https://lab.ssafy.com/jkjongwon)|BE, FE|
-|[최지원](https://lab.ssafy.com/wldnjs9515)|BE_LEADER, BE, FE|
-|[신석철](https://lab.ssafy.com/scshin97)|FE_LEADER, FE|
-|[박한샘](https://lab.ssafy.com/phsaem98)|VR, UNREAL|
-|[이정준](https://lab.ssafy.com/jjyoyo83)|VR, UNREAL|
+
+<table>
+ <tr>
+    <td align="center"><a href="https://github.com/limzzum"><img src="https://avatars.githubusercontent.com/limzzum" width="130px;" alt=""></a></td>
+     <td align="center"><a href="https://github.com/jiwon07"><img src="https://avatars.githubusercontent.com/jiwon07" width="130px;" alt=""></a></td>
+     <td align="center"><a href="https://github.com/jkjongwon"><img src="https://avatars.githubusercontent.com/jkjongwon" width="130px;" alt=""></a></td>
+     <td align="center"><a href="https://github.com/pH-Saem"><img src="https://avatars.githubusercontent.com/pH-Saem" width="130px;" alt=""></a></td>
+     <td align="center"><a href="https://github.com/pinegreen83"><img src="https://avatars.githubusercontent.com/pinegreen83" width="130px;" alt=""></a></td>
+     <td align="center"><a href="https://github.com/suchshin"><img src="https://avatars.githubusercontent.com/suchshin" width="130px;" alt=""></a></td>
+
+ </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/limzzum"><b>임정현</b></a></td>
+       <td align="center"><a href="https://github.com/jiwon07"><b>최지원</b></a></td>
+       <td align="center"><a href="https://github.com/jkjongwon"><b>김종원</b></a></td>
+    <td align="center"><a href="https://github.com/pH-Saem"><b>박한샘</b></a></td>
+    <td align="center"><a href="https://github.com/pinegreen83"><b>이정준</b></a></td>
+    <td align="center"><a href="https://github.com/suchshin"><b>신석철</b></a></td>
+
+  </tr>
+  <tr> 
+    <td align="center">팀장, Infra, BE, FE</td>
+    <td align="center">BE_LEADER, BE, FE</td>
+    <td align="center">BE, FE</td>
+    <td align="center">VR, UNREAL</td>
+    <td align="center">VR, UNREAL</td>
+    <td align="center">FE_LEADER, FE</td>
+
+  </tr> 
+</table>
+
 
 
