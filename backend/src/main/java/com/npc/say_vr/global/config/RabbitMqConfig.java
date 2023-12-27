@@ -49,10 +49,10 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
-    @Bean
-    public Binding binding2(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("alarm.*");
-    }
+//    @Bean
+//    public Binding binding2(Queue queue, TopicExchange exchange) {
+//        return BindingBuilder.bind(queue).to(exchange).with("alarm.*");
+//    }
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
@@ -65,7 +65,7 @@ public class RabbitMqConfig {
     ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setHost(host);
-        connectionFactory.setPort(5432);
+        connectionFactory.setPort(5672);
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
         return connectionFactory;

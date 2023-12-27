@@ -30,11 +30,11 @@ public class RabbitMqListener {
     private final GameService gameService;
     private static final String EXCHANGE_NAME = "amq.topic";
 
-    @RabbitListener(bindings = @QueueBinding(
-        value = @Queue(value = "alarm.queue", durable = "true"),
-        exchange = @Exchange(value = EXCHANGE_NAME),
-        key = "alarm.*"
-    ))
+//    @RabbitListener(bindings = @QueueBinding(
+//        value = @Queue(value = "alarm.queue", durable = "true"),
+//        exchange = @Exchange(value = EXCHANGE_NAME),
+//        key = "alarm.*"
+//    ))
     public void bronze(Message message, Channel channel) {
 
 //        byte[] body = message.getBody();
